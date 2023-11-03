@@ -1,6 +1,13 @@
 <resources>
     <string name="app_name">Tasker</string>
 
+    <string name="sign_in">Sign In</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="sign_in_with_google">Sign In with Google</string>
+    <string name="sign_in_with">or sign in with</string>
+    <string name="email">email</string>
+    <string name="password">password</string>
+
     <string name="error_password_is_short">Password must be at least 6 characters long and contain a minimum of 1 numeric character [0-9]</string>
     <string name="error_password_should_contain_numeric_character">Passwords must contain a minimum of 1 numeric character [0-9]</string>
     <string name="error_password_is_empty">Please enter a password</string>
