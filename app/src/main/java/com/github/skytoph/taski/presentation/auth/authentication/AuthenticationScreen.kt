@@ -1,4 +1,4 @@
-package com.github.skytoph.taski.presentation.auth
+package com.github.skytoph.taski.presentation.auth.authentication
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,7 +20,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.ui.theme.TaskiTheme
 
