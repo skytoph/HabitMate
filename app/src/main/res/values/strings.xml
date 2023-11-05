@@ -8,6 +8,8 @@
     <string name="email">email</string>
     <string name="password">password</string>
 
+    <string name="error_auth_general">Something went wrong, please try again later</string>
+
     <string name="error_password_is_short">Password must be at least 6 characters long and contain a minimum of 1 numeric character [0-9]</string>
     <string name="error_password_should_contain_numeric_character">Passwords must contain a minimum of 1 numeric character [0-9]</string>
     <string name="error_password_is_empty">Please enter a password</string>
@@ -16,4 +18,6 @@
     <string name="error_password_mismatch">Password mismatch</string>
 
     <string name="error_email_is_invalid">Please enter a valid email address</string>
+    <string name="web_client_id" />
+    <string name="error_incorrect_email_address_or_password">Incorrect Email Address or Password</string>
 </resources>
