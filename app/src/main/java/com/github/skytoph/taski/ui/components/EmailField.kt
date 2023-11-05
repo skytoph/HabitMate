@@ -17,21 +17,25 @@ import androidx.compose.ui.unit.dp
 import com.github.skytoph.taski.R
 
 @Composable
-fun BasicTextField(value: String, errorResId: Int?, onValueChange: (String) -> Unit) {
+fun BasicTextField(
+    value: String,
+    error: String?,
+    onValueChange: (String) -> Unit
+) {
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
         label = { Text(text = stringResource(id = R.string.email)) },
         singleLine = true,
         maxLines = 1,
-        isError = errorResId != null,
+        isError = error != null,
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Email,
-            imeAction = ImeAction.Done
+            imeAction = ImeAction.Next
         ),
         supportingText = {
             Text(
-                text = if (errorResId != null) stringResource(id = errorResId) else "",
+                text = error ?: "",
                 minLines = 2,
             )
         }
@@ -48,7 +52,7 @@ fun TextFieldPreview() {
     ) {
         BasicTextField(
             value = "value",
-            errorResId = R.string.error_password_should_contain_numeric_character,
+            error = stringResource(R.string.error_password_should_contain_numeric_character),
             onValueChange = {}
         )
     }

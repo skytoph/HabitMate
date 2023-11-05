@@ -1,7 +1,7 @@
 package com.github.skytoph.taski.presentation.auth.signup
 
-import androidx.annotation.StringRes
 import androidx.compose.runtime.MutableState
+import com.github.skytoph.taski.ui.state.StringResource
 
 sealed class SignUpEvent {
     abstract fun handle(state: MutableState<SignUpState>)
@@ -9,16 +9,14 @@ sealed class SignUpEvent {
     class TypeEmail(private val value: String) : SignUpEvent() {
         override fun handle(state: MutableState<SignUpState>) {
             state.value =
-                state.value.copy(email = state.value.email.copy(field = value, errorResId = null))
+                state.value.copy(email = state.value.email.copy(field = value, error = null))
         }
     }
 
     class TypePassword(private val value: String) : SignUpEvent() {
         override fun handle(state: MutableState<SignUpState>) {
             state.value = state.value.copy(
-                password = state.value.password.copy(
-                    field = value, errorResId = null
-                )
+                password = state.value.password.copy(field = value, error = null)
             )
         }
     }
@@ -27,7 +25,7 @@ sealed class SignUpEvent {
         override fun handle(state: MutableState<SignUpState>) {
             state.value = state.value.copy(
                 passwordConfirmation = state.value.passwordConfirmation.copy(
-                    field = value, errorResId = null
+                    field = value, error = null
                 )
             )
         }
@@ -39,33 +37,33 @@ sealed class SignUpEvent {
         }
     }
 
-    class EmailError(@StringRes private val errorResId: Int?) : SignUpEvent() {
+    class EmailError(private val error: StringResource?) : SignUpEvent() {
         override fun handle(state: MutableState<SignUpState>) {
             state.value = state.value.copy(
-                email = state.value.email.copy(errorResId = errorResId),
+                email = state.value.email.copy(error = error),
             )
         }
     }
 
-    class PasswordError(@StringRes private val errorResId: Int?) : SignUpEvent() {
+    class PasswordError(private val error: StringResource?) : SignUpEvent() {
         override fun handle(state: MutableState<SignUpState>) {
             state.value = state.value.copy(
-                password = state.value.password.copy(errorResId = errorResId),
+                password = state.value.password.copy(error = error),
             )
         }
     }
 
-    class PasswordConfirmationError(@StringRes private val errorResId: Int?) : SignUpEvent() {
+    class PasswordConfirmationError(private val error: StringResource?) : SignUpEvent() {
         override fun handle(state: MutableState<SignUpState>) {
             state.value = state.value.copy(
-                passwordConfirmation = state.value.passwordConfirmation.copy(errorResId = errorResId),
+                passwordConfirmation = state.value.passwordConfirmation.copy(error = error),
             )
         }
     }
 
-    class Error(@StringRes private val errorResId: Int?) : SignUpEvent() {
+    class Error(private val error: StringResource?) : SignUpEvent() {
         override fun handle(state: MutableState<SignUpState>) {
-            state.value = state.value.copy(error = errorResId)
+            state.value = state.value.copy(error = error)
         }
     }
 

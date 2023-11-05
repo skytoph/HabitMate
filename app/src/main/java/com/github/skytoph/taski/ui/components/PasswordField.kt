@@ -10,6 +10,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -20,7 +21,8 @@ fun PasswordField(
     onValueChange: (String) -> Unit,
     label: String,
     isVisible: Boolean,
-    errorResId: Int?,
+    error: String?,
+    imeAction: ImeAction,
     onVisibleClick: () -> Unit
 ) {
     OutlinedTextField(
@@ -29,11 +31,11 @@ fun PasswordField(
         label = { Text(text = label) },
         singleLine = true,
         visualTransformation = if (isVisible) VisualTransformation.None else PasswordVisualTransformation(),
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-        isError = errorResId != null,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = imeAction),
+        isError = error != null,
         supportingText = {
             Text(
-                text = if (errorResId != null) stringResource(id = errorResId) else "",
+                text = error ?: "",
                 minLines = 2
             )
         },

@@ -9,28 +9,32 @@ import com.github.skytoph.taski.presentation.auth.validation.EmailValidator
 import com.github.skytoph.taski.presentation.auth.validation.EmptinessValidator
 import com.github.skytoph.taski.presentation.auth.validation.MinLengthValidator
 import com.github.skytoph.taski.presentation.auth.validation.NumericCharValidator
+import com.github.skytoph.taski.ui.state.StringResource
 
 class SignUpValidator : AuthValidator(
+    emailValidator =
+    EmptinessValidator(EmailValidator(null), R.string.error_email_is_invalid),
     passwordValidator =
     EmptinessValidator(
         MinLengthValidator(NumericCharValidator(null)), R.string.error_password_is_empty
-    ),
-    emailValidator =
-    EmptinessValidator(EmailValidator(null), R.string.error_email_is_invalid)
+    )
 ) {
 
     fun validate(state: SignUpState, eventHandler: SignUpEventHandler) {
-        val emailErrorResId = validateEmail(state.email.field)
-        eventHandler.onEvent(SignUpEvent.EmailError(emailErrorResId))
+        val emailValidation = validateEmail(state.email.field)
+        val emailError = emailValidation?.let { StringResource.ResId(it) }
+        eventHandler.onEvent(SignUpEvent.EmailError(emailError))
 
-        val passwordErrorResId = validatePassword(state.password.field)
-        eventHandler.onEvent(SignUpEvent.PasswordError(passwordErrorResId))
+        val passwordValidation = validatePassword(state.password.field)
+        val passwordError = passwordValidation?.let { StringResource.ResId(it) }
+        eventHandler.onEvent(SignUpEvent.PasswordError(passwordError))
 
-        val passwordConfirmErrorResId =
+        val confirmationValidation =
             confirmPassword(state.password.field, state.passwordConfirmation.field)
-        eventHandler.onEvent(SignUpEvent.PasswordConfirmationError(passwordConfirmErrorResId))
+        val confirmationError = confirmationValidation?.let { StringResource.ResId(it) }
+        eventHandler.onEvent(SignUpEvent.PasswordConfirmationError(confirmationError))
 
-        if (passwordErrorResId == null && emailErrorResId == null && passwordConfirmErrorResId == null)
+        if (passwordValidation == null && emailValidation == null && confirmationValidation == null)
             eventHandler.onEvent(SignUpEvent.Validate(true))
     }
 

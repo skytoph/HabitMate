@@ -1,7 +1,7 @@
 package com.github.skytoph.taski.presentation.auth.signin
 
-import androidx.annotation.StringRes
 import androidx.compose.runtime.MutableState
+import com.github.skytoph.taski.ui.state.StringResource
 
 sealed class SignInEvent {
     abstract fun handle(state: MutableState<SignInState>)
@@ -9,13 +9,15 @@ sealed class SignInEvent {
     class TypeEmail(private val value: String) : SignInEvent() {
         override fun handle(state: MutableState<SignInState>) {
             state.value =
-                state.value.copy(email = state.value.email.copy(field = value, errorResId = null))
+                state.value.copy(email = state.value.email.copy(field = value, error = null))
         }
     }
 
     class TypePassword(private val value: String) : SignInEvent() {
         override fun handle(state: MutableState<SignInState>) {
-            state.value = state.value.copy(password = state.value.password.copy(field = value, errorResId = null))
+            state.value = state.value.copy(
+                password = state.value.password.copy(field = value, error = null)
+            )
         }
     }
 
@@ -25,26 +27,25 @@ sealed class SignInEvent {
         }
     }
 
-    class EmailError(@StringRes private val errorResId: Int?) : SignInEvent() {
+    class EmailError(private val error: StringResource?) : SignInEvent() {
         override fun handle(state: MutableState<SignInState>) {
             state.value = state.value.copy(
-                email = state.value.email.copy(errorResId = errorResId),
+                email = state.value.email.copy(error = error), isValid = false
             )
         }
     }
 
-    class PasswordError(@StringRes private val errorResId: Int?) : SignInEvent() {
+    class PasswordError(private val error: StringResource?) : SignInEvent() {
         override fun handle(state: MutableState<SignInState>) {
-            state.value =
-                state.value.copy(
-                    password = state.value.password.copy(errorResId = errorResId),
-                )
+            state.value = state.value.copy(
+                password = state.value.password.copy(error = error), isValid = false
+            )
         }
     }
 
-    class Error(@StringRes private val errorResId: Int?) : SignInEvent() {
+    class Error(private val error: StringResource?) : SignInEvent() {
         override fun handle(state: MutableState<SignInState>) {
-            state.value = state.value.copy(error = errorResId)
+            state.value = state.value.copy(error = error, isValid = false)
         }
     }
 

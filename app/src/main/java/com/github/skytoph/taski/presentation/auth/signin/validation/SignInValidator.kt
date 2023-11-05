@@ -5,21 +5,25 @@ import com.github.skytoph.taski.presentation.auth.signin.SignInEvent
 import com.github.skytoph.taski.presentation.auth.signin.SignInEventHandler
 import com.github.skytoph.taski.presentation.auth.signin.SignInState
 import com.github.skytoph.taski.presentation.auth.validation.AuthValidator
+import com.github.skytoph.taski.presentation.auth.validation.EmailValidator
 import com.github.skytoph.taski.presentation.auth.validation.EmptinessValidator
+import com.github.skytoph.taski.ui.state.StringResource
 
 class SignInValidator : AuthValidator(
+    emailValidator = EmptinessValidator(EmailValidator(null), R.string.error_email_is_invalid),
     passwordValidator = EmptinessValidator(null, R.string.error_password_is_empty),
-    emailValidator = EmptinessValidator(null, R.string.error_email_is_invalid),
 ) {
 
     fun validate(state: SignInState, eventHandler: SignInEventHandler) {
-        val emailErrorResId = validateEmail(state.email.field)
-        eventHandler.onEvent(SignInEvent.EmailError(emailErrorResId))
+        val emailValidation = validateEmail(state.email.field)
+        val emailError = emailValidation?.let { StringResource.ResId(it) }
+        eventHandler.onEvent(SignInEvent.EmailError(emailError))
 
-        val passwordErrorResId = validatePassword(state.password.field)
-        eventHandler.onEvent(SignInEvent.PasswordError(passwordErrorResId))
+        val passwordValidation = validatePassword(state.password.field)
+        val passwordError = passwordValidation?.let { StringResource.ResId(it) }
+        eventHandler.onEvent(SignInEvent.PasswordError(passwordError))
 
-        if (passwordErrorResId == null && emailErrorResId == null)
+        if (passwordError == null && emailError == null)
             eventHandler.onEvent(SignInEvent.Validate(true))
     }
 }
