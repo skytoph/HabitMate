@@ -2,7 +2,7 @@ package com.github.skytoph.taski.presentation.auth.authentication.error
 
 import android.util.Log
 import com.github.skytoph.taski.presentation.auth.authentication.AuthResult
-import com.github.skytoph.taski.presentation.auth.mapper.AuthErrorMapper
+import com.github.skytoph.taski.presentation.auth.authentication.mapper.AuthErrorMapper
 import java.util.concurrent.CancellationException
 
 class AuthErrorHandler(

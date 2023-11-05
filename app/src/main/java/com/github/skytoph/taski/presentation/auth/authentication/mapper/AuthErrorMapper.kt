@@ -1,4 +1,4 @@
-package com.github.skytoph.taski.presentation.auth.mapper
+package com.github.skytoph.taski.presentation.auth.authentication.mapper
 
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.auth.authentication.error.AuthError

@@ -22,8 +22,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.github.skytoph.taski.presentation.auth.authentication.AuthViewModel
 import com.github.skytoph.taski.presentation.auth.authentication.AuthenticationScreen
-import com.github.skytoph.taski.presentation.auth.authentication.GoogleAuthUiClient
-import com.github.skytoph.taski.presentation.auth.authentication.UserData
+import com.github.skytoph.taski.presentation.auth.authentication.client.GoogleAuthUiClient
+import com.github.skytoph.taski.presentation.auth.authentication.user.UserData
 import com.github.skytoph.taski.presentation.auth.signin.SignInScreen
 import com.github.skytoph.taski.presentation.auth.signup.SignUpScreen
 import com.github.skytoph.taski.presentation.auth.verify.VerificationScreen

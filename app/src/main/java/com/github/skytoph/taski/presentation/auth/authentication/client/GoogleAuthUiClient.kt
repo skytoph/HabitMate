@@ -1,12 +1,14 @@
-package com.github.skytoph.taski.presentation.auth.authentication
+package com.github.skytoph.taski.presentation.auth.authentication.client
 
 import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import android.util.Log
 import com.github.skytoph.taski.R
+import com.github.skytoph.taski.presentation.auth.authentication.AuthResult
+import com.github.skytoph.taski.presentation.auth.authentication.user.UserData
 import com.github.skytoph.taski.presentation.auth.authentication.error.AuthErrorHandler
-import com.github.skytoph.taski.presentation.auth.mapper.AuthErrorMapper
+import com.github.skytoph.taski.presentation.auth.authentication.mapper.AuthErrorMapper
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.firebase.auth.FirebaseAuth

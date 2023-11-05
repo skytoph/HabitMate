@@ -1,4 +1,4 @@
-package com.github.skytoph.taski.presentation.auth.authentication
+package com.github.skytoph.taski.presentation.auth.authentication.user
 
 data class UserData(
     val userId: String,

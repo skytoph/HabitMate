@@ -1,4 +1,4 @@
-package com.github.skytoph.taski.presentation.auth.validation
+package com.github.skytoph.taski.presentation.auth.authentication.validation
 
 import androidx.annotation.StringRes
 import com.github.skytoph.taski.R

@@ -4,9 +4,9 @@ import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.auth.signin.SignInEvent
 import com.github.skytoph.taski.presentation.auth.signin.SignInEventHandler
 import com.github.skytoph.taski.presentation.auth.signin.SignInState
-import com.github.skytoph.taski.presentation.auth.validation.AuthValidator
-import com.github.skytoph.taski.presentation.auth.validation.EmailValidator
-import com.github.skytoph.taski.presentation.auth.validation.EmptinessValidator
+import com.github.skytoph.taski.presentation.auth.authentication.validation.AuthValidator
+import com.github.skytoph.taski.presentation.auth.authentication.validation.EmailValidator
+import com.github.skytoph.taski.presentation.auth.authentication.validation.EmptinessValidator
 import com.github.skytoph.taski.ui.state.StringResource
 
 class SignInValidator : AuthValidator(
