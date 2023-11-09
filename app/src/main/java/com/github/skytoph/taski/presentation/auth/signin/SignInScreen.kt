@@ -43,7 +43,10 @@ fun SignInScreen(
             viewModel.onEvent(authState.signInError?.map() ?: return@LaunchedEffect)
     }
     LaunchedEffect(key1 = authState.isSignInSuccessful) {
-        if (authState.isSignInSuccessful) onNavigate()
+        if (authState.isSignInSuccessful) {
+            viewModel.resetState()
+            onNavigate()
+        }
     }
 
     Column(

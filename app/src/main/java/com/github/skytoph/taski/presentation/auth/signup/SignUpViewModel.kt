@@ -17,6 +17,10 @@ class SignUpViewModel : ViewModel(), SignUpEventHandler {
     fun validate() {
         validator.validate(state.value, this)
     }
+
+    fun resetState() {
+        state.value = SignUpState()
+    }
 }
 
 interface SignUpEventHandler {

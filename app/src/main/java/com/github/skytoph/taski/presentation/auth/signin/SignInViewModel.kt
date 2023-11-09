@@ -21,6 +21,10 @@ class SignInViewModel : ViewModel(), SignInEventHandler {
     }
 
     fun state(): State<SignInState> = state
+
+    fun resetState() {
+        state.value = SignInState()
+    }
 }
 
 interface SignInEventHandler {
