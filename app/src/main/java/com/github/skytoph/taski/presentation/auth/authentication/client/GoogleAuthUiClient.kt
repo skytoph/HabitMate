@@ -1,14 +1,13 @@
 package com.github.skytoph.taski.presentation.auth.authentication.client
 
-import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import android.util.Log
-import com.github.skytoph.taski.R
+import com.github.skytoph.taski.BuildConfig
 import com.github.skytoph.taski.presentation.auth.authentication.AuthResult
-import com.github.skytoph.taski.presentation.auth.authentication.user.UserData
 import com.github.skytoph.taski.presentation.auth.authentication.error.AuthErrorHandler
 import com.github.skytoph.taski.presentation.auth.authentication.mapper.AuthErrorMapper
+import com.github.skytoph.taski.presentation.auth.authentication.user.UserData
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.firebase.auth.FirebaseAuth
@@ -24,6 +23,13 @@ class GoogleAuthUiClient(
     private val auth: FirebaseAuth = Firebase.auth,
     private val errorHandler: AuthErrorHandler = AuthErrorHandler(AuthErrorMapper())
 ) {
+    init {
+        initUser()
+    }
+
+    private fun initUser() = auth.currentUser?.let { user ->
+        user.getIdToken(true).addOnSuccessListener { user.reload() }
+    }
 
     suspend fun signIn(email: String, password: String): AuthResult = try {
         auth.signInWithEmailAndPassword(email, password).await().user?.run {
@@ -60,6 +66,17 @@ class GoogleAuthUiClient(
     }
 
     fun getSignedInUser(): UserData? = auth.currentUser?.toUserData()
+
+    suspend fun reloadUser() {
+        auth.currentUser?.getIdToken(true)?.await()
+        auth.currentUser?.reload()?.await()
+    }
+
+    fun sendEmailVerification() = try {
+        auth.currentUser?.sendEmailVerification()
+    } catch (exception: Exception) {
+        errorHandler.handle(exception)
+    }
 
     suspend fun signInWithIntent(intent: Intent): AuthResult {
         val credential = oneTapClient.getSignInCredentialFromIntent(intent)
