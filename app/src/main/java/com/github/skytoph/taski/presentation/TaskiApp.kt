@@ -44,7 +44,6 @@ fun TaskiApp(navController: NavHostController = rememberNavController()) {
     val applicationContext = LocalContext.current.applicationContext
     val googleAuthUiClient by lazy {
         GoogleAuthUiClient(
-            context = applicationContext,
             oneTapClient = Identity.getSignInClient(applicationContext)
         )
     }
@@ -102,6 +101,7 @@ fun TaskiApp(navController: NavHostController = rememberNavController()) {
                         }
                     },
                     onNavigate = {
+                        viewModel.resetState()
                         navController.navigateToProfile(googleAuthUiClient.getSignedInUser()?.isVerified)
                     })
             }
@@ -117,8 +117,25 @@ fun TaskiApp(navController: NavHostController = rememberNavController()) {
                         }
                     },
                     onNavigate = {
-                        navController.navigateToProfile(googleAuthUiClient.getSignedInUser()?.isVerified)
+                        viewModel.resetState()
+                        navController.navigate(route = Screens.Verify.name)
                     })
+            }
+            composable(route = Screens.Verify.name) {
+                val lifecycleScope = LocalLifecycleOwner.current.lifecycleScope
+                VerificationScreen(sendVerification = {
+                    lifecycleScope.launch { googleAuthUiClient.sendEmailVerification() }
+                }, verify = {
+                    lifecycleScope.launch {
+                        googleAuthUiClient.reloadUser()
+                        if (googleAuthUiClient.getSignedInUser()?.isVerified == true)
+                            navController.navigateAndClear(route = Screens.Profile.name)
+                    }
+                }, navigateUp = {
+                    lifecycleScope.launch { googleAuthUiClient.signOut() }
+                    if (navController.previousBackStackEntry != null) navController.navigateUp()
+                    else navController.navigateAndClear(Screens.Authentication.name)
+                })
             }
             composable(route = Screens.Profile.name) {
                 val lifecycleScope = LocalLifecycleOwner.current.lifecycleScope
@@ -129,15 +146,13 @@ fun TaskiApp(navController: NavHostController = rememberNavController()) {
                     }
                 }
             }
-            composable(route = Screens.Verify.name) {
-                VerificationScreen()
-            }
         }
     }
 }
 
 private fun NavHostController.navigateToProfile(isUserVerified: Boolean?) {
-    navigate(if (isUserVerified != true) Screens.Profile.name else Screens.Verify.name)
+    if (isUserVerified == true) navigateAndClear(Screens.Profile.name)
+    else navigate(Screens.Verify.name)
 }
 
 private fun NavHostController.navigateAndClear(route: String) {
@@ -149,7 +164,7 @@ private fun NavHostController.navigateAndClear(route: String) {
 
 private fun UserData?.getStartDestination() = when {
     this == null -> Screens.Authentication.name
-    this.isVerified != true -> Screens.Profile.name
-    this.isVerified != false -> Screens.Verify.name
+    this.isVerified == true -> Screens.Profile.name
+    this.isVerified == false -> Screens.Verify.name
     else -> Screens.Authentication.name
 }

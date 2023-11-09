@@ -19,4 +19,8 @@
 
     <string name="error_email_is_invalid">Please enter a valid email address</string>
     <string name="error_incorrect_email_address_or_password">Incorrect Email Address or Password</string>
+    <string name="send_email_again">We can send email again after %1$ss</string>
+    <string name="verify_email_description">Verify your email please</string>
+    <string name="send_email_button">Send email</string>
+    <string name="verify_email_button">Verify</string>
 </resources>
