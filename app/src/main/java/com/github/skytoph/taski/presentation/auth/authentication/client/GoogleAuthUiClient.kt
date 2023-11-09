@@ -20,7 +20,6 @@ import kotlinx.coroutines.tasks.await
 import java.util.concurrent.CancellationException
 
 class GoogleAuthUiClient(
-    private val context: Context,
     private val oneTapClient: SignInClient,
     private val auth: FirebaseAuth = Firebase.auth,
     private val errorHandler: AuthErrorHandler = AuthErrorHandler(AuthErrorMapper())
@@ -81,7 +80,7 @@ class GoogleAuthUiClient(
                 BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
                     .setSupported(true)
                     .setFilterByAuthorizedAccounts(false)
-                    .setServerClientId(context.getString(R.string.web_client_id))
+                    .setServerClientId(BuildConfig.WEB_CLIENT_ID)
                     .build()
             )
             .setAutoSelectEnabled(true)

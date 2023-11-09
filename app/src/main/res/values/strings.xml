@@ -18,6 +18,5 @@
     <string name="error_password_mismatch">Password mismatch</string>
 
     <string name="error_email_is_invalid">Please enter a valid email address</string>
-    <string name="web_client_id" />
     <string name="error_incorrect_email_address_or_password">Incorrect Email Address or Password</string>
 </resources>
