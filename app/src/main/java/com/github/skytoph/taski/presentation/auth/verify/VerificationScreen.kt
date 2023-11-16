@@ -12,6 +12,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -28,14 +29,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.github.skytoph.taski.R
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VerificationScreen(
-    sendVerification: () -> Unit,
-    verify: () -> Unit,
+    viewModel: VerificationViewModel = hiltViewModel(),
+    onNavigate: () -> Unit,
     navigateUp: () -> Unit,
     buttonTimeoutInSeconds: Int = 30
 ) {
@@ -48,12 +51,20 @@ fun VerificationScreen(
         }
     }
 
+    val isVerified = viewModel.state().value
+    LaunchedEffect(key1 = isVerified) {
+        if (isVerified == true) onNavigate()
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { },
                 navigationIcon = {
-                    IconButton(onClick = navigateUp) {
+                    IconButton(onClick = {
+                        viewModel.signOut()
+                        navigateUp()
+                    }) {
                         Icon(
                             imageVector = Icons.Filled.ArrowBack,
                             contentDescription = "Back"
@@ -85,17 +96,22 @@ fun VerificationScreen(
                 OutlinedButton(
                     onClick = {
                         secondsLeft = buttonTimeoutInSeconds
-                        sendVerification()
+                        viewModel.sendVerificationEmail()
                     },
                     enabled = secondsLeft <= 0
                 ) {
                     Text(text = stringResource(R.string.send_email_button))
                 }
                 Button(onClick = {
-                    verify()
+                    viewModel.verify()
                 }) {
                     Text(text = stringResource(R.string.verify_email_button))
                 }
+                if (isVerified != null && isVerified == false)
+                    Text(
+                        text = stringResource(R.string.error_email_is_not_verified),
+                        color = MaterialTheme.colorScheme.error
+                    )
             }
         })
 }
@@ -104,7 +120,7 @@ fun VerificationScreen(
 @Composable
 fun VerificationScreenPreview() {
     VerificationScreen(
-        sendVerification = {},
-        verify = { },
+        viewModel = viewModel(),
+        onNavigate = {},
         navigateUp = {})
 }

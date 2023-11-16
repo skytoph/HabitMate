@@ -1,5 +1,10 @@
 package com.github.skytoph.taski.presentation.auth.authentication
 
+import android.widget.Toast
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,18 +21,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.lifecycleScope
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.ui.theme.TaskiTheme
+import kotlinx.coroutines.launch
 
 @Composable
 fun AuthenticationScreen(
+//    viewModel: AuthViewModel,
     onSignInClick: () -> Unit,
     onSignUpClick: () -> Unit,
-    onSignInWithGoogleClick: () -> Unit,
+//    onSignInWithGoogleClick: () -> Unit,
 ) {
 
     Column(
@@ -39,8 +48,8 @@ fun AuthenticationScreen(
     ) {
         SignInButton(onSignInClick)
         SignUpButton(onSignUpClick)
-        TextDivider(stringResource(id = R.string.sign_in_with))
-        SignInWithGoogle(onSignInWithGoogleClick)
+//        TextDivider(stringResource(id = R.string.sign_in_with))
+//        SignInWithGoogle(onClick = onSignInWithGoogleClick)
     }
 }
 
@@ -70,7 +79,7 @@ fun SignInWithGoogle(onClick: () -> Unit) {
 }
 
 @Composable
-private fun TextDivider(label: String) {
+fun TextDivider(label: String) {
     Row(
         modifier = Modifier
             .padding(top = 32.dp, bottom = 8.dp)
@@ -87,6 +96,10 @@ private fun TextDivider(label: String) {
 @Composable
 fun AuthenticationScreenPreview() {
     TaskiTheme {
-        AuthenticationScreen({}, {}, {})
+        AuthenticationScreen(
+            {},
+            {},
+//            {}
+        )
     }
 }

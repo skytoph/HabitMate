@@ -1,27 +1,21 @@
 package com.github.skytoph.taski.presentation.auth.authentication
 
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import androidx.lifecycle.viewModelScope
+import com.github.skytoph.taski.domain.auth.repository.AuthRepository
+import com.github.skytoph.taski.presentation.auth.authentication.user.UserData
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class AuthViewModel : ViewModel() {
+@HiltViewModel
+class AuthViewModel @Inject constructor(
+    private val repository: AuthRepository
+) : ViewModel() {
 
-    private val state = MutableStateFlow(AuthState())
+    fun currentUser(): UserData? = repository.currentUser()
 
-    fun onAuthResult(result: AuthResult) {
-        state.update {
-            it.copy(
-                isSignInSuccessful = result.user != null,
-                signInError = result.error
-            )
-        }
+    fun signOut() = viewModelScope.launch {
+        repository.signOut()
     }
-
-    fun state() = state.asStateFlow()
-
-    fun resetState() {
-        state.update { AuthState() }
-    }
-
 }

@@ -1,24 +1,15 @@
 package com.github.skytoph.taski.presentation.auth.signup.validation
 
 import com.github.skytoph.taski.R
+import com.github.skytoph.taski.presentation.auth.authentication.validation.AuthValidator
+import com.github.skytoph.taski.presentation.auth.authentication.validation.Validator
 import com.github.skytoph.taski.presentation.auth.signup.SignUpEvent
 import com.github.skytoph.taski.presentation.auth.signup.SignUpEventHandler
 import com.github.skytoph.taski.presentation.auth.signup.SignUpState
-import com.github.skytoph.taski.presentation.auth.authentication.validation.AuthValidator
-import com.github.skytoph.taski.presentation.auth.authentication.validation.EmailValidator
-import com.github.skytoph.taski.presentation.auth.authentication.validation.EmptinessValidator
-import com.github.skytoph.taski.presentation.auth.authentication.validation.MinLengthValidator
-import com.github.skytoph.taski.presentation.auth.authentication.validation.NumericCharValidator
 import com.github.skytoph.taski.ui.state.StringResource
 
-class SignUpValidator : AuthValidator(
-    emailValidator =
-    EmptinessValidator(EmailValidator(null), R.string.error_email_is_invalid),
-    passwordValidator =
-    EmptinessValidator(
-        MinLengthValidator(NumericCharValidator(null)), R.string.error_password_is_empty
-    )
-) {
+class SignUpValidator(emailValidator: Validator, passwordValidator: Validator) :
+    AuthValidator(emailValidator, passwordValidator) {
 
     fun validate(state: SignUpState, eventHandler: SignUpEventHandler) {
         val emailValidation = validateEmail(state.email.field)

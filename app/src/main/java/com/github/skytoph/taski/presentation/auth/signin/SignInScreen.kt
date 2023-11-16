@@ -13,13 +13,19 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.github.skytoph.taski.R
-import com.github.skytoph.taski.presentation.auth.authentication.AuthState
+import com.github.skytoph.taski.presentation.auth.authentication.SignInWithGoogle
+import com.github.skytoph.taski.presentation.auth.authentication.TextDivider
+import com.github.skytoph.taski.presentation.auth.authentication.client.makeLauncher
+import com.github.skytoph.taski.presentation.auth.authentication.client.signInWithGoogle
 import com.github.skytoph.taski.presentation.auth.signin.mapper.map
 import com.github.skytoph.taski.ui.components.BasicTextField
 import com.github.skytoph.taski.ui.components.ErrorText
@@ -27,23 +33,23 @@ import com.github.skytoph.taski.ui.components.PasswordField
 
 @Composable
 fun SignInScreen(
-    viewModel: SignInViewModel,
-    authState: AuthState,
-    onSignIn: (String, String) -> Unit,
-    onNavigate: () -> Unit
+    viewModel: SignInViewModel = hiltViewModel(),
+    onNavigate: () -> Unit,
 ) {
+    val lifecycleScope = LocalLifecycleOwner.current.lifecycleScope
     val state = viewModel.state()
+    val launcher = makeLauncher(lifecycleScope, viewModel.client, viewModel)
 
     LaunchedEffect(key1 = state.value.isValid) {
         if (state.value.isValid)
-            onSignIn(state.value.email.field, state.value.password.field)
+            viewModel.signIn(state.value.email.field, state.value.password.field)
     }
-    LaunchedEffect(key1 = authState.signInError) {
+    LaunchedEffect(key1 = state.value.auth.signInError) {
         if (state.value.isValid)
-            viewModel.onEvent(authState.signInError?.map() ?: return@LaunchedEffect)
+            viewModel.onEvent(state.value.auth.signInError?.map() ?: return@LaunchedEffect)
     }
-    LaunchedEffect(key1 = authState.isSignInSuccessful) {
-        if (authState.isSignInSuccessful) {
+    LaunchedEffect(key1 = state.value.auth.isSignInSuccessful) {
+        if (state.value.auth.isSignInSuccessful) {
             viewModel.resetState()
             onNavigate()
         }
@@ -78,11 +84,18 @@ fun SignInScreen(
         ) {
             Text(text = stringResource(id = R.string.sign_in))
         }
+        TextDivider(stringResource(id = R.string.sign_in_with))
+        SignInWithGoogle(onClick = {
+            signInWithGoogle(lifecycleScope, viewModel.client, launcher, viewModel)
+        })
     }
 }
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun SignInScreenPreview() {
-    SignInScreen(viewModel(), AuthState(), { _, _ -> }, {})
+    SignInScreen(
+        viewModel(),
+        {},
+    )
 }

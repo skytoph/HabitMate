@@ -11,8 +11,8 @@ import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 class AuthErrorMapper {
 
     fun map(exception: Exception?): AuthError {
-        return if (exception is FirebaseAuthException)
-            when {
+        return when (exception) {
+            is FirebaseAuthException -> when {
                 exception is FirebaseAuthEmailException || exception.errorCode.contains("EMAIL") ->
                     AuthError.EmailError(StringResource.Value(exception.localizedMessage))
 
@@ -22,13 +22,17 @@ class AuthErrorMapper {
                 else ->
                     AuthError.GeneralError(StringResource.Value(exception.localizedMessage))
             }
-        else if (exception is FirebaseException) {
-            when {
-                exception.message?.contains("INVALID_LOGIN_CREDENTIALS") ?: false ->
-                    AuthError.GeneralError(StringResource.ResId(R.string.error_incorrect_email_address_or_password))
 
-                else -> AuthError.GeneralError(StringResource.ResId(R.string.error_auth_general))
+            is FirebaseException -> {
+                when {
+                    exception.message?.contains("INVALID_LOGIN_CREDENTIALS") ?: false ->
+                        AuthError.GeneralError(StringResource.ResId(R.string.error_incorrect_email_address_or_password))
+
+                    else -> AuthError.GeneralError(StringResource.ResId(R.string.error_auth_general))
+                }
             }
-        } else AuthError.GeneralError(StringResource.ResId(R.string.error_auth_general))
+
+            else -> AuthError.GeneralError(StringResource.ResId(R.string.error_auth_general))
+        }
     }
 }

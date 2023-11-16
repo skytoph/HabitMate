@@ -1,6 +1,8 @@
 package com.github.skytoph.taski.presentation.auth.signup
 
 import androidx.compose.runtime.MutableState
+import com.github.skytoph.taski.presentation.auth.authentication.AuthResult
+import com.github.skytoph.taski.presentation.auth.authentication.AuthState
 import com.github.skytoph.taski.ui.state.StringResource
 
 sealed class SignUpEvent {
@@ -70,6 +72,13 @@ sealed class SignUpEvent {
     class Validate(private val isValid: Boolean) : SignUpEvent() {
         override fun handle(state: MutableState<SignUpState>) {
             state.value = state.value.copy(isValid = isValid)
+        }
+    }
+
+    class Auth(private val authResult: AuthResult) : SignUpEvent() {
+        override fun handle(state: MutableState<SignUpState>) {
+            state.value =
+                state.value.copy(auth = AuthState(authResult.user != null, authResult.error))
         }
     }
 }
