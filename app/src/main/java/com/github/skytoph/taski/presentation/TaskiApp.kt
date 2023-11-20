@@ -18,18 +18,22 @@ import com.github.skytoph.taski.presentation.auth.signup.SignUpScreen
 import com.github.skytoph.taski.presentation.auth.verify.VerificationScreen
 import com.github.skytoph.taski.presentation.profile.ProfileScreen
 
-private enum class Screens {
+private enum class AuthScreens {
     Authentication,
     SignIn,
     SignUp,
     Verify,
-    Profile,
+}
+
+private enum class HabitScreens {
+    Profile
 }
 
 @Composable
-fun TaskiApp(navController: NavHostController = rememberNavController()) {
-    val viewModel: AuthViewModel = hiltViewModel()
-
+fun TaskiApp(
+    navController: NavHostController = rememberNavController(),
+    viewModel: AuthViewModel = hiltViewModel()
+) {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
@@ -37,38 +41,38 @@ fun TaskiApp(navController: NavHostController = rememberNavController()) {
         val start = viewModel.currentUser().getStartDestination()
 
         NavHost(navController = navController, startDestination = start) {
-            composable(route = Screens.Authentication.name) {
+            composable(route = AuthScreens.Authentication.name) {
                 AuthenticationScreen(
-                    onSignInClick = { navController.navigate(Screens.SignIn.name) },
-                    onSignUpClick = { navController.navigate(Screens.SignUp.name) },
+                    onSignInClick = { navController.navigate(AuthScreens.SignIn.name) },
+                    onSignUpClick = { navController.navigate(AuthScreens.SignUp.name) },
                 )
             }
-            composable(route = Screens.SignIn.name) {
+            composable(route = AuthScreens.SignIn.name) {
                 SignInScreen(
                     onNavigate = {
                         navController.navigateToProfile(viewModel.currentUser()?.isVerified)
                     }
                 )
             }
-            composable(route = Screens.SignUp.name) {
+            composable(route = AuthScreens.SignUp.name) {
                 SignUpScreen(
                     onNavigate = {
                         navController.navigateToProfile(viewModel.currentUser()?.isVerified)
                     })
             }
-            composable(route = Screens.Verify.name) {
+            composable(route = AuthScreens.Verify.name) {
                 VerificationScreen(
                     onNavigate = {
-                        navController.navigateAndClear(route = Screens.Profile.name)
+                        navController.navigateAndClear(route = HabitScreens.Profile.name)
                     }, navigateUp = {
                         if (navController.previousBackStackEntry != null) navController.navigateUp()
-                        else navController.navigateAndClear(Screens.Authentication.name)
+                        else navController.navigateAndClear(AuthScreens.Authentication.name)
                     })
             }
-            composable(route = Screens.Profile.name) {
+            composable(route = HabitScreens.Profile.name) {
                 ProfileScreen {
                     viewModel.signOut()
-                    navController.navigateAndClear(Screens.Authentication.name)
+                    navController.navigateAndClear(AuthScreens.Authentication.name)
                 }
             }
         }
@@ -76,7 +80,9 @@ fun TaskiApp(navController: NavHostController = rememberNavController()) {
 }
 
 private fun NavHostController.navigateToProfile(isUserVerified: Boolean?) {
-    if (isUserVerified == true) navigateAndClear(Screens.Profile.name) else navigate(Screens.Verify.name)
+    if (isUserVerified == true) navigateAndClear(HabitScreens.Profile.name) else navigate(
+        AuthScreens.Verify.name
+    )
 }
 
 private fun NavHostController.navigateAndClear(route: String) {
@@ -87,8 +93,8 @@ private fun NavHostController.navigateAndClear(route: String) {
 }
 
 private fun UserData?.getStartDestination() = when {
-    this == null -> Screens.Authentication.name
-    this.isVerified == true -> Screens.Profile.name
-    this.isVerified == false -> Screens.Verify.name
-    else -> Screens.Authentication.name
+    this == null -> AuthScreens.Authentication.name
+    this.isVerified == true -> HabitScreens.Profile.name
+    this.isVerified == false -> AuthScreens.Verify.name
+    else -> AuthScreens.Authentication.name
 }
