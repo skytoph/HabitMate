@@ -88,6 +88,7 @@ dependencies {
     // Compose material
     implementation("androidx.compose.material3:material3:1.1.2")
     implementation("androidx.compose.material:material-icons-extended:1.1.2")
+    implementation("androidx.compose.foundation:foundation:1.3.0")
 
     // Hilt
     implementation("com.google.dagger:hilt-android:2.44")
