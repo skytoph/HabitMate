@@ -16,6 +16,7 @@ import com.github.skytoph.taski.presentation.auth.authentication.user.UserData
 import com.github.skytoph.taski.presentation.auth.signin.SignInScreen
 import com.github.skytoph.taski.presentation.auth.signup.SignUpScreen
 import com.github.skytoph.taski.presentation.auth.verify.VerificationScreen
+import com.github.skytoph.taski.presentation.habit.HabitsScreen
 import com.github.skytoph.taski.presentation.profile.ProfileScreen
 
 private enum class AuthScreens {
@@ -26,7 +27,8 @@ private enum class AuthScreens {
 }
 
 private enum class HabitScreens {
-    Profile
+    Profile,
+    HabitList
 }
 
 @Composable
@@ -66,11 +68,17 @@ fun TaskiApp(
                         navController.navigateAndClear(route = HabitScreens.Profile.name)
                     }, navigateUp = {
                         if (navController.previousBackStackEntry != null) navController.navigateUp()
-                        else navController.navigateAndClear(AuthScreens.Authentication.name)
+                        else navController.navigateAndClear(HabitScreens.HabitList.name)
                     })
             }
             composable(route = HabitScreens.Profile.name) {
                 ProfileScreen {
+                    viewModel.signOut()
+                    navController.navigateAndClear(AuthScreens.Authentication.name)
+                }
+            }
+            composable(route = HabitScreens.HabitList.name) {
+                HabitsScreen {
                     viewModel.signOut()
                     navController.navigateAndClear(AuthScreens.Authentication.name)
                 }
