@@ -49,12 +49,12 @@ fun HabitCalendar(
     val height = rows * squareDp + 6 * squareOffsetDp
     val width = columns * squareDp + (columns - 1) * squareOffsetDp
 
-    val colorOnSurface = MaterialTheme.colorScheme.onSurface
+    val squareColor = MaterialTheme.colorScheme.onSecondaryContainer
 
     Box(
         modifier = modifier
             .background(
-                color = MaterialTheme.colorScheme.primary,
+                color = MaterialTheme.colorScheme.secondaryContainer,
                 shape = RoundedCornerShape(10f)
             )
     ) {
@@ -83,7 +83,7 @@ fun HabitCalendar(
                         val offsetY = squareSize * stepY + squareOffset * stepY
 
                         drawRoundRect(
-                            color = if (habit.history.contains(numberOfDays - index)) habit.color else colorOnSurface,
+                            color = if (habit.history.contains(index)) habit.color else squareColor,
                             cornerRadius = CornerRadius(5f, 5f),
                             style = Fill,
                             topLeft = Offset(offsetX, offsetY),
