@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Tasker</string>
 
+<!--    Auth-->
     <string name="sign_in">Sign In</string>
     <string name="sign_up">Sign Up</string>
     <string name="sign_in_with_google">Sign In with Google</string>
@@ -24,4 +25,7 @@
     <string name="send_email_button">Send email</string>
     <string name="verify_email_button">Verify</string>
     <string name="error_email_is_not_verified">Email is not verified. Please try again later.</string>
+
+<!--    Create habit-->
+    <string name="goal_value">%1$s / day</string>
 </resources>
