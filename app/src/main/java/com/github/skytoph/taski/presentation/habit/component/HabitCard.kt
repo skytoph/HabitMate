@@ -82,7 +82,7 @@ fun HabitCard(habit: HabitUi) {
 fun HabitCardPreview() {
     TaskiTheme {
         val habit =
-            HabitUi("dev", Icons.Outlined.AcUnit, Color.Yellow, listOf(340, 330), 349)
+            HabitUi("dev", 1, Icons.Outlined.AcUnit, Color.Yellow, listOf(340, 330), 349)
         HabitCard(habit = habit)
     }
 }
