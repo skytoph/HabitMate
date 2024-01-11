@@ -11,7 +11,9 @@ import com.github.skytoph.taski.presentation.auth.authentication.client.AuthResu
 import com.github.skytoph.taski.presentation.auth.authentication.client.GoogleAuth
 import com.github.skytoph.taski.presentation.auth.signup.validation.SignUpValidator
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,9 +24,11 @@ class SignUpViewModel @Inject constructor(
     val client: GoogleAuth
 ) : SignUpEventHandler, ViewModel(), AuthResultHandler {
 
-    fun signUp(email: String, password: String) = viewModelScope.launch {
+    fun signUp(email: String, password: String) = viewModelScope.launch(Dispatchers.IO) {
         val authResult = repository.signUp(email, password)
-        onEvent(SignUpEvent.Auth(authResult ?: return@launch))
+        withContext(Dispatchers.Main) {
+            onEvent(SignUpEvent.Auth(authResult ?: return@withContext))
+        }
     }
 
     fun validate() {
