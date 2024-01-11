@@ -13,17 +13,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AcUnit
-import androidx.compose.material.icons.filled.ArrowBackIos
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -35,53 +29,46 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.skytoph.taski.R
+import com.github.skytoph.taski.presentation.core.component.HabitAppBar
+import com.github.skytoph.taski.presentation.core.component.SquareButton
+import com.github.skytoph.taski.presentation.habit.create.EditHabitEvent
+import com.github.skytoph.taski.presentation.habit.create.EditHabitViewModel
 import com.github.skytoph.taski.ui.theme.TaskiTheme
 
 @Composable
-fun CreateHabitScreen(onCreateHabitClick: () -> Unit) {
-    val state = HabitState("yoga", 1, Icons.Filled.AcUnit, Color.Blue)
+fun EditHabitScreen(
+    viewModel: EditHabitViewModel = hiltViewModel(),
+    navigateUp: () -> Unit,
+    onSelectIconClick: () -> Unit
+) {
+    val state = viewModel.state()
     val minHeight = TextFieldDefaults.MinHeight
 
     Column(modifier = Modifier.padding(horizontal = 8.dp)) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(onClick = onCreateHabitClick) {
-                Icon(
-                    imageVector = Icons.Filled.ArrowBackIos,
-                    contentDescription = null,
-                    modifier = Modifier.size(24.dp),
-                    tint = MaterialTheme.colorScheme.onSurface
-                )
-            }
-            Text(
-                text = "new habit",
-                style = MaterialTheme.typography.headlineSmall,
-                modifier = Modifier.weight(1f)
-            )
-            IconButton(onClick = onCreateHabitClick) {
-                Icon(
-                    imageVector = Icons.Filled.Check,
-                    contentDescription = null,
-                    modifier = Modifier.size(24.dp),
-                    tint = MaterialTheme.colorScheme.onSurface
-                )
-            }
-        }
+        HabitAppBar(
+            label = "new habit",
+            navigateUp = navigateUp,
+            isSaveButtonVisible = true,
+            onSaveButtonClick = { viewModel.saveHabit() })
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-            TitleTextField(modifier = Modifier.weight(1f), value = state.title)
-            IconPicker(icon = state.icon, color = state.color, size = minHeight) {}
+            TitleTextField(
+                modifier = Modifier.weight(1f),
+                value = state.value.title.field,
+                onValueChange = { viewModel.onEvent(EditHabitEvent.EditTitle(it)) })
+            IconSelector(
+                icon = state.value.icon,
+                color = state.value.color,
+                size = minHeight,
+                onClick = onSelectIconClick
+            )
         }
         Spacer(modifier = Modifier.height(4.dp))
         Text(text = "goal")
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(
-                text = stringResource(R.string.goal_value, state.goal),
+                text = stringResource(R.string.goal_value, state.value.goal.value),
                 modifier = Modifier
                     .background(
                         color = MaterialTheme.colorScheme.surfaceVariant,
@@ -92,26 +79,24 @@ fun CreateHabitScreen(onCreateHabitClick: () -> Unit) {
                     .wrapContentHeight()
                     .weight(1f),
             )
-            SquareButton({ /* todo state.goal--*/ }, "-", minHeight)
-            SquareButton({ /* todo state.goal++*/ }, "+", minHeight)
+            SquareButton(
+                onClick = { viewModel.onEvent(EditHabitEvent.DecreaseGoal) },
+                label = "-",
+                size = minHeight,
+                isEnabled = state.value.goal.canBeDecreased
+            )
+            SquareButton(
+                onClick = { viewModel.onEvent(EditHabitEvent.IncreaseGoal) },
+                label = "+",
+                size = minHeight,
+                isEnabled = state.value.goal.canBeIncreased
+            )
         }
     }
 }
 
 @Composable
-private fun SquareButton(onClick: () -> Unit, label: String, minHeight: Dp) {
-    TextButton(
-        onClick = onClick,
-        shape = RoundedCornerShape(10),
-        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
-        modifier = Modifier.size(minHeight)
-    ) {
-        Text(text = label, color = MaterialTheme.colorScheme.onTertiary)
-    }
-}
-
-@Composable
-fun IconPicker(
+fun IconSelector(
     modifier: Modifier = Modifier,
     icon: ImageVector,
     color: Color,
@@ -121,7 +106,8 @@ fun IconPicker(
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(modifier = modifier, text = "icon")
         IconButton(
-            onClick = { /*TODO*/ }, modifier = Modifier
+            onClick = onClick,
+            modifier = Modifier
                 .size(size)
                 .background(
                     color = MaterialTheme.colorScheme.surfaceVariant,
@@ -139,7 +125,11 @@ fun IconPicker(
 }
 
 @Composable
-private fun TitleTextField(modifier: Modifier = Modifier, value: String) {
+private fun TitleTextField(
+    modifier: Modifier = Modifier,
+    value: String,
+    onValueChange: (String) -> Unit
+) {
     val backgroundColor = MaterialTheme.colorScheme.surfaceVariant
 
     Column(modifier = modifier) {
@@ -149,7 +139,7 @@ private fun TitleTextField(modifier: Modifier = Modifier, value: String) {
                 .fillMaxWidth()
                 .wrapContentHeight(),
             value = value,
-            onValueChange = {},
+            onValueChange = onValueChange,
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = backgroundColor,
                 unfocusedContainerColor = backgroundColor,
@@ -162,12 +152,10 @@ private fun TitleTextField(modifier: Modifier = Modifier, value: String) {
     }
 }
 
-data class HabitState(val title: String, val goal: Int, val icon: ImageVector, val color: Color)
-
 @Composable
 @Preview(showSystemUi = true, showBackground = true)
 fun HabitScreenPreview() {
     TaskiTheme {
-        CreateHabitScreen({})
+        EditHabitScreen(navigateUp = {}, viewModel = hiltViewModel(), onSelectIconClick = {})
     }
 }

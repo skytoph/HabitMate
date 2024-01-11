@@ -16,8 +16,11 @@ import com.github.skytoph.taski.presentation.auth.authentication.user.UserData
 import com.github.skytoph.taski.presentation.auth.signin.SignInScreen
 import com.github.skytoph.taski.presentation.auth.signup.SignUpScreen
 import com.github.skytoph.taski.presentation.auth.verify.VerificationScreen
-import com.github.skytoph.taski.presentation.profile.ProfileScreen
+import com.github.skytoph.taski.presentation.habit.create.EditHabitViewModel
+import com.github.skytoph.taski.presentation.habit.create.component.EditHabitScreen
+import com.github.skytoph.taski.presentation.habit.create.component.SelectIconScreen
 import com.github.skytoph.taski.presentation.habit.list.component.HabitsScreen
+import com.github.skytoph.taski.presentation.profile.ProfileScreen
 
 private enum class AuthScreens {
     Authentication,
@@ -28,7 +31,9 @@ private enum class AuthScreens {
 
 private enum class HabitScreens {
     Profile,
-    HabitList
+    HabitList,
+    CreateHabit,
+    SelectIcon,
 }
 
 @Composable
@@ -36,6 +41,8 @@ fun TaskiApp(
     navController: NavHostController = rememberNavController(),
     viewModel: AuthViewModel = hiltViewModel()
 ) {
+    val editHabitViewModel: EditHabitViewModel = hiltViewModel()
+
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
@@ -65,26 +72,39 @@ fun TaskiApp(
             composable(route = AuthScreens.Verify.name) {
                 VerificationScreen(
                     onNavigate = {
-                        navController.navigateAndClear(route = HabitScreens.Profile.name)
+                        navController.navigateAndClear(route = HabitScreens.HabitList.name)
                     }, navigateUp = {
                         if (navController.previousBackStackEntry != null) navController.navigateUp()
-                        else navController.navigateAndClear(HabitScreens.HabitList.name)
+                        else navController.navigateAndClear(AuthScreens.Authentication.name)
                     })
             }
             composable(route = HabitScreens.Profile.name) {
-                ProfileScreen {
-                    viewModel.signOut()
-                    navController.navigateAndClear(AuthScreens.Authentication.name)
-                }
+                ProfileScreen(onSignOut = { navController.signOut(viewModel) })
             }
             composable(route = HabitScreens.HabitList.name) {
-                HabitsScreen {
-                    viewModel.signOut()
-                    navController.navigateAndClear(AuthScreens.Authentication.name)
-                }
+                HabitsScreen(onCreateHabit = {
+                    navController.navigate(HabitScreens.CreateHabit.name)
+                })
+            }
+            composable(route = HabitScreens.CreateHabit.name) {
+                EditHabitScreen(
+                    navigateUp = navController::navigateUp,
+                    onSelectIconClick = { navController.navigate(HabitScreens.SelectIcon.name) },
+                    viewModel = editHabitViewModel
+                )
+            }
+            composable(route = HabitScreens.SelectIcon.name) {
+                SelectIconScreen(
+                    navigateUp = navController::navigateUp, viewModel = editHabitViewModel
+                )
             }
         }
     }
+}
+
+private fun NavHostController.signOut(viewModel: AuthViewModel) {
+    viewModel.signOut()
+    navigateAndClear(AuthScreens.Authentication.name)
 }
 
 private fun NavHostController.navigateToProfile(isUserVerified: Boolean?) {
@@ -102,7 +122,7 @@ private fun NavHostController.navigateAndClear(route: String) {
 
 private fun UserData?.getStartDestination() = when {
     this == null -> AuthScreens.Authentication.name
-    this.isVerified == true -> HabitScreens.Profile.name
     this.isVerified == false -> AuthScreens.Verify.name
+    this.isVerified == true -> HabitScreens.HabitList.name
     else -> AuthScreens.Authentication.name
 }

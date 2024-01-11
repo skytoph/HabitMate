@@ -13,8 +13,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             TaskiTheme {
-                    TaskiApp()
-                }
+                TaskiApp()
             }
+        }
     }
 }
