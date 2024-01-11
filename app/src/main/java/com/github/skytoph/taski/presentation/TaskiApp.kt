@@ -16,8 +16,8 @@ import com.github.skytoph.taski.presentation.auth.authentication.user.UserData
 import com.github.skytoph.taski.presentation.auth.signin.SignInScreen
 import com.github.skytoph.taski.presentation.auth.signup.SignUpScreen
 import com.github.skytoph.taski.presentation.auth.verify.VerificationScreen
-import com.github.skytoph.taski.presentation.habit.HabitsScreen
 import com.github.skytoph.taski.presentation.profile.ProfileScreen
+import com.github.skytoph.taski.presentation.habit.list.component.HabitsScreen
 
 private enum class AuthScreens {
     Authentication,
