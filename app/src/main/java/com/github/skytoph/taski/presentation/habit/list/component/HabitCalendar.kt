@@ -1,4 +1,4 @@
-package com.github.skytoph.taski.presentation.habit.component
+package com.github.skytoph.taski.presentation.habit.list.component
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background

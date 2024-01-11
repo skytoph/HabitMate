@@ -1,4 +1,4 @@
-package com.github.skytoph.taski.presentation.habit
+package com.github.skytoph.taski.presentation.habit.list.mapper
 
 import com.github.skytoph.taski.core.Now
 

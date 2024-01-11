@@ -1,8 +1,7 @@
-package com.github.skytoph.taski.presentation.habit.mapper
+package com.github.skytoph.taski.presentation.habit.list.mapper
 
 import androidx.compose.ui.graphics.Color
 import com.github.skytoph.taski.core.Now
-import com.github.skytoph.taski.presentation.habit.HabitHistoryUiMapper
 import com.github.skytoph.taski.domain.habit.HabitToUiMapper
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.core.ConvertIcon

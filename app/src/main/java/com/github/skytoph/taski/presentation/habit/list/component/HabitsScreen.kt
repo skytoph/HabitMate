@@ -3,7 +3,6 @@ package com.github.skytoph.taski.presentation.habit.list.component
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.outlined.AcUnit
 import androidx.compose.material.icons.outlined.Computer
 import androidx.compose.material.icons.outlined.SportsGymnastics
 import androidx.compose.material3.FloatingActionButton
@@ -17,8 +16,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.skytoph.taski.presentation.habit.HabitUi
-import com.github.skytoph.taski.presentation.habit.HabitsViewModel
-import com.github.skytoph.taski.presentation.habit.component.HabitList
+import com.github.skytoph.taski.presentation.habit.list.HabitsViewModel
+import com.github.skytoph.taski.presentation.habit.list.component.HabitList
 import com.github.skytoph.taski.ui.theme.TaskiTheme
 
 
