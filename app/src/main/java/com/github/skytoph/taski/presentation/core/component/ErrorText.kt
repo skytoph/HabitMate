@@ -1,4 +1,4 @@
-package com.github.skytoph.taski.ui.components
+package com.github.skytoph.taski.presentation.core.component
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text

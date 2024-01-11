@@ -27,9 +27,9 @@ import com.github.skytoph.taski.presentation.auth.authentication.TextDivider
 import com.github.skytoph.taski.presentation.auth.authentication.client.makeLauncher
 import com.github.skytoph.taski.presentation.auth.authentication.client.signInWithGoogle
 import com.github.skytoph.taski.presentation.auth.signup.mapper.map
-import com.github.skytoph.taski.ui.components.BasicTextField
-import com.github.skytoph.taski.ui.components.ErrorText
-import com.github.skytoph.taski.ui.components.PasswordField
+import com.github.skytoph.taski.presentation.core.component.BasicTextField
+import com.github.skytoph.taski.presentation.core.component.ErrorText
+import com.github.skytoph.taski.presentation.core.component.PasswordField
 
 @Composable
 fun SignUpScreen(

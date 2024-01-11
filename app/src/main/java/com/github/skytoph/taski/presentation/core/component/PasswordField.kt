@@ -1,4 +1,4 @@
-package com.github.skytoph.taski.ui.components
+package com.github.skytoph.taski.presentation.core.component
 
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
