@@ -28,4 +28,13 @@
 
 <!--    Create habit-->
     <string name="goal_value">%1$s / day</string>
+
+<!--    Icon lists titles-->
+    <string name="icons_activity">activity</string>
+    <string name="icons_sports">sports</string>
+    <string name="icons_rest">rest</string>
+    <string name="icons_social">social</string>
+    <string name="icons_learning">learning</string>
+    <string name="icons_health">health</string>
+    <string name="icons_art">art</string>
 </resources>
