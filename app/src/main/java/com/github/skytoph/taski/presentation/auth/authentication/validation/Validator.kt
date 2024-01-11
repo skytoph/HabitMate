@@ -52,8 +52,8 @@ class EmailValidator(validator: Validator?) :
 }
 
 abstract class AuthValidator(
-    private val passwordValidator: Validator,
-    private val emailValidator: Validator
+    private val emailValidator: Validator,
+    private val passwordValidator: Validator
 ) {
 
     fun validatePassword(password: String): Int? = passwordValidator.validate(password).errorResId

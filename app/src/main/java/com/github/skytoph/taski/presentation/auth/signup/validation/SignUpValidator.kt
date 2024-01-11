@@ -9,7 +9,7 @@ import com.github.skytoph.taski.presentation.auth.signup.SignUpState
 import com.github.skytoph.taski.ui.state.StringResource
 
 class SignUpValidator(emailValidator: Validator, passwordValidator: Validator) :
-    AuthValidator(emailValidator, passwordValidator) {
+    AuthValidator(emailValidator = emailValidator, passwordValidator = passwordValidator) {
 
     fun validate(state: SignUpState, eventHandler: SignUpEventHandler) {
         val emailValidation = validateEmail(state.email.field)
