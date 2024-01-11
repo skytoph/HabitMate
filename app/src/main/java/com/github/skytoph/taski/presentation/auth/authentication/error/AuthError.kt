@@ -1,6 +1,6 @@
 package com.github.skytoph.taski.presentation.auth.authentication.error
 
-import com.github.skytoph.taski.ui.state.StringResource
+import com.github.skytoph.taski.presentation.core.state.StringResource
 
 sealed class AuthError(open val errorMessage: StringResource) {
 

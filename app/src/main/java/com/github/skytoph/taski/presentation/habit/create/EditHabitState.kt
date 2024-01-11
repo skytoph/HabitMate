@@ -2,7 +2,7 @@ package com.github.skytoph.taski.presentation.habit.create
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.github.skytoph.taski.ui.state.FieldState
+import com.github.skytoph.taski.presentation.core.state.FieldState
 
 data class EditHabitState(
     val title: FieldState = FieldState(),

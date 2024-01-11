@@ -2,7 +2,7 @@ package com.github.skytoph.taski.presentation.auth.authentication.mapper
 
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.auth.authentication.error.AuthError
-import com.github.skytoph.taski.ui.state.StringResource
+import com.github.skytoph.taski.presentation.core.state.StringResource
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuthEmailException
 import com.google.firebase.auth.FirebaseAuthException

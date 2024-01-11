@@ -3,7 +3,7 @@ package com.github.skytoph.taski.presentation.auth.signin
 import androidx.compose.runtime.MutableState
 import com.github.skytoph.taski.presentation.auth.authentication.AuthResult
 import com.github.skytoph.taski.presentation.auth.authentication.AuthState
-import com.github.skytoph.taski.ui.state.StringResource
+import com.github.skytoph.taski.presentation.core.state.StringResource
 
 sealed class SignInEvent {
     abstract fun handle(state: MutableState<SignInState>)

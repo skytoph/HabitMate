@@ -1,4 +1,4 @@
-package com.github.skytoph.taski.ui.state
+package com.github.skytoph.taski.presentation.core.state
 
 data class FieldState(
     val field: String = "",

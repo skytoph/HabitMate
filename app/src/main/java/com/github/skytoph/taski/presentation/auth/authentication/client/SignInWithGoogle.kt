@@ -11,7 +11,7 @@ import androidx.lifecycle.LifecycleCoroutineScope
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.auth.authentication.AuthResult
 import com.github.skytoph.taski.presentation.auth.authentication.error.AuthError
-import com.github.skytoph.taski.ui.state.StringResource
+import com.github.skytoph.taski.presentation.core.state.StringResource
 import kotlinx.coroutines.launch
 
 fun signInWithGoogle(

@@ -5,7 +5,7 @@ import com.github.skytoph.taski.presentation.auth.authentication.validation.Vali
 import com.github.skytoph.taski.presentation.auth.signin.SignInEvent
 import com.github.skytoph.taski.presentation.auth.signin.SignInEventHandler
 import com.github.skytoph.taski.presentation.auth.signin.SignInState
-import com.github.skytoph.taski.ui.state.StringResource
+import com.github.skytoph.taski.presentation.core.state.StringResource
 
 class SignInValidator(emailValidator: Validator, passwordValidator: Validator) :
     AuthValidator(emailValidator = emailValidator, passwordValidator = passwordValidator) {
