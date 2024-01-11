@@ -13,9 +13,10 @@ class BaseHabitToUiMapper(
     private val mapper: HabitHistoryUiMapper
 ) : HabitToUiMapper {
 
-    override fun map(title: String, icon: String, color: Long, history: List<Long>) =
+    override fun map(title: String, goal: Int, icon: String, color: Long, history: List<Long>) =
         HabitUi(
             title = title,
+            goal = goal,
             icon = convertIcon.filledIconByName(icon),
             color = Color(color),
             history = mapper.map(history),
