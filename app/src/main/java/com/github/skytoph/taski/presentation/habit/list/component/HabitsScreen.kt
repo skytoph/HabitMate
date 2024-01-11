@@ -17,7 +17,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.list.HabitsViewModel
-import com.github.skytoph.taski.presentation.habit.list.component.HabitList
 import com.github.skytoph.taski.ui.theme.TaskiTheme
 
 
@@ -40,12 +39,8 @@ fun HabitsScreen(
 
 @Composable
 @Preview(showSystemUi = true, showBackground = true)
-fun HabitPreview() {
+fun HabitScreenPreview() {
     TaskiTheme {
-        val habits = listOf(
-            HabitUi("dev", 1, Icons.Outlined.Computer, Color.Red, listOf(), 349),
-            HabitUi("yoga", 1, Icons.Outlined.SportsGymnastics, Color.Blue, listOf(348), 349),
-        )
-        HabitList(habits = habits)
+        HabitsScreen(onCreateHabit = {})
     }
 }
