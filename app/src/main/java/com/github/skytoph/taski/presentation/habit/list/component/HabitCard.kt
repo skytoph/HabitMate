@@ -53,7 +53,7 @@ fun HabitCard(habit: HabitUi) {
                                 shape = RoundedCornerShape(30)
                             )
                             .padding(4.dp),
-                        tint = habit.color
+                        tint = MaterialTheme.colorScheme.onPrimary
                     )
                 }
                 Text(text = habit.title, Modifier.weight(1f))
@@ -68,7 +68,7 @@ fun HabitCard(habit: HabitUi) {
                                 shape = RoundedCornerShape(30)
                             )
                             .padding(4.dp),
-                        tint = MaterialTheme.colorScheme.onSecondaryContainer
+                        tint = MaterialTheme.colorScheme.onPrimary
                     )
                 }
             }
@@ -80,7 +80,7 @@ fun HabitCard(habit: HabitUi) {
 @Composable
 @Preview(showSystemUi = true, showBackground = true)
 fun HabitCardPreview() {
-    TaskiTheme {
+    TaskiTheme(darkTheme = true) {
         val habit =
             HabitUi("dev", 1, Icons.Outlined.AcUnit, Color.Yellow, listOf(340, 330), 349)
         HabitCard(habit = habit)

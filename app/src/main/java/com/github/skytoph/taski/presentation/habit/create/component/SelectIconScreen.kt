@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -54,14 +55,15 @@ fun SelectIconScreen(viewModel: SelectIcon, navigateUp: () -> Unit) {
                 val isSelected = color == state.value.color
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.clickable { viewModel.selectIcon(color = color) }
                 ) {
                     Box(
                         modifier = Modifier
+                            .clip(CircleShape)
+                            .clickable { viewModel.selectIcon(color = color) }
                             .size(32.dp)
                             .background(color = color, shape = CircleShape)
                             .border(
-                                1.dp, if (isSelected) Color.Cyan else Color.Transparent, CircleShape
+                                1.dp, if (isSelected) MaterialTheme.colorScheme.onSurface else Color.Transparent, CircleShape
                             )
                     )
                 }
@@ -79,17 +81,18 @@ fun SelectIconScreen(viewModel: SelectIcon, navigateUp: () -> Unit) {
                     val isSelected = icon.name == state.value.icon.name
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.clickable {
-                            viewModel.selectIcon(icon = icon)
-                        }
                     ) {
                         Icon(
                             imageVector = icon,
                             contentDescription = icon.name,
                             modifier = Modifier
+                                .clip(MaterialTheme.shapes.medium)
+                                .clickable {
+                                    viewModel.selectIcon(icon = icon)
+                                }
                                 .size(48.dp)
                                 .background(
-                                    if (isSelected) state.value.color else MaterialTheme.colorScheme.primary,
+                                    if (isSelected) state.value.color else MaterialTheme.colorScheme.secondary,
                                     shape = MaterialTheme.shapes.medium
                                 )
                                 .padding(8.dp),

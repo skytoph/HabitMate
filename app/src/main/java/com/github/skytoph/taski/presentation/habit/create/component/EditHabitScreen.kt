@@ -13,6 +13,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -81,13 +84,13 @@ fun EditHabitScreen(
             )
             SquareButton(
                 onClick = { viewModel.onEvent(EditHabitEvent.DecreaseGoal) },
-                label = "-",
+                icon = Icons.Default.Remove,
                 size = minHeight,
                 isEnabled = state.value.goal.canBeDecreased
             )
             SquareButton(
                 onClick = { viewModel.onEvent(EditHabitEvent.IncreaseGoal) },
-                label = "+",
+                icon = Icons.Default.Add,
                 size = minHeight,
                 isEnabled = state.value.goal.canBeIncreased
             )
@@ -110,7 +113,7 @@ fun IconSelector(
             modifier = Modifier
                 .size(size)
                 .background(
-                    color = MaterialTheme.colorScheme.surfaceVariant,
+                    color = color,
                     shape = RoundedCornerShape(10)
                 )
         ) {
@@ -118,7 +121,7 @@ fun IconSelector(
                 imageVector = icon,
                 contentDescription = null,
                 modifier = Modifier.size(32.dp),
-                tint = color
+                tint = Color.White
             )
         }
     }
@@ -144,7 +147,7 @@ private fun TitleTextField(
                 focusedContainerColor = backgroundColor,
                 unfocusedContainerColor = backgroundColor,
                 focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
             ),
             singleLine = true,
             shape = RoundedCornerShape(10),
@@ -156,6 +159,14 @@ private fun TitleTextField(
 @Preview(showSystemUi = true, showBackground = true)
 fun HabitScreenPreview() {
     TaskiTheme {
+        EditHabitScreen(navigateUp = {}, viewModel = hiltViewModel(), onSelectIconClick = {})
+    }
+}
+
+@Composable
+@Preview(showSystemUi = true, showBackground = true)
+fun DarkHabitScreenPreview() {
+    TaskiTheme(darkTheme = true) {
         EditHabitScreen(navigateUp = {}, viewModel = hiltViewModel(), onSelectIconClick = {})
     }
 }

@@ -17,29 +17,33 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey40,
-    tertiary = PurpleGrey40,
-)
+    primary = PurpleBright,
+    onPrimary = PurpleLight,
+
+    secondary = PurpleGray,
+    tertiary = PurpleDark,
+    onTertiary = Color.White,
+
+    onSurfaceVariant = Color.Black,
+
+    primaryContainer = PurpleVeryDark,
+
+    secondaryContainer = PurpleDark,
+    onSecondaryContainer = PurpleLight,
+
+    )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
+    primary = PurpleBright,
+    onPrimary = Color.White,
+
     secondary = PurpleGrey40,
     tertiary = PurpleGrey40,
-    primaryContainer = Purple80,
-    secondaryContainer = Purple40,
-    onSecondaryContainer = Color.White,
-    onSurface = Color.Black,
 
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    primaryContainer = PurpleLight,
+
+    secondaryContainer = PurpleGray,
+    onSecondaryContainer = PurpleLight,
 )
 
 @Composable
