@@ -12,6 +12,8 @@ data class HabitUi(
     val todayPositions: Int = MAX_DAYS - 1
 ) {
 
+    fun isDoneToday(): Boolean = history.contains(todayPositions)
+
     companion object {
         const val MIN_GOAL: Int = 1
         const val MAX_GOAL: Int = 30

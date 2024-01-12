@@ -64,7 +64,7 @@ fun HabitCard(habit: HabitUi) {
                         modifier = Modifier
                             .size(32.dp)
                             .background(
-                                color = MaterialTheme.colorScheme.secondaryContainer,
+                                color = if (habit.isDoneToday()) habit.color else MaterialTheme.colorScheme.secondaryContainer,
                                 shape = RoundedCornerShape(30)
                             )
                             .padding(4.dp),
