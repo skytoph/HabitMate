@@ -9,7 +9,8 @@ interface HabitHistoryUiMapper {
 
         override fun map(history: List<Long>): List<Int> {
             return history.map { day ->
-                TODO("Not yet implemented")
+                //todo replace with implementation
+                day.toInt()
             }
         }
     }

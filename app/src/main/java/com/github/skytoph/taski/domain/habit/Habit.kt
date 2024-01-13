@@ -1,11 +1,12 @@
 package com.github.skytoph.taski.domain.habit
 
 data class Habit(
+    val id: Long = -1,
     val title: String,
     val goal: Int,
     val iconName: String,
-    val color: Long,
-    val history: List<Long>,
+    val color: Int,
+    val history: List<Long> = emptyList(),
 ) {
-    fun map(mapper: HabitToUiMapper) = mapper.map(title, goal, iconName, color, history)
+    fun map(mapper: HabitToUiMapper) = mapper.map(id, title, goal, iconName, color, history)
 }
