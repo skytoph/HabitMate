@@ -109,7 +109,7 @@ fun HabitCalendar(
 fun HabitCalendarPreview() {
     TaskiTheme {
         val habit =
-            HabitUi("dev", 1, Icons.Outlined.AcUnit, Color.Red, listOf(), 349)
-        HabitCard(habit)
+            HabitUi(0, "dev", 1, Icons.Outlined.AcUnit, Color.Red, listOf(), 349)
+        HabitCard({}, habit)
     }
 }

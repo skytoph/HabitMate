@@ -22,6 +22,7 @@ fun HabitsScreen(
     viewModel: HabitsViewModel = hiltViewModel(),
     onCreateHabit: () -> Unit
 ) {
+    val state = viewModel.state()
     Scaffold(floatingActionButton = {
         FloatingActionButton(
             onClick = onCreateHabit,
@@ -31,7 +32,10 @@ fun HabitsScreen(
             Icon(imageVector = Icons.Default.Add, contentDescription = Icons.Default.Add.name)
         }
     }) { paddingValues ->
-        HabitList(modifier = Modifier.padding(paddingValues), habits = viewModel.habits())
+        HabitList(
+            modifier = Modifier.padding(paddingValues),
+            habits = state.value.habits,
+            onDoneHabit = { habit -> viewModel.habitDone(habit) })
     }
 }
 

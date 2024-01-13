@@ -22,14 +22,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.skytoph.taski.presentation.habit.HabitUi
+import com.github.skytoph.taski.presentation.habit.create.IconsColors
 import com.github.skytoph.taski.ui.theme.TaskiTheme
 
 @Composable
-fun HabitCard(habit: HabitUi) {
+fun HabitCard(onDone: () -> Unit, habit: HabitUi) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -53,11 +53,11 @@ fun HabitCard(habit: HabitUi) {
                                 shape = RoundedCornerShape(30)
                             )
                             .padding(4.dp),
-                        tint = MaterialTheme.colorScheme.onPrimary
+                        tint = habit.color
                     )
                 }
                 Text(text = habit.title, Modifier.weight(1f))
-                IconButton(onClick = {}) {
+                IconButton(onClick = onDone) {
                     Icon(
                         imageVector = Icons.Outlined.Check,
                         contentDescription = null,
@@ -82,7 +82,15 @@ fun HabitCard(habit: HabitUi) {
 fun HabitCardPreview() {
     TaskiTheme(darkTheme = true) {
         val habit =
-            HabitUi("dev", 1, Icons.Outlined.AcUnit, Color.Yellow, listOf(340, 330), 349)
-        HabitCard(habit = habit)
+            HabitUi(
+                0,
+                "dev",
+                1,
+                Icons.Outlined.AcUnit,
+                IconsColors.allColors.first(),
+                listOf(340, 330),
+                349
+            )
+        HabitCard(habit = habit, onDone = {})
     }
 }

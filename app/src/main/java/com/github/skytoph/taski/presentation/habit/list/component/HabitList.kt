@@ -13,13 +13,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.skytoph.taski.presentation.habit.HabitUi
+import com.github.skytoph.taski.presentation.habit.create.IconsColors
 import com.github.skytoph.taski.ui.theme.TaskiTheme
 
 @Composable
-fun HabitList(modifier: Modifier = Modifier, habits: List<HabitUi>) {
-    LazyColumn(modifier = modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        items(habits) { habit ->
-            HabitCard(habit)
+fun HabitList(
+    modifier: Modifier = Modifier,
+    habits: List<HabitUi>,
+    onDoneHabit: (HabitUi) -> Unit,
+) {
+    LazyColumn(
+        modifier = modifier.padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        items(items = habits, key = { habit -> habit.id }) { habit ->
+            HabitCard(habit = habit, onDone = { onDoneHabit(habit) })
         }
     }
 }
@@ -29,10 +37,18 @@ fun HabitList(modifier: Modifier = Modifier, habits: List<HabitUi>) {
 fun HabitListPreview() {
     TaskiTheme {
         val habits = listOf(
-            HabitUi("dev", 1, Icons.Outlined.Code, Color.Red, listOf(), 349),
-            HabitUi("yoga", 1, Icons.Outlined.SportsGymnastics, Color.Blue, listOf(348), 349),
+            HabitUi(0, "dev", 1, Icons.Outlined.Code, IconsColors.allColors.first(), listOf(), 349),
+            HabitUi(
+                0,
+                "yoga",
+                1,
+                Icons.Outlined.SportsGymnastics,
+                IconsColors.allColors.last(),
+                listOf(348),
+                349
+            ),
         )
-        HabitList(habits = habits)
+        HabitList(habits = habits, onDoneHabit = {})
     }
 }
 
@@ -41,9 +57,17 @@ fun HabitListPreview() {
 fun DarkHabitListPreview() {
     TaskiTheme(darkTheme = true) {
         val habits = listOf(
-            HabitUi("dev", 1, Icons.Outlined.Code, Color.Red, listOf(340, 341, 344), 349),
-            HabitUi("yoga", 1, Icons.Outlined.SportsGymnastics, Color.Blue, listOf(348, 349), 349),
+            HabitUi(0, "dev", 1, Icons.Outlined.Code, Color.Red, listOf(340, 341, 344), 349),
+            HabitUi(
+                0,
+                "yoga",
+                1,
+                Icons.Outlined.SportsGymnastics,
+                Color.Blue,
+                listOf(348, 349),
+                349
+            ),
         )
-        HabitList(habits = habits)
+        HabitList(habits = habits, onDoneHabit = {})
     }
 }

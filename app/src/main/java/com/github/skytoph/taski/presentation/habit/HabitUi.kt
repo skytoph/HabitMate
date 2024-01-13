@@ -2,8 +2,10 @@ package com.github.skytoph.taski.presentation.habit
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.github.skytoph.taski.presentation.habit.list.mapper.HabitDomainMapper
 
 data class HabitUi(
+    val id: Long = -1,
     val title: String,
     val goal: Int,
     val icon: ImageVector,
@@ -13,6 +15,8 @@ data class HabitUi(
 ) {
 
     fun isDoneToday(): Boolean = history.contains(todayPositions)
+
+    fun map(mapper: HabitDomainMapper) = mapper.map(id, title, goal, icon, color)
 
     companion object {
         const val MIN_GOAL: Int = 1
