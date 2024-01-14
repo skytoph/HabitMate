@@ -19,7 +19,7 @@ class BaseHabitRepository(
     override fun habits(): Flow<List<Habit>> =
         entryDao.habitsWithEntries().map { list -> list.map { it.toHabit() } }
 
-    override suspend fun habitWithDetails(id: Long): Habit = habitDao.habit(id).toHabit()
+    override suspend fun habit(id: Long): Habit = habitDao.habit(id).toHabit()
 
     override suspend fun insert(habit: Habit) = habitDao.insert(habit.toHabitDB())
 

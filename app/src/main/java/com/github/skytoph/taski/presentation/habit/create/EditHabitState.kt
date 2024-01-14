@@ -13,5 +13,6 @@ data class EditHabitState(
     val isLoading: Boolean = false
 ) {
 
-    fun toHabitUi() = HabitUi(title = title.field, goal = goal.value, icon = icon, color = color)
+    fun toHabitUi(id: Long) =
+        HabitUi(id = id, title = title.field, goal = goal.value, icon = icon, color = color)
 }

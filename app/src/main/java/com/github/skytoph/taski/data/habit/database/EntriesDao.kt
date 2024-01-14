@@ -19,4 +19,8 @@ interface EntriesDao {
     @Transaction
     @Query("SELECT * FROM habit")
     fun habitsWithEntries(): Flow<List<HabitWithEntries>>
+
+    @Transaction
+    @Query("SELECT * FROM habit WHERE id = :id")
+    fun habitWithEntriesById(id: Long): List<HabitWithEntries>
 }
