@@ -19,13 +19,14 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun HabitAppBar(
+    modifier: Modifier = Modifier,
     label: String,
     navigateUp: () -> Unit,
     isSaveButtonVisible: Boolean = false,
     onSaveButtonClick: () -> Unit = {}
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
         horizontalArrangement = Arrangement.SpaceBetween,

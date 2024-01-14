@@ -37,7 +37,12 @@ import com.github.skytoph.taski.ui.theme.TaskiTheme
 fun SelectIconScreen(viewModel: SelectIconViewModel = hiltViewModel(), navigateUp: () -> Unit) {
     val state = viewModel.state()
     Scaffold(topBar = {
-        HabitAppBar(label = "color and icon", navigateUp = navigateUp, isSaveButtonVisible = false)
+        HabitAppBar(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            label = "color and icon",
+            navigateUp = navigateUp,
+            isSaveButtonVisible = false
+        )
     }) { paddingValue ->
         LazyVerticalGrid(
             modifier = Modifier.padding(paddingValue),

@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.component.HabitAppBar
-import com.github.skytoph.taski.presentation.core.component.LoadingCircles
+import com.github.skytoph.taski.presentation.core.component.LoadingCirclesFullscreen
 import com.github.skytoph.taski.presentation.core.component.SquareButton
 import com.github.skytoph.taski.presentation.habit.create.EditHabitEvent
 import com.github.skytoph.taski.presentation.habit.create.EditHabitViewModel
@@ -51,10 +51,9 @@ fun EditHabitScreen(
     val minHeight = TextFieldDefaults.MinHeight
 
     Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-        if (state.value.isLoading)
-            LoadingCircles()
+        if (state.value.isLoading) LoadingCirclesFullscreen()
         HabitAppBar(
-            label = "new habit",
+            label = if (viewModel.isNewHabit()) "new habit" else "edit habit",
             navigateUp = navigateUp,
             isSaveButtonVisible = true,
             onSaveButtonClick = { viewModel.saveHabit() })

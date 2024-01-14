@@ -30,11 +30,13 @@ class EditHabitViewModel @Inject constructor(
     init {
         onEvent(EditHabitEvent.Progress(true))
         savedStateHandle.get<Long>(HabitScreens.EditHabit.habitIdArg)?.let { id ->
-            if (id != HabitUi.ID_DEFAULT) viewModelScope.launch(Dispatchers.IO) {
-                val habit = repository.habit(id).map(mapperUi)
+            if (id != HabitUi.ID_DEFAULT) {
                 idCache.cache(id)
-                withContext(Dispatchers.Main) {
-                    onEvent(EditHabitEvent.Init(habit))
+                viewModelScope.launch(Dispatchers.IO) {
+                    val habit = repository.habit(id).map(mapperUi)
+                    withContext(Dispatchers.Main) {
+                        onEvent(EditHabitEvent.Init(habit))
+                    }
                 }
             } else
                 onEvent(EditHabitEvent.Clear)
@@ -49,4 +51,6 @@ class EditHabitViewModel @Inject constructor(
     fun onEvent(event: EditHabitEvent) = event.handle(state)
 
     fun state(): State<EditHabitState> = state
+
+    fun isNewHabit(): Boolean = idCache.get() == HabitUi.ID_DEFAULT
 }

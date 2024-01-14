@@ -1,7 +1,5 @@
 package com.github.skytoph.taski.presentation.habit.list.component
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -11,13 +9,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.github.skytoph.taski.presentation.core.component.LoadingCirclesFullscreen
 import com.github.skytoph.taski.presentation.habit.HabitUi
-import com.github.skytoph.taski.presentation.core.component.LoadingCircles
 import com.github.skytoph.taski.presentation.habit.list.HabitsViewModel
 import com.github.skytoph.taski.ui.theme.TaskiTheme
 
@@ -38,15 +35,7 @@ fun HabitsScreen(
             Icon(imageVector = Icons.Default.Add, contentDescription = Icons.Default.Add.name)
         }
     }) { paddingValues ->
-        if (state.value.isLoading)
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(),
-                contentAlignment = Alignment.Center
-            ) {
-                LoadingCircles(circleSize = 16.dp)
-            }
+        if (state.value.isLoading) LoadingCirclesFullscreen()
         else HabitList(
             modifier = Modifier.padding(paddingValues),
             habits = state.value.habits,

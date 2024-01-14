@@ -40,7 +40,7 @@ interface EditHabitEvent {
         override fun handle(state: MutableState<EditHabitState>) {
             if (state.value.goal.canBeDecreased) {
                 val newGoal = state.value.goal.value - 1
-                state.value = state.value.copy(goal = state.value.goal.copy(value = newGoal))
+                state.value = state.value.copy(goal = GoalState(value = newGoal))
             }
         }
     }

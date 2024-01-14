@@ -29,10 +29,27 @@ import kotlinx.coroutines.delay
 
 
 @Composable
-fun LoadingCircles(
+fun LoadingCirclesFullscreen(
     modifier: Modifier = Modifier,
     circleColor: Color = MaterialTheme.colorScheme.primary,
-    circleSize: Dp = 36.dp,
+    circleSize: Dp = 16.dp,
+    animationDelay: Int = 400,
+    initialAlpha: Float = 0.3f
+) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(),
+        contentAlignment = Alignment.Center
+    ) {
+        LoadingCircles(circleColor, circleSize, animationDelay, initialAlpha)
+    }
+}
+
+@Composable
+fun LoadingCircles(
+    circleColor: Color = MaterialTheme.colorScheme.primary,
+    circleSize: Dp = 16.dp,
     animationDelay: Int = 400,
     initialAlpha: Float = 0.3f
 ) {
@@ -82,13 +99,6 @@ fun LoadingCircles(
 @Preview(showBackground = true, showSystemUi = true)
 fun CirclesAnimationPreview() {
     TaskiTheme {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(),
-            contentAlignment = Alignment.Center
-        ) {
-            LoadingCircles(circleSize = 16.dp)
-        }
+        LoadingCirclesFullscreen()
     }
 }
