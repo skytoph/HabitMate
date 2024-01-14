@@ -110,160 +110,175 @@ import androidx.compose.material.icons.filled.Work
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.github.skytoph.taski.R
 
-abstract class IconsGroup(@StringRes val title: Int, val icons: List<ImageVector>) {
+abstract class IconsGroup(@StringRes val title: Int) {
+    abstract val icons: List<ImageVector>
 
-    object ActivityIcons : IconsGroup(
-        title = R.string.icons_activity,
-        icons = listOf(
-            Icons.Filled.Phone,
-            Icons.Filled.Watch,
-            Icons.Filled.ShoppingCart,
-            Icons.Filled.Home,
-            Icons.Filled.Work,
-            Icons.Filled.Laptop,
-            Icons.Filled.Tablet,
-            Icons.Filled.DesktopWindows,
-            Icons.Filled.Keyboard,
-            Icons.Filled.Mouse,
-            Icons.Filled.Code,
-            Icons.Filled.Wifi,
-            Icons.Filled.Headset,
-            Icons.Filled.Science,
-            Icons.Filled.Construction,
-            Icons.Filled.Today,
-            Icons.Filled.HourglassEmpty,
-            Icons.Filled.BusinessCenter,
-            Icons.Filled.Paid,
-            Icons.Filled.BarChart,
-            Icons.Filled.BubbleChart,
-            Icons.Filled.PieChart,
-        )
-    )
+    object ActivityIcons : IconsGroup(title = R.string.icons_activity) {
 
-    object SportsIcons : IconsGroup(
-        title = R.string.icons_sports,
-        icons = listOf(
-            Icons.Filled.SportsGymnastics,
-            Icons.Filled.DirectionsBike,
-            Icons.Filled.DirectionsWalk,
-            Icons.Filled.DirectionsRun,
-            Icons.Filled.SportsKabaddi,
-            Icons.Filled.SportsHandball,
-            Icons.Filled.SportsSoccer,
-            Icons.Filled.SportsFootball,
-            Icons.Filled.SportsVolleyball,
-            Icons.Filled.SportsBaseball,
-            Icons.Filled.SportsBasketball,
-            Icons.Filled.SportsCricket,
-            Icons.Filled.SportsGolf,
-            Icons.Filled.SportsHockey,
-            Icons.Filled.SportsMma,
-            Icons.Filled.SportsMotorsports,
-            Icons.Filled.SportsRugby,
-            Icons.Filled.SportsTennis,
-            Icons.Filled.Hiking,
-            Icons.Filled.FitnessCenter,
-        )
-    )
+        override val icons by lazy {
+            listOf(
+                Icons.Filled.Phone,
+                Icons.Filled.Watch,
+                Icons.Filled.ShoppingCart,
+                Icons.Filled.Home,
+                Icons.Filled.Work,
+                Icons.Filled.Laptop,
+                Icons.Filled.Tablet,
+                Icons.Filled.DesktopWindows,
+                Icons.Filled.Keyboard,
+                Icons.Filled.Mouse,
+                Icons.Filled.Code,
+                Icons.Filled.Wifi,
+                Icons.Filled.Headset,
+                Icons.Filled.Science,
+                Icons.Filled.Construction,
+                Icons.Filled.Today,
+                Icons.Filled.HourglassEmpty,
+                Icons.Filled.BusinessCenter,
+                Icons.Filled.Paid,
+                Icons.Filled.BarChart,
+                Icons.Filled.BubbleChart,
+                Icons.Filled.PieChart,
+            )
+        }
+    }
 
-    object RestIcons : IconsGroup(
-        title = R.string.icons_rest,
-        icons = listOf(
-            Icons.Filled.Bed,
-            Icons.Filled.Hotel,
-            Icons.Filled.Bathtub,
-            Icons.Filled.SelfImprovement,
-            Icons.Filled.Spa,
-            Icons.Filled.SportsEsports,
-            Icons.Filled.LocalDining,
-            Icons.Filled.LocalCafe,
-            Icons.Filled.LocalBar,
-            Icons.Filled.LocalDrink,
-            Icons.Filled.Nightlife,
-            Icons.Filled.RoomService,
-            Icons.Filled.Cake,
-            Icons.Filled.CardGiftcard,
-            Icons.Filled.Movie,
-            Icons.Filled.Theaters,
-            Icons.Filled.TheaterComedy,
-            Icons.Filled.Pets,
-            Icons.Filled.Waves,
-            Icons.Filled.NightsStay,
-            Icons.Filled.Nightlight,
-            Icons.Filled.WbSunny,
-        )
-    )
+    object SportsIcons : IconsGroup(title = R.string.icons_sports) {
+        override val icons by lazy {
+            listOf(
+                Icons.Filled.SportsGymnastics,
+                Icons.Filled.DirectionsBike,
+                Icons.Filled.DirectionsWalk,
+                Icons.Filled.DirectionsRun,
+                Icons.Filled.SportsKabaddi,
+                Icons.Filled.SportsHandball,
+                Icons.Filled.SportsSoccer,
+                Icons.Filled.SportsFootball,
+                Icons.Filled.SportsVolleyball,
+                Icons.Filled.SportsBaseball,
+                Icons.Filled.SportsBasketball,
+                Icons.Filled.SportsCricket,
+                Icons.Filled.SportsGolf,
+                Icons.Filled.SportsHockey,
+                Icons.Filled.SportsMma,
+                Icons.Filled.SportsMotorsports,
+                Icons.Filled.SportsRugby,
+                Icons.Filled.SportsTennis,
+                Icons.Filled.Hiking,
+                Icons.Filled.FitnessCenter,
+            )
+        }
+    }
 
-    object ArtIcons : IconsGroup(
-        title = R.string.icons_art, icons = listOf(
-            Icons.Filled.Brush,
-            Icons.Filled.Create,
-            Icons.Filled.Palette,
-            Icons.Filled.MovieCreation,
-            Icons.Filled.VideoCall,
-            Icons.Filled.Image,
-            Icons.Filled.MusicNote,
-            Icons.Filled.Piano,
-            Icons.Filled.Mic,
-            Icons.Filled.TextFormat,
-            Icons.Filled.Photo,
-            Icons.Filled.Camera,
-        )
-    )
+    object RestIcons : IconsGroup(title = R.string.icons_rest) {
+        override val icons by lazy {
+            listOf(
+                Icons.Filled.Bed,
+                Icons.Filled.Hotel,
+                Icons.Filled.Bathtub,
+                Icons.Filled.SelfImprovement,
+                Icons.Filled.Spa,
+                Icons.Filled.SportsEsports,
+                Icons.Filled.LocalDining,
+                Icons.Filled.LocalCafe,
+                Icons.Filled.LocalBar,
+                Icons.Filled.LocalDrink,
+                Icons.Filled.Nightlife,
+                Icons.Filled.RoomService,
+                Icons.Filled.Cake,
+                Icons.Filled.CardGiftcard,
+                Icons.Filled.Movie,
+                Icons.Filled.Theaters,
+                Icons.Filled.TheaterComedy,
+                Icons.Filled.Pets,
+                Icons.Filled.Waves,
+                Icons.Filled.NightsStay,
+                Icons.Filled.Nightlight,
+                Icons.Filled.WbSunny,
+            )
+        }
+    }
 
-    object HealthIcons : IconsGroup(
-        title = R.string.icons_health, icons = listOf(
-            Icons.Filled.MedicalServices,
-            Icons.Filled.LocalHospital,
-            Icons.Filled.MonitorHeart,
-            Icons.Filled.HealthAndSafety,
-            Icons.Filled.Bloodtype,
-            Icons.Filled.Healing,
-        )
-    )
+    object ArtIcons : IconsGroup(title = R.string.icons_art) {
+        override val icons by lazy {
+            listOf(
+                Icons.Filled.Brush,
+                Icons.Filled.Create,
+                Icons.Filled.Palette,
+                Icons.Filled.MovieCreation,
+                Icons.Filled.VideoCall,
+                Icons.Filled.Image,
+                Icons.Filled.MusicNote,
+                Icons.Filled.Piano,
+                Icons.Filled.Mic,
+                Icons.Filled.TextFormat,
+                Icons.Filled.Photo,
+                Icons.Filled.Camera,
+            )
+        }
+    }
 
-    object SocialIcons : IconsGroup(
-        title = R.string.icons_social, icons = listOf(
-            Icons.Filled.Person,
-            Icons.Filled.People,
-            Icons.Filled.Groups,
-            Icons.Filled.PersonAdd,
-            Icons.Filled.ContactMail,
-            Icons.Filled.ContactPhone,
-            Icons.Filled.Favorite,
-            Icons.Filled.Comment,
-            Icons.Filled.Chat,
-            Icons.Filled.Forum,
-            Icons.Filled.MailOutline,
-            Icons.Filled.Mail,
-        )
-    )
+    object HealthIcons : IconsGroup(title = R.string.icons_health) {
+        override val icons by lazy {
+            listOf(
+                Icons.Filled.MedicalServices,
+                Icons.Filled.LocalHospital,
+                Icons.Filled.MonitorHeart,
+                Icons.Filled.HealthAndSafety,
+                Icons.Filled.Bloodtype,
+                Icons.Filled.Healing,
+            )
+        }
+    }
 
-    object LearningIcons : IconsGroup(
-        title = R.string.icons_learning, icons = listOf(
-            Icons.Filled.School,
-            Icons.Filled.Book,
-            Icons.Filled.Article,
-            Icons.Filled.LibraryBooks,
-            Icons.Filled.LocalLibrary,
-            Icons.Filled.ImportContacts,
-            Icons.Filled.CastForEducation,
-            Icons.Filled.LiveTv,
-            Icons.Filled.Language,
-            Icons.Filled.Note,
-            Icons.Filled.Bookmark,
-        )
-    )
+    object SocialIcons : IconsGroup(title = R.string.icons_social) {
+        override val icons by lazy {
+            listOf(
+                Icons.Filled.Person,
+                Icons.Filled.People,
+                Icons.Filled.Groups,
+                Icons.Filled.PersonAdd,
+                Icons.Filled.ContactMail,
+                Icons.Filled.ContactPhone,
+                Icons.Filled.Favorite,
+                Icons.Filled.Comment,
+                Icons.Filled.Chat,
+                Icons.Filled.Forum,
+                Icons.Filled.MailOutline,
+                Icons.Filled.Mail,
+            )
+        }
+    }
+
+    object LearningIcons : IconsGroup(title = R.string.icons_learning) {
+        override val icons by lazy {
+            listOf(
+                Icons.Filled.School,
+                Icons.Filled.Book,
+                Icons.Filled.Article,
+                Icons.Filled.LibraryBooks,
+                Icons.Filled.LocalLibrary,
+                Icons.Filled.ImportContacts,
+                Icons.Filled.CastForEducation,
+                Icons.Filled.LiveTv,
+                Icons.Filled.Language,
+                Icons.Filled.Note,
+                Icons.Filled.Bookmark,
+            )
+        }
+    }
 
     companion object {
-        val allGroups = listOf(
-            ActivityIcons,
-            SportsIcons,
-            RestIcons,
-            ArtIcons,
-            HealthIcons,
-            SocialIcons,
-            LearningIcons,
-        )
+        val allGroups by lazy {
+            listOf(
+                ActivityIcons,
+                SportsIcons,
+                RestIcons,
+                ArtIcons,
+                HealthIcons,
+                SocialIcons,
+                LearningIcons,
+            )
+        }
     }
 }
