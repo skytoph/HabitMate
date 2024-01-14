@@ -1,15 +1,26 @@
 package com.github.skytoph.taski.core
 
 import java.util.Calendar
+import java.util.TimeZone
 
 interface Now {
     fun dayOfWeek(): Int
     fun milliseconds(): Long
+    fun dayInMillis(): Long
 
     class Base : Now {
-        override fun dayOfWeek(): Int =
-            Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
+
+        private fun calendar(): Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+
+        override fun dayOfWeek(): Int = calendar().get(Calendar.DAY_OF_WEEK)
 
         override fun milliseconds(): Long = System.currentTimeMillis()
+
+        override fun dayInMillis(): Long = calendar().also {
+            it.set(Calendar.HOUR_OF_DAY, 0)
+            it.set(Calendar.MINUTE, 0)
+            it.set(Calendar.SECOND, 0)
+            it.set(Calendar.MILLISECOND, 0)
+        }.timeInMillis
     }
 }
