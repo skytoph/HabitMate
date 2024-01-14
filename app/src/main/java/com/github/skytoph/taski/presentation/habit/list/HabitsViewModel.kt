@@ -23,6 +23,7 @@ class HabitsViewModel @Inject constructor(
 ) : ViewModel() {
 
     init {
+        onEvent(HabitListEvent.Progress)
         interactor.habits()
             .map { habits -> habits.map { it.map(mapper) } }
             .flowOn(Dispatchers.IO)

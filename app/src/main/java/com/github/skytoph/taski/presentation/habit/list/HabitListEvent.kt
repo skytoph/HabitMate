@@ -9,7 +9,13 @@ interface HabitListEvent {
     class UpdateList(private val habits: List<HabitUi>) : HabitListEvent {
 
         override fun handle(state: MutableState<HabitListState>) {
-            state.value = state.value.copy(habits = habits)
+            state.value = state.value.copy(habits = habits, isLoading = false)
+        }
+    }
+
+    object Progress : HabitListEvent {
+        override fun handle(state: MutableState<HabitListState>) {
+            state.value = state.value.copy(isLoading = true)
         }
     }
 }

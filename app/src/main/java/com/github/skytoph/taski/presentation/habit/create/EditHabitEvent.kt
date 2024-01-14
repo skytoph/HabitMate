@@ -4,9 +4,22 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.github.skytoph.taski.presentation.core.state.FieldState
+import com.github.skytoph.taski.presentation.habit.HabitUi
 
 interface EditHabitEvent {
     fun handle(state: MutableState<EditHabitState>)
+
+    class Init(private val habit: HabitUi) : EditHabitEvent {
+        override fun handle(state: MutableState<EditHabitState>) {
+            state.value = EditHabitState(
+                title = FieldState(field = habit.title),
+                goal = GoalState(habit.goal),
+                icon = habit.icon,
+                color = habit.color,
+                isLoading = false
+            )
+        }
+    }
 
     class EditTitle(private val title: String) : EditHabitEvent {
         override fun handle(state: MutableState<EditHabitState>) {
@@ -39,6 +52,18 @@ interface EditHabitEvent {
         override fun handle(state: MutableState<EditHabitState>) {
             icon?.let { state.value = state.value.copy(icon = icon) }
             color?.let { state.value = state.value.copy(color = color) }
+        }
+    }
+
+    object Clear : EditHabitEvent {
+        override fun handle(state: MutableState<EditHabitState>) {
+            state.value = EditHabitState()
+        }
+    }
+
+    class Progress(private val isLoading: Boolean) : EditHabitEvent {
+        override fun handle(state: MutableState<EditHabitState>) {
+            state.value = state.value.copy(isLoading = isLoading)
         }
     }
 }
