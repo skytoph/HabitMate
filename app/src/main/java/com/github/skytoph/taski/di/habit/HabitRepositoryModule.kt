@@ -29,5 +29,7 @@ object HabitRepositoryModule {
     @Singleton
     fun database(@ApplicationContext context: Context): HabitDatabase = Room.databaseBuilder(
         context, HabitDatabase::class.java, "habits_db"
-    ).build()
+    )
+        .fallbackToDestructiveMigration() //todo remove
+        .build()
 }

@@ -5,7 +5,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitDomainMapper
 
 data class HabitUi(
-    val id: Long = -1,
+    val id: Long = ID_DEFAULT,
     val title: String,
     val goal: Int,
     val icon: ImageVector,
@@ -22,5 +22,6 @@ data class HabitUi(
         const val MIN_GOAL: Int = 1
         const val MAX_GOAL: Int = 30
         const val MAX_DAYS: Int = 350
+        const val ID_DEFAULT: Long = -1L
     }
 }

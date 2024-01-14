@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "habit")
 data class HabitDB(
 
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     @ColumnInfo(name = "id")
     val id: Long,
 
