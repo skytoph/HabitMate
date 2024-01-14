@@ -32,7 +32,16 @@ fun HabitsScreen(
             Icon(imageVector = Icons.Default.Add, contentDescription = Icons.Default.Add.name)
         }
     }) { paddingValues ->
-        HabitList(
+        if (state.value.isLoading)
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(),
+                contentAlignment = Alignment.Center
+            ) {
+                LoadingCircles(circleSize = 16.dp)
+            }
+        else HabitList(
             modifier = Modifier.padding(paddingValues),
             habits = state.value.habits,
             onDoneHabit = { habit -> viewModel.habitDone(habit) })

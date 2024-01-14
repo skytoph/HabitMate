@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.component.HabitAppBar
+import com.github.skytoph.taski.presentation.core.component.LoadingCircles
 import com.github.skytoph.taski.presentation.core.component.SquareButton
 import com.github.skytoph.taski.presentation.habit.create.EditHabitEvent
 import com.github.skytoph.taski.presentation.habit.create.EditHabitViewModel
@@ -50,6 +51,8 @@ fun EditHabitScreen(
     val minHeight = TextFieldDefaults.MinHeight
 
     Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+        if (state.value.isLoading)
+            LoadingCircles()
         HabitAppBar(
             label = "new habit",
             navigateUp = navigateUp,
