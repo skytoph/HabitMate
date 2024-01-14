@@ -1,5 +1,7 @@
 package com.github.skytoph.taski.presentation.habit.list.component
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -9,10 +11,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.github.skytoph.taski.presentation.habit.HabitUi
+import com.github.skytoph.taski.presentation.core.component.LoadingCircles
 import com.github.skytoph.taski.presentation.habit.list.HabitsViewModel
 import com.github.skytoph.taski.ui.theme.TaskiTheme
 
@@ -20,7 +25,8 @@ import com.github.skytoph.taski.ui.theme.TaskiTheme
 @Composable
 fun HabitsScreen(
     viewModel: HabitsViewModel = hiltViewModel(),
-    onCreateHabit: () -> Unit
+    onCreateHabit: () -> Unit,
+    onHabitClick: (HabitUi) -> Unit,
 ) {
     val state = viewModel.state()
     Scaffold(floatingActionButton = {
@@ -44,7 +50,9 @@ fun HabitsScreen(
         else HabitList(
             modifier = Modifier.padding(paddingValues),
             habits = state.value.habits,
-            onDoneHabit = { habit -> viewModel.habitDone(habit) })
+            onDoneHabit = { habit -> viewModel.habitDone(habit) },
+            onHabitClick = onHabitClick
+        )
     }
 }
 
@@ -52,6 +60,6 @@ fun HabitsScreen(
 @Preview(showSystemUi = true, showBackground = true)
 fun HabitScreenPreview() {
     TaskiTheme(darkTheme = true) {
-        HabitsScreen(onCreateHabit = {})
+        HabitsScreen(onCreateHabit = {}, onHabitClick = {})
     }
 }

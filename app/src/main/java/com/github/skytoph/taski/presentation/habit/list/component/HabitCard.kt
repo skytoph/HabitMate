@@ -32,9 +32,9 @@ import com.github.skytoph.taski.presentation.habit.create.GreenBright
 import com.github.skytoph.taski.ui.theme.TaskiTheme
 
 @Composable
-fun HabitCard(onDone: () -> Unit, habit: HabitUi) {
+fun HabitCard(modifier: Modifier = Modifier, onDone: () -> Unit, habit: HabitUi) {
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),

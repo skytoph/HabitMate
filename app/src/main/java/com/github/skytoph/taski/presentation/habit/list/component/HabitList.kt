@@ -1,5 +1,6 @@
 package com.github.skytoph.taski.presentation.habit.list.component
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,13 +22,17 @@ fun HabitList(
     modifier: Modifier = Modifier,
     habits: List<HabitUi>,
     onDoneHabit: (HabitUi) -> Unit,
+    onHabitClick: (HabitUi) -> Unit,
 ) {
     LazyColumn(
         modifier = modifier.padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         items(items = habits, key = { habit -> habit.id }) { habit ->
-            HabitCard(habit = habit, onDone = { onDoneHabit(habit) })
+            HabitCard(
+                habit = habit,
+                onDone = { onDoneHabit(habit) },
+                modifier = Modifier.clickable { onHabitClick(habit) })
         }
     }
 }
@@ -45,7 +50,7 @@ private val habits = listOf(
 @Preview(showSystemUi = true, showBackground = true)
 fun HabitListPreview() {
     TaskiTheme {
-        HabitList(habits = habits, onDoneHabit = {})
+        HabitList(habits = habits, onDoneHabit = {}, onHabitClick = {})
     }
 }
 
@@ -53,6 +58,6 @@ fun HabitListPreview() {
 @Preview(showBackground = true, showSystemUi = true)
 fun DarkHabitListPreview() {
     TaskiTheme(darkTheme = true) {
-        HabitList(habits = habits, onDoneHabit = {})
+        HabitList(habits = habits, onDoneHabit = {}, onHabitClick = {})
     }
 }
