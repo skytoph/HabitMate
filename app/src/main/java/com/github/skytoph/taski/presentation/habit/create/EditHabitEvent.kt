@@ -3,7 +3,7 @@ package com.github.skytoph.taski.presentation.habit.create
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.github.skytoph.taski.presentation.habit.HabitUi
+import com.github.skytoph.taski.presentation.core.state.FieldState
 
 interface EditHabitEvent {
     fun handle(state: MutableState<EditHabitState>)
@@ -18,13 +18,7 @@ interface EditHabitEvent {
         override fun handle(state: MutableState<EditHabitState>) {
             if (state.value.goal.canBeIncreased) {
                 val newGoal = state.value.goal.value + 1
-                state.value = state.value.copy(
-                    goal = GoalState(
-                        value = newGoal,
-                        canBeIncreased = newGoal < HabitUi.MAX_GOAL,
-                        canBeDecreased = true
-                    )
-                )
+                state.value = state.value.copy(goal = GoalState(value = newGoal))
             }
         }
     }
@@ -33,13 +27,7 @@ interface EditHabitEvent {
         override fun handle(state: MutableState<EditHabitState>) {
             if (state.value.goal.canBeDecreased) {
                 val newGoal = state.value.goal.value - 1
-                state.value = state.value.copy(
-                    goal = state.value.goal.copy(
-                        value = newGoal,
-                        canBeDecreased = newGoal > HabitUi.MIN_GOAL,
-                        canBeIncreased = true
-                    )
-                )
+                state.value = state.value.copy(goal = state.value.goal.copy(value = newGoal))
             }
         }
     }

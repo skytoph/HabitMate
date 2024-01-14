@@ -49,7 +49,7 @@ fun EditHabitScreen(
     val state = viewModel.state()
     val minHeight = TextFieldDefaults.MinHeight
 
-    Column(modifier = Modifier.padding(horizontal = 8.dp)) {
+    Column(modifier = Modifier.padding(horizontal = 16.dp)) {
         HabitAppBar(
             label = "new habit",
             navigateUp = navigateUp,

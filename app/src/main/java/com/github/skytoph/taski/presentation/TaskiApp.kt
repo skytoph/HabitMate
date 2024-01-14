@@ -16,7 +16,6 @@ import com.github.skytoph.taski.presentation.auth.authentication.user.UserData
 import com.github.skytoph.taski.presentation.auth.signin.SignInScreen
 import com.github.skytoph.taski.presentation.auth.signup.SignUpScreen
 import com.github.skytoph.taski.presentation.auth.verify.VerificationScreen
-import com.github.skytoph.taski.presentation.habit.create.EditHabitViewModel
 import com.github.skytoph.taski.presentation.habit.create.component.EditHabitScreen
 import com.github.skytoph.taski.presentation.habit.create.component.SelectIconScreen
 import com.github.skytoph.taski.presentation.habit.list.component.HabitsScreen
@@ -41,8 +40,6 @@ fun TaskiApp(
     navController: NavHostController = rememberNavController(),
     viewModel: AuthViewModel = hiltViewModel()
 ) {
-    val editHabitViewModel: EditHabitViewModel = hiltViewModel()
-
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
@@ -90,13 +87,10 @@ fun TaskiApp(
                 EditHabitScreen(
                     navigateUp = navController::navigateUp,
                     onSelectIconClick = { navController.navigate(HabitScreens.SelectIcon.name) },
-                    viewModel = editHabitViewModel
                 )
             }
             composable(route = HabitScreens.SelectIcon.name) {
-                SelectIconScreen(
-                    navigateUp = navController::navigateUp, viewModel = editHabitViewModel
-                )
+                SelectIconScreen(navigateUp = navController::navigateUp)
             }
         }
     }

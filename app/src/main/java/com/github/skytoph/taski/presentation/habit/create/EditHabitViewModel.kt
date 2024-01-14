@@ -3,8 +3,7 @@ package com.github.skytoph.taski.presentation.habit.create
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.skytoph.taski.domain.habit.HabitRepository
@@ -19,7 +18,7 @@ class EditHabitViewModel @Inject constructor(
     private val state: MutableState<EditHabitState> = mutableStateOf(EditHabitState()),
     private val repository: HabitRepository,
     private val mapper: HabitDomainMapper
-) : ViewModel(), SelectIcon {
+) : ViewModel() {
 
     fun saveHabit() = viewModelScope.launch(Dispatchers.IO) {
         val habit = state.value.toHabitUi().map(mapper)
@@ -28,8 +27,5 @@ class EditHabitViewModel @Inject constructor(
 
     fun onEvent(event: EditHabitEvent) = event.handle(state)
 
-    override fun selectIcon(icon: ImageVector?, color: Color?) =
-        onEvent(EditHabitEvent.UpdateIcon(icon, color))
-
-    override fun state(): State<EditHabitState> = state
+    fun state(): State<EditHabitState> = state
 }

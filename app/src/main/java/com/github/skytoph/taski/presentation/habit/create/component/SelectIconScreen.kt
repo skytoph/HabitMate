@@ -28,23 +28,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.skytoph.taski.presentation.core.component.HabitAppBar
-import com.github.skytoph.taski.presentation.habit.create.EditHabitViewModel
 import com.github.skytoph.taski.presentation.habit.create.IconsColors
 import com.github.skytoph.taski.presentation.habit.create.IconsGroup
-import com.github.skytoph.taski.presentation.habit.create.SelectIcon
+import com.github.skytoph.taski.presentation.habit.create.SelectIconViewModel
 import com.github.skytoph.taski.ui.theme.TaskiTheme
 
 @Composable
-fun SelectIconScreen(viewModel: SelectIcon, navigateUp: () -> Unit) {
+fun SelectIconScreen(viewModel: SelectIconViewModel = hiltViewModel(), navigateUp: () -> Unit) {
     val state = viewModel.state()
     Scaffold(topBar = {
-        HabitAppBar(
-            label = "color and icon",
-            navigateUp = navigateUp,
-            isSaveButtonVisible = false
-        )
+        HabitAppBar(label = "color and icon", navigateUp = navigateUp, isSaveButtonVisible = false)
     }) { paddingValue ->
-
         LazyVerticalGrid(
             modifier = Modifier.padding(paddingValue),
             columns = GridCells.Adaptive(60.dp),
@@ -63,7 +57,9 @@ fun SelectIconScreen(viewModel: SelectIcon, navigateUp: () -> Unit) {
                             .size(32.dp)
                             .background(color = color, shape = CircleShape)
                             .border(
-                                1.dp, if (isSelected) MaterialTheme.colorScheme.onSurface else Color.Transparent, CircleShape
+                                1.dp,
+                                if (isSelected) MaterialTheme.colorScheme.onSurface else Color.Transparent,
+                                CircleShape
                             )
                     )
                 }
@@ -109,10 +105,7 @@ fun SelectIconScreen(viewModel: SelectIcon, navigateUp: () -> Unit) {
 @Preview(showBackground = true, showSystemUi = true)
 fun SelectIconScreenPreview() {
     TaskiTheme {
-        SelectIconScreen(
-            viewModel = hiltViewModel<EditHabitViewModel>(),
-            navigateUp = {}
-        )
+        SelectIconScreen(viewModel = hiltViewModel(), navigateUp = {})
     }
 }
 
@@ -120,9 +113,6 @@ fun SelectIconScreenPreview() {
 @Preview(showBackground = true, showSystemUi = true)
 fun DarkSelectIconScreenPreview() {
     TaskiTheme(darkTheme = true) {
-        SelectIconScreen(
-            viewModel = hiltViewModel<EditHabitViewModel>(),
-            navigateUp = {}
-        )
+        SelectIconScreen(viewModel = hiltViewModel(), navigateUp = {})
     }
 }

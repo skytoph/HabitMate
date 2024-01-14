@@ -10,15 +10,23 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 @Module
 @InstallIn(ViewModelComponent::class)
 object EditHabitViewModelModule {
 
     @Provides
-    fun state(): MutableState<EditHabitState> = mutableStateOf(EditHabitState())
-
-    @Provides
     fun mapper(convertIcon: ConvertIcon, now: Now): HabitDomainMapper =
         HabitDomainMapper.Base(convertIcon, now)
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+object EditHabitStateModule {
+
+    @Provides
+    @Singleton
+    fun state(): MutableState<EditHabitState> = mutableStateOf(EditHabitState())
 }
