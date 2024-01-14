@@ -13,11 +13,11 @@ interface HabitDao {
     fun habits(): Flow<List<HabitDB>>
 
     @Query("SELECT * FROM habit WHERE id = :id")
-    fun habit(id: Long): HabitDB
+    suspend fun habit(id: Long): HabitDB
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(habit: HabitDB)
+    suspend fun insert(habit: HabitDB)
 
     @Query("DELETE FROM habit WHERE id = :id")
-    fun delete(id: Long)
+    suspend fun delete(id: Long)
 }

@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.map
 
 class BaseHabitRepository(private val habitDao: HabitDao) : HabitRepository {
 
-    override suspend fun habits(): Flow<List<Habit>> =
+    override fun habits(): Flow<List<Habit>> =
         habitDao.habits().map { list -> list.map { it.toHabit() } }
 
     override suspend fun habitWithDetails(id: Long): Habit = habitDao.habit(id).toHabit()

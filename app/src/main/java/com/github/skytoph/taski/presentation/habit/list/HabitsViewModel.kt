@@ -9,7 +9,9 @@ import com.github.skytoph.taski.domain.habit.HabitToUiMapper
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -22,11 +24,11 @@ class HabitsViewModel @Inject constructor(
 ) : ViewModel() {
 
     init {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.habits()
-                .onEach { habits -> onEvent(HabitListEvent.UpdateList(habits.map { it.map(mapper) })) }
-                .launchIn(viewModelScope)
-        }
+        repository.habits()
+            .map { habits -> habits.map { it.map(mapper) } }
+            .flowOn(Dispatchers.IO)
+            .onEach { habits -> onEvent(HabitListEvent.UpdateList(habits)) }
+            .launchIn(viewModelScope)
     }
 
     fun habitDone(habit: HabitUi) {
