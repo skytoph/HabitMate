@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "habit")
-data class HabitDB(
+data class HabitEntity(
 
     @PrimaryKey
     @ColumnInfo(name = "id")
@@ -22,14 +22,4 @@ data class HabitDB(
 
     @ColumnInfo(name = "color")
     val color: Int,
-)
-
-@Entity(tableName = "entry", primaryKeys = ["habit_id", "time"])
-data class HabitDoneEntryDB(
-
-    @ColumnInfo(name = "habit_id")
-    val habitId: Int,
-
-    @ColumnInfo(name = "time")
-    val time: Long
 )
