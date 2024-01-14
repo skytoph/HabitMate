@@ -4,7 +4,6 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.skytoph.taski.domain.habit.HabitRepository
 import com.github.skytoph.taski.domain.habit.HabitToUiMapper
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,12 +18,12 @@ import javax.inject.Inject
 @HiltViewModel
 class HabitsViewModel @Inject constructor(
     private val state: MutableState<HabitListState>,
-    private val repository: HabitRepository,
     private val mapper: HabitToUiMapper,
+    private val interactor: HabitListInteractor
 ) : ViewModel() {
 
     init {
-        repository.habits()
+        interactor.habits()
             .map { habits -> habits.map { it.map(mapper) } }
             .flowOn(Dispatchers.IO)
             .onEach { habits -> onEvent(HabitListEvent.UpdateList(habits)) }
@@ -33,7 +32,7 @@ class HabitsViewModel @Inject constructor(
 
     fun habitDone(habit: HabitUi) {
         viewModelScope.launch(Dispatchers.IO) {
-
+            interactor.habitDone(habit)
         }
     }
 

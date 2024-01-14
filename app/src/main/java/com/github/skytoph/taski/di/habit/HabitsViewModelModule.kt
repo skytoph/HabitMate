@@ -18,8 +18,8 @@ import dagger.hilt.android.components.ViewModelComponent
 object HabitsViewModelModule {
 
     @Provides
-    fun mapper(mapper: HabitHistoryUiMapper, now: Now, convertIcon: ConvertIcon): HabitToUiMapper =
-        BaseHabitToUiMapper(convertIcon, now, mapper)
+    fun mapper(mapper: HabitHistoryUiMapper, convertIcon: ConvertIcon): HabitToUiMapper =
+        BaseHabitToUiMapper(convertIcon, mapper)
 
     @Provides
     fun historyMapper(now: Now): HabitHistoryUiMapper = HabitHistoryUiMapper.Base(now)

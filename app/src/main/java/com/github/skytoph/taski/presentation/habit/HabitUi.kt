@@ -15,8 +15,6 @@ data class HabitUi(
     val todayDonePercent: Float = 0F,
 ) {
 
-    fun isDoneToday(): Boolean = history.contains(todayPositions)
-
     fun map(mapper: HabitDomainMapper) = mapper.map(id, title, goal, icon, color)
 
     companion object {
