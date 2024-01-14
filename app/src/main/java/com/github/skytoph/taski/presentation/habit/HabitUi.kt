@@ -7,11 +7,12 @@ import com.github.skytoph.taski.presentation.habit.list.mapper.HabitDomainMapper
 data class HabitUi(
     val id: Long = ID_DEFAULT,
     val title: String,
-    val goal: Int,
+    val goal: Int = 1,
     val icon: ImageVector,
     val color: Color,
-    val history: List<Int> = emptyList(),
-    val todayPositions: Int = MAX_DAYS - 1
+    val history: Map<Int, Int> = emptyMap(),
+    val todayPosition: Int = MAX_DAYS - 1,
+    val todayDonePercent: Float = 0F,
 ) {
 
     fun isDoneToday(): Boolean = history.contains(todayPositions)

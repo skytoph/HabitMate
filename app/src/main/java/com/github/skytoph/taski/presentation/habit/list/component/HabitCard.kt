@@ -11,8 +11,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.AcUnit
 import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material.icons.outlined.Code
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -22,10 +22,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.ColorUtils
 import com.github.skytoph.taski.presentation.habit.HabitUi
-import com.github.skytoph.taski.presentation.habit.create.IconsColors
+import com.github.skytoph.taski.presentation.habit.create.GreenBright
 import com.github.skytoph.taski.ui.theme.TaskiTheme
 
 @Composable
@@ -58,13 +61,17 @@ fun HabitCard(onDone: () -> Unit, habit: HabitUi) {
                 }
                 Text(text = habit.title, Modifier.weight(1f))
                 IconButton(onClick = onDone) {
+                    val defaultColor = MaterialTheme.colorScheme.secondaryContainer
+                    val color = ColorUtils.blendARGB(
+                        defaultColor.toArgb(), habit.color.toArgb(), habit.todayDonePercent
+                    )
                     Icon(
                         imageVector = Icons.Outlined.Check,
                         contentDescription = null,
                         modifier = Modifier
                             .size(32.dp)
                             .background(
-                                color = if (habit.isDoneToday()) habit.color else MaterialTheme.colorScheme.secondaryContainer,
+                                color = Color(color),
                                 shape = RoundedCornerShape(30)
                             )
                             .padding(4.dp),
@@ -81,16 +88,9 @@ fun HabitCard(onDone: () -> Unit, habit: HabitUi) {
 @Preview(showSystemUi = true, showBackground = true)
 fun HabitCardPreview() {
     TaskiTheme(darkTheme = true) {
-        val habit =
-            HabitUi(
-                0,
-                "dev",
-                1,
-                Icons.Outlined.AcUnit,
-                IconsColors.allColors.first(),
-                listOf(340, 330),
-                349
-            )
+        val habit = HabitUi(
+            0, "dev", 1, Icons.Outlined.Code, GreenBright, emptyMap(), 349
+        )
         HabitCard(habit = habit, onDone = {})
     }
 }

@@ -89,7 +89,7 @@ fun HabitCalendar(
                             topLeft = Offset(offsetX, offsetY),
                             size = rectSize
                         )
-                        if (index == habit.todayPositions) drawRoundRect(
+                        if (index == habit.todayPosition) drawRoundRect(
                             color = Color.Black,
                             cornerRadius = CornerRadius(5f, 5f),
                             style = Stroke(1.dp.toPx()),
@@ -108,8 +108,7 @@ fun HabitCalendar(
 @Preview(showSystemUi = true, showBackground = true)
 fun HabitCalendarPreview() {
     TaskiTheme {
-        val habit =
-            HabitUi(0, "dev", 1, Icons.Outlined.AcUnit, Color.Red, listOf(), 349)
+        val habit = HabitUi(0, "dev", 1, Icons.Outlined.AcUnit, Color.Red)
         HabitCard({}, habit)
     }
 }

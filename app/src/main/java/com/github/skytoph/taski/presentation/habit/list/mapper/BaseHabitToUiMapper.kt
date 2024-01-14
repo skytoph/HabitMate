@@ -1,14 +1,13 @@
 package com.github.skytoph.taski.presentation.habit.list.mapper
 
 import androidx.compose.ui.graphics.Color
-import com.github.skytoph.taski.core.Now
+import com.github.skytoph.taski.domain.habit.Entry
 import com.github.skytoph.taski.domain.habit.HabitToUiMapper
 import com.github.skytoph.taski.presentation.core.ConvertIcon
 import com.github.skytoph.taski.presentation.habit.HabitUi
 
 class BaseHabitToUiMapper(
     private val convertIcon: ConvertIcon,
-    private val now: Now,
     private val mapper: HabitHistoryUiMapper
 ) : HabitToUiMapper {
 
@@ -18,14 +17,20 @@ class BaseHabitToUiMapper(
         goal: Int,
         icon: String,
         color: Int,
-        history: List<Long>
-    ) = HabitUi(
-        id = id,
-        title = title,
-        goal = goal,
-        icon = convertIcon.filledIconByName(icon),
-        color = Color(color),
-        history = mapper.map(history),
-        todayPositions = HabitUi.MAX_DAYS - 8 + now.dayOfWeek()
-    )
+        history: List<Entry>
+    ): HabitUi {
+        val todayPosition = mapper.todayPosition()
+        val habitHistory = mapper.map(history)
+        val todayDonePercent = habitHistory[todayPosition]?.toFloat()?.div(goal) ?: 0F
+        return HabitUi(
+            id = id,
+            title = title,
+            goal = goal,
+            icon = convertIcon.filledIconByName(icon),
+            color = Color(color),
+            history = habitHistory,
+            todayPosition = todayPosition,
+            todayDonePercent = todayDonePercent
+        )
+    }
 }
