@@ -19,15 +19,19 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.skytoph.taski.presentation.core.component.HabitAppBar
+import com.github.skytoph.taski.presentation.habit.create.EditHabitState
 import com.github.skytoph.taski.presentation.habit.icon.IconsColors
 import com.github.skytoph.taski.presentation.habit.icon.IconsGroup
 import com.github.skytoph.taski.presentation.habit.icon.SelectIconViewModel
@@ -35,7 +39,20 @@ import com.github.skytoph.taski.ui.theme.TaskiTheme
 
 @Composable
 fun SelectIconScreen(viewModel: SelectIconViewModel = hiltViewModel(), navigateUp: () -> Unit) {
-    val state = viewModel.state()
+    SelectIcon(
+        state = viewModel.state(),
+        navigateUp = navigateUp,
+        onSelectColor = { viewModel.selectIcon(color = it) },
+        onSelectIcon = { viewModel.selectIcon(icon = it) })
+}
+
+@Composable
+private fun SelectIcon(
+    state: State<EditHabitState>,
+    navigateUp: () -> Unit = {},
+    onSelectColor: (Color) -> Unit = {},
+    onSelectIcon: (ImageVector) -> Unit = {},
+) {
     Scaffold(topBar = {
         HabitAppBar(
             modifier = Modifier.padding(horizontal = 16.dp),
@@ -58,7 +75,7 @@ fun SelectIconScreen(viewModel: SelectIconViewModel = hiltViewModel(), navigateU
                     Box(
                         modifier = Modifier
                             .clip(CircleShape)
-                            .clickable { viewModel.selectIcon(color = color) }
+                            .clickable { onSelectColor(color) }
                             .size(32.dp)
                             .background(color = color, shape = CircleShape)
                             .border(
@@ -88,9 +105,7 @@ fun SelectIconScreen(viewModel: SelectIconViewModel = hiltViewModel(), navigateU
                             contentDescription = icon.name,
                             modifier = Modifier
                                 .clip(MaterialTheme.shapes.medium)
-                                .clickable {
-                                    viewModel.selectIcon(icon = icon)
-                                }
+                                .clickable { onSelectIcon(icon) }
                                 .size(48.dp)
                                 .background(
                                     if (isSelected) state.value.color else MaterialTheme.colorScheme.secondary,
@@ -110,7 +125,7 @@ fun SelectIconScreen(viewModel: SelectIconViewModel = hiltViewModel(), navigateU
 @Preview(showBackground = true, showSystemUi = true)
 fun SelectIconScreenPreview() {
     TaskiTheme {
-        SelectIconScreen(viewModel = hiltViewModel(), navigateUp = {})
+        SelectIcon(mutableStateOf(EditHabitState()))
     }
 }
 
@@ -118,6 +133,6 @@ fun SelectIconScreenPreview() {
 @Preview(showBackground = true, showSystemUi = true)
 fun DarkSelectIconScreenPreview() {
     TaskiTheme(darkTheme = true) {
-        SelectIconScreen(viewModel = hiltViewModel(), navigateUp = {})
+        SelectIcon(mutableStateOf(EditHabitState()))
     }
 }
