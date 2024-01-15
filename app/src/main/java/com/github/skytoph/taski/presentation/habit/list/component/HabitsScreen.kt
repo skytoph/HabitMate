@@ -3,18 +3,24 @@ package com.github.skytoph.taski.presentation.habit.list.component
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.outlined.Code
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.skytoph.taski.presentation.core.component.LoadingCirclesFullscreen
 import com.github.skytoph.taski.presentation.habit.HabitUi
+import com.github.skytoph.taski.presentation.habit.icon.IconsColors
+import com.github.skytoph.taski.presentation.habit.list.HabitListState
 import com.github.skytoph.taski.presentation.habit.list.HabitsViewModel
 import com.github.skytoph.taski.ui.theme.TaskiTheme
 
@@ -25,7 +31,21 @@ fun HabitsScreen(
     onCreateHabit: () -> Unit,
     onHabitClick: (HabitUi) -> Unit,
 ) {
-    val state = viewModel.state()
+    Habits(
+        state = viewModel.state(),
+        onCreateHabit = onCreateHabit,
+        onHabitClick = onHabitClick,
+        onHabitDone = { habit -> viewModel.habitDone(habit) }
+    )
+}
+
+@Composable
+private fun Habits(
+    state: State<HabitListState>,
+    onCreateHabit: () -> Unit = {},
+    onHabitClick: (HabitUi) -> Unit = {},
+    onHabitDone: (HabitUi) -> Unit = {}
+) {
     Scaffold(floatingActionButton = {
         FloatingActionButton(
             onClick = onCreateHabit,
@@ -39,7 +59,7 @@ fun HabitsScreen(
         else HabitList(
             modifier = Modifier.padding(paddingValues),
             habits = state.value.habits,
-            onDoneHabit = { habit -> viewModel.habitDone(habit) },
+            onDoneHabit = onHabitDone,
             onHabitClick = onHabitClick
         )
     }
@@ -49,6 +69,9 @@ fun HabitsScreen(
 @Preview(showSystemUi = true, showBackground = true)
 fun HabitScreenPreview() {
     TaskiTheme(darkTheme = true) {
-        HabitsScreen(onCreateHabit = {}, onHabitClick = {})
+        Habits(state = remember {
+            val habit = HabitUi(0, "dev", 1, Icons.Outlined.Code, IconsColors.allColors.first())
+            mutableStateOf(HabitListState(habits = listOf(habit), isLoading = false))
+        })
     }
 }
