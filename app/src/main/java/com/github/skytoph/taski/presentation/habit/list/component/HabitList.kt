@@ -13,8 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.skytoph.taski.presentation.habit.HabitUi
-import com.github.skytoph.taski.presentation.habit.create.GreenBright
-import com.github.skytoph.taski.presentation.habit.create.PinkRose
+import com.github.skytoph.taski.presentation.habit.icon.GreenBright
+import com.github.skytoph.taski.presentation.habit.icon.PinkRose
 import com.github.skytoph.taski.ui.theme.TaskiTheme
 
 @Composable

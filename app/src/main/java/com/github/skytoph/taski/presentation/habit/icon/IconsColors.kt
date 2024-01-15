@@ -1,4 +1,4 @@
-package com.github.skytoph.taski.presentation.habit.create
+package com.github.skytoph.taski.presentation.habit.icon
 
 import androidx.compose.ui.graphics.Color
 

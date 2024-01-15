@@ -4,6 +4,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.github.skytoph.taski.presentation.core.state.FieldState
 import com.github.skytoph.taski.presentation.habit.HabitUi
+import com.github.skytoph.taski.presentation.habit.icon.IconsColors
+import com.github.skytoph.taski.presentation.habit.icon.IconsGroup
 
 data class EditHabitState(
     val title: FieldState = FieldState(),

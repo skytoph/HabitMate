@@ -1,4 +1,4 @@
-package com.github.skytoph.taski.presentation.habit.create.component
+package com.github.skytoph.taski.presentation.habit.icon.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -28,9 +28,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.skytoph.taski.presentation.core.component.HabitAppBar
-import com.github.skytoph.taski.presentation.habit.create.IconsColors
-import com.github.skytoph.taski.presentation.habit.create.IconsGroup
-import com.github.skytoph.taski.presentation.habit.create.SelectIconViewModel
+import com.github.skytoph.taski.presentation.habit.icon.IconsColors
+import com.github.skytoph.taski.presentation.habit.icon.IconsGroup
+import com.github.skytoph.taski.presentation.habit.icon.SelectIconViewModel
 import com.github.skytoph.taski.ui.theme.TaskiTheme
 
 @Composable
@@ -46,8 +46,8 @@ fun SelectIconScreen(viewModel: SelectIconViewModel = hiltViewModel(), navigateU
     }) { paddingValue ->
         LazyVerticalGrid(
             modifier = Modifier.padding(paddingValue),
-            columns = GridCells.Adaptive(60.dp),
-            contentPadding = PaddingValues(16.dp),
+            columns = GridCells.Adaptive(56.dp),
+            contentPadding = PaddingValues(8.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items(IconsColors.allColors) { color ->
@@ -75,7 +75,7 @@ fun SelectIconScreen(viewModel: SelectIconViewModel = hiltViewModel(), navigateU
                         text = stringResource(iconGroup.title),
                         color = MaterialTheme.colorScheme.onBackground,
                         modifier = Modifier.padding(horizontal = 24.dp),
-                        style = MaterialTheme.typography.bodyLarge
+                        style = MaterialTheme.typography.bodyMedium,
                     )
                 }
                 items(iconGroup.icons) { icon ->

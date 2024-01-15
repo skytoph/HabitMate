@@ -1,4 +1,4 @@
-package com.github.skytoph.taski.presentation.habit.create
+package com.github.skytoph.taski.presentation.habit.icon
 
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
@@ -107,8 +107,13 @@ import androidx.compose.material.icons.filled.Waves
 import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material.icons.filled.Wifi
 import androidx.compose.material.icons.filled.Work
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.skytoph.taski.R
+import com.github.skytoph.taski.presentation.habit.icon.component.SelectIconScreen
+import com.github.skytoph.taski.ui.theme.TaskiTheme
 
 abstract class IconsGroup(@StringRes val title: Int) {
     abstract val icons: List<ImageVector>
@@ -117,11 +122,12 @@ abstract class IconsGroup(@StringRes val title: Int) {
 
         override val icons by lazy {
             listOf(
-                Icons.Filled.Phone,
+                Icons.Filled.Today,
+                Icons.Filled.Work,
+                Icons.Filled.BusinessCenter,
                 Icons.Filled.Watch,
                 Icons.Filled.ShoppingCart,
                 Icons.Filled.Home,
-                Icons.Filled.Work,
                 Icons.Filled.Laptop,
                 Icons.Filled.Tablet,
                 Icons.Filled.DesktopWindows,
@@ -132,9 +138,8 @@ abstract class IconsGroup(@StringRes val title: Int) {
                 Icons.Filled.Headset,
                 Icons.Filled.Science,
                 Icons.Filled.Construction,
-                Icons.Filled.Today,
                 Icons.Filled.HourglassEmpty,
-                Icons.Filled.BusinessCenter,
+                Icons.Filled.Phone,
                 Icons.Filled.Paid,
                 Icons.Filled.BarChart,
                 Icons.Filled.BubbleChart,
@@ -173,9 +178,9 @@ abstract class IconsGroup(@StringRes val title: Int) {
     object RestIcons : IconsGroup(title = R.string.icons_rest) {
         override val icons by lazy {
             listOf(
-                Icons.Filled.Bed,
-                Icons.Filled.Hotel,
                 Icons.Filled.Bathtub,
+                Icons.Filled.Hotel,
+                Icons.Filled.Bed,
                 Icons.Filled.SelfImprovement,
                 Icons.Filled.Spa,
                 Icons.Filled.SportsEsports,

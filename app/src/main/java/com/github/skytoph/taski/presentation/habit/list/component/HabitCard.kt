@@ -28,7 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.ColorUtils
 import com.github.skytoph.taski.presentation.habit.HabitUi
-import com.github.skytoph.taski.presentation.habit.create.GreenBright
+import com.github.skytoph.taski.presentation.habit.icon.GreenBright
 import com.github.skytoph.taski.ui.theme.TaskiTheme
 
 @Composable
