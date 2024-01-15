@@ -12,7 +12,8 @@ data class EditHabitState(
     val goal: GoalState = GoalState(),
     val icon: ImageVector = IconsGroup.allGroups.first().icons.first(),
     val color: Color = IconsColors.allColors.first(),
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val isNewHabit: Boolean = true,
 ) {
 
     fun toHabitUi(id: Long) =

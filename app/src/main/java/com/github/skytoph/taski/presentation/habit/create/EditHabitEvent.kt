@@ -16,7 +16,8 @@ interface EditHabitEvent {
                 goal = GoalState(habit.goal),
                 icon = habit.icon,
                 color = habit.color,
-                isLoading = false
+                isLoading = false,
+                isNewHabit = false,
             )
         }
     }

@@ -51,6 +51,4 @@ class EditHabitViewModel @Inject constructor(
     fun onEvent(event: EditHabitEvent) = event.handle(state)
 
     fun state(): State<EditHabitState> = state
-
-    fun isNewHabit(): Boolean = idCache.get() == HabitUi.ID_DEFAULT
 }

@@ -24,6 +24,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,6 +41,7 @@ import com.github.skytoph.taski.presentation.core.component.HabitAppBar
 import com.github.skytoph.taski.presentation.core.component.LoadingCirclesFullscreen
 import com.github.skytoph.taski.presentation.core.component.SquareButton
 import com.github.skytoph.taski.presentation.habit.create.EditHabitEvent
+import com.github.skytoph.taski.presentation.habit.create.EditHabitState
 import com.github.skytoph.taski.presentation.habit.create.EditHabitViewModel
 import com.github.skytoph.taski.ui.theme.TaskiTheme
 
@@ -47,21 +51,42 @@ fun EditHabitScreen(
     navigateUp: () -> Unit,
     onSelectIconClick: () -> Unit
 ) {
-    val state = viewModel.state()
-    val minHeight = TextFieldDefaults.MinHeight
+    EditHabit(
+        viewModel.state(),
+        TextFieldDefaults.MinHeight,
+        navigateUp,
+        onSelectIconClick,
+        { viewModel.saveHabit() },
+        { viewModel.onEvent(EditHabitEvent.EditTitle(it)) },
+        { viewModel.onEvent(EditHabitEvent.DecreaseGoal) },
+        { viewModel.onEvent(EditHabitEvent.IncreaseGoal) })
+}
 
+@Composable
+private fun EditHabit(
+    state: State<EditHabitState>,
+    minHeight: Dp = 56.dp,
+    navigateUp: () -> Unit = {},
+    onSelectIconClick: () -> Unit = {},
+    onSaveHabit: () -> Unit = {},
+    onTypeTitle: (String) -> Unit = {},
+    onDecreaseGoal: () -> Unit = {},
+    onIncreaseGoal: () -> Unit = {}
+) {
     Column(modifier = Modifier.padding(horizontal = 16.dp)) {
         if (state.value.isLoading) LoadingCirclesFullscreen()
         HabitAppBar(
-            label = if (viewModel.isNewHabit()) "new habit" else "edit habit",
+            label = if (state.value.isNewHabit) "new habit" else "edit habit",
             navigateUp = navigateUp,
             isSaveButtonVisible = true,
-            onSaveButtonClick = { viewModel.saveHabit() })
+            onSaveButtonClick = onSaveHabit
+        )
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             TitleTextField(
                 modifier = Modifier.weight(1f),
                 value = state.value.title.field,
-                onValueChange = { viewModel.onEvent(EditHabitEvent.EditTitle(it)) })
+                onValueChange = onTypeTitle
+            )
             IconSelector(
                 icon = state.value.icon,
                 color = state.value.color,
@@ -69,8 +94,9 @@ fun EditHabitScreen(
                 onClick = onSelectIconClick
             )
         }
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(text = "goal", style = MaterialTheme.typography.bodyMedium)
         Spacer(modifier = Modifier.height(4.dp))
-        Text(text = "goal")
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(
                 text = stringResource(R.string.goal_value, state.value.goal.value),
@@ -80,20 +106,20 @@ fun EditHabitScreen(
                         shape = RoundedCornerShape(10)
                     )
                     .padding(horizontal = 16.dp)
-                    .height(minHeight)
+                    .height(48.dp)
                     .wrapContentHeight()
                     .weight(1f),
             )
             SquareButton(
-                onClick = { viewModel.onEvent(EditHabitEvent.DecreaseGoal) },
+                onClick = onDecreaseGoal,
                 icon = Icons.Default.Remove,
-                size = minHeight,
+                size = 48.dp,
                 isEnabled = state.value.goal.canBeDecreased
             )
             SquareButton(
-                onClick = { viewModel.onEvent(EditHabitEvent.IncreaseGoal) },
+                onClick = onIncreaseGoal,
                 icon = Icons.Default.Add,
-                size = minHeight,
+                size = 48.dp,
                 isEnabled = state.value.goal.canBeIncreased
             )
         }
@@ -109,15 +135,13 @@ fun IconSelector(
     onClick: () -> Unit
 ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(modifier = modifier, text = "icon")
+        Text(modifier = modifier, text = "icon", style = MaterialTheme.typography.bodyMedium)
+        Spacer(modifier = Modifier.height(4.dp))
         IconButton(
             onClick = onClick,
             modifier = Modifier
                 .size(size)
-                .background(
-                    color = color,
-                    shape = RoundedCornerShape(10)
-                )
+                .background(color = color, shape = RoundedCornerShape(10))
         ) {
             Icon(
                 imageVector = icon,
@@ -135,10 +159,9 @@ private fun TitleTextField(
     value: String,
     onValueChange: (String) -> Unit
 ) {
-    val backgroundColor = MaterialTheme.colorScheme.surfaceVariant
-
     Column(modifier = modifier) {
-        Text(text = "habit")
+        Text(text = "habit", style = MaterialTheme.typography.bodyMedium)
+        Spacer(modifier = Modifier.height(4.dp))
         TextField(
             modifier = Modifier
                 .fillMaxWidth()
@@ -146,8 +169,8 @@ private fun TitleTextField(
             value = value,
             onValueChange = onValueChange,
             colors = TextFieldDefaults.colors(
-                focusedContainerColor = backgroundColor,
-                unfocusedContainerColor = backgroundColor,
+                focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent
             ),
@@ -161,7 +184,7 @@ private fun TitleTextField(
 @Preview(showSystemUi = true, showBackground = true)
 fun HabitScreenPreview() {
     TaskiTheme {
-        EditHabitScreen(navigateUp = {}, viewModel = hiltViewModel(), onSelectIconClick = {})
+        EditHabit(state = remember { mutableStateOf(EditHabitState()) })
     }
 }
 
@@ -169,6 +192,6 @@ fun HabitScreenPreview() {
 @Preview(showSystemUi = true, showBackground = true)
 fun DarkHabitScreenPreview() {
     TaskiTheme(darkTheme = true) {
-        EditHabitScreen(navigateUp = {}, viewModel = hiltViewModel(), onSelectIconClick = {})
+        EditHabit(state = remember { mutableStateOf(EditHabitState()) })
     }
 }

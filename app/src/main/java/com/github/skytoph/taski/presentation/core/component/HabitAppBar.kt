@@ -42,7 +42,7 @@ fun HabitAppBar(
         }
         Text(
             text = label,
-            style = MaterialTheme.typography.headlineSmall,
+            style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.weight(1f)
         )
         if (isSaveButtonVisible) {
