@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -52,14 +53,17 @@ fun EditHabitScreen(
     onSelectIconClick: () -> Unit
 ) {
     EditHabit(
-        viewModel.state(),
-        TextFieldDefaults.MinHeight,
-        navigateUp,
-        onSelectIconClick,
-        { viewModel.saveHabit() },
-        { viewModel.onEvent(EditHabitEvent.EditTitle(it)) },
-        { viewModel.onEvent(EditHabitEvent.DecreaseGoal) },
-        { viewModel.onEvent(EditHabitEvent.IncreaseGoal) })
+        state = viewModel.state(),
+        minHeight = TextFieldDefaults.MinHeight,
+        navigateUp = navigateUp,
+        onSelectIconClick = onSelectIconClick,
+        onDeleteClick = { viewModel.onEvent(EditHabitEvent.ShowDialog(true)) },
+        onDeleteHabit = { viewModel.deleteHabit() },
+        onHideDialog = { viewModel.onEvent(EditHabitEvent.ShowDialog(false)) },
+        onSaveHabit = { viewModel.saveHabit() },
+        onTypeTitle = { viewModel.onEvent(EditHabitEvent.EditTitle(it)) },
+        onDecreaseGoal = { viewModel.onEvent(EditHabitEvent.DecreaseGoal) },
+        onIncreaseGoal = { viewModel.onEvent(EditHabitEvent.IncreaseGoal) })
 }
 
 @Composable
@@ -68,18 +72,27 @@ private fun EditHabit(
     minHeight: Dp = 56.dp,
     navigateUp: () -> Unit = {},
     onSelectIconClick: () -> Unit = {},
+    onDeleteClick: () -> Unit = {},
+    onDeleteHabit: () -> Unit = {},
+    onHideDialog: () -> Unit = {},
     onSaveHabit: () -> Unit = {},
     onTypeTitle: (String) -> Unit = {},
     onDecreaseGoal: () -> Unit = {},
     onIncreaseGoal: () -> Unit = {}
 ) {
-    Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+    Column(
+        modifier = Modifier
+            .padding(horizontal = 16.dp)
+            .fillMaxSize()
+    ) {
         if (state.value.isLoading) LoadingCirclesFullscreen()
         HabitAppBar(
             label = if (state.value.isNewHabit) "new habit" else "edit habit",
             navigateUp = navigateUp,
             isSaveButtonVisible = true,
-            onSaveButtonClick = onSaveHabit
+            onSaveButtonClick = onSaveHabit,
+            isDeleteButtonVisible = true,
+            onDeleteButtonClick = onDeleteClick
         )
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             TitleTextField(
@@ -124,6 +137,15 @@ private fun EditHabit(
             )
         }
     }
+
+    if (state.value.isDialogShown)
+        DeleteAlertDialog(
+            onDismissRequest = onHideDialog,
+            onConfirm = {
+                onDeleteHabit()
+                onHideDialog()
+                navigateUp()
+            })
 }
 
 @Composable

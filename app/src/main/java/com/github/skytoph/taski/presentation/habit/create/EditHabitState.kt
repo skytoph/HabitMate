@@ -14,6 +14,7 @@ data class EditHabitState(
     val color: Color = IconsColors.allColors.first(),
     val isLoading: Boolean = false,
     val isNewHabit: Boolean = true,
+    val isDialogShown: Boolean = false,
 ) {
 
     fun toHabitUi(id: Long) =

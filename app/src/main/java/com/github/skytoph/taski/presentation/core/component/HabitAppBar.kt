@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIos
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -23,7 +24,9 @@ fun HabitAppBar(
     label: String,
     navigateUp: () -> Unit,
     isSaveButtonVisible: Boolean = false,
-    onSaveButtonClick: () -> Unit = {}
+    onSaveButtonClick: () -> Unit = {},
+    isDeleteButtonVisible: Boolean = false,
+    onDeleteButtonClick: () -> Unit = {},
 ) {
     Row(
         modifier = modifier
@@ -45,6 +48,16 @@ fun HabitAppBar(
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.weight(1f)
         )
+        if (isDeleteButtonVisible) {
+            IconButton(onClick = onDeleteButtonClick) {
+                Icon(
+                    imageVector = Icons.Filled.Close,
+                    contentDescription = "delete habit",
+                    modifier = Modifier.size(24.dp),
+                    tint = MaterialTheme.colorScheme.error
+                )
+            }
+        }
         if (isSaveButtonVisible) {
             IconButton(onClick = {
                 onSaveButtonClick()
@@ -52,7 +65,7 @@ fun HabitAppBar(
             }) {
                 Icon(
                     imageVector = Icons.Filled.Check,
-                    contentDescription = null,
+                    contentDescription = "save habit",
                     modifier = Modifier.size(24.dp),
                     tint = MaterialTheme.colorScheme.onSurface
                 )

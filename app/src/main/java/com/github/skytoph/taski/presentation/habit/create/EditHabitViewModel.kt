@@ -48,6 +48,10 @@ class EditHabitViewModel @Inject constructor(
         repository.insert(habit)
     }
 
+    fun deleteHabit() = viewModelScope.launch(Dispatchers.IO) {
+        repository.delete(idCache.get())
+    }
+
     fun onEvent(event: EditHabitEvent) = event.handle(state)
 
     fun state(): State<EditHabitState> = state

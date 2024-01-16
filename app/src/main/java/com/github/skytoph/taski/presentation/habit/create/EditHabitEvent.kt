@@ -67,4 +67,10 @@ interface EditHabitEvent {
             state.value = state.value.copy(isLoading = isLoading)
         }
     }
+
+    class ShowDialog(private val isDialogShown: Boolean) : EditHabitEvent {
+        override fun handle(state: MutableState<EditHabitState>) {
+            state.value = state.value.copy(isDialogShown = isDialogShown)
+        }
+    }
 }

@@ -21,29 +21,38 @@ private val DarkColorScheme = darkColorScheme(
     onPrimary = PurpleLight,
 
     secondary = PurpleGray,
+    onSecondary = PurpleLight,
+
     tertiary = PurpleDark,
     onTertiary = Color.White,
 
     onSurfaceVariant = Color.Black,
 
     primaryContainer = PurpleVeryDark,
+    onPrimaryContainer = Color.White,
 
     secondaryContainer = PurpleDark,
     onSecondaryContainer = PurpleLight,
 
-    )
+    error = DarkRed
+)
 
 private val LightColorScheme = lightColorScheme(
     primary = PurpleBright,
-    onPrimary = Color.White,
+    onPrimary = PurpleLight,
 
     secondary = PurpleGrey40,
+    onSecondary = PurpleDark,
+
     tertiary = PurpleGrey40,
 
     primaryContainer = PurpleLight,
+    onPrimaryContainer = PurpleDark,
 
     secondaryContainer = PurpleGray,
     onSecondaryContainer = PurpleLight,
+
+    error = BrightDarkRed
 )
 
 @Composable

@@ -75,7 +75,7 @@ fun HabitCard(modifier: Modifier = Modifier, onDone: () -> Unit, habit: HabitUi)
                                 shape = RoundedCornerShape(30)
                             )
                             .padding(4.dp),
-                        tint = MaterialTheme.colorScheme.onPrimary
+                        tint = Color.White
                     )
                 }
             }
