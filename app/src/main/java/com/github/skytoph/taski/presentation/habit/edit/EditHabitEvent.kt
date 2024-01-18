@@ -1,10 +1,11 @@
-package com.github.skytoph.taski.presentation.habit.create
+package com.github.skytoph.taski.presentation.habit.edit
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.github.skytoph.taski.presentation.core.state.FieldState
 import com.github.skytoph.taski.presentation.habit.HabitUi
+import com.github.skytoph.taski.presentation.habit.create.GoalState
 
 interface EditHabitEvent {
     fun handle(state: MutableState<EditHabitState>)
@@ -12,10 +13,12 @@ interface EditHabitEvent {
     class Init(private val habit: HabitUi) : EditHabitEvent {
         override fun handle(state: MutableState<EditHabitState>) {
             state.value = EditHabitState(
+                id = habit.id,
                 title = FieldState(field = habit.title),
                 goal = GoalState(habit.goal),
                 icon = habit.icon,
                 color = habit.color,
+                history = habit.history,
                 isLoading = false,
                 isNewHabit = false,
             )

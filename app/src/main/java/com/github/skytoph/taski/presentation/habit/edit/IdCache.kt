@@ -1,4 +1,4 @@
-package com.github.skytoph.taski.presentation.habit.create
+package com.github.skytoph.taski.presentation.habit.edit
 
 import com.github.skytoph.taski.core.MutableCache
 import com.github.skytoph.taski.presentation.habit.HabitUi

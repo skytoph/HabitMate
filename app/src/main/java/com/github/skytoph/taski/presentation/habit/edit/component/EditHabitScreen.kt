@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.github.skytoph.taski.presentation.habit.create.component
+package com.github.skytoph.taski.presentation.habit.edit.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -22,7 +21,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -41,9 +39,12 @@ import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.component.HabitAppBar
 import com.github.skytoph.taski.presentation.core.component.LoadingCirclesFullscreen
 import com.github.skytoph.taski.presentation.core.component.SquareButton
-import com.github.skytoph.taski.presentation.habit.create.EditHabitEvent
-import com.github.skytoph.taski.presentation.habit.create.EditHabitState
-import com.github.skytoph.taski.presentation.habit.create.EditHabitViewModel
+import com.github.skytoph.taski.presentation.core.component.TitleTextField
+import com.github.skytoph.taski.presentation.core.state.FieldState
+import com.github.skytoph.taski.presentation.habit.edit.EditHabitEvent
+import com.github.skytoph.taski.presentation.habit.edit.EditHabitState
+import com.github.skytoph.taski.presentation.habit.edit.EditHabitViewModel
+import com.github.skytoph.taski.presentation.habit.create.GoalState
 import com.github.skytoph.taski.ui.theme.TaskiTheme
 
 @Composable
@@ -63,7 +64,8 @@ fun EditHabitScreen(
         onSaveHabit = { viewModel.saveHabit() },
         onTypeTitle = { viewModel.onEvent(EditHabitEvent.EditTitle(it)) },
         onDecreaseGoal = { viewModel.onEvent(EditHabitEvent.DecreaseGoal) },
-        onIncreaseGoal = { viewModel.onEvent(EditHabitEvent.IncreaseGoal) })
+        onIncreaseGoal = { viewModel.onEvent(EditHabitEvent.IncreaseGoal) },
+        onDayClick = { viewModel.habitDone(it) })
 }
 
 @Composable
@@ -78,7 +80,8 @@ private fun EditHabit(
     onSaveHabit: () -> Unit = {},
     onTypeTitle: (String) -> Unit = {},
     onDecreaseGoal: () -> Unit = {},
-    onIncreaseGoal: () -> Unit = {}
+    onIncreaseGoal: () -> Unit = {},
+    onDayClick: (Int) -> Unit = {}
 ) {
     Column(
         modifier = Modifier
@@ -87,55 +90,32 @@ private fun EditHabit(
     ) {
         if (state.value.isLoading) LoadingCirclesFullscreen()
         HabitAppBar(
-            label = if (state.value.isNewHabit) "new habit" else "edit habit",
+            label = "edit habit",
             navigateUp = navigateUp,
             isSaveButtonVisible = true,
             onSaveButtonClick = onSaveHabit,
             isDeleteButtonVisible = true,
             onDeleteButtonClick = onDeleteClick
         )
-        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-            TitleTextField(
-                modifier = Modifier.weight(1f),
-                value = state.value.title.field,
-                onValueChange = onTypeTitle
-            )
-            IconSelector(
-                icon = state.value.icon,
-                color = state.value.color,
-                size = minHeight,
-                onClick = onSelectIconClick
-            )
-        }
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(text = "goal", style = MaterialTheme.typography.bodyMedium)
+        EditBaseHabit(
+            title = state.value.title,
+            goal = state.value.goal,
+            icon = state.value.icon,
+            color = state.value.color,
+            onTypeTitle = onTypeTitle,
+            minHeight = minHeight,
+            onSelectIconClick = onSelectIconClick,
+            onDecreaseGoal = onDecreaseGoal,
+            onIncreaseGoal = onIncreaseGoal
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(text = "history", style = MaterialTheme.typography.bodyMedium)
         Spacer(modifier = Modifier.height(4.dp))
-        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-            Text(
-                text = stringResource(R.string.goal_value, state.value.goal.value),
-                modifier = Modifier
-                    .background(
-                        color = MaterialTheme.colorScheme.surfaceVariant,
-                        shape = RoundedCornerShape(10)
-                    )
-                    .padding(horizontal = 16.dp)
-                    .height(48.dp)
-                    .wrapContentHeight()
-                    .weight(1f),
-            )
-            SquareButton(
-                onClick = onDecreaseGoal,
-                icon = Icons.Default.Remove,
-                size = 48.dp,
-                isEnabled = state.value.goal.canBeDecreased
-            )
-            SquareButton(
-                onClick = onIncreaseGoal,
-                icon = Icons.Default.Add,
-                size = 48.dp,
-                isEnabled = state.value.goal.canBeIncreased
-            )
-        }
+        HabitHistory(
+            habitColor = state.value.color,
+            history = state.value.history,
+            onDayClick = onDayClick
+        )
     }
 
     if (state.value.isDialogShown)
@@ -146,6 +126,62 @@ private fun EditHabit(
                 onHideDialog()
                 navigateUp()
             })
+}
+
+@Composable
+fun EditBaseHabit(
+    title: FieldState,
+    goal: GoalState,
+    icon: ImageVector,
+    color: Color,
+    onTypeTitle: (String) -> Unit,
+    minHeight: Dp,
+    onSelectIconClick: () -> Unit,
+    onDecreaseGoal: () -> Unit,
+    onIncreaseGoal: () -> Unit
+) {
+    Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+        TitleTextField(
+            modifier = Modifier.weight(1f),
+            value = title.field,
+            onValueChange = onTypeTitle
+        )
+        IconSelector(
+            icon = icon,
+            color = color,
+            size = minHeight,
+            onClick = onSelectIconClick
+        )
+    }
+    Spacer(modifier = Modifier.height(8.dp))
+    Text(text = "goal", style = MaterialTheme.typography.bodyMedium)
+    Spacer(modifier = Modifier.height(4.dp))
+    Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+        Text(
+            text = stringResource(R.string.goal_value, goal.value),
+            modifier = Modifier
+                .background(
+                    color = MaterialTheme.colorScheme.surfaceVariant,
+                    shape = RoundedCornerShape(10)
+                )
+                .padding(horizontal = 16.dp)
+                .height(48.dp)
+                .wrapContentHeight()
+                .weight(1f),
+        )
+        SquareButton(
+            onClick = onDecreaseGoal,
+            icon = Icons.Default.Remove,
+            size = 48.dp,
+            isEnabled = goal.canBeDecreased
+        )
+        SquareButton(
+            onClick = onIncreaseGoal,
+            icon = Icons.Default.Add,
+            size = 48.dp,
+            isEnabled = goal.canBeIncreased
+        )
+    }
 }
 
 @Composable
@@ -172,33 +208,6 @@ fun IconSelector(
                 tint = Color.White
             )
         }
-    }
-}
-
-@Composable
-private fun TitleTextField(
-    modifier: Modifier = Modifier,
-    value: String,
-    onValueChange: (String) -> Unit
-) {
-    Column(modifier = modifier) {
-        Text(text = "habit", style = MaterialTheme.typography.bodyMedium)
-        Spacer(modifier = Modifier.height(4.dp))
-        TextField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight(),
-            value = value,
-            onValueChange = onValueChange,
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent
-            ),
-            singleLine = true,
-            shape = RoundedCornerShape(10),
-        )
     }
 }
 
