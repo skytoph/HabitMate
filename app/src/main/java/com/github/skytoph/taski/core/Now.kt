@@ -6,6 +6,7 @@ import java.util.TimeZone
 interface Now {
     fun dayOfWeek(): Int
     fun milliseconds(): Long
+    fun daysAgoInMillis(days: Int): Long
     fun dayInMillis(): Long
 
     class Base : Now {
@@ -15,6 +16,12 @@ interface Now {
         override fun dayOfWeek(): Int = calendar().get(Calendar.DAY_OF_WEEK)
 
         override fun milliseconds(): Long = System.currentTimeMillis()
+
+        override fun daysAgoInMillis(days: Int): Long {
+            val calendar = calendar()
+            calendar.add(Calendar.DAY_OF_YEAR, days)
+            return calendar.timeInMillis
+        }
 
         override fun dayInMillis(): Long = calendar().also {
             it.set(Calendar.HOUR_OF_DAY, 0)

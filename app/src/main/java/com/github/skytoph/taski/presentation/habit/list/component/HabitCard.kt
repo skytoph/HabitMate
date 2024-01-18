@@ -87,6 +87,17 @@ fun HabitCard(modifier: Modifier = Modifier, onDone: () -> Unit, habit: HabitUi)
 @Composable
 @Preview(showSystemUi = true, showBackground = true)
 fun HabitCardPreview() {
+    TaskiTheme {
+        val habit = HabitUi(
+            0, "dev", 1, Icons.Outlined.Code, GreenBright, emptyMap(), 349
+        )
+        HabitCard(habit = habit, onDone = {})
+    }
+}
+
+@Composable
+@Preview(showSystemUi = true, showBackground = true)
+fun DarkHabitCardPreview() {
     TaskiTheme(darkTheme = true) {
         val habit = HabitUi(
             0, "dev", 1, Icons.Outlined.Code, GreenBright, emptyMap(), 349

@@ -6,6 +6,8 @@ abstract class HabitScreens(val route: String) {
 
     object HabitList : HabitScreens("habits")
 
+    object CreateHabit : HabitScreens("create_habit")
+
     class EditHabit(habitId: String) : HabitScreens("$screenRoute?$habitIdArg=$habitId") {
 
         companion object {

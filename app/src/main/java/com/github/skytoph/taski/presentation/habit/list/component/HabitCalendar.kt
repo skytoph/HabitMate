@@ -47,7 +47,7 @@ fun HabitCalendar(
     val rows = 7
     val columns = ceil(numberOfDays / 7.0)
     val height = rows * squareDp + 6 * squareOffsetDp
-    val width = columns * squareDp + (columns - 1) * squareOffsetDp
+    val width = columns * squareDp + (columns - 1) * squareOffsetDp + 1.dp
 
     val squareColor = MaterialTheme.colorScheme.onSecondaryContainer
 
@@ -109,6 +109,6 @@ fun HabitCalendar(
 fun HabitCalendarPreview() {
     TaskiTheme {
         val habit = HabitUi(0, "dev", 1, Icons.Outlined.AcUnit, Color.Red)
-        HabitCard(onDone =  {}, habit =  habit)
+        HabitCard(onDone = {}, habit = habit)
     }
 }
