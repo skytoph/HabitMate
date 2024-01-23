@@ -20,20 +20,21 @@ interface EditHabitEvent {
                 icon = habit.icon,
                 color = habit.color,
                 isLoading = false,
-                history = habit.history
+                history = state.value.history.copy(entries = habit.history)
             )
         }
     }
 
     class UpdateHistory(private val history: List<EntryEditableUi>) : EditHabitEvent {
         override fun handle(state: MutableState<EditHabitState>) {
-            state.value = state.value.copy(history = history)
+            state.value = state.value.copy(history = state.value.history.copy(entries = history))
         }
     }
 
     object EditHistory : EditHabitEvent {
         override fun handle(state: MutableState<EditHabitState>) {
-            state.value = state.value.copy(isHistoryEditable = !state.value.isHistoryEditable)
+            state.value =
+                state.value.copy(history = state.value.history.copy(isEditable = !state.value.history.isEditable))
         }
     }
 

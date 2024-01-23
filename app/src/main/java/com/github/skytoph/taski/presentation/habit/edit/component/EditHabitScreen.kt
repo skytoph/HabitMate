@@ -115,10 +115,10 @@ private fun EditHabit(
         Text(text = "history", style = MaterialTheme.typography.bodyMedium)
         Spacer(modifier = Modifier.height(4.dp))
         HabitHistory(
-            history = state.value.history,
+            history = state.value.history.entries,
             habitColor = state.value.color,
             onDayClick = onDayClick,
-            isEditable = state.value.isHistoryEditable,
+            isEditable = state.value.history.isEditable,
             onEdit = onEditHistory
         )
     }
