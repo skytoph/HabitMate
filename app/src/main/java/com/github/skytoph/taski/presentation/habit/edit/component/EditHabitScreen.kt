@@ -41,10 +41,10 @@ import com.github.skytoph.taski.presentation.core.component.LoadingCirclesFullsc
 import com.github.skytoph.taski.presentation.core.component.SquareButton
 import com.github.skytoph.taski.presentation.core.component.TitleTextField
 import com.github.skytoph.taski.presentation.core.state.FieldState
+import com.github.skytoph.taski.presentation.habit.create.GoalState
 import com.github.skytoph.taski.presentation.habit.edit.EditHabitEvent
 import com.github.skytoph.taski.presentation.habit.edit.EditHabitState
 import com.github.skytoph.taski.presentation.habit.edit.EditHabitViewModel
-import com.github.skytoph.taski.presentation.habit.create.GoalState
 import com.github.skytoph.taski.ui.theme.TaskiTheme
 
 @Composable
@@ -65,7 +65,9 @@ fun EditHabitScreen(
         onTypeTitle = { viewModel.onEvent(EditHabitEvent.EditTitle(it)) },
         onDecreaseGoal = { viewModel.onEvent(EditHabitEvent.DecreaseGoal) },
         onIncreaseGoal = { viewModel.onEvent(EditHabitEvent.IncreaseGoal) },
-        onDayClick = { viewModel.habitDone(it) })
+        onDayClick = { viewModel.habitDone(it) },
+        onEditHistory = { viewModel.onEvent(EditHabitEvent.EditHistory) }
+    )
 }
 
 @Composable
@@ -81,7 +83,8 @@ private fun EditHabit(
     onTypeTitle: (String) -> Unit = {},
     onDecreaseGoal: () -> Unit = {},
     onIncreaseGoal: () -> Unit = {},
-    onDayClick: (Int) -> Unit = {}
+    onDayClick: (Int) -> Unit = {},
+    onEditHistory: () -> Unit = {},
 ) {
     Column(
         modifier = Modifier
@@ -112,9 +115,11 @@ private fun EditHabit(
         Text(text = "history", style = MaterialTheme.typography.bodyMedium)
         Spacer(modifier = Modifier.height(4.dp))
         HabitHistory(
-            habitColor = state.value.color,
             history = state.value.history,
-            onDayClick = onDayClick
+            habitColor = state.value.color,
+            onDayClick = onDayClick,
+            isEditable = state.value.isHistoryEditable,
+            onEdit = onEditHistory
         )
     }
 

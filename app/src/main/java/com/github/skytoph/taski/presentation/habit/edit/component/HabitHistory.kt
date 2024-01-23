@@ -37,17 +37,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
+import com.github.skytoph.taski.presentation.core.habitColor
+import com.github.skytoph.taski.presentation.habit.edit.EntryEditableUi
 import com.github.skytoph.taski.presentation.habit.icon.IconsColors
 import com.github.skytoph.taski.ui.theme.TaskiTheme
-import java.util.Calendar
 
 @Composable
 fun HabitHistory(
+    history: List<EntryEditableUi> = emptyList(),
     habitColor: Color = IconsColors.allColors.first(),
-    history: Map<Int, Int> = mapOf(1 to 1, 2 to 1),
+    isEditable: Boolean = false,
+    onEdit: () -> Unit = {},
     onDayClick: (Int) -> Unit = {},
 ) {
-    val editable = remember { mutableStateOf(false) }
     Column(
         Modifier.background(
             color = MaterialTheme.colorScheme.primaryContainer,
@@ -55,24 +57,24 @@ fun HabitHistory(
         )
     ) {
         HabitHistoryGrid(
-            habitColor = habitColor,
             history = history,
-            isEditable = editable.value,
-            onDayClick = onDayClick
+            habitColor = habitColor,
+            isEditable = isEditable,
+            onDayClick = onDayClick,
         )
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.End,
             modifier = Modifier.fillMaxWidth()
         ) {
-            if (editable.value)
+            if (isEditable)
                 Text(
                     text = "tap on the day to change the value",
                     color = MaterialTheme.colorScheme.onBackground
                 )
-            IconButton(onClick = { editable.value = !editable.value }) {
+            IconButton(onClick = onEdit) {
                 Icon(
-                    imageVector = if (editable.value) Icons.Outlined.Check else Icons.Default.Edit,
+                    imageVector = if (isEditable) Icons.Outlined.Check else Icons.Default.Edit,
                     contentDescription = null,
                     modifier = Modifier
                         .size(32.dp)
@@ -90,31 +92,17 @@ fun HabitHistory(
 
 @Composable
 fun HabitHistoryGrid(
-    dates: List<DateUi> = emptyList(),
+    history: List<EntryEditableUi> = emptyList(),
     habitColor: Color = IconsColors.allColors.first(),
-    history: Map<Int, Int> = mapOf(1 to 1, 2 to 1),
     isEditable: Boolean = false,
+    onDayClick: (Int) -> Unit = {},
     squareDp: Dp = 26.dp,
     squareOffsetDp: Dp = 1.dp,
     initialOffsetDp: Dp = 4.dp,
-    onDayClick: (Int) -> Unit = {}
 ) {
-    val state = remember { mutableStateOf<List<DateUi>>(emptyList()) }
-
     val heightDp = 7 * squareDp + 6 * squareOffsetDp
 
-    var maxWidth by remember { mutableStateOf(0) }
-
-    val localDensity = LocalDensity.current
-
-    LaunchedEffect(maxWidth) {
-        if (maxWidth > 0) {
-            val widthDp = with(localDensity) { maxWidth.toDp() }
-            val columns =
-                (widthDp - initialOffsetDp + 5 * squareDp).div(squareDp + squareOffsetDp).toInt()
-            state.value = generateList(columns)
-        }
-    }
+    val defaultColor = MaterialTheme.colorScheme.onSecondaryContainer
 
     Box(
         modifier = Modifier
@@ -124,7 +112,6 @@ fun HabitHistoryGrid(
                 color = MaterialTheme.colorScheme.secondaryContainer,
                 shape = RoundedCornerShape(10f)
             )
-            .onGloballyPositioned { coordinates -> maxWidth = coordinates.size.width }
     ) {
         LazyHorizontalGrid(
             rows = GridCells.Fixed(7),
@@ -133,25 +120,24 @@ fun HabitHistoryGrid(
             reverseLayout = true,
             verticalArrangement = Arrangement.Bottom
         ) {
-            items(state.value) { date ->
-                val isSelected = history.contains(date.daysAgo)
-
+            items(history) { entry ->
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Box(
                         modifier = Modifier
                             .size(squareDp)
                             .padding(squareOffsetDp)
                             .background(
-                                if (isSelected) habitColor else MaterialTheme.colorScheme.onSecondaryContainer,
+                                habitColor(entry.colorPercent, defaultColor, habitColor),
                                 shape = RoundedCornerShape(10)
                             )
                             .clickable {
-                                if (isEditable && date.daysAgo > 0) onDayClick(date.daysAgo)
+                                if (isEditable && entry.daysAgo >= 0)
+                                    onDayClick(entry.daysAgo)
                             },
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = date.day,
+                            text = entry.day,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             style = MaterialTheme.typography.labelSmall
                         )
@@ -162,23 +148,6 @@ fun HabitHistoryGrid(
         }
     }
 }
-
-private fun generateList(columns: Int): List<DateUi> {
-    val list = ArrayList<DateUi>(columns)
-    val rows = 7
-
-    val daysOffset = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - rows
-
-    for (index in 0 until columns * rows) {
-        val calendar = Calendar.getInstance()
-        val daysAgo = (rows - index % rows - 1) + index / rows * rows + daysOffset
-        calendar.add(Calendar.DAY_OF_YEAR, -daysAgo)
-        list.add(DateUi(calendar.get(Calendar.DAY_OF_MONTH).toString(), daysAgo))
-    }
-    return list
-}
-
-data class DateUi(val day: String, val daysAgo: Int)
 
 @Composable
 @Preview

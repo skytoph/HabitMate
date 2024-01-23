@@ -23,16 +23,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.graphics.ColorUtils
+import com.github.skytoph.taski.presentation.core.habitColor
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.icon.GreenBright
+import com.github.skytoph.taski.presentation.habit.list.EntryUi
 import com.github.skytoph.taski.ui.theme.TaskiTheme
 
 @Composable
-fun HabitCard(modifier: Modifier = Modifier, onDone: () -> Unit, habit: HabitUi) {
+fun HabitCard(
+    modifier: Modifier = Modifier,
+    onDone: () -> Unit,
+    habit: HabitUi<EntryUi>,
+    history: List<EntryUi>
+) {
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -62,16 +67,15 @@ fun HabitCard(modifier: Modifier = Modifier, onDone: () -> Unit, habit: HabitUi)
                 Text(text = habit.title, Modifier.weight(1f))
                 IconButton(onClick = onDone) {
                     val defaultColor = MaterialTheme.colorScheme.secondaryContainer
-                    val color = ColorUtils.blendARGB(
-                        defaultColor.toArgb(), habit.color.toArgb(), habit.todayDonePercent
-                    )
+                    val colorPercent = habit.history.getOrNull(habit.todayPosition)?.colorPercent
+                    val color = habitColor(colorPercent ?: 0F, defaultColor, habit.color)
                     Icon(
                         imageVector = Icons.Outlined.Check,
                         contentDescription = null,
                         modifier = Modifier
                             .size(32.dp)
                             .background(
-                                color = Color(color),
+                                color = color,
                                 shape = RoundedCornerShape(30)
                             )
                             .padding(4.dp),
@@ -79,19 +83,25 @@ fun HabitCard(modifier: Modifier = Modifier, onDone: () -> Unit, habit: HabitUi)
                     )
                 }
             }
-            HabitCalendar(Modifier.padding(start = 8.dp, end = 8.dp, bottom = 8.dp), habit)
+            HabitCalendar(
+                Modifier.padding(start = 8.dp, end = 8.dp, bottom = 8.dp),
+                habit.color,
+                history
+            )
         }
     }
 }
+
+private val history = (0..360).map { EntryUi() }.toList()
 
 @Composable
 @Preview(showSystemUi = true, showBackground = true)
 fun HabitCardPreview() {
     TaskiTheme {
-        val habit = HabitUi(
-            0, "dev", 1, Icons.Outlined.Code, GreenBright, emptyMap(), 349
+        val habit = HabitUi<EntryUi>(
+            0, "dev", 1, Icons.Outlined.Code, GreenBright
         )
-        HabitCard(habit = habit, onDone = {})
+        HabitCard(habit = habit, onDone = {}, history = history)
     }
 }
 
@@ -99,9 +109,9 @@ fun HabitCardPreview() {
 @Preview(showSystemUi = true, showBackground = true)
 fun DarkHabitCardPreview() {
     TaskiTheme(darkTheme = true) {
-        val habit = HabitUi(
-            0, "dev", 1, Icons.Outlined.Code, GreenBright, emptyMap(), 349
+        val habit = HabitUi<EntryUi>(
+            0, "dev", 1, Icons.Outlined.Code, GreenBright
         )
-        HabitCard(habit = habit, onDone = {})
+        HabitCard(habit = habit, onDone = {}, history = history)
     }
 }

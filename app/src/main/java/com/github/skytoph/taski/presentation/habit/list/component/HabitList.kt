@@ -15,34 +15,37 @@ import androidx.compose.ui.unit.dp
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.icon.GreenBright
 import com.github.skytoph.taski.presentation.habit.icon.PinkRose
+import com.github.skytoph.taski.presentation.habit.list.EntryUi
 import com.github.skytoph.taski.ui.theme.TaskiTheme
 
 @Composable
 fun HabitList(
     modifier: Modifier = Modifier,
-    habits: List<HabitUi>,
-    onDoneHabit: (HabitUi) -> Unit,
-    onHabitClick: (HabitUi) -> Unit,
+    habits: List<HabitUi<EntryUi>>,
+    onDoneHabit: (HabitUi<EntryUi>) -> Unit,
+    onHabitClick: (HabitUi<EntryUi>) -> Unit,
 ) {
     LazyColumn(
         modifier = modifier.padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        items(items = habits, key = { habit -> habit.id }) { habit ->
+        items(items = habits, key = { it.id }) { habit ->
             HabitCard(
                 habit = habit,
                 onDone = { onDoneHabit(habit) },
-                modifier = Modifier.clickable { onHabitClick(habit) })
+                modifier = Modifier.clickable { onHabitClick(habit) },
+                history = habit.history
+            )
         }
     }
 }
 
 private val habits = listOf(
-    HabitUi(
-        0, "dev", 1, Icons.Outlined.Code, GreenBright, emptyMap(), 349
+    HabitUi<EntryUi>(
+        0, "dev", 1, Icons.Outlined.Code, GreenBright
     ),
     HabitUi(
-        0, "yoga", 1, Icons.Outlined.SportsGymnastics, PinkRose, mapOf(348 to 1), 349
+        0, "yoga", 1, Icons.Outlined.SportsGymnastics, PinkRose
     ),
 )
 
@@ -50,7 +53,7 @@ private val habits = listOf(
 @Preview(showSystemUi = true, showBackground = true)
 fun HabitListPreview() {
     TaskiTheme {
-        HabitList(habits = habits, onDoneHabit = {}, onHabitClick = {})
+        HabitList(habits = habits, onDoneHabit = {}) {}
     }
 }
 
@@ -58,6 +61,6 @@ fun HabitListPreview() {
 @Preview(showBackground = true, showSystemUi = true)
 fun DarkHabitListPreview() {
     TaskiTheme(darkTheme = true) {
-        HabitList(habits = habits, onDoneHabit = {}, onHabitClick = {})
+        HabitList(habits = habits, onDoneHabit = {}) {}
     }
 }

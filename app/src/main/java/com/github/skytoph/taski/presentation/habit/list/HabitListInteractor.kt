@@ -18,23 +18,20 @@ interface HabitListInteractor : HabitDoneInteractor {
 }
 
 interface HabitDoneInteractor {
-    suspend fun habitDone(habit: HabitUi, dayPosition: Int = habit.todayPosition)
+    suspend fun habitDone(habit: HabitUi<*>, daysAgo: Int = 0)
 
     abstract class Abstract(protected val repository: HabitRepository, protected val now: Now) :
         HabitDoneInteractor {
 
-        override suspend fun habitDone(habit: HabitUi, dayPosition: Int) {
-            val timesDone = habit.history[dayPosition] ?: 0
-            val timestamp =
-                if (dayPosition == habit.todayPosition)
-                    now.dayInMillis()
-                else
-                    now.daysAgoInMillis(dayPosition)
-            val entry = Entry(timestamp = timestamp, timesDone = timesDone + 1)
-            if (timesDone < habit.goal)
-                repository.insertEntry(habit.id, entry)
+        override suspend fun habitDone(habit: HabitUi<*>, daysAgo: Int) {
+            val timestamp = now.daysAgoInMillis(daysAgo)
+            val entry = repository.entry(habit.id, timestamp)
+            val timesDone = entry?.timesDone?.plus(1) ?: 1
+            val newEntry = entry?.copy(timesDone = timesDone) ?: Entry(timestamp, timesDone)
+            if (timesDone <= habit.goal)
+                repository.insertEntry(habit.id, newEntry)
             else
-                repository.deleteEntry(habit.id, entry)
+                repository.deleteEntry(habit.id, newEntry)
         }
     }
 }

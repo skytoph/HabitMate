@@ -25,15 +25,18 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
+import com.github.skytoph.taski.presentation.core.habitColor
 import com.github.skytoph.taski.presentation.habit.HabitUi
+import com.github.skytoph.taski.presentation.habit.icon.IconsColors
+import com.github.skytoph.taski.presentation.habit.list.EntryUi
 import com.github.skytoph.taski.ui.theme.TaskiTheme
 import kotlin.math.ceil
 
 @Composable
 fun HabitCalendar(
     modifier: Modifier = Modifier,
-    habit: HabitUi,
-    numberOfDays: Int = HabitUi.MAX_DAYS
+    habitColor: Color,
+    history: List<EntryUi> = emptyList(),
 ) {
     val squareDp = 10.dp
     val squareOffsetDp = squareDp / 5
@@ -45,11 +48,11 @@ fun HabitCalendar(
     }
 
     val rows = 7
-    val columns = ceil(numberOfDays / 7.0)
+    val columns = ceil(history.size / 7.0)
     val height = rows * squareDp + 6 * squareOffsetDp
     val width = columns * squareDp + (columns - 1) * squareOffsetDp + 1.dp
 
-    val squareColor = MaterialTheme.colorScheme.onSecondaryContainer
+    val defaultColor = MaterialTheme.colorScheme.onSecondaryContainer
 
     Box(
         modifier = modifier
@@ -76,20 +79,20 @@ fun HabitCalendar(
                     val squareOffset = squareOffsetDp.toPx()
                     val rectSize = Size(squareSize, squareSize)
 
-                    for (index in 0 until numberOfDays) {
+                    history.forEachIndexed { index, entry ->
                         val stepX: Int = index / rows
                         val offsetX = stepX * squareSize + squareOffset * stepX
                         val stepY = index.mod(rows)
                         val offsetY = squareSize * stepY + squareOffset * stepY
 
                         drawRoundRect(
-                            color = if (habit.history.contains(index)) habit.color else squareColor,
+                            color = habitColor(entry.colorPercent, defaultColor, habitColor),
                             cornerRadius = CornerRadius(5f, 5f),
                             style = Fill,
                             topLeft = Offset(offsetX, offsetY),
                             size = rectSize
                         )
-                        if (index == habit.todayPosition) drawRoundRect(
+                        if (entry.hasBorder) drawRoundRect(
                             color = Color.Black,
                             cornerRadius = CornerRadius(5f, 5f),
                             style = Stroke(1.dp.toPx()),
@@ -103,12 +106,14 @@ fun HabitCalendar(
     }
 }
 
-
 @Composable
 @Preview(showSystemUi = true, showBackground = true)
 fun HabitCalendarPreview() {
+    val history = (0..360).map { EntryUi(1F / (it % 20)) }.toList()
     TaskiTheme {
-        val habit = HabitUi(0, "dev", 1, Icons.Outlined.AcUnit, Color.Red)
-        HabitCard(onDone = {}, habit = habit)
+        val habit = HabitUi<EntryUi>(
+            0, "dev", 1, Icons.Outlined.AcUnit, IconsColors.allColors.first()
+        )
+        HabitCard(onDone = {}, habit = habit, history = history)
     }
 }

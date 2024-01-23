@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.Code
+import androidx.compose.material.icons.outlined.SportsGymnastics
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
@@ -19,7 +20,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.skytoph.taski.presentation.core.component.LoadingCirclesFullscreen
 import com.github.skytoph.taski.presentation.habit.HabitUi
+import com.github.skytoph.taski.presentation.habit.icon.GreenBright
 import com.github.skytoph.taski.presentation.habit.icon.IconsColors
+import com.github.skytoph.taski.presentation.habit.icon.PinkRose
+import com.github.skytoph.taski.presentation.habit.list.EntryUi
 import com.github.skytoph.taski.presentation.habit.list.HabitListState
 import com.github.skytoph.taski.presentation.habit.list.HabitsViewModel
 import com.github.skytoph.taski.ui.theme.TaskiTheme
@@ -29,7 +33,7 @@ import com.github.skytoph.taski.ui.theme.TaskiTheme
 fun HabitsScreen(
     viewModel: HabitsViewModel = hiltViewModel(),
     onCreateHabit: () -> Unit,
-    onHabitClick: (HabitUi) -> Unit,
+    onHabitClick: (HabitUi<EntryUi>) -> Unit,
 ) {
     Habits(
         state = viewModel.state(),
@@ -43,8 +47,8 @@ fun HabitsScreen(
 private fun Habits(
     state: State<HabitListState>,
     onCreateHabit: () -> Unit = {},
-    onHabitClick: (HabitUi) -> Unit = {},
-    onHabitDone: (HabitUi) -> Unit = {}
+    onHabitClick: (HabitUi<EntryUi>) -> Unit = {},
+    onHabitDone: (HabitUi<EntryUi>) -> Unit = {}
 ) {
     Scaffold(floatingActionButton = {
         FloatingActionButton(
@@ -68,10 +72,20 @@ private fun Habits(
 @Composable
 @Preview(showSystemUi = true, showBackground = true)
 fun HabitScreenPreview() {
+    val habits = listOf(
+        HabitUi<EntryUi>(
+            0, "dev", 1, Icons.Outlined.Code, GreenBright, emptyList()
+        ),
+        HabitUi<EntryUi>(
+            1, "yoga", 1, Icons.Outlined.SportsGymnastics, PinkRose, emptyList()
+        ),
+    )
+
     TaskiTheme(darkTheme = true) {
         Habits(state = remember {
-            val habit = HabitUi(0, "dev", 1, Icons.Outlined.Code, IconsColors.allColors.first())
-            mutableStateOf(HabitListState(habits = listOf(habit), isLoading = false))
+            val habit =
+                HabitUi<EntryUi>(0, "dev", 1, Icons.Outlined.Code, IconsColors.allColors.first(), emptyList())
+            mutableStateOf(HabitListState(habits = habits, isLoading = false))
         })
     }
 }

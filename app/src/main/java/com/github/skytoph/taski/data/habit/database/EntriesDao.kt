@@ -16,11 +16,14 @@ interface EntriesDao {
     @Query("DELETE FROM entry WHERE habit_id = :id AND timestamp = :timestamp")
     suspend fun delete(id: Long, timestamp: Long)
 
+    @Query("SELECT * FROM entry WHERE habit_id = :id AND timestamp = :timestamp")
+    fun entry(id: Long, timestamp: Long): EntryEntity?
+
     @Transaction
     @Query("SELECT * FROM habit")
     fun habitsWithEntries(): Flow<List<HabitWithEntries>>
 
     @Transaction
     @Query("SELECT * FROM habit WHERE id = :id")
-    fun habitWithEntriesById(id: Long): List<HabitWithEntries>
+    fun habitWithEntriesById(id: Long): Flow<HabitWithEntries>
 }

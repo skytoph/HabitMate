@@ -6,16 +6,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.skytoph.taski.domain.habit.HabitToUiMapper
 import com.github.skytoph.taski.presentation.habit.HabitScreens
 import com.github.skytoph.taski.presentation.habit.HabitUi
-import com.github.skytoph.taski.presentation.habit.list.mapper.HabitDomainMapper
+import com.github.skytoph.taski.presentation.habit.list.mapper.HabitToUiMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.withIndex
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,8 +23,7 @@ import javax.inject.Inject
 class EditHabitViewModel @Inject constructor(
     private val state: MutableState<EditHabitState> = mutableStateOf(EditHabitState()),
     private val interactor: EditHabitInteractor,
-    private val mapper: HabitDomainMapper,
-    private val mapperUi: HabitToUiMapper,
+    private val mapper: HabitToUiMapper<EntryEditableUi>,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -32,16 +31,20 @@ class EditHabitViewModel @Inject constructor(
         onEvent(EditHabitEvent.Progress(true))
         savedStateHandle.get<Long>(HabitScreens.EditHabit.habitIdArg)?.let { id ->
             if (id != HabitUi.ID_DEFAULT) {
-                interactor.habit(id).map { it.map(mapperUi) }
+                interactor.habit(id).map { habit -> habit.map(mapper) }
                     .flowOn(Dispatchers.IO)
-                    .onEach { onEvent(EditHabitEvent.Init(it)) }
+                    .withIndex()
+                    .onEach {
+                        if (it.index == 0) onEvent(EditHabitEvent.Init(it.value))
+                        else onEvent(EditHabitEvent.UpdateHistory(it.value.history))
+                    }
                     .launchIn(viewModelScope)
             }
         }
     }
 
     fun saveHabit() = viewModelScope.launch(Dispatchers.IO) {
-        val habit = state.value.toHabitUi().map(mapper)
+        val habit = state.value.toHabitUi()
         interactor.insert(habit)
     }
 

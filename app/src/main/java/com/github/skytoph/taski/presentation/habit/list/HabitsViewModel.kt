@@ -4,8 +4,8 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.skytoph.taski.domain.habit.HabitToUiMapper
 import com.github.skytoph.taski.presentation.habit.HabitUi
+import com.github.skytoph.taski.presentation.habit.list.mapper.HabitToUiMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
@@ -18,20 +18,20 @@ import javax.inject.Inject
 @HiltViewModel
 class HabitsViewModel @Inject constructor(
     private val state: MutableState<HabitListState>,
-    private val mapper: HabitToUiMapper,
+    private val mapper: HabitToUiMapper<EntryUi>,
     private val interactor: HabitListInteractor
 ) : ViewModel() {
 
     init {
         onEvent(HabitListEvent.Progress)
         interactor.habits()
-            .map { habits -> habits.map { it.map(mapper) } }
+            .map { habits -> habits.map { habit -> habit.map(mapper) } }
             .flowOn(Dispatchers.IO)
             .onEach { habits -> onEvent(HabitListEvent.UpdateList(habits)) }
             .launchIn(viewModelScope)
     }
 
-    fun habitDone(habit: HabitUi) {
+    fun habitDone(habit: HabitUi<EntryUi>) {
         viewModelScope.launch(Dispatchers.IO) {
             interactor.habitDone(habit)
         }

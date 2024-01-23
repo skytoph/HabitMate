@@ -4,16 +4,9 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface HabitDao {
-
-    @Query("SELECT * FROM habit")
-    fun habits(): Flow<List<HabitEntity>>
-
-    @Query("SELECT * FROM habit WHERE id = :id")
-    fun habit(id: Long): Flow<HabitEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(habit: HabitEntity)

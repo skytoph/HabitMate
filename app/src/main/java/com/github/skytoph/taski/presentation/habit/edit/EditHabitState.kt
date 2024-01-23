@@ -14,14 +14,12 @@ data class EditHabitState(
     val goal: GoalState = GoalState(),
     val icon: ImageVector = IconsGroup.allGroups.first().icons.first(),
     val color: Color = IconsColors.allColors.first(),
-    val history: Map<Int, Int> = emptyMap(),
+    val history: List<EntryEditableUi> = emptyList(),
     val isLoading: Boolean = false,
-    val isNewHabit: Boolean = true,
     val isDialogShown: Boolean = false,
-    val isEditable: Boolean = false,
     val isHistoryEditable: Boolean = false,
 ) {
 
     fun toHabitUi() =
-        HabitUi(id = id, title = title.field, goal = goal.value, icon = icon, color = color)
+        HabitUi<EntryEditableUi>(id = id, title = title.field, goal = goal.value, icon = icon, color = color)
 }
