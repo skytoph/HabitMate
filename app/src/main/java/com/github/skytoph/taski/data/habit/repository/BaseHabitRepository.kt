@@ -28,6 +28,8 @@ class BaseHabitRepository(
 
     override suspend fun insert(habit: Habit) = habitDao.insert(habit.toHabitDB())
 
+    override suspend fun update(habit: Habit) = habitDao.update(habit.toHabitDB())
+
     override suspend fun insertEntry(id: Long, entry: Entry) =
         entryDao.insert(EntryEntity(id, entry.timestamp, entry.timesDone))
 

@@ -7,6 +7,7 @@ interface HabitRepository {
     fun habit(id: Long): Flow<Habit>
     suspend fun entry(id: Long, timestamp: Long): Entry?
     suspend fun insert(habit: Habit)
+    suspend fun update(habit: Habit)
     suspend fun insertEntry(id: Long, entry: Entry)
     suspend fun deleteEntry(id: Long, entry: Entry)
     suspend fun delete(id: Long)

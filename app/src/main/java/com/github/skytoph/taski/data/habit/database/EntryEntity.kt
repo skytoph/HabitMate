@@ -11,7 +11,8 @@ import androidx.room.ForeignKey
         entity = HabitEntity::class,
         parentColumns = ["id"],
         childColumns = ["habit_id"],
-        onDelete = ForeignKey.CASCADE
+        onDelete = ForeignKey.CASCADE,
+        onUpdate = ForeignKey.NO_ACTION,
     )]
 )
 data class EntryEntity(

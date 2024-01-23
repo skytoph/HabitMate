@@ -18,7 +18,7 @@ interface EditHabitInteractor : HabitDoneInteractor {
 
         override fun habit(id: Long) = repository.habit(id)
 
-        override suspend fun insert(habit: HabitUi<*>) = repository.insert(habit.map(mapper))
+        override suspend fun insert(habit: HabitUi<*>) = repository.update(habit.map(mapper))
 
         override suspend fun delete(id: Long) = repository.delete(id)
     }
