@@ -86,6 +86,7 @@ fun HabitCard(
             HabitCalendar(
                 Modifier.padding(start = 8.dp, end = 8.dp, bottom = 8.dp),
                 habit.color,
+                habit.todayPosition,
                 history
             )
         }

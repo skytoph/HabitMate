@@ -36,6 +36,7 @@ import kotlin.math.ceil
 fun HabitCalendar(
     modifier: Modifier = Modifier,
     habitColor: Color,
+    todayPosition: Int,
     history: List<EntryUi> = emptyList(),
 ) {
     val squareDp = 10.dp
@@ -92,7 +93,7 @@ fun HabitCalendar(
                             topLeft = Offset(offsetX, offsetY),
                             size = rectSize
                         )
-                        if (entry.hasBorder) drawRoundRect(
+                        if (index == todayPosition) drawRoundRect(
                             color = Color.Black,
                             cornerRadius = CornerRadius(5f, 5f),
                             style = Stroke(1.dp.toPx()),

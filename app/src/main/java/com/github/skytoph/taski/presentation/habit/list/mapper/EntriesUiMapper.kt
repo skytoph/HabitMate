@@ -15,7 +15,7 @@ class EntriesUiMapper(
         return (numberOfCells - todayPosition - 1 downTo -todayPosition).map { index ->
             val timesDone = history[index]?.timesDone ?: 0
             val colorPercent = colorMapper.map(timesDone, goal)
-            EntryUi(colorPercent = colorPercent, hasBorder = index == 0)
+            EntryUi(colorPercent = colorPercent)
         }
     }
 
