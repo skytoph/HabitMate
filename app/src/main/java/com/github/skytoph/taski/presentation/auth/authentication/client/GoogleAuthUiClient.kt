@@ -61,13 +61,12 @@ class GoogleAuthUiClient(
             )
             .setAutoSelectEnabled(true)
             .build()
-
-    // TODO: dry
-    private fun FirebaseUser.toUserData(): UserData = UserData(
-        userId = uid,
-        userName = displayName,
-        email = email,
-        profilePictureUrl = photoUrl?.toString(),
-        isVerified = isEmailVerified
-    )
 }
+
+fun FirebaseUser.toUserData(): UserData = UserData(
+    userId = uid,
+    userName = displayName,
+    email = email,
+    profilePictureUrl = photoUrl?.toString(),
+    isVerified = isEmailVerified
+)

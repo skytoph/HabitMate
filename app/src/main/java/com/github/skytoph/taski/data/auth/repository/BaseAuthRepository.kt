@@ -2,9 +2,9 @@ package com.github.skytoph.taski.data.auth.repository
 
 import com.github.skytoph.taski.domain.auth.repository.AuthRepository
 import com.github.skytoph.taski.presentation.auth.authentication.AuthResult
+import com.github.skytoph.taski.presentation.auth.authentication.client.toUserData
 import com.github.skytoph.taski.presentation.auth.authentication.user.UserData
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.tasks.await
 
 class BaseAuthRepository(private val auth: FirebaseAuth) : AuthRepository {
@@ -41,12 +41,4 @@ class BaseAuthRepository(private val auth: FirebaseAuth) : AuthRepository {
     }
 
     override fun currentUser(): UserData? = auth.currentUser?.toUserData()
-
-    private fun FirebaseUser.toUserData(): UserData = UserData(
-        userId = uid,
-        userName = displayName,
-        email = email,
-        profilePictureUrl = photoUrl?.toString(),
-        isVerified = isEmailVerified
-    )
 }

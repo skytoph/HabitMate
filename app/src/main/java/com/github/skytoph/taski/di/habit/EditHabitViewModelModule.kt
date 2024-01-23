@@ -3,7 +3,6 @@ package com.github.skytoph.taski.di.habit
 import com.github.skytoph.taski.core.Now
 import com.github.skytoph.taski.presentation.core.ConvertIcon
 import com.github.skytoph.taski.presentation.habit.edit.EntryEditableUi
-import com.github.skytoph.taski.presentation.habit.edit.IdCache
 import com.github.skytoph.taski.presentation.habit.edit.mapper.EditableEntryUiMapper
 import com.github.skytoph.taski.presentation.habit.edit.mapper.HabitWithEditableEntryUiMapper
 import com.github.skytoph.taski.presentation.habit.list.mapper.ColorPercentMapper
