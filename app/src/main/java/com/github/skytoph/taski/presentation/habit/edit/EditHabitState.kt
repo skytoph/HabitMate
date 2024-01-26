@@ -19,11 +19,19 @@ data class EditHabitState(
     val isDialogShown: Boolean = false,
 ) {
 
-    fun toHabitUi() =
-        HabitUi<EntryEditableUi>(id = id, title = title.field, goal = goal.value, icon = icon, color = color)
+    fun toHabitUi() = HabitUi<EntryEditableUi>(
+        id = id,
+        title = title.field,
+        goal = goal.value,
+        icon = icon,
+        color = color
+    )
 }
 
 data class HistoryState(
     val entries: List<EntryEditableUi> = emptyList(),
+    val months: List<MonthUi> = emptyList(),
     val isEditable: Boolean = false,
 )
+
+data class MonthUi(val name: String, val weeks: Int)

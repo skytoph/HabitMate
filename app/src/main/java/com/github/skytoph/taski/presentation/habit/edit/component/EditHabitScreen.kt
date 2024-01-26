@@ -37,7 +37,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.component.HabitAppBar
-import com.github.skytoph.taski.presentation.core.component.LoadingCirclesFullscreen
 import com.github.skytoph.taski.presentation.core.component.SquareButton
 import com.github.skytoph.taski.presentation.core.component.TitleTextField
 import com.github.skytoph.taski.presentation.core.state.FieldState
@@ -91,7 +90,6 @@ private fun EditHabit(
             .padding(horizontal = 16.dp)
             .fillMaxSize()
     ) {
-        if (state.value.isLoading) LoadingCirclesFullscreen()
         HabitAppBar(
             label = "edit habit",
             navigateUp = navigateUp,
@@ -115,10 +113,9 @@ private fun EditHabit(
         Text(text = "history", style = MaterialTheme.typography.bodyMedium)
         Spacer(modifier = Modifier.height(4.dp))
         HabitHistory(
-            history = state.value.history.entries,
+            history = state.value.history,
             habitColor = state.value.color,
             onDayClick = onDayClick,
-            isEditable = state.value.history.isEditable,
             onEdit = onEditHistory
         )
     }
