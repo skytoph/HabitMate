@@ -23,7 +23,7 @@ import javax.inject.Inject
 class EditHabitViewModel @Inject constructor(
     private val state: MutableState<EditHabitState> = mutableStateOf(EditHabitState()),
     private val interactor: EditHabitInteractor,
-    private val mapper: HabitToUiMapper<EntryEditableUi>,
+    private val mapper: HabitToUiMapper<EditableHistoryUi>,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 

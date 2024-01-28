@@ -16,14 +16,15 @@ import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.icon.GreenBright
 import com.github.skytoph.taski.presentation.habit.icon.PinkRose
 import com.github.skytoph.taski.presentation.habit.list.EntryUi
+import com.github.skytoph.taski.presentation.habit.list.HistoryUi
 import com.github.skytoph.taski.ui.theme.TaskiTheme
 
 @Composable
 fun HabitList(
     modifier: Modifier = Modifier,
-    habits: List<HabitUi<EntryUi>>,
-    onDoneHabit: (HabitUi<EntryUi>) -> Unit,
-    onHabitClick: (HabitUi<EntryUi>) -> Unit,
+    habits: List<HabitUi<HistoryUi>>,
+    onDoneHabit: (HabitUi<HistoryUi>) -> Unit,
+    onHabitClick: (HabitUi<HistoryUi>) -> Unit,
 ) {
     LazyColumn(
         modifier = modifier.padding(16.dp),
@@ -34,18 +35,19 @@ fun HabitList(
                 habit = habit,
                 onDone = { onDoneHabit(habit) },
                 modifier = Modifier.clickable { onHabitClick(habit) },
-                history = habit.history
             )
         }
     }
 }
 
+private val history = HistoryUi((0..363).map { EntryUi(1F / (it % 20)) }.toList())
+
 private val habits = listOf(
-    HabitUi<EntryUi>(
-        0, "dev", 1, Icons.Outlined.Code, GreenBright
+    HabitUi(
+        0, "dev", 1, Icons.Outlined.Code, GreenBright, history
     ),
     HabitUi(
-        0, "yoga", 1, Icons.Outlined.SportsGymnastics, PinkRose
+        0, "yoga", 1, Icons.Outlined.SportsGymnastics, PinkRose, history
     ),
 )
 

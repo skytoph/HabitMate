@@ -11,8 +11,10 @@ interface Now {
     fun daysAgo(milliseconds: Long): Int
     fun daysAgoInMillis(days: Int): Long
     fun dayInMillis(): Long
+    fun lastDayOfWeekDate(weeksAgo: Int = 0): Int
+    fun lastDayOfWeekMillis(weeksAgo: Int = 0): Long
 
-    class Base : Now {
+    class Base(private val timeZone: TimeZone = TimeZone.getTimeZone("UTC")) : Now {
 
         override fun dayOfWeek(): Int = calendar().get(Calendar.DAY_OF_WEEK)
 
@@ -26,9 +28,17 @@ interface Now {
         override fun daysAgo(milliseconds: Long): Int =
             TimeUnit.MILLISECONDS.toDays(dayInMillis() - milliseconds).toInt()
 
-        override fun dayInMillis(): Long = startOfTheDay(0).timeInMillis
+        override fun dayInMillis(): Long = startOfTheDay().timeInMillis
 
-        private fun startOfTheDay(daysAgo: Int): Calendar = calendar().also {
+        override fun lastDayOfWeekDate(weeksAgo: Int): Int =
+            startOfTheWeek(weeksAgo).get(Calendar.DAY_OF_MONTH)
+
+        override fun lastDayOfWeekMillis(weeksAgo: Int): Long =
+            startOfTheWeek(weeksAgo).timeInMillis
+
+        private fun calendar(): Calendar = Calendar.getInstance(timeZone)
+
+        private fun startOfTheDay(daysAgo: Int = 0): Calendar = calendar().also {
             it.set(Calendar.HOUR_OF_DAY, 0)
             it.set(Calendar.MINUTE, 0)
             it.set(Calendar.SECOND, 0)
@@ -36,6 +46,9 @@ interface Now {
             it.add(Calendar.DAY_OF_YEAR, -daysAgo)
         }
 
-        private fun calendar(): Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+        private fun startOfTheWeek(weeksAgo: Int = 0): Calendar = startOfTheDay().also { calendar ->
+            calendar.set(Calendar.DAY_OF_WEEK, calendar.firstDayOfWeek)
+            calendar.add(Calendar.DATE, 6 - weeksAgo * 7)
+        }
     }
 }

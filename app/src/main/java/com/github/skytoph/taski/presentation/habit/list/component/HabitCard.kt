@@ -29,14 +29,14 @@ import com.github.skytoph.taski.presentation.core.habitColor
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.icon.GreenBright
 import com.github.skytoph.taski.presentation.habit.list.EntryUi
+import com.github.skytoph.taski.presentation.habit.list.HistoryUi
 import com.github.skytoph.taski.ui.theme.TaskiTheme
 
 @Composable
 fun HabitCard(
     modifier: Modifier = Modifier,
     onDone: () -> Unit,
-    habit: HabitUi<EntryUi>,
-    history: List<EntryUi>
+    habit: HabitUi<HistoryUi>,
 ) {
     Card(
         modifier = modifier
@@ -67,7 +67,8 @@ fun HabitCard(
                 Text(text = habit.title, Modifier.weight(1f))
                 IconButton(onClick = onDone) {
                     val defaultColor = MaterialTheme.colorScheme.secondaryContainer
-                    val colorPercent = habit.history.getOrNull(habit.todayPosition)?.colorPercent
+                    val colorPercent =
+                        habit.history.entries.getOrNull(habit.history.todayPosition)?.colorPercent
                     val color = habitColor(colorPercent ?: 0F, defaultColor, habit.color)
                     Icon(
                         imageVector = Icons.Outlined.Check,
@@ -86,23 +87,20 @@ fun HabitCard(
             HabitCalendar(
                 Modifier.padding(start = 8.dp, end = 8.dp, bottom = 8.dp),
                 habit.color,
-                habit.todayPosition,
-                history
+                habit.history
             )
         }
     }
 }
 
-private val history = (0..360).map { EntryUi() }.toList()
+private val history = HistoryUi((0..360).map { EntryUi() }.toList())
 
 @Composable
 @Preview(showSystemUi = true, showBackground = true)
 fun HabitCardPreview() {
     TaskiTheme {
-        val habit = HabitUi<EntryUi>(
-            0, "dev", 1, Icons.Outlined.Code, GreenBright
-        )
-        HabitCard(habit = habit, onDone = {}, history = history)
+        val habit = HabitUi(0, "dev", 1, Icons.Outlined.Code, GreenBright, history)
+        HabitCard(habit = habit, onDone = {})
     }
 }
 
@@ -110,9 +108,7 @@ fun HabitCardPreview() {
 @Preview(showSystemUi = true, showBackground = true)
 fun DarkHabitCardPreview() {
     TaskiTheme(darkTheme = true) {
-        val habit = HabitUi<EntryUi>(
-            0, "dev", 1, Icons.Outlined.Code, GreenBright
-        )
-        HabitCard(habit = habit, onDone = {}, history = history)
+        val habit = HabitUi(0, "dev", 1, Icons.Outlined.Code, GreenBright, history)
+        HabitCard(habit = habit, onDone = {})
     }
 }

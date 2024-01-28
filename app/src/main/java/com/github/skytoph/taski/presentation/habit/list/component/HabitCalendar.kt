@@ -19,16 +19,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
+import com.github.skytoph.taski.presentation.core.fadingEdge
 import com.github.skytoph.taski.presentation.core.habitColor
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.icon.IconsColors
 import com.github.skytoph.taski.presentation.habit.list.EntryUi
+import com.github.skytoph.taski.presentation.habit.list.HistoryUi
 import com.github.skytoph.taski.ui.theme.TaskiTheme
 import kotlin.math.ceil
 
@@ -36,8 +40,7 @@ import kotlin.math.ceil
 fun HabitCalendar(
     modifier: Modifier = Modifier,
     habitColor: Color,
-    todayPosition: Int,
-    history: List<EntryUi> = emptyList(),
+    history: HistoryUi,
 ) {
     val squareDp = 10.dp
     val squareOffsetDp = squareDp / 5
@@ -49,9 +52,15 @@ fun HabitCalendar(
     }
 
     val rows = 7
-    val columns = ceil(history.size / 7.0)
+    val columns = ceil(history.entries.size / 7.0)
     val height = rows * squareDp + 6 * squareOffsetDp
     val width = columns * squareDp + (columns - 1) * squareOffsetDp + 1.dp
+
+    val fadingBrush = Brush.horizontalGradient(
+        0f to Color.Transparent,
+        0.1f to Color.Black,
+        endX = with(LocalDensity.current) { (40.dp).toPx() }
+    )
 
     val defaultColor = MaterialTheme.colorScheme.onSecondaryContainer
 
@@ -67,6 +76,7 @@ fun HabitCalendar(
                 .height(height + initialOffsetDp * 2)
                 .fillMaxWidth()
                 .padding(initialOffsetDp)
+                .fadingEdge(fadingBrush)
         ) {
             Box(
                 modifier = Modifier.horizontalScroll(state)
@@ -80,7 +90,7 @@ fun HabitCalendar(
                     val squareOffset = squareOffsetDp.toPx()
                     val rectSize = Size(squareSize, squareSize)
 
-                    history.forEachIndexed { index, entry ->
+                    history.entries.forEachIndexed { index, entry ->
                         val stepX: Int = index / rows
                         val offsetX = stepX * squareSize + squareOffset * stepX
                         val stepY = index.mod(rows)
@@ -93,7 +103,7 @@ fun HabitCalendar(
                             topLeft = Offset(offsetX, offsetY),
                             size = rectSize
                         )
-                        if (index == todayPosition) drawRoundRect(
+                        if (index == history.todayPosition) drawRoundRect(
                             color = Color.Black,
                             cornerRadius = CornerRadius(5f, 5f),
                             style = Stroke(1.dp.toPx()),
@@ -110,11 +120,11 @@ fun HabitCalendar(
 @Composable
 @Preview(showSystemUi = true, showBackground = true)
 fun HabitCalendarPreview() {
-    val history = (0..360).map { EntryUi(1F / (it % 20)) }.toList()
+    val history = HistoryUi((0..363).map { EntryUi(1F / (it % 20)) }.toList())
     TaskiTheme {
-        val habit = HabitUi<EntryUi>(
-            0, "dev", 1, Icons.Outlined.AcUnit, IconsColors.allColors.first()
+        val habit = HabitUi(
+            0, "dev", 1, Icons.Outlined.AcUnit, IconsColors.allColors.first(), history
         )
-        HabitCard(onDone = {}, habit = habit, history = history)
+        HabitCard(onDone = {}, habit = habit)
     }
 }

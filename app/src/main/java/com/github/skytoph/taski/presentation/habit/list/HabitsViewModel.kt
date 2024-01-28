@@ -18,7 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HabitsViewModel @Inject constructor(
     private val state: MutableState<HabitListState>,
-    private val mapper: HabitToUiMapper<EntryUi>,
+    private val mapper: HabitToUiMapper<HistoryUi>,
     private val interactor: HabitListInteractor
 ) : ViewModel() {
 
@@ -31,7 +31,7 @@ class HabitsViewModel @Inject constructor(
             .launchIn(viewModelScope)
     }
 
-    fun habitDone(habit: HabitUi<EntryUi>) {
+    fun habitDone(habit: HabitUi<HistoryUi>) {
         viewModelScope.launch(Dispatchers.IO) {
             interactor.habitDone(habit)
         }

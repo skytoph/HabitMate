@@ -2,12 +2,12 @@ package com.github.skytoph.taski.di.habit
 
 import com.github.skytoph.taski.core.Now
 import com.github.skytoph.taski.presentation.core.ConvertIcon
-import com.github.skytoph.taski.presentation.habit.edit.EntryEditableUi
+import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
 import com.github.skytoph.taski.presentation.habit.edit.mapper.EditableEntryUiMapper
 import com.github.skytoph.taski.presentation.habit.edit.mapper.HabitWithEditableEntryUiMapper
 import com.github.skytoph.taski.presentation.habit.list.mapper.ColorPercentMapper
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitDomainMapper
-import com.github.skytoph.taski.presentation.habit.list.mapper.HabitEntryUiMapper
+import com.github.skytoph.taski.presentation.habit.list.mapper.HabitHistoryUiMapper
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitToUiMapper
 import dagger.Module
 import dagger.Provides
@@ -20,10 +20,10 @@ object EditHabitViewModelModule {
 
     @Provides
     fun habitWithEditableEntryMapper(
-        mapper: HabitEntryUiMapper<EntryEditableUi>,
+        mapper: HabitHistoryUiMapper<EditableHistoryUi>,
         convertIcon: ConvertIcon,
         colorMapper: ColorPercentMapper
-    ): HabitToUiMapper<EntryEditableUi> =
+    ): HabitToUiMapper<EditableHistoryUi> =
         HabitWithEditableEntryUiMapper(convertIcon, colorMapper, mapper)
 
     @Provides
@@ -31,7 +31,7 @@ object EditHabitViewModelModule {
         HabitDomainMapper.Base(convertIcon, now)
 
     @Provides
-    fun entryMapper(now: Now, colorMapper: ColorPercentMapper): HabitEntryUiMapper<EntryEditableUi> =
+    fun entryMapper(now: Now, colorMapper: ColorPercentMapper): HabitHistoryUiMapper<EditableHistoryUi> =
         EditableEntryUiMapper(now, colorMapper)
 
     @Provides

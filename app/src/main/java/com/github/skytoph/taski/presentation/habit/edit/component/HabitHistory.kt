@@ -38,6 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
+import com.github.skytoph.taski.presentation.core.component.getLocale
 import com.github.skytoph.taski.presentation.core.fadingEdge
 import com.github.skytoph.taski.presentation.core.habitColor
 import com.github.skytoph.taski.presentation.habit.edit.EntryEditableUi
@@ -134,10 +135,17 @@ fun HabitHistoryGrid(
             reverseLayout = true,
         ) {
             item {
-                MonthsLabels(history, squareDp, widthDp, squareOffsetDp)
+                MonthsLabels(history.months, squareDp, widthDp, squareOffsetDp)
             }
             items(history.entries) { entry ->
-                DailyEntry(entry, history, onDayClick, squareDp, squareOffsetDp, habitColor)
+                DailyEntry(
+                    entry,
+                    history.isEditable,
+                    onDayClick,
+                    squareDp,
+                    squareOffsetDp,
+                    habitColor
+                )
             }
         }
     }
@@ -146,7 +154,7 @@ fun HabitHistoryGrid(
 @Composable
 private fun DailyEntry(
     entry: EntryEditableUi,
-    history: HistoryState,
+    isEditable: Boolean,
     onDayClick: (Int) -> Unit,
     size: Dp,
     padding: Dp,
@@ -165,7 +173,7 @@ private fun DailyEntry(
                 shape = RoundedCornerShape(10)
             )
             .clickable {
-                if (history.isEditable && entry.daysAgo >= 0)
+                if (isEditable && entry.daysAgo >= 0)
                     onDayClick(entry.daysAgo)
             },
         contentAlignment = Alignment.Center
@@ -180,7 +188,7 @@ private fun DailyEntry(
 
 @Composable
 private fun MonthsLabels(
-    history: HistoryState,
+    months: List<MonthUi>,
     entrySize: Dp,
     widthDp: Dp,
     padding: Dp,
@@ -192,29 +200,27 @@ private fun MonthsLabels(
             .height(entrySize)
             .width(widthDp)
     ) {
-        items(history.months) { month ->
+        items(months, key = { it.timestamp }) { month ->
             Box(
                 modifier = Modifier
                     .width(entrySize.times(month.weeks))
                     .height(entrySize)
-                    .padding(padding)
-                    .background(
-                        MaterialTheme.colorScheme.onSecondaryContainer,
-                        RoundedCornerShape(10)
-                    ),
+                    .padding(padding),
                 contentAlignment = Alignment.BottomStart
             ) {
                 Text(
-                    text = month.name,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.fillMaxWidth(),
+                    text = month.getDisplayName(getLocale()),
+                    color = MaterialTheme.colorScheme.onSecondaryContainer,
                     style = MaterialTheme.typography.labelSmall,
+                    textAlign = month.alignment
                 )
             }
         }
     }
 }
 
-val months = (1..12).map { MonthUi("month", if (it == 1) 2 else 4) }
+val months = (1..12).map { MonthUi(weeks = if (it == 1) 2 else 4) }
 val history = (1..298).map { EntryEditableUi((it % 30).toString(), 0F, it) }
 
 @Composable

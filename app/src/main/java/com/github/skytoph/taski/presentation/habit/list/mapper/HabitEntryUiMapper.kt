@@ -1,9 +1,8 @@
 package com.github.skytoph.taski.presentation.habit.list.mapper
 
 import com.github.skytoph.taski.domain.habit.Entry
-import com.github.skytoph.taski.presentation.habit.HabitEntryUi
+import com.github.skytoph.taski.presentation.habit.HabitHistoryUi
 
-interface HabitEntryUiMapper<T : HabitEntryUi> {
-    fun map(goal: Int, history: Map<Int, Entry>): List<T>
-    fun todayPosition(): Int
+interface HabitHistoryUiMapper<T : HabitHistoryUi> {
+    fun map(goal: Int, history: Map<Int, Entry>): T
 }

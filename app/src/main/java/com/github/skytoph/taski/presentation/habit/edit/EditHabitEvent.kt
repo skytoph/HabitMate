@@ -10,7 +10,7 @@ import com.github.skytoph.taski.presentation.habit.create.GoalState
 interface EditHabitEvent {
     fun handle(state: MutableState<EditHabitState>)
 
-    class Init(private val habit: HabitUi<EntryEditableUi>) : EditHabitEvent {
+    class Init(private val habit: HabitUi<EditableHistoryUi>) : EditHabitEvent {
 
         override fun handle(state: MutableState<EditHabitState>) {
             state.value = EditHabitState(
@@ -20,14 +20,20 @@ interface EditHabitEvent {
                 icon = habit.icon,
                 color = habit.color,
                 isLoading = false,
-                history = state.value.history.copy(entries = habit.history)
+                history = state.value.history.copy(
+                    entries = habit.history.entries, months = habit.history.months
+                )
             )
         }
     }
 
-    class UpdateHistory(private val history: List<EntryEditableUi>) : EditHabitEvent {
+    class UpdateHistory(private val history: EditableHistoryUi) : EditHabitEvent {
         override fun handle(state: MutableState<EditHabitState>) {
-            state.value = state.value.copy(history = state.value.history.copy(entries = history))
+            state.value = state.value.copy(
+                history = state.value.history.copy(
+                    entries = history.entries, months = history.months
+                )
+            )
         }
     }
 

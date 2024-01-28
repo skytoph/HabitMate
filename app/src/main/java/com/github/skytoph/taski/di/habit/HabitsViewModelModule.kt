@@ -4,11 +4,11 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import com.github.skytoph.taski.core.Now
 import com.github.skytoph.taski.presentation.core.ConvertIcon
-import com.github.skytoph.taski.presentation.habit.list.EntryUi
 import com.github.skytoph.taski.presentation.habit.list.HabitListState
+import com.github.skytoph.taski.presentation.habit.list.HistoryUi
 import com.github.skytoph.taski.presentation.habit.list.mapper.ColorPercentMapper
 import com.github.skytoph.taski.presentation.habit.list.mapper.EntriesUiMapper
-import com.github.skytoph.taski.presentation.habit.list.mapper.HabitEntryUiMapper
+import com.github.skytoph.taski.presentation.habit.list.mapper.HabitHistoryUiMapper
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitToUiMapper
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitWithEntryUiMapper
 import dagger.Module
@@ -22,13 +22,13 @@ object HabitsViewModelModule {
 
     @Provides
     fun habitWithEntryMapper(
-        mapper: HabitEntryUiMapper<EntryUi>,
+        mapper: HabitHistoryUiMapper<HistoryUi>,
         convertIcon: ConvertIcon,
         colorMapper: ColorPercentMapper
-    ): HabitToUiMapper<EntryUi> = HabitWithEntryUiMapper(convertIcon, colorMapper, mapper)
+    ): HabitToUiMapper<HistoryUi> = HabitWithEntryUiMapper(convertIcon, colorMapper, mapper)
 
     @Provides
-    fun entryMapper(now: Now, colorMapper: ColorPercentMapper): HabitEntryUiMapper<EntryUi> =
+    fun historyMapper(now: Now, colorMapper: ColorPercentMapper): HabitHistoryUiMapper<HistoryUi> =
         EntriesUiMapper(now, colorMapper)
 
     @Provides
