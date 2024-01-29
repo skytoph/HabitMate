@@ -2,21 +2,16 @@ package com.github.skytoph.taski.presentation.habit.icon
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
-import com.github.skytoph.taski.presentation.habit.edit.EditHabitEvent
-import com.github.skytoph.taski.presentation.habit.edit.EditHabitState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class SelectIconViewModel @Inject constructor(
-    private val state: MutableState<EditHabitState>
+    private val state: MutableState<IconState>
 ) : ViewModel() {
 
-    fun selectIcon(icon: ImageVector? = null, color: Color? = null) =
-        EditHabitEvent.UpdateIcon(icon, color).handle(state)
+    fun onEvent(event: SelectIconEvent) = event.handle(state)
 
-    fun state(): State<EditHabitState> = state
+    fun state(): State<IconState> = state
 }

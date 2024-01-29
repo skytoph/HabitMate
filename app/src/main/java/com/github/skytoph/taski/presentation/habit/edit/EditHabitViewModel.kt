@@ -8,6 +8,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.skytoph.taski.presentation.habit.HabitScreens
 import com.github.skytoph.taski.presentation.habit.HabitUi
+import com.github.skytoph.taski.presentation.habit.icon.IconState
+import com.github.skytoph.taski.presentation.habit.icon.SelectIconEvent
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitToUiMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -22,6 +24,7 @@ import javax.inject.Inject
 @HiltViewModel
 class EditHabitViewModel @Inject constructor(
     private val state: MutableState<EditHabitState> = mutableStateOf(EditHabitState()),
+    private val iconState: MutableState<IconState>,
     private val interactor: EditHabitInteractor,
     private val mapper: HabitToUiMapper<EditableHistoryUi>,
     savedStateHandle: SavedStateHandle
@@ -35,8 +38,10 @@ class EditHabitViewModel @Inject constructor(
                     .flowOn(Dispatchers.IO)
                     .withIndex()
                     .onEach {
-                        if (it.index == 0) onEvent(EditHabitEvent.Init(it.value))
-                        else onEvent(EditHabitEvent.UpdateHistory(it.value.history))
+                        if (it.index == 0) {
+                            onEvent(EditHabitEvent.Init(it.value))
+                            SelectIconEvent.Update(it.value.icon, it.value.color).handle(iconState)
+                        } else onEvent(EditHabitEvent.UpdateHistory(it.value.history))
                     }
                     .launchIn(viewModelScope)
             }
@@ -58,7 +63,9 @@ class EditHabitViewModel @Inject constructor(
         }
     }
 
-    fun onEvent(event: EditHabitEvent) = event.handle(state)
+    fun onEvent(event: EditHabitEvent) = event.handle(state, iconState)
 
     fun state(): State<EditHabitState> = state
+
+    fun iconState(): State<IconState> = iconState
 }

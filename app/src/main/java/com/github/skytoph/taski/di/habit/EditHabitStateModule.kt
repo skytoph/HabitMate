@@ -6,14 +6,12 @@ import com.github.skytoph.taski.presentation.habit.edit.EditHabitState
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
+import dagger.hilt.android.components.ViewModelComponent
 
 @Module
-@InstallIn(SingletonComponent::class)
+@InstallIn(ViewModelComponent::class)
 object EditHabitStateModule {
 
     @Provides
-    @Singleton
     fun state(): MutableState<EditHabitState> = mutableStateOf(EditHabitState())
 }

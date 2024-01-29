@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,9 +32,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.skytoph.taski.presentation.core.component.HabitAppBar
-import com.github.skytoph.taski.presentation.habit.edit.EditHabitState
+import com.github.skytoph.taski.presentation.habit.icon.IconState
 import com.github.skytoph.taski.presentation.habit.icon.IconsColors
 import com.github.skytoph.taski.presentation.habit.icon.IconsGroup
+import com.github.skytoph.taski.presentation.habit.icon.SelectIconEvent
 import com.github.skytoph.taski.presentation.habit.icon.SelectIconViewModel
 import com.github.skytoph.taski.ui.theme.TaskiTheme
 
@@ -42,13 +44,13 @@ fun SelectIconScreen(viewModel: SelectIconViewModel = hiltViewModel(), navigateU
     SelectIcon(
         state = viewModel.state(),
         navigateUp = navigateUp,
-        onSelectColor = { viewModel.selectIcon(color = it) },
-        onSelectIcon = { viewModel.selectIcon(icon = it) })
+        onSelectColor = { viewModel.onEvent(SelectIconEvent.Update(color = it)) },
+        onSelectIcon = { viewModel.onEvent(SelectIconEvent.Update(icon = it)) })
 }
 
 @Composable
 private fun SelectIcon(
-    state: State<EditHabitState>,
+    state: State<IconState>,
     navigateUp: () -> Unit = {},
     onSelectColor: (Color) -> Unit = {},
     onSelectIcon: (ImageVector) -> Unit = {},
@@ -125,7 +127,7 @@ private fun SelectIcon(
 @Preview(showBackground = true, showSystemUi = true)
 fun SelectIconScreenPreview() {
     TaskiTheme {
-        SelectIcon(mutableStateOf(EditHabitState()))
+        SelectIcon(remember { mutableStateOf(IconState()) })
     }
 }
 
@@ -133,6 +135,6 @@ fun SelectIconScreenPreview() {
 @Preview(showBackground = true, showSystemUi = true)
 fun DarkSelectIconScreenPreview() {
     TaskiTheme(darkTheme = true) {
-        SelectIcon(mutableStateOf(EditHabitState()))
+        SelectIcon(remember { mutableStateOf(IconState()) })
     }
 }

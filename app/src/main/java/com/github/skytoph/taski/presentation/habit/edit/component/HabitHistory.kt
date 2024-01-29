@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -34,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -73,8 +75,10 @@ fun HabitHistory(
         ) {
             if (history.isEditable)
                 Text(
-                    text = "tap on the day to change the value",
-                    color = MaterialTheme.colorScheme.onBackground
+                    text = "tap on the day to update your progress\nchanges will be saved immediately",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    textAlign = TextAlign.End
                 )
             IconButton(onClick = onEdit) {
                 Icon(
@@ -201,16 +205,22 @@ private fun MonthsLabels(
             .width(widthDp)
     ) {
         items(months, key = { it.timestamp }) { month ->
-            Box(
+            Row(
                 modifier = Modifier
                     .width(entrySize.times(month.weeks))
                     .height(entrySize)
                     .padding(padding),
-                contentAlignment = Alignment.BottomStart
+                verticalAlignment = Alignment.Bottom
             ) {
                 Text(
-                    modifier = Modifier.fillMaxWidth(),
                     text = month.getDisplayName(getLocale()),
+                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    style = MaterialTheme.typography.labelMedium,
+                    textAlign = month.alignment
+                )
+                Spacer(modifier = Modifier.width(2.dp))
+                Text(
+                    text = month.getDisplayYear(getLocale()),
                     color = MaterialTheme.colorScheme.onSecondaryContainer,
                     style = MaterialTheme.typography.labelSmall,
                     textAlign = month.alignment
@@ -220,7 +230,7 @@ private fun MonthsLabels(
     }
 }
 
-val months = (1..12).map { MonthUi(weeks = if (it == 1) 2 else 4) }
+val months = (1..12).map { MonthUi(timestamp = it.toLong(), weeks = if (it == 1) 2 else 4) }
 val history = (1..298).map { EntryEditableUi((it % 30).toString(), 0F, it) }
 
 @Composable

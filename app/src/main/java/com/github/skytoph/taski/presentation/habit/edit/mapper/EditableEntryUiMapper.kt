@@ -36,7 +36,8 @@ class EditableEntryUiMapper(
 
         var weeks = 0
         for (index in 0 until COLUMNS) {
-            if (now.lastDayOfWeekDate(index) < 8) {
+            val day = now.lastDayOfWeekDate(index)
+            if (day < 8) {
                 months.add(MonthUi(now.lastDayOfWeekMillis(index), weeks + 1))
                 weeks = 0
             } else {

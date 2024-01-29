@@ -31,10 +31,10 @@ interface Now {
         override fun dayInMillis(): Long = startOfTheDay().timeInMillis
 
         override fun lastDayOfWeekDate(weeksAgo: Int): Int =
-            startOfTheWeek(weeksAgo).get(Calendar.DAY_OF_MONTH)
+            endOfTheWeek(weeksAgo).get(Calendar.DAY_OF_MONTH)
 
         override fun lastDayOfWeekMillis(weeksAgo: Int): Long =
-            startOfTheWeek(weeksAgo).timeInMillis
+            endOfTheWeek(weeksAgo).timeInMillis
 
         private fun calendar(): Calendar = Calendar.getInstance(timeZone)
 
@@ -46,7 +46,7 @@ interface Now {
             it.add(Calendar.DAY_OF_YEAR, -daysAgo)
         }
 
-        private fun startOfTheWeek(weeksAgo: Int = 0): Calendar = startOfTheDay().also { calendar ->
+        private fun endOfTheWeek(weeksAgo: Int = 0): Calendar = startOfTheDay().also { calendar ->
             calendar.set(Calendar.DAY_OF_WEEK, calendar.firstDayOfWeek)
             calendar.add(Calendar.DATE, 6 - weeksAgo * 7)
         }

@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,6 +27,11 @@ fun CreateHabitScreen(
     navigateUp: () -> Unit,
     onSelectIconClick: () -> Unit
 ) {
+    val iconState = remember { viewModel.iconState() }
+    LaunchedEffect(iconState.value) {
+        viewModel.onEvent(CreateHabitEvent.UpdateIcon(iconState.value.icon, iconState.value.color))
+    }
+
     CreateHabit(
         state = viewModel.state(),
         minHeight = TextFieldDefaults.MinHeight,

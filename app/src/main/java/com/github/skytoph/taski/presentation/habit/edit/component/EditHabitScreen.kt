@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.github.skytoph.taski.presentation.habit.edit.component
 
 import androidx.compose.foundation.background
@@ -23,6 +21,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,6 +51,12 @@ fun EditHabitScreen(
     navigateUp: () -> Unit,
     onSelectIconClick: () -> Unit
 ) {
+
+    val iconState = remember { viewModel.iconState() }
+    LaunchedEffect(iconState.value) {
+        viewModel.onEvent(EditHabitEvent.UpdateIcon(iconState.value.icon, iconState.value.color))
+    }
+
     EditHabit(
         state = viewModel.state(),
         minHeight = TextFieldDefaults.MinHeight,
