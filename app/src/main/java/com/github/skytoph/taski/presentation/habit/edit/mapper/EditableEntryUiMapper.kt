@@ -6,12 +6,10 @@ import com.github.skytoph.taski.domain.habit.Entry
 import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
 import com.github.skytoph.taski.presentation.habit.edit.EntryEditableUi
 import com.github.skytoph.taski.presentation.habit.edit.MonthUi
-import com.github.skytoph.taski.presentation.habit.list.mapper.ColorPercentMapper
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitHistoryUiMapper
 
 class EditableEntryUiMapper(
     private val now: Now,
-    private val colorMapper: ColorPercentMapper,
     private val columns: Int = COLUMNS,
 ) : HabitHistoryUiMapper<EditableHistoryUi> {
 
@@ -23,10 +21,11 @@ class EditableEntryUiMapper(
         (0 until columns * ROWS).map { index ->
             val daysAgo =
                 now.dayOfWeek() - index % ROWS - now.firstDayOfWeek() + index / ROWS * ROWS
+            val timesDone = history[daysAgo]?.timesDone ?: 0
             EntryEditableUi(
-                now.dayOfMonths(daysAgo).toString(),
-                colorMapper.map(history[daysAgo]?.timesDone ?: 0, goal),
-                daysAgo
+                day = now.dayOfMonths(daysAgo).toString(),
+                timesDone = timesDone,
+                daysAgo = daysAgo
             )
         }
 

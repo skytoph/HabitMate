@@ -119,6 +119,7 @@ private fun EditHabit(
         Spacer(modifier = Modifier.height(4.dp))
         HabitHistory(
             history = state.value.history,
+            goal = state.value.goal.value,
             habitColor = state.value.color,
             onDayClick = onDayClick,
             onEdit = onEditHistory

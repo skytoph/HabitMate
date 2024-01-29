@@ -13,7 +13,6 @@ interface HabitToUiMapper<T : HabitHistoryUi> {
 
     abstract class Abstract<T : HabitHistoryUi>(
         private val convertIcon: ConvertIcon,
-        private val colorMapper: ColorPercentMapper,
         private val historyMapper: HabitHistoryUiMapper<T>,
     ) : HabitToUiMapper<T> {
 

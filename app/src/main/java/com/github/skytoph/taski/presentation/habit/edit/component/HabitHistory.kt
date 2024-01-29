@@ -1,3 +1,9 @@
+@file:OptIn(
+    ExperimentalMaterial3Api::class,
+    ExperimentalMaterial3Api::class,
+    ExperimentalFoundationApi::class
+)
+
 package com.github.skytoph.taski.presentation.habit.edit.component
 
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -24,6 +30,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -54,6 +61,7 @@ import kotlin.math.ceil
 @Composable
 fun HabitHistory(
     history: HistoryState = HistoryState(),
+    goal: Int = 1,
     habitColor: Color = IconsColors.allColors.first(),
     onEdit: () -> Unit = {},
     onDayClick: (Int) -> Unit = {},
@@ -66,6 +74,7 @@ fun HabitHistory(
     ) {
         HabitHistoryGrid(
             history = history,
+            goal = goal,
             habitColor = habitColor,
             onDayClick = onDayClick,
         )
@@ -99,10 +108,10 @@ fun HabitHistory(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HabitHistoryGrid(
     history: HistoryState = HistoryState(),
+    goal: Int = 1,
     habitColor: Color = IconsColors.allColors.first(),
     onDayClick: (Int) -> Unit = {},
     squareDp: Dp = 32.dp,
@@ -145,6 +154,7 @@ fun HabitHistoryGrid(
             items(history.entries) { entry ->
                 DailyEntry(
                     entry,
+                    goal,
                     history.isEditable,
                     onDayClick,
                     squareDp,
@@ -159,6 +169,7 @@ fun HabitHistoryGrid(
 @Composable
 private fun DailyEntry(
     entry: EntryEditableUi,
+    goal: Int = 1,
     isEditable: Boolean,
     onDayClick: (Int) -> Unit,
     size: Dp,
@@ -171,15 +182,14 @@ private fun DailyEntry(
             .padding(padding)
             .background(
                 habitColor(
-                    entry.colorPercent,
+                    entry.colorPercent(goal),
                     MaterialTheme.colorScheme.onSecondaryContainer,
                     entryColor
                 ),
                 shape = RoundedCornerShape(10)
             )
-            .clickable {
-                if (isEditable && entry.daysAgo >= 0)
-                    onDayClick(entry.daysAgo)
+            .clickable(enabled = isEditable && entry.daysAgo >= 0) {
+                onDayClick(entry.daysAgo)
             },
         contentAlignment = Alignment.Center
     ) {
@@ -236,7 +246,7 @@ private fun MonthsLabels(
 }
 
 val months = (1..12).map { MonthUi(timestamp = it.toLong(), weeks = if (it == 1) 2 else 4) }
-val history = (1..298).map { EntryEditableUi((it % 30).toString(), 0F, it) }
+val history = (1..298).map { EntryEditableUi((it % 30).toString(), daysAgo = it) }
 
 @Composable
 @Preview

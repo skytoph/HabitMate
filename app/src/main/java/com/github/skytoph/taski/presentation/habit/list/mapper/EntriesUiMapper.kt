@@ -7,7 +7,6 @@ import com.github.skytoph.taski.presentation.habit.list.HistoryUi
 
 class EntriesUiMapper(
     private val now: Now,
-    private val colorMapper: ColorPercentMapper,
     private val numberOfCells: Int = COLUMNS * ROWS
 ) : HabitHistoryUiMapper<HistoryUi> {
 
@@ -15,7 +14,7 @@ class EntriesUiMapper(
         val todayPosition = 7 - now.dayOfWeek()
         val entries =  (numberOfCells - todayPosition - 1 downTo -todayPosition).map { index ->
             val timesDone = history[index]?.timesDone ?: 0
-            val colorPercent = colorMapper.map(timesDone, goal)
+            val colorPercent = ColorPercentMapper.toColorPercent(timesDone, goal)
             EntryUi(colorPercent = colorPercent)
         }
         return HistoryUi(entries = entries, todayPosition = todayPosition())

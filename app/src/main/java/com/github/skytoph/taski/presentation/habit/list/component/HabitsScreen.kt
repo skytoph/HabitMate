@@ -56,7 +56,8 @@ private fun Habits(
             elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp),
             containerColor = MaterialTheme.colorScheme.primary
         ) {
-            Icon(imageVector = Icons.Default.Add, contentDescription = Icons.Default.Add.name)
+            if (!state.value.isLoading)
+                Icon(imageVector = Icons.Default.Add, contentDescription = Icons.Default.Add.name)
         }
     }) { paddingValues ->
         if (state.value.isLoading) LoadingCirclesFullscreen()
