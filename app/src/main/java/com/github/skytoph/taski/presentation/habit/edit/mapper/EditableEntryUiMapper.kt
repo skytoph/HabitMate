@@ -19,17 +19,16 @@ class EditableEntryUiMapper(
         return EditableHistoryUi(entries(goal, history), months())
     }
 
-    private fun entries(goal: Int, history: Map<Int, Entry>): List<EntryEditableUi> {
-        val daysOffset = now.dayOfWeek() - ROWS
-        return (0 until columns * ROWS).map { index ->
-            val daysAgo = (ROWS - index % ROWS - 1) + index / ROWS * ROWS + daysOffset
+    private fun entries(goal: Int, history: Map<Int, Entry>): List<EntryEditableUi> =
+        (0 until columns * ROWS).map { index ->
+            val daysAgo =
+                now.dayOfWeek() - index % ROWS - now.firstDayOfWeek() + index / ROWS * ROWS
             EntryEditableUi(
                 now.dayOfMonths(daysAgo).toString(),
                 colorMapper.map(history[daysAgo]?.timesDone ?: 0, goal),
                 daysAgo
             )
         }
-    }
 
     private fun months(): List<MonthUi> {
         val months: MutableList<MonthUi> = ArrayList()

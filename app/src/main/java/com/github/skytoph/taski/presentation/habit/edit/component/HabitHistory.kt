@@ -36,6 +36,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -216,14 +217,18 @@ private fun MonthsLabels(
                     text = month.getDisplayName(getLocale()),
                     color = MaterialTheme.colorScheme.onSecondaryContainer,
                     style = MaterialTheme.typography.labelMedium,
-                    textAlign = month.alignment
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = month.alignment,
+                    maxLines = 1,
                 )
                 Spacer(modifier = Modifier.width(2.dp))
                 Text(
                     text = month.getDisplayYear(getLocale()),
                     color = MaterialTheme.colorScheme.onSecondaryContainer,
                     style = MaterialTheme.typography.labelSmall,
-                    textAlign = month.alignment
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = month.alignment,
+                    maxLines = 1,
                 )
             }
         }

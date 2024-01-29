@@ -13,6 +13,7 @@ interface Now {
     fun dayInMillis(): Long
     fun lastDayOfWeekDate(weeksAgo: Int = 0): Int
     fun lastDayOfWeekMillis(weeksAgo: Int = 0): Long
+    fun firstDayOfWeek(): Int
 
     class Base(private val timeZone: TimeZone = TimeZone.getTimeZone("UTC")) : Now {
 
@@ -35,6 +36,8 @@ interface Now {
 
         override fun lastDayOfWeekMillis(weeksAgo: Int): Long =
             endOfTheWeek(weeksAgo).timeInMillis
+
+        override fun firstDayOfWeek(): Int = calendar().firstDayOfWeek
 
         private fun calendar(): Calendar = Calendar.getInstance(timeZone)
 
