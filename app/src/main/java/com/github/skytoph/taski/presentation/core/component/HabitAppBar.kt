@@ -16,7 +16,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.github.skytoph.taski.R
 
 @Composable
 fun HabitAppBar(
@@ -52,7 +54,7 @@ fun HabitAppBar(
             IconButton(onClick = onDeleteButtonClick) {
                 Icon(
                     imageVector = Icons.Filled.Close,
-                    contentDescription = "delete habit",
+                    contentDescription = stringResource(R.string.action_delete_habit),
                     modifier = Modifier.size(24.dp),
                     tint = MaterialTheme.colorScheme.error
                 )
@@ -65,7 +67,7 @@ fun HabitAppBar(
             }) {
                 Icon(
                     imageVector = Icons.Filled.Check,
-                    contentDescription = "save habit",
+                    contentDescription = stringResource(R.string.action_save_habit),
                     modifier = Modifier.size(24.dp),
                     tint = MaterialTheme.colorScheme.onSurface
                 )

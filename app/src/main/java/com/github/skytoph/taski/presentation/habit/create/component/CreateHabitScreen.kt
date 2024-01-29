@@ -10,10 +10,12 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.component.HabitAppBar
 import com.github.skytoph.taski.presentation.habit.create.CreateHabitEvent
 import com.github.skytoph.taski.presentation.habit.create.CreateHabitState
@@ -60,7 +62,7 @@ private fun CreateHabit(
             .fillMaxSize()
     ) {
         HabitAppBar(
-            label = "create new habit",
+            label = stringResource(R.string.create_new_habit),
             navigateUp = navigateUp,
             isSaveButtonVisible = true,
             onSaveButtonClick = onSaveHabit

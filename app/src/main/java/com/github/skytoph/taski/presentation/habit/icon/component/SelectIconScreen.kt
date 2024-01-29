@@ -31,6 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.component.HabitAppBar
 import com.github.skytoph.taski.presentation.habit.icon.IconState
 import com.github.skytoph.taski.presentation.habit.icon.IconsColors
@@ -58,7 +59,7 @@ private fun SelectIcon(
     Scaffold(topBar = {
         HabitAppBar(
             modifier = Modifier.padding(horizontal = 16.dp),
-            label = "color and icon",
+            label = stringResource(R.string.color_and_icon_label),
             navigateUp = navigateUp,
             isSaveButtonVisible = false
         )

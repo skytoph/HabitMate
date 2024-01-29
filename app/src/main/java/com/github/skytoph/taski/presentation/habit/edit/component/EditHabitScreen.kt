@@ -14,7 +14,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -96,7 +95,7 @@ private fun EditHabit(
             .fillMaxSize()
     ) {
         HabitAppBar(
-            label = "edit habit",
+            label = stringResource(R.string.edit_habit),
             navigateUp = navigateUp,
             isSaveButtonVisible = true,
             onSaveButtonClick = onSaveHabit,
@@ -115,7 +114,7 @@ private fun EditHabit(
             onIncreaseGoal = onIncreaseGoal
         )
         Spacer(modifier = Modifier.height(16.dp))
-        Text(text = "history", style = MaterialTheme.typography.bodyMedium)
+        Text(text = stringResource(R.string.history_label), style = MaterialTheme.typography.bodyMedium)
         Spacer(modifier = Modifier.height(4.dp))
         HabitHistory(
             history = state.value.history,
@@ -162,7 +161,7 @@ fun EditBaseHabit(
         )
     }
     Spacer(modifier = Modifier.height(8.dp))
-    Text(text = "goal", style = MaterialTheme.typography.bodyMedium)
+    Text(text = stringResource(R.string.goal_label), style = MaterialTheme.typography.bodyMedium)
     Spacer(modifier = Modifier.height(4.dp))
     Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
         Text(
@@ -201,7 +200,7 @@ fun IconSelector(
     onClick: () -> Unit
 ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(modifier = modifier, text = "icon", style = MaterialTheme.typography.bodyMedium)
+        Text(modifier = modifier, text = stringResource(R.string.icon_label), style = MaterialTheme.typography.bodyMedium)
         Spacer(modifier = Modifier.height(4.dp))
         IconButton(
             onClick = onClick,

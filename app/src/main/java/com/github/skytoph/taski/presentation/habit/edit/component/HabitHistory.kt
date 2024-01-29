@@ -88,7 +88,7 @@ fun HabitHistory(
         ) {
             if (history.isEditable)
                 Text(
-                    text = "tap on the day to update your progress\nchanges will be saved immediately",
+                    text = stringResource(R.string.edit_history_hint),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onBackground,
                     textAlign = TextAlign.End

@@ -7,8 +7,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import com.github.skytoph.taski.R
 import com.github.skytoph.taski.ui.theme.TaskiTheme
 
 @Composable
@@ -19,7 +21,7 @@ fun DeleteAlertDialog(
     AlertDialog(
         text = {
             Text(
-                text = "Do you want to delete the habit?",
+                text = stringResource(R.string.delete_habit_confirmation_dialog_title),
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onBackground
@@ -30,12 +32,12 @@ fun DeleteAlertDialog(
         },
         confirmButton = {
             TextButton(onClick = onConfirm) {
-                Text("Delete", color = MaterialTheme.colorScheme.error)
+                Text(stringResource(R.string.action_delete), color = MaterialTheme.colorScheme.error)
             }
         },
         dismissButton = {
             TextButton(onClick = onDismissRequest) {
-                Text("Cancel", color = MaterialTheme.colorScheme.onSecondary)
+                Text(stringResource(R.string.action_cancel), color = MaterialTheme.colorScheme.onSecondary)
             }
         }
     )
