@@ -37,4 +37,5 @@
     <string name="icons_learning">learning</string>
     <string name="icons_health">health</string>
     <string name="icons_art">art</string>
+    <string name="entry_tooltip_percent_done">%1$s / %2$s done</string>
 </resources>

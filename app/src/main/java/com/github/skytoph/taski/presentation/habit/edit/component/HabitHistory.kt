@@ -34,6 +34,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.PlainTooltipBox
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -42,12 +43,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
+import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.component.getLocale
 import com.github.skytoph.taski.presentation.core.fadingEdge
 import com.github.skytoph.taski.presentation.core.habitColor
@@ -176,28 +179,33 @@ private fun DailyEntry(
     padding: Dp,
     entryColor: Color
 ) {
-    Box(
-        modifier = Modifier
-            .size(size)
-            .padding(padding)
-            .background(
-                habitColor(
-                    entry.colorPercent(goal),
-                    MaterialTheme.colorScheme.onSecondaryContainer,
-                    entryColor
-                ),
-                shape = RoundedCornerShape(10)
-            )
-            .clickable(enabled = isEditable && entry.daysAgo >= 0) {
-                onDayClick(entry.daysAgo)
-            },
-        contentAlignment = Alignment.Center
+    PlainTooltipBox(
+        tooltip = { Text(stringResource(R.string.entry_tooltip_percent_done, entry.timesDone, goal)) }
     ) {
-        Text(
-            text = entry.day,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            style = MaterialTheme.typography.labelSmall
-        )
+        Box(
+            modifier = Modifier
+                .tooltipAnchor()
+                .size(size)
+                .padding(padding)
+                .background(
+                    habitColor(
+                        entry.colorPercent(goal),
+                        MaterialTheme.colorScheme.onSecondaryContainer,
+                        entryColor
+                    ),
+                    shape = RoundedCornerShape(10)
+                )
+                .clickable(enabled = isEditable && entry.daysAgo >= 0) {
+                    onDayClick(entry.daysAgo)
+                },
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = entry.day,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                style = MaterialTheme.typography.labelSmall
+            )
+        }
     }
 }
 
