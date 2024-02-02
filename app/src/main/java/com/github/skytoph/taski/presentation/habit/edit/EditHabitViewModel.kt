@@ -9,16 +9,16 @@ import androidx.lifecycle.viewModelScope
 import com.github.skytoph.taski.presentation.habit.HabitScreens
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.icon.IconState
-import com.github.skytoph.taski.presentation.habit.icon.SelectIconEvent
-import com.github.skytoph.taski.presentation.habit.list.mapper.HabitToUiMapper
+import com.github.skytoph.taski.presentation.habit.list.mapper.HabitHistoryUiMapper
+import com.github.skytoph.taski.presentation.habit.list.mapper.HabitUiMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.withIndex
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,7 +26,8 @@ class EditHabitViewModel @Inject constructor(
     private val state: MutableState<EditHabitState> = mutableStateOf(EditHabitState()),
     private val iconState: MutableState<IconState>,
     private val interactor: EditHabitInteractor,
-    private val mapper: HabitToUiMapper<EditableHistoryUi>,
+    private val habitMapper: HabitUiMapper,
+    private val historyMapper: HabitHistoryUiMapper<EditableHistoryUi>,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -34,15 +35,14 @@ class EditHabitViewModel @Inject constructor(
         onEvent(EditHabitEvent.Progress(true))
         savedStateHandle.get<Long>(HabitScreens.EditHabit.habitIdArg)?.let { id ->
             if (id != HabitUi.ID_DEFAULT) {
-                interactor.habit(id).map { habit -> habit.map(mapper) }
+                viewModelScope.launch(Dispatchers.IO) {
+                    val habit = habitMapper.map(interactor.habit(id))
+                    withContext(Dispatchers.Main) { onEvent(EditHabitEvent.Init(habit)) }
+                }
+                interactor.history(id)
+                    .map { history -> historyMapper.map(history = history) }
                     .flowOn(Dispatchers.IO)
-                    .withIndex()
-                    .onEach {
-                        if (it.index == 0) {
-                            onEvent(EditHabitEvent.Init(it.value))
-                            SelectIconEvent.Update(it.value.icon, it.value.color).handle(iconState)
-                        } else onEvent(EditHabitEvent.UpdateHistory(it.value.history))
-                    }
+                    .onEach { onEvent(EditHabitEvent.UpdateHistory(it)) }
                     .launchIn(viewModelScope)
             }
         }

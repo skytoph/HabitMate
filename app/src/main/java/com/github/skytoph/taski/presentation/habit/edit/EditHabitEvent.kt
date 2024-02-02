@@ -11,7 +11,7 @@ import com.github.skytoph.taski.presentation.habit.icon.IconState
 interface EditHabitEvent {
     fun handle(state: MutableState<EditHabitState>, iconState: MutableState<IconState>)
 
-    class Init(private val habit: HabitUi<EditableHistoryUi>) : EditHabitEvent {
+    class Init(private val habit: HabitUi) : EditHabitEvent {
 
         override fun handle(state: MutableState<EditHabitState>, iconState: MutableState<IconState>) {
             state.value = EditHabitState(
@@ -21,9 +21,6 @@ interface EditHabitEvent {
                 icon = habit.icon,
                 color = habit.color,
                 isLoading = false,
-                history = state.value.history.copy(
-                    entries = habit.history.entries, months = habit.history.months
-                )
             )
         }
     }

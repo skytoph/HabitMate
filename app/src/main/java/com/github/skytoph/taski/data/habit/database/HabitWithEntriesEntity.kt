@@ -4,7 +4,7 @@ import androidx.room.Embedded
 import androidx.room.Relation
 import com.github.skytoph.taski.data.habit.mapper.HabitDBToDomainMapper
 
-data class HabitWithEntries(
+data class HabitWithEntriesEntity(
 
     @Embedded
     val habit: HabitEntity,

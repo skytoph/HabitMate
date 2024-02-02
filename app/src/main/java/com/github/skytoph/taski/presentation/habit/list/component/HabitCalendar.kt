@@ -123,8 +123,8 @@ fun HabitCalendarPreview() {
     val history = HistoryUi((0..363).map { EntryUi(1F / (it % 20)) }.toList())
     TaskiTheme {
         val habit = HabitUi(
-            0, "dev", 1, Icons.Outlined.AcUnit, IconsColors.allColors.first(), history
+            0, "dev", 1, Icons.Outlined.AcUnit, IconsColors.allColors.first()
         )
-        HabitCard(onDone = {}, habit = habit)
+        HabitCard(onDone = {}, habit = habit, history = history)
     }
 }

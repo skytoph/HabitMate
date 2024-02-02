@@ -4,13 +4,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitDomainMapper
 
-data class HabitUi<T : HabitHistoryUi>(
+data class HabitUi(
     val id: Long = ID_DEFAULT,
     val title: String,
     val goal: Int = 1,
     val icon: ImageVector,
     val color: Color,
-    val history: T,
 ) {
 
     fun map(mapper: HabitDomainMapper) = mapper.map(id, title, goal, icon, color)
@@ -22,8 +21,11 @@ data class HabitUi<T : HabitHistoryUi>(
     }
 }
 
-interface HabitHistoryUi {
-    object Empty : HabitHistoryUi
-}
+interface HabitHistoryUi
 
 interface HabitEntryUi
+
+data class HabitWithHistoryUi<T : HabitHistoryUi>(
+    val habit: HabitUi,
+    val history: T
+)

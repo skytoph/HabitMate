@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.skytoph.taski.presentation.core.component.LoadingCirclesFullscreen
 import com.github.skytoph.taski.presentation.habit.HabitUi
+import com.github.skytoph.taski.presentation.habit.HabitWithHistoryUi
 import com.github.skytoph.taski.presentation.habit.icon.GreenBright
 import com.github.skytoph.taski.presentation.habit.icon.PinkRose
 import com.github.skytoph.taski.presentation.habit.list.EntryUi
@@ -33,7 +34,7 @@ import com.github.skytoph.taski.ui.theme.TaskiTheme
 fun HabitsScreen(
     viewModel: HabitsViewModel = hiltViewModel(),
     onCreateHabit: () -> Unit,
-    onHabitClick: (HabitUi<HistoryUi>) -> Unit,
+    onHabitClick: (HabitUi) -> Unit,
 ) {
     Habits(
         state = viewModel.state(),
@@ -47,8 +48,8 @@ fun HabitsScreen(
 private fun Habits(
     state: State<HabitListState>,
     onCreateHabit: () -> Unit = {},
-    onHabitClick: (HabitUi<HistoryUi>) -> Unit = {},
-    onHabitDone: (HabitUi<HistoryUi>) -> Unit = {}
+    onHabitClick: (HabitUi) -> Unit = {},
+    onHabitDone: (HabitUi) -> Unit = {}
 ) {
     Scaffold(floatingActionButton = {
         FloatingActionButton(
@@ -76,11 +77,11 @@ fun HabitScreenPreview() {
     val history = HistoryUi((0..363).map { EntryUi(1F / (it % 20)) }.toList())
 
     val habits = listOf(
-        HabitUi(
-            0, "dev", 1, Icons.Outlined.Code, GreenBright, history
+        HabitWithHistoryUi(
+            HabitUi(0, "dev", 1, Icons.Outlined.Code, GreenBright), history
         ),
-        HabitUi(
-            1, "yoga", 1, Icons.Outlined.SportsGymnastics, PinkRose, history
+        HabitWithHistoryUi(
+            HabitUi(1, "yoga", 1, Icons.Outlined.SportsGymnastics, PinkRose), history
         ),
     )
 

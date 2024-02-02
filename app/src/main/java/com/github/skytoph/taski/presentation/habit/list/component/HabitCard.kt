@@ -36,7 +36,8 @@ import com.github.skytoph.taski.ui.theme.TaskiTheme
 fun HabitCard(
     modifier: Modifier = Modifier,
     onDone: () -> Unit,
-    habit: HabitUi<HistoryUi>,
+    habit: HabitUi,
+    history: HistoryUi,
 ) {
     Card(
         modifier = modifier
@@ -68,7 +69,7 @@ fun HabitCard(
                 IconButton(onClick = onDone) {
                     val defaultColor = MaterialTheme.colorScheme.secondaryContainer
                     val colorPercent =
-                        habit.history.entries.getOrNull(habit.history.todayPosition)?.colorPercent
+                        history.entries.getOrNull(history.todayPosition)?.colorPercent
                     val color = habitColor(colorPercent ?: 0F, defaultColor, habit.color)
                     Icon(
                         imageVector = Icons.Outlined.Check,
@@ -87,7 +88,7 @@ fun HabitCard(
             HabitCalendar(
                 Modifier.padding(start = 8.dp, end = 8.dp, bottom = 8.dp),
                 habit.color,
-                habit.history
+                history
             )
         }
     }
@@ -99,8 +100,8 @@ private val history = HistoryUi((0..360).map { EntryUi() }.toList())
 @Preview(showSystemUi = true, showBackground = true)
 fun HabitCardPreview() {
     TaskiTheme {
-        val habit = HabitUi(0, "dev", 1, Icons.Outlined.Code, GreenBright, history)
-        HabitCard(habit = habit, onDone = {})
+        val habit = HabitUi(0, "dev", 1, Icons.Outlined.Code, GreenBright)
+        HabitCard(habit = habit, history = history, onDone = {})
     }
 }
 
@@ -108,7 +109,7 @@ fun HabitCardPreview() {
 @Preview(showSystemUi = true, showBackground = true)
 fun DarkHabitCardPreview() {
     TaskiTheme(darkTheme = true) {
-        val habit = HabitUi(0, "dev", 1, Icons.Outlined.Code, GreenBright, history)
-        HabitCard(habit = habit, onDone = {})
+        val habit = HabitUi(0, "dev", 1, Icons.Outlined.Code, GreenBright)
+        HabitCard(habit = habit, history = history, onDone = {})
     }
 }

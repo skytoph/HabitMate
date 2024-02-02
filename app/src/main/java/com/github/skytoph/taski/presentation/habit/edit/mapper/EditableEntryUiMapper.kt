@@ -3,22 +3,20 @@ package com.github.skytoph.taski.presentation.habit.edit.mapper
 import androidx.compose.ui.text.style.TextAlign
 import com.github.skytoph.taski.core.Now
 import com.github.skytoph.taski.domain.habit.Entry
+import com.github.skytoph.taski.domain.habit.EntryList
 import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
 import com.github.skytoph.taski.presentation.habit.edit.EntryEditableUi
 import com.github.skytoph.taski.presentation.habit.edit.MonthUi
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitHistoryUiMapper
 
-class EditableEntryUiMapper(
-    private val now: Now,
-    private val columns: Int = COLUMNS,
-) : HabitHistoryUiMapper<EditableHistoryUi> {
+class EditableEntryUiMapper(private val now: Now) : HabitHistoryUiMapper<EditableHistoryUi> {
 
-    override fun map(goal: Int, history: Map<Int, Entry>): EditableHistoryUi {
-        return EditableHistoryUi(entries(goal, history), months())
+    override fun map(column: Int, goal: Int, history: EntryList): EditableHistoryUi {
+        return EditableHistoryUi(entries(column, history.entries), months())
     }
 
-    private fun entries(goal: Int, history: Map<Int, Entry>): List<EntryEditableUi> =
-        (0 until columns * ROWS).map { index ->
+    private fun entries(column: Int, history: Map<Int, Entry>): List<EntryEditableUi> =
+        (0 until COLUMNS * ROWS).map { index ->
             val daysAgo =
                 now.dayOfWeek() - index % ROWS - now.firstDayOfWeek() + index / ROWS * ROWS
             val timesDone = history[daysAgo]?.timesDone ?: 0

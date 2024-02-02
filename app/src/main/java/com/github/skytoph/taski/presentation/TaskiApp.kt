@@ -20,7 +20,8 @@ import com.github.skytoph.taski.presentation.auth.signup.SignUpScreen
 import com.github.skytoph.taski.presentation.auth.verify.VerificationScreen
 import com.github.skytoph.taski.presentation.habit.HabitScreens
 import com.github.skytoph.taski.presentation.habit.HabitUi
-import com.github.skytoph.taski.presentation.habit.create.component.EditHabitScreen
+import com.github.skytoph.taski.presentation.habit.create.component.CreateHabitScreen
+import com.github.skytoph.taski.presentation.habit.edit.component.EditHabitScreen
 import com.github.skytoph.taski.presentation.habit.icon.component.SelectIconScreen
 import com.github.skytoph.taski.presentation.habit.list.component.HabitsScreen
 import com.github.skytoph.taski.presentation.profile.ProfileScreen

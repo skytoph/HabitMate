@@ -25,7 +25,6 @@ data class EditHabitState(
         goal = goal.value,
         icon = icon,
         color = color,
-        history = EditableHistoryUi()
     )
 }
 

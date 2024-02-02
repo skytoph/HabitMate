@@ -8,3 +8,5 @@ import com.github.skytoph.taski.domain.habit.Habit
 fun EntryEntity.toEntry() = Entry(timestamp, timesDone)
 
 fun Habit.toHabitDB() = HabitEntity(id, title, goal, iconName, color)
+
+fun HabitEntity.toHabit() = Habit(id, title, goal, iconName, color)

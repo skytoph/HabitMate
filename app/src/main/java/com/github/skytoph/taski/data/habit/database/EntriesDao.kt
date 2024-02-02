@@ -19,11 +19,14 @@ interface EntriesDao {
     @Query("SELECT * FROM entry WHERE habit_id = :id AND timestamp = :timestamp")
     fun entry(id: Long, timestamp: Long): EntryEntity?
 
+    @Query("SELECT * FROM entry WHERE habit_id = :id")
+    fun entries(id: Long): Flow<List<EntryEntity>>
+
     @Transaction
     @Query("SELECT * FROM habit")
-    fun habitsWithEntries(): Flow<List<HabitWithEntries>>
+    fun habitsWithEntries(): Flow<List<HabitWithEntriesEntity>>
 
     @Transaction
     @Query("SELECT * FROM habit WHERE id = :id")
-    fun habitWithEntriesById(id: Long): Flow<HabitWithEntries>
+    fun habitWithEntriesById(id: Long): Flow<HabitWithEntriesEntity>
 }

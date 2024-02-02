@@ -7,7 +7,8 @@ import com.github.skytoph.taski.presentation.habit.edit.mapper.EditableEntryUiMa
 import com.github.skytoph.taski.presentation.habit.edit.mapper.HabitWithEditableEntryUiMapper
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitDomainMapper
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitHistoryUiMapper
-import com.github.skytoph.taski.presentation.habit.list.mapper.HabitToUiMapper
+import com.github.skytoph.taski.presentation.habit.list.mapper.HabitUiMapper
+import com.github.skytoph.taski.presentation.habit.list.mapper.HabitWithHistoryUiMapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,10 +20,9 @@ object EditHabitViewModelModule {
 
     @Provides
     fun habitWithEditableEntryMapper(
-        mapper: HabitHistoryUiMapper<EditableHistoryUi>,
-        convertIcon: ConvertIcon,
-    ): HabitToUiMapper<EditableHistoryUi> =
-        HabitWithEditableEntryUiMapper(convertIcon, mapper)
+        habitMapper: HabitUiMapper, mapper: HabitHistoryUiMapper<EditableHistoryUi>,
+    ): HabitWithHistoryUiMapper<EditableHistoryUi> =
+        HabitWithEditableEntryUiMapper(habitMapper, mapper)
 
     @Provides
     fun domainMapper(convertIcon: ConvertIcon, now: Now): HabitDomainMapper =
@@ -33,4 +33,7 @@ object EditHabitViewModelModule {
 
     @Provides
     fun historyMapper(now: Now): EditableEntryUiMapper = EditableEntryUiMapper(now)
+
+    @Provides
+    fun uiMapper(convertIcon: ConvertIcon): HabitUiMapper = HabitUiMapper.Base(convertIcon)
 }
