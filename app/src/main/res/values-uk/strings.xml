@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Звички</string>
+    <string name="action_delete_habit">видалити звичку</string>
+    <string name="action_save_habit">зберегти звичку</string>
+
+    <string name="icons_activity">активність</string>
+    <string name="icons_sports">спорт</string>
+    <string name="icons_rest">відпочинок</string>
+    <string name="icons_social">соціум</string>
+    <string name="icons_learning">навчання</string>
+    <string name="icons_health">здоров\'я</string>
+    <string name="icons_art">мистецтво</string>
+    <string name="create_new_habit">нова звичка</string>
+    <string name="edit_habit">редагувати звичку</string>
+    <string name="delete_habit_confirmation_dialog_title">ви дійсно хочете видалити звичку?</string>
+    <string name="history_label">історія</string>
+    <string name="icon_label">іконка</string>
+    <string name="goal_label">мета</string>
+    <string name="goal_value">%1$s / день</string>
+    <string name="edit_history_hint">натисніть на день для оновлення прогресу\\nзміни будуть збережені автоматично</string>
+    <string name="entry_tooltip_percent_done">%1$s / %2$s виконано</string>
+    <string name="color_and_icon_label">колір та іконка</string>
+    <string name="action_delete">видалити</string>
+    <string name="action_cancel">відмінити</string>
+    <string name="habit_label">звичка</string>
+</resources>

@@ -13,7 +13,9 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.github.skytoph.taski.R
 
 @Composable
 fun TitleTextField(
@@ -22,7 +24,7 @@ fun TitleTextField(
     onValueChange: (String) -> Unit
 ) {
     Column(modifier = modifier) {
-        Text(text = "habit", style = MaterialTheme.typography.bodyMedium)
+        Text(text = stringResource(R.string.habit_label), style = MaterialTheme.typography.bodyMedium)
         Spacer(modifier = Modifier.height(4.dp))
         TextField(
             modifier = Modifier
