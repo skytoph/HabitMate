@@ -1,7 +1,6 @@
 @file:OptIn(
+    ExperimentalFoundationApi::class,
     ExperimentalMaterial3Api::class,
-    ExperimentalMaterial3Api::class,
-    ExperimentalFoundationApi::class
 )
 
 package com.github.skytoph.taski.presentation.habit.edit.component
@@ -22,7 +21,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.staggeredgrid.LazyHorizontalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
@@ -50,21 +48,25 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
+import androidx.paging.PagingData
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.component.getLocale
 import com.github.skytoph.taski.presentation.core.fadingEdge
 import com.github.skytoph.taski.presentation.core.habitColor
+import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
 import com.github.skytoph.taski.presentation.habit.edit.EntryEditableUi
-import com.github.skytoph.taski.presentation.habit.edit.HistoryState
 import com.github.skytoph.taski.presentation.habit.edit.MonthUi
 import com.github.skytoph.taski.presentation.habit.icon.IconsColors
 import com.github.skytoph.taski.ui.theme.TaskiTheme
-import kotlin.math.ceil
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 
 @Composable
 fun HabitHistory(
-    history: HistoryState = HistoryState(),
+    entries: Flow<PagingData<EditableHistoryUi>>,
     goal: Int = 1,
+    isEditable: Boolean = false,
     habitColor: Color = IconsColors.allColors.first(),
     onEdit: () -> Unit = {},
     onDayClick: (Int) -> Unit = {},
@@ -76,8 +78,9 @@ fun HabitHistory(
         )
     ) {
         HabitHistoryGrid(
-            history = history,
+            entries = entries,
             goal = goal,
+            isEditable = isEditable,
             habitColor = habitColor,
             onDayClick = onDayClick,
         )
@@ -86,7 +89,7 @@ fun HabitHistory(
             horizontalArrangement = Arrangement.End,
             modifier = Modifier.fillMaxWidth()
         ) {
-            if (history.isEditable)
+            if (isEditable)
                 Text(
                     text = stringResource(R.string.edit_history_hint),
                     style = MaterialTheme.typography.labelSmall,
@@ -95,7 +98,7 @@ fun HabitHistory(
                 )
             IconButton(onClick = onEdit) {
                 Icon(
-                    imageVector = if (history.isEditable) Icons.Outlined.Check else Icons.Default.Edit,
+                    imageVector = if (isEditable) Icons.Outlined.Check else Icons.Default.Edit,
                     contentDescription = null,
                     modifier = Modifier
                         .size(32.dp)
@@ -113,26 +116,24 @@ fun HabitHistory(
 
 @Composable
 fun HabitHistoryGrid(
-    history: HistoryState = HistoryState(),
+    entries: Flow<PagingData<EditableHistoryUi>>,
     goal: Int = 1,
+    isEditable: Boolean,
     habitColor: Color = IconsColors.allColors.first(),
     onDayClick: (Int) -> Unit = {},
     squareDp: Dp = 32.dp,
     squareOffsetDp: Dp = 1.dp,
     initialOffsetDp: Dp = 4.dp,
 ) {
-    val density = LocalDensity.current
-
-    val heightDp = 8 * squareDp
-    val widthDp = ceil(history.entries.size.toFloat() / 7F).toInt() * squareDp
+    val items = entries.collectAsLazyPagingItems()
 
     val fadingBrush = Brush.horizontalGradient(
         0f to Color.Transparent,
         0.1f to Color.Black,
-        endX = with(density) { (40.dp).toPx() }
+        endX = with(LocalDensity.current) { (40.dp).toPx() }
     )
 
-    Box(
+    Column(
         modifier = Modifier
             .padding(initialOffsetDp)
             .fillMaxWidth()
@@ -142,28 +143,43 @@ fun HabitHistoryGrid(
                 shape = RoundedCornerShape(10f)
             )
     ) {
-        LazyHorizontalStaggeredGrid(
-            rows = StaggeredGridCells.Fixed(8),
+        LazyRow(
             modifier = Modifier
-                .height(heightDp)
                 .padding(start = initialOffsetDp)
                 .fadingEdge(fadingBrush),
             contentPadding = PaddingValues(2.dp),
             reverseLayout = true,
         ) {
-            item {
-                MonthsLabels(history.months, squareDp, widthDp, squareOffsetDp)
-            }
-            items(history.entries) { entry ->
-                DailyEntry(
-                    entry,
-                    goal,
-                    history.isEditable,
-                    onDayClick,
-                    squareDp,
-                    squareOffsetDp,
-                    habitColor
-                )
+            items(count = items.itemCount) { index ->
+                items[index]?.let { item ->
+                    LazyHorizontalStaggeredGrid(
+                        rows = StaggeredGridCells.Fixed(8),
+                        modifier = Modifier
+                            .width(squareDp.times(item.month.weeks))
+                            .height(8 * squareDp),
+                        reverseLayout = true,
+                        userScrollEnabled = false
+                    ) {
+                        item {
+                            MonthLabel(
+                                month = item.month,
+                                entrySize = squareDp,
+                                padding = squareOffsetDp
+                            )
+                        }
+                        items(items = item.entries, key = { it.daysAgo }) { entry ->
+                            DailyEntry(
+                                entry,
+                                goal,
+                                isEditable,
+                                onDayClick,
+                                squareDp,
+                                squareOffsetDp,
+                                habitColor
+                            )
+                        }
+                    }
+                }
             }
         }
     }
@@ -180,7 +196,9 @@ private fun DailyEntry(
     entryColor: Color
 ) {
     PlainTooltipBox(
-        tooltip = { Text(stringResource(R.string.entry_tooltip_percent_done, entry.timesDone, goal)) }
+        tooltip = {
+            Text(stringResource(R.string.entry_tooltip_percent_done, entry.timesDone, goal))
+        }
     ) {
         Box(
             modifier = Modifier
@@ -210,58 +228,48 @@ private fun DailyEntry(
 }
 
 @Composable
-private fun MonthsLabels(
-    months: List<MonthUi>,
+private fun MonthLabel(
+    month: MonthUi,
     entrySize: Dp,
-    widthDp: Dp,
-    padding: Dp,
+    padding: Dp
 ) {
-    LazyRow(
-        userScrollEnabled = false,
-        reverseLayout = true,
+    Row(
         modifier = Modifier
+            .width(entrySize.times(month.weeks))
             .height(entrySize)
-            .width(widthDp)
+            .padding(padding),
+        verticalAlignment = Alignment.Bottom
     ) {
-        items(months, key = { it.timestamp }) { month ->
-            Row(
-                modifier = Modifier
-                    .width(entrySize.times(month.weeks))
-                    .height(entrySize)
-                    .padding(padding),
-                verticalAlignment = Alignment.Bottom
-            ) {
-                Text(
-                    text = month.getDisplayName(getLocale()),
-                    color = MaterialTheme.colorScheme.onSecondaryContainer,
-                    style = MaterialTheme.typography.labelMedium,
-                    overflow = TextOverflow.Ellipsis,
-                    textAlign = month.alignment,
-                    maxLines = 1,
-                )
-                Spacer(modifier = Modifier.width(2.dp))
-                Text(
-                    text = month.getDisplayYear(getLocale()),
-                    color = MaterialTheme.colorScheme.onSecondaryContainer,
-                    style = MaterialTheme.typography.labelSmall,
-                    overflow = TextOverflow.Ellipsis,
-                    textAlign = month.alignment,
-                    maxLines = 1,
-                )
-            }
-        }
+        Text(
+            text = month.getDisplayName(getLocale()),
+            color = MaterialTheme.colorScheme.onSecondaryContainer,
+            style = MaterialTheme.typography.labelMedium,
+            overflow = TextOverflow.Ellipsis,
+            textAlign = month.alignment,
+            maxLines = 1,
+        )
+        Spacer(modifier = Modifier.width(2.dp))
+        Text(
+            text = month.getDisplayYear(getLocale()),
+            color = MaterialTheme.colorScheme.onSecondaryContainer,
+            style = MaterialTheme.typography.labelSmall,
+            overflow = TextOverflow.Ellipsis,
+            textAlign = month.alignment,
+            maxLines = 1,
+        )
     }
 }
 
 val months = (1..12).map { MonthUi(timestamp = it.toLong(), weeks = if (it == 1) 2 else 4) }
-val history = (1..298).map { EntryEditableUi((it % 30).toString(), daysAgo = it) }
+val history = (1..30).map { EntryEditableUi((it).toString(), daysAgo = it) }
+val flow = flowOf(PagingData.from(months.map { EditableHistoryUi(history, it) }))
 
 @Composable
 @Preview
 fun DarkCalendarEditableGridPreview() {
     TaskiTheme(darkTheme = true) {
         Surface(modifier = Modifier.padding(16.dp)) {
-            HabitHistory(HistoryState(history, months))
+            HabitHistory(flow)
         }
     }
 }

@@ -22,7 +22,6 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.PagingData
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.component.HabitAppBar
 import com.github.skytoph.taski.presentation.core.component.SquareButton
@@ -42,7 +42,9 @@ import com.github.skytoph.taski.presentation.habit.create.GoalState
 import com.github.skytoph.taski.presentation.habit.edit.EditHabitEvent
 import com.github.skytoph.taski.presentation.habit.edit.EditHabitState
 import com.github.skytoph.taski.presentation.habit.edit.EditHabitViewModel
+import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
 import com.github.skytoph.taski.ui.theme.TaskiTheme
+import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun EditHabitScreen(
@@ -58,6 +60,7 @@ fun EditHabitScreen(
 
     EditHabit(
         state = viewModel.state(),
+        entries = viewModel.entries,
         minHeight = TextFieldDefaults.MinHeight,
         navigateUp = navigateUp,
         onSelectIconClick = onSelectIconClick,
@@ -68,14 +71,14 @@ fun EditHabitScreen(
         onTypeTitle = { viewModel.onEvent(EditHabitEvent.EditTitle(it)) },
         onDecreaseGoal = { viewModel.onEvent(EditHabitEvent.DecreaseGoal) },
         onIncreaseGoal = { viewModel.onEvent(EditHabitEvent.IncreaseGoal) },
-        onDayClick = { viewModel.habitDone(it) },
-        onEditHistory = { viewModel.onEvent(EditHabitEvent.EditHistory) }
-    )
+        onDayClick = { viewModel.habitDone(it) }
+    ) { viewModel.onEvent(EditHabitEvent.EditHistory) }
 }
 
 @Composable
 private fun EditHabit(
     state: State<EditHabitState>,
+    entries: Flow<PagingData<EditableHistoryUi>>,
     minHeight: Dp = 56.dp,
     navigateUp: () -> Unit = {},
     onSelectIconClick: () -> Unit = {},
@@ -117,11 +120,12 @@ private fun EditHabit(
         Text(text = stringResource(R.string.history_label), style = MaterialTheme.typography.bodyMedium)
         Spacer(modifier = Modifier.height(4.dp))
         HabitHistory(
-            history = state.value.history,
+            entries = entries,
             goal = state.value.goal.value,
             habitColor = state.value.color,
+            onEdit = onEditHistory,
+            isEditable = state.value.isHistoryEditable,
             onDayClick = onDayClick,
-            onEdit = onEditHistory
         )
     }
 

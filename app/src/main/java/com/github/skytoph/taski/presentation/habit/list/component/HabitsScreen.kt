@@ -52,13 +52,12 @@ private fun Habits(
     onHabitDone: (HabitUi) -> Unit = {}
 ) {
     Scaffold(floatingActionButton = {
-        FloatingActionButton(
+        if (!state.value.isLoading) FloatingActionButton(
             onClick = onCreateHabit,
             elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp),
             containerColor = MaterialTheme.colorScheme.primary
         ) {
-            if (!state.value.isLoading)
-                Icon(imageVector = Icons.Default.Add, contentDescription = Icons.Default.Add.name)
+            Icon(imageVector = Icons.Default.Add, contentDescription = Icons.Default.Add.name)
         }
     }) { paddingValues ->
         if (state.value.isLoading) LoadingCirclesFullscreen()

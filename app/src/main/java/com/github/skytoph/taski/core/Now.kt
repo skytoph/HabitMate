@@ -13,7 +13,9 @@ interface Now {
     fun dayInMillis(): Long
     fun lastDayOfWeekDate(weeksAgo: Int = 0): Int
     fun lastDayOfWeekMillis(weeksAgo: Int = 0): Long
+    fun monthMillis(monthsAgo: Int = 0): Long
     fun firstDayOfWeek(): Int
+    fun weeksInMonth(monthsAgo: Int = 0): Int
 
     class Base(private val timeZone: TimeZone = TimeZone.getTimeZone("UTC")) : Now {
 
@@ -37,7 +39,12 @@ interface Now {
         override fun lastDayOfWeekMillis(weeksAgo: Int): Long =
             endOfTheWeek(weeksAgo).timeInMillis
 
+        override fun monthMillis(monthsAgo: Int): Long = month(monthsAgo).timeInMillis
+
         override fun firstDayOfWeek(): Int = calendar().firstDayOfWeek
+
+        override fun weeksInMonth(monthsAgo: Int): Int =
+            month(monthsAgo).getActualMaximum(Calendar.WEEK_OF_MONTH)
 
         private fun calendar(): Calendar = Calendar.getInstance(timeZone)
 
@@ -53,5 +60,15 @@ interface Now {
             calendar.set(Calendar.DAY_OF_WEEK, calendar.firstDayOfWeek)
             calendar.add(Calendar.DATE, 6 - weeksAgo * 7)
         }
+
+        private fun month(monthsAgo: Int): Calendar = calendar().also { calendar ->
+            calendar.add(Calendar.MONTH, -monthsAgo)
+        }
+//
+//        private fun lastDayOfFirstWeek(monthsAgo: Int = 0): Calendar = startOfTheDay().also { calendar ->
+//            calendar.set(Calendar.DAY_OF_WEEK, calendar.firstDayOfWeek)
+//            calendar.add(Calendar.MONTH, -monthsAgo)
+//            calendar.add(Calendar.DATE, 6 - weeksAgo * 7)
+//        }
     }
 }

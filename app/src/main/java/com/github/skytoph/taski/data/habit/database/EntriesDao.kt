@@ -22,6 +22,9 @@ interface EntriesDao {
     @Query("SELECT * FROM entry WHERE habit_id = :id")
     fun entries(id: Long): Flow<List<EntryEntity>>
 
+    @Query("SELECT * FROM entry WHERE habit_id = :id")
+    suspend fun entriesList(id: Long): List<EntryEntity>
+
     @Transaction
     @Query("SELECT * FROM habit")
     fun habitsWithEntries(): Flow<List<HabitWithEntriesEntity>>

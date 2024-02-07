@@ -10,7 +10,7 @@ import java.util.Locale
 
 data class EditableHistoryUi(
     val entries: List<EntryEditableUi> = emptyList(),
-    val months: List<MonthUi> = emptyList()
+    val month: MonthUi
 ) : HabitHistoryUi
 
 data class EntryEditableUi(
@@ -28,7 +28,7 @@ data class MonthUi(
     val timestamp: Long = 0,
     val weeks: Int,
     val alignment: TextAlign = TextAlign.Start
-) {
+) : HabitEntryUi {
     fun getDisplayName(locale: Locale): String =
         SimpleDateFormat("LLL", locale).format(Date(timestamp))
 

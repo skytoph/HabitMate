@@ -9,11 +9,11 @@ import com.github.skytoph.taski.presentation.habit.create.GoalState
 import com.github.skytoph.taski.presentation.habit.icon.IconState
 
 interface EditHabitEvent {
-    fun handle(state: MutableState<EditHabitState>, iconState: MutableState<IconState>)
+    fun handle(state: MutableState<EditHabitState>, icon: MutableState<IconState>)
 
     class Init(private val habit: HabitUi) : EditHabitEvent {
 
-        override fun handle(state: MutableState<EditHabitState>, iconState: MutableState<IconState>) {
+        override fun handle(state: MutableState<EditHabitState>, icon: MutableState<IconState>) {
             state.value = EditHabitState(
                 id = habit.id,
                 title = FieldState(field = habit.title),
@@ -25,31 +25,20 @@ interface EditHabitEvent {
         }
     }
 
-    class UpdateHistory(private val history: EditableHistoryUi) : EditHabitEvent {
-        override fun handle(state: MutableState<EditHabitState>, iconState: MutableState<IconState>) {
-            state.value = state.value.copy(
-                history = state.value.history.copy(
-                    entries = history.entries, months = history.months
-                )
-            )
-        }
-    }
-
     object EditHistory : EditHabitEvent {
-        override fun handle(state: MutableState<EditHabitState>, iconState: MutableState<IconState>) {
-            state.value =
-                state.value.copy(history = state.value.history.copy(isEditable = !state.value.history.isEditable))
+        override fun handle(state: MutableState<EditHabitState>, icon: MutableState<IconState>) {
+            state.value = state.value.copy(isHistoryEditable = !state.value.isHistoryEditable)
         }
     }
 
     class EditTitle(private val title: String) : EditHabitEvent {
-        override fun handle(state: MutableState<EditHabitState>, iconState: MutableState<IconState>) {
+        override fun handle(state: MutableState<EditHabitState>, icon: MutableState<IconState>) {
             state.value = state.value.copy(title = state.value.title.copy(field = title))
         }
     }
 
     object IncreaseGoal : EditHabitEvent {
-        override fun handle(state: MutableState<EditHabitState>, iconState: MutableState<IconState>) {
+        override fun handle(state: MutableState<EditHabitState>, icon: MutableState<IconState>) {
             if (state.value.goal.canBeIncreased) {
                 val newGoal = state.value.goal.value + 1
                 state.value = state.value.copy(goal = GoalState(value = newGoal))
@@ -58,7 +47,7 @@ interface EditHabitEvent {
     }
 
     object DecreaseGoal : EditHabitEvent {
-        override fun handle(state: MutableState<EditHabitState>, iconState: MutableState<IconState>) {
+        override fun handle(state: MutableState<EditHabitState>, icon: MutableState<IconState>) {
             if (state.value.goal.canBeDecreased) {
                 val newGoal = state.value.goal.value - 1
                 state.value = state.value.copy(goal = GoalState(value = newGoal))
@@ -66,30 +55,22 @@ interface EditHabitEvent {
         }
     }
 
-    class UpdateIcon(
-        private val icon: ImageVector? = null,
-        private val color: Color? = null
-    ) : EditHabitEvent {
-        override fun handle(state: MutableState<EditHabitState>, iconState: MutableState<IconState>) {
-            icon?.let { state.value = state.value.copy(icon = icon) }
-            color?.let { state.value = state.value.copy(color = color) }
-        }
-    }
-
-    object Clear : EditHabitEvent {
-        override fun handle(state: MutableState<EditHabitState>, iconState: MutableState<IconState>) {
-            state.value = EditHabitState()
+    class UpdateIcon(private val icon: ImageVector? = null, private val color: Color? = null) :
+        EditHabitEvent {
+        override fun handle(state: MutableState<EditHabitState>, icon: MutableState<IconState>) {
+            this.icon?.let { state.value = state.value.copy(icon = this.icon) }
+            this.color?.let { state.value = state.value.copy(color = this.color) }
         }
     }
 
     class Progress(private val isLoading: Boolean) : EditHabitEvent {
-        override fun handle(state: MutableState<EditHabitState>, iconState: MutableState<IconState>) {
+        override fun handle(state: MutableState<EditHabitState>, icon: MutableState<IconState>) {
             state.value = state.value.copy(isLoading = isLoading)
         }
     }
 
     class ShowDialog(private val isDialogShown: Boolean) : EditHabitEvent {
-        override fun handle(state: MutableState<EditHabitState>, iconState: MutableState<IconState>) {
+        override fun handle(state: MutableState<EditHabitState>, icon: MutableState<IconState>) {
             state.value = state.value.copy(isDialogShown = isDialogShown)
         }
     }
