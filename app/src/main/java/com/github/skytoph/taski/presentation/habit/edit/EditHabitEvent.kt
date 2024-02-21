@@ -22,6 +22,7 @@ interface EditHabitEvent {
                 color = habit.color,
                 isLoading = false,
             )
+            icon.value = IconState(habit.icon, habit.color)
         }
     }
 

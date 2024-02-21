@@ -27,6 +27,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
+import com.github.skytoph.taski.presentation.core.borderColor
 import com.github.skytoph.taski.presentation.core.fadingEdge
 import com.github.skytoph.taski.presentation.core.habitColor
 import com.github.skytoph.taski.presentation.habit.HabitUi
@@ -104,7 +105,7 @@ fun HabitCalendar(
                             size = rectSize
                         )
                         if (index == history.todayPosition) drawRoundRect(
-                            color = Color.Black,
+                            color = borderColor(habitColor),
                             cornerRadius = CornerRadius(5f, 5f),
                             style = Stroke(1.dp.toPx()),
                             topLeft = Offset(offsetX, offsetY),
@@ -120,7 +121,7 @@ fun HabitCalendar(
 @Composable
 @Preview(showSystemUi = true, showBackground = true)
 fun HabitCalendarPreview() {
-    val history = HistoryUi((0..363).map { EntryUi(1F / (it % 20)) }.toList())
+    val history = HistoryUi((0..363).map { EntryUi(1F / (it % 20)) }.toList(), 362)
     TaskiTheme {
         val habit = HabitUi(
             0, "dev", 1, Icons.Outlined.AcUnit, IconsColors.allColors.first()

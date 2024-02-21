@@ -12,3 +12,9 @@ fun habitColor(colorPercent: Float, defaultColor: Color, habitColor: Color) =
             ColorUtils.blendARGB(defaultColor.toArgb(), habitColor.toArgb(), colorPercent)
         )
     }
+
+fun borderColor(habitColor: Color) = Color(
+    ColorUtils.setAlphaComponent(
+        ColorUtils.blendARGB(Color.Black.toArgb(), habitColor.toArgb(), 0.4F), 0xBF
+    )
+)

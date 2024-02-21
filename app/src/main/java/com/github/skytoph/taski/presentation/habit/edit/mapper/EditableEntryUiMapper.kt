@@ -20,11 +20,7 @@ class EditableEntryUiMapper(private val now: Now) : HabitHistoryUiMapper<Editabl
             val daysAgo =
                 now.dayOfWeek() - index % ROWS - now.firstDayOfWeek() + index / ROWS * ROWS
             val timesDone = history[daysAgo]?.timesDone ?: 0
-            EntryEditableUi(
-                day = now.dayOfMonths(daysAgo).toString(),
-                timesDone = timesDone,
-                daysAgo = daysAgo
-            )
+            entryMapper.map(daysAgo, timesDone)
         }
 
     private fun months(): List<MonthUi> {

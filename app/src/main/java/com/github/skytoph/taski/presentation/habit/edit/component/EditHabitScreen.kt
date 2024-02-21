@@ -10,7 +10,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
@@ -22,6 +24,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -71,8 +74,9 @@ fun EditHabitScreen(
         onTypeTitle = { viewModel.onEvent(EditHabitEvent.EditTitle(it)) },
         onDecreaseGoal = { viewModel.onEvent(EditHabitEvent.DecreaseGoal) },
         onIncreaseGoal = { viewModel.onEvent(EditHabitEvent.IncreaseGoal) },
-        onDayClick = { viewModel.habitDone(it) }
-    ) { viewModel.onEvent(EditHabitEvent.EditHistory) }
+        onDayClick = { viewModel.habitDone(it) },
+        onEditHistory = { viewModel.onEvent(EditHabitEvent.EditHistory) }
+    )
 }
 
 @Composable
@@ -96,6 +100,7 @@ private fun EditHabit(
         modifier = Modifier
             .padding(horizontal = 16.dp)
             .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
     ) {
         HabitAppBar(
             label = stringResource(R.string.edit_habit),
@@ -117,7 +122,10 @@ private fun EditHabit(
             onIncreaseGoal = onIncreaseGoal
         )
         Spacer(modifier = Modifier.height(16.dp))
-        Text(text = stringResource(R.string.history_label), style = MaterialTheme.typography.bodyMedium)
+        Text(
+            text = stringResource(R.string.history_label),
+            style = MaterialTheme.typography.bodyMedium
+        )
         Spacer(modifier = Modifier.height(4.dp))
         HabitHistory(
             entries = entries,
@@ -127,6 +135,7 @@ private fun EditHabit(
             isEditable = state.value.isHistoryEditable,
             onDayClick = onDayClick,
         )
+        Spacer(modifier = Modifier.height(16.dp))
     }
 
     if (state.value.isDialogShown)
@@ -204,7 +213,11 @@ fun IconSelector(
     onClick: () -> Unit
 ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(modifier = modifier, text = stringResource(R.string.icon_label), style = MaterialTheme.typography.bodyMedium)
+        Text(
+            modifier = modifier,
+            text = stringResource(R.string.icon_label),
+            style = MaterialTheme.typography.bodyMedium
+        )
         Spacer(modifier = Modifier.height(4.dp))
         IconButton(
             onClick = onClick,
@@ -226,7 +239,7 @@ fun IconSelector(
 @Preview(showSystemUi = true, showBackground = true)
 fun HabitScreenPreview() {
     TaskiTheme {
-        EditHabit(state = remember { mutableStateOf(EditHabitState()) })
+        EditHabit(state = remember { mutableStateOf(EditHabitState()) }, entries = flow)
     }
 }
 
@@ -234,6 +247,6 @@ fun HabitScreenPreview() {
 @Preview(showSystemUi = true, showBackground = true)
 fun DarkHabitScreenPreview() {
     TaskiTheme(darkTheme = true) {
-        EditHabit(state = remember { mutableStateOf(EditHabitState()) })
+        EditHabit(state = remember { mutableStateOf(EditHabitState()) }, entries = flow)
     }
 }

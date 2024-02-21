@@ -1,9 +1,9 @@
 package com.github.skytoph.taski.presentation.habit.list
 
 import com.github.skytoph.taski.core.Now
-import com.github.skytoph.taski.domain.habit.HabitWithEntries
 import com.github.skytoph.taski.domain.habit.Entry
 import com.github.skytoph.taski.domain.habit.HabitRepository
+import com.github.skytoph.taski.domain.habit.HabitWithEntries
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import kotlinx.coroutines.flow.Flow
 
@@ -23,11 +23,15 @@ interface HabitDoneInteractor {
     abstract class Abstract(protected val repository: HabitRepository, protected val now: Now) :
         HabitDoneInteractor {
 
-        override suspend fun habitDone(habit: HabitUi, daysAgo: Int) {
+        protected suspend fun entry(id: Long, daysAgo: Int): Entry {
             val timestamp = now.daysAgoInMillis(daysAgo)
-            val entry = repository.entry(habit.id, timestamp)
-            val timesDone = entry?.timesDone?.plus(1) ?: 1
-            val newEntry = entry?.copy(timesDone = timesDone) ?: Entry(timestamp, timesDone)
+            return repository.entry(id, timestamp) ?: Entry(timestamp, 0)
+        }
+
+        override suspend fun habitDone(habit: HabitUi, daysAgo: Int) {
+            val entry = entry(habit.id, daysAgo)
+            val timesDone = entry.timesDone.plus(1)
+            val newEntry = entry.copy(timesDone = timesDone)
             if (timesDone <= habit.goal)
                 repository.insertEntry(habit.id, newEntry)
             else

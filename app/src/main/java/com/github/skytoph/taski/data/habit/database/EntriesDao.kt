@@ -20,7 +20,7 @@ interface EntriesDao {
     fun entry(id: Long, timestamp: Long): EntryEntity?
 
     @Query("SELECT * FROM entry WHERE habit_id = :id")
-    fun entries(id: Long): Flow<List<EntryEntity>>
+    fun entriesPagingSource(id: Long): Flow<List<EntryEntity>>
 
     @Query("SELECT * FROM entry WHERE habit_id = :id")
     suspend fun entriesList(id: Long): List<EntryEntity>

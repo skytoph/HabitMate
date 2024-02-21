@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -72,10 +73,13 @@ fun HabitHistory(
     onDayClick: (Int) -> Unit = {},
 ) {
     Column(
-        Modifier.background(
-            color = MaterialTheme.colorScheme.primaryContainer,
-            shape = RoundedCornerShape(10f)
-        )
+        Modifier
+            .background(
+                color = MaterialTheme.colorScheme.primaryContainer,
+                shape = RoundedCornerShape(10f)
+            )
+            .wrapContentHeight()
+            .fillMaxWidth()
     ) {
         HabitHistoryGrid(
             entries = entries,
@@ -133,11 +137,14 @@ fun HabitHistoryGrid(
         endX = with(LocalDensity.current) { (40.dp).toPx() }
     )
 
+    val minHeight = 8 * squareDp
+
     Column(
         modifier = Modifier
             .padding(initialOffsetDp)
             .fillMaxWidth()
             .wrapContentHeight()
+            .defaultMinSize(minHeight = minHeight)
             .background(
                 color = MaterialTheme.colorScheme.secondaryContainer,
                 shape = RoundedCornerShape(10f)
@@ -156,7 +163,7 @@ fun HabitHistoryGrid(
                         rows = StaggeredGridCells.Fixed(8),
                         modifier = Modifier
                             .width(squareDp.times(item.month.weeks))
-                            .height(8 * squareDp),
+                            .height(minHeight),
                         reverseLayout = true,
                         userScrollEnabled = false
                     ) {

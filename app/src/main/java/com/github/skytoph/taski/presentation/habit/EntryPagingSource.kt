@@ -9,7 +9,9 @@ import com.github.skytoph.taski.domain.habit.EntryList
 import com.github.skytoph.taski.domain.habit.HabitRepository
 import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitHistoryUiMapper
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.withContext
 
 class EntryPagingSource(
     private val repository: HabitRepository,
@@ -22,14 +24,16 @@ class EntryPagingSource(
         val page = params.key ?: 0
 
         return try {
-            entryCache.cacheIfEmpty(repository.entries(id))
-            val history = uiMapper.map(history = entryCache.get(), page = page)
+            withContext(Dispatchers.IO) {
+                entryCache.cacheIfEmpty { repository.entries(id) }
+                val history = uiMapper.map(history = entryCache.get(), page = page)
 
-            LoadResult.Page(
-                data = listOf(history),
-                prevKey = if (page == 0) null else page - 1,
-                nextKey = if (history.entries.isEmpty()) null else page + 1
-            )
+                LoadResult.Page(
+                    data = listOf(history),
+                    prevKey = if (page == 0) null else page - 1,
+                    nextKey = if (history.entries.isEmpty()) null else page + 1
+                )
+            }
         } catch (e: Exception) {
             LoadResult.Error(e)
         }
@@ -43,8 +47,8 @@ class EntryPagingSource(
 }
 
 class EntriesCache(private val data: MutableList<EntryList> = ArrayList()) {
-    fun cacheIfEmpty(entries: EntryList) {
-        if (data.isEmpty()) data.add(entries)
+    suspend fun cacheIfEmpty(fetch: suspend () -> EntryList) {
+        if (data.isEmpty()) data.add(fetch())
     }
 
     fun get(): EntryList = data[0]

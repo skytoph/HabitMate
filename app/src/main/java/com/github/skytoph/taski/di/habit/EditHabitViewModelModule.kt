@@ -3,8 +3,9 @@ package com.github.skytoph.taski.di.habit
 import com.github.skytoph.taski.core.Now
 import com.github.skytoph.taski.presentation.core.ConvertIcon
 import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
-import com.github.skytoph.taski.presentation.habit.edit.mapper.HabitWithEditableEntryUiMapper
+import com.github.skytoph.taski.presentation.habit.edit.mapper.EditableEntryDomainToUiMapper
 import com.github.skytoph.taski.presentation.habit.edit.mapper.EditableEntryUiMapper
+import com.github.skytoph.taski.presentation.habit.edit.mapper.HabitWithEditableEntryUiMapper
 import com.github.skytoph.taski.presentation.habit.edit.mapper.WeeksCache
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitDomainMapper
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitHistoryUiMapper
@@ -33,8 +34,13 @@ object EditHabitViewModelModule {
     fun uiMapper(convertIcon: ConvertIcon): HabitUiMapper = HabitUiMapper.Base(convertIcon)
 
     @Provides
-    fun historyMapper(now: Now, weekCache: WeeksCache): HabitHistoryUiMapper<EditableHistoryUi> =
-        EditableEntryUiMapper(now, weekCache)
+    fun historyMapper(
+        now: Now, weekCache: WeeksCache, mapper: EditableEntryDomainToUiMapper
+    ): HabitHistoryUiMapper<EditableHistoryUi> = EditableEntryUiMapper(now, weekCache, mapper)
+
+    @Provides
+    fun entryMapper(now: Now): EditableEntryDomainToUiMapper =
+        EditableEntryDomainToUiMapper.Base(now)
 
     @Provides
     fun weekCache(): WeeksCache = WeeksCache()
