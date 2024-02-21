@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -40,6 +41,7 @@ import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.component.HabitAppBar
 import com.github.skytoph.taski.presentation.core.component.SquareButton
 import com.github.skytoph.taski.presentation.core.component.TitleTextField
+import com.github.skytoph.taski.presentation.core.preview.HabitsEditableProvider
 import com.github.skytoph.taski.presentation.core.state.FieldState
 import com.github.skytoph.taski.presentation.habit.create.GoalState
 import com.github.skytoph.taski.presentation.habit.edit.EditHabitEvent
@@ -48,6 +50,7 @@ import com.github.skytoph.taski.presentation.habit.edit.EditHabitViewModel
 import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
 import com.github.skytoph.taski.ui.theme.TaskiTheme
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 
 @Composable
 fun EditHabitScreen(
@@ -237,16 +240,16 @@ fun IconSelector(
 
 @Composable
 @Preview(showSystemUi = true, showBackground = true)
-fun HabitScreenPreview() {
-    TaskiTheme {
-        EditHabit(state = remember { mutableStateOf(EditHabitState()) }, entries = flow)
+fun HabitScreenPreview(@PreviewParameter(HabitsEditableProvider::class) entries: List<EditableHistoryUi>) {
+    TaskiTheme(darkTheme = false) {
+        EditHabit(state = remember { mutableStateOf(EditHabitState()) }, entries = flowOf(PagingData.from(entries)))
     }
 }
 
 @Composable
 @Preview(showSystemUi = true, showBackground = true)
-fun DarkHabitScreenPreview() {
+fun DarkHabitScreenPreview(@PreviewParameter(HabitsEditableProvider::class) entries: List<EditableHistoryUi>) {
     TaskiTheme(darkTheme = true) {
-        EditHabit(state = remember { mutableStateOf(EditHabitState()) }, entries = flow)
+        EditHabit(state = remember { mutableStateOf(EditHabitState()) }, entries = flowOf(PagingData.from(entries)))
     }
 }

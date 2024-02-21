@@ -46,6 +46,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
@@ -55,6 +56,7 @@ import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.component.getLocale
 import com.github.skytoph.taski.presentation.core.fadingEdge
 import com.github.skytoph.taski.presentation.core.habitColor
+import com.github.skytoph.taski.presentation.core.preview.HabitsEditableProvider
 import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
 import com.github.skytoph.taski.presentation.habit.edit.EntryEditableUi
 import com.github.skytoph.taski.presentation.habit.edit.MonthUi
@@ -267,16 +269,12 @@ private fun MonthLabel(
     }
 }
 
-val months = (1..12).map { MonthUi(timestamp = it.toLong(), weeks = if (it == 1) 2 else 4) }
-val history = (1..30).map { EntryEditableUi((it).toString(), daysAgo = it) }
-val flow = flowOf(PagingData.from(months.map { EditableHistoryUi(history, it) }))
-
 @Composable
 @Preview
-fun DarkCalendarEditableGridPreview() {
+fun DarkCalendarEditableGridPreview(@PreviewParameter(HabitsEditableProvider::class) entries: List<EditableHistoryUi>) {
     TaskiTheme(darkTheme = true) {
         Surface(modifier = Modifier.padding(16.dp)) {
-            HabitHistory(flow)
+            HabitHistory(flowOf(PagingData.from(entries)))
         }
     }
 }

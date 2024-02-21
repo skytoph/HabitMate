@@ -5,16 +5,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Code
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import com.github.skytoph.taski.presentation.core.preview.HabitsProvider
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.HabitWithHistoryUi
-import com.github.skytoph.taski.presentation.habit.icon.IconsColors
-import com.github.skytoph.taski.presentation.habit.list.EntryUi
 import com.github.skytoph.taski.presentation.habit.list.HistoryUi
 import com.github.skytoph.taski.ui.theme.TaskiTheme
 
@@ -40,15 +38,9 @@ fun HabitList(
     }
 }
 
-private val history = HistoryUi((0..363).map { EntryUi(1F / (it % 20)) }.toList(), 362)
-
-private val habits = IconsColors.allColors.mapIndexed { i, color ->
-    HabitWithHistoryUi(HabitUi(i.toLong(), "habit", 1, Icons.Outlined.Code, color), history)
-}
-
 @Composable
 @Preview(showSystemUi = true, showBackground = true)
-fun HabitListPreview() {
+fun HabitListPreview(@PreviewParameter(HabitsProvider::class) habits: List<HabitWithHistoryUi<HistoryUi>>) {
     TaskiTheme {
         HabitList(habits = habits, onDoneHabit = {}) {}
     }
@@ -56,7 +48,7 @@ fun HabitListPreview() {
 
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
-fun DarkHabitListPreview() {
+fun DarkHabitListPreview(@PreviewParameter(HabitsProvider::class) habits: List<HabitWithHistoryUi<HistoryUi>>) {
     TaskiTheme(darkTheme = true) {
         HabitList(habits = habits, onDoneHabit = {}) {}
     }

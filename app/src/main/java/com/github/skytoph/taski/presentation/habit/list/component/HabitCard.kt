@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Check
-import androidx.compose.material.icons.outlined.Code
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -24,11 +23,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.github.skytoph.taski.presentation.core.habitColor
+import com.github.skytoph.taski.presentation.core.preview.HabitProvider
 import com.github.skytoph.taski.presentation.habit.HabitUi
-import com.github.skytoph.taski.presentation.habit.icon.GreenBright
-import com.github.skytoph.taski.presentation.habit.list.EntryUi
+import com.github.skytoph.taski.presentation.habit.HabitWithHistoryUi
 import com.github.skytoph.taski.presentation.habit.list.HistoryUi
 import com.github.skytoph.taski.ui.theme.TaskiTheme
 
@@ -94,22 +94,18 @@ fun HabitCard(
     }
 }
 
-private val history = HistoryUi((0..360).map { EntryUi() }.toList())
-
 @Composable
 @Preview(showSystemUi = true, showBackground = true)
-fun HabitCardPreview() {
+fun HabitCardPreview(@PreviewParameter(HabitProvider::class) habit: HabitWithHistoryUi<HistoryUi>) {
     TaskiTheme {
-        val habit = HabitUi(0, "dev", 1, Icons.Outlined.Code, GreenBright)
-        HabitCard(habit = habit, history = history, onDone = {})
+        HabitCard(habit = habit.habit, history = habit.history, onDone = {})
     }
 }
 
 @Composable
 @Preview(showSystemUi = true, showBackground = true)
-fun DarkHabitCardPreview() {
+fun DarkHabitCardPreview(@PreviewParameter(HabitProvider::class) habit: HabitWithHistoryUi<HistoryUi>) {
     TaskiTheme(darkTheme = true) {
-        val habit = HabitUi(0, "dev", 1, Icons.Outlined.Code, GreenBright)
-        HabitCard(habit = habit, history = history, onDone = {})
+        HabitCard(habit = habit.habit, history = habit.history, onDone = {})
     }
 }

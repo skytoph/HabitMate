@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.AcUnit
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -25,14 +23,14 @@ import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import com.github.skytoph.taski.presentation.core.borderColor
 import com.github.skytoph.taski.presentation.core.fadingEdge
 import com.github.skytoph.taski.presentation.core.habitColor
-import com.github.skytoph.taski.presentation.habit.HabitUi
-import com.github.skytoph.taski.presentation.habit.icon.IconsColors
-import com.github.skytoph.taski.presentation.habit.list.EntryUi
+import com.github.skytoph.taski.presentation.core.preview.HabitProvider
+import com.github.skytoph.taski.presentation.habit.HabitWithHistoryUi
 import com.github.skytoph.taski.presentation.habit.list.HistoryUi
 import com.github.skytoph.taski.ui.theme.TaskiTheme
 import kotlin.math.ceil
@@ -120,12 +118,8 @@ fun HabitCalendar(
 
 @Composable
 @Preview(showSystemUi = true, showBackground = true)
-fun HabitCalendarPreview() {
-    val history = HistoryUi((0..363).map { EntryUi(1F / (it % 20)) }.toList(), 362)
+fun HabitCalendarPreview(@PreviewParameter(HabitProvider::class) habit: HabitWithHistoryUi<HistoryUi>) {
     TaskiTheme {
-        val habit = HabitUi(
-            0, "dev", 1, Icons.Outlined.AcUnit, IconsColors.allColors.first()
-        )
-        HabitCard(onDone = {}, habit = habit, history = history)
+        HabitCard(onDone = {}, habit = habit.habit, history = habit.history)
     }
 }
