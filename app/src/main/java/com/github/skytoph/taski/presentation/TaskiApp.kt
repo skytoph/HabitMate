@@ -1,5 +1,7 @@
 package com.github.skytoph.taski.presentation
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -18,6 +20,9 @@ import com.github.skytoph.taski.presentation.auth.authentication.user.UserData
 import com.github.skytoph.taski.presentation.auth.signin.SignInScreen
 import com.github.skytoph.taski.presentation.auth.signup.SignUpScreen
 import com.github.skytoph.taski.presentation.auth.verify.VerificationScreen
+import com.github.skytoph.taski.presentation.core.nav.ScaleTransitionDirection
+import com.github.skytoph.taski.presentation.core.nav.scaleIntoContainer
+import com.github.skytoph.taski.presentation.core.nav.scaleOutOfContainer
 import com.github.skytoph.taski.presentation.habit.HabitScreens
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.create.component.CreateHabitScreen
@@ -76,25 +81,58 @@ fun TaskiApp(
             composable(route = HabitScreens.Profile.route) {
                 ProfileScreen(onSignOut = { navController.signOut(viewModel) })
             }
+
             composable(route = HabitScreens.HabitList.route) {
-                HabitsScreen(onCreateHabit = {
-                    navController.navigate(HabitScreens.EditHabit.screenRoute)
-                },
+                HabitsScreen(
+                    onCreateHabit = { navController.navigate(HabitScreens.CreateHabit.route) },
                     onHabitClick = { habit -> navController.navigate(HabitScreens.EditHabit(habit.id.toString()).route) })
+            }
+            composable(
+                route = HabitScreens.CreateHabit.route,
+                enterTransition = { scaleIntoContainer(direction = ScaleTransitionDirection.OUTWARDS) },
+                popExitTransition = { scaleOutOfContainer(direction = ScaleTransitionDirection.INWARDS) }
+            ) {
+                CreateHabitScreen(navigateUp = navController::navigateUp,
+                    onSelectIconClick = { navController.navigate(HabitScreens.SelectIcon.route) })
             }
             composable(
                 route = HabitScreens.EditHabit.baseRoute,
                 arguments = listOf(navArgument(name = HabitScreens.EditHabit.habitIdArg) {
                     type = NavType.LongType
                     defaultValue = HabitUi.ID_DEFAULT
-                })
+                }),
+                enterTransition = {
+                    slideIntoContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Start, tween(700)
+                    )
+                },
+                exitTransition = {
+                    slideOutOfContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Start, tween(700)
+                    )
+                },
+                popExitTransition = {
+                    slideOutOfContainer(
+                        AnimatedContentTransitionScope.SlideDirection.End, tween(700)
+                    )
+                }
             ) {
                 EditHabitScreen(
                     navigateUp = navController::navigateUp,
                     onSelectIconClick = { navController.navigate(HabitScreens.SelectIcon.route) },
                 )
             }
-            composable(route = HabitScreens.SelectIcon.route) {
+            composable(route = HabitScreens.SelectIcon.route,
+                enterTransition = {
+                    slideIntoContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Start, tween(700)
+                    )
+                },
+                popExitTransition = {
+                    slideOutOfContainer(
+                        AnimatedContentTransitionScope.SlideDirection.End, tween(700)
+                    )
+                }) {
                 SelectIconScreen(navigateUp = navController::navigateUp)
             }
         }

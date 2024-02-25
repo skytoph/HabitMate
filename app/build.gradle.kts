@@ -82,7 +82,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.0")
 
     // Compose navigation
-    implementation("androidx.navigation:navigation-compose:2.5.3")
+    implementation("androidx.navigation:navigation-compose:2.7.7")
 
     // Compose material
     implementation("androidx.compose.material3:material3:1.1.2")
