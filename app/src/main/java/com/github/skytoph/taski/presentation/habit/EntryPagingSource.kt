@@ -61,9 +61,9 @@ class EntityPagerProvider(
 ) {
     fun getEntries(id: Long): Flow<PagingData<EditableHistoryUi>> = Pager(
         config = PagingConfig(
-            pageSize = 30,
-            prefetchDistance = 90,
-            initialLoadSize = 90,
+            pageSize = 1,
+            prefetchDistance = 3,
+            initialLoadSize = 6,
             enablePlaceholders = false
         ),
         pagingSourceFactory = { EntryPagingSource(repository, uiMapper, entryCache, id) }

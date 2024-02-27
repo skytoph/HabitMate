@@ -1,4 +1,4 @@
-package com.github.skytoph.taski.presentation.habit.edit.component
+package com.github.skytoph.taski.presentation.habit.details.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.AlertDialog

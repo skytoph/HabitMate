@@ -1,5 +1,6 @@
 package com.github.skytoph.taski.presentation.habit.icon
 
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 
 val BlueBright = Color(0xFF4F4FE5)
@@ -16,6 +17,7 @@ val BrownLight = Color(0xFFA8847B)
 val OrangeBright = Color(0xFFF0B459)
 val Red = Color(0xFFB23052)
 
+@Immutable
 object IconsColors {
     val allColors: List<Color> = listOf(
         BlueBright,

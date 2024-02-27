@@ -1,4 +1,4 @@
-package com.github.skytoph.taski.presentation.habit.edit.mapper
+package com.github.skytoph.taski.presentation.habit.details.mapper
 
 import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitHistoryUiMapper

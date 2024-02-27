@@ -26,12 +26,6 @@ interface EditHabitEvent {
         }
     }
 
-    object EditHistory : EditHabitEvent {
-        override fun handle(state: MutableState<EditHabitState>, icon: MutableState<IconState>) {
-            state.value = state.value.copy(isHistoryEditable = !state.value.isHistoryEditable)
-        }
-    }
-
     class EditTitle(private val title: String) : EditHabitEvent {
         override fun handle(state: MutableState<EditHabitState>, icon: MutableState<IconState>) {
             state.value = state.value.copy(title = state.value.title.copy(field = title))
@@ -67,12 +61,6 @@ interface EditHabitEvent {
     class Progress(private val isLoading: Boolean) : EditHabitEvent {
         override fun handle(state: MutableState<EditHabitState>, icon: MutableState<IconState>) {
             state.value = state.value.copy(isLoading = isLoading)
-        }
-    }
-
-    class ShowDialog(private val isDialogShown: Boolean) : EditHabitEvent {
-        override fun handle(state: MutableState<EditHabitState>, icon: MutableState<IconState>) {
-            state.value = state.value.copy(isDialogShown = isDialogShown)
         }
     }
 }

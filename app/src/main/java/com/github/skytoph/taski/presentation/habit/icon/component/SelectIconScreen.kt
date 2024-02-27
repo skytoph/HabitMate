@@ -61,7 +61,6 @@ private fun SelectIcon(
             modifier = Modifier.padding(horizontal = 16.dp),
             label = stringResource(R.string.color_and_icon_label),
             navigateUp = navigateUp,
-            isSaveButtonVisible = false
         )
     }) { paddingValue ->
         LazyVerticalGrid(
@@ -70,11 +69,9 @@ private fun SelectIcon(
             contentPadding = PaddingValues(8.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            items(IconsColors.allColors) { color ->
+            items(IconsColors.allColors, contentType = { "color" }) { color ->
                 val isSelected = color == state.value.color
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Box(
                         modifier = Modifier
                             .clip(CircleShape)
@@ -90,7 +87,9 @@ private fun SelectIcon(
                 }
             }
             IconsGroup.allGroups.forEach { iconGroup ->
-                item(span = { GridItemSpan(maxLineSpan) }) {
+                item(
+                    span = { GridItemSpan(maxLineSpan) },
+                    contentType = { "title" }) {
                     Text(
                         text = stringResource(iconGroup.title),
                         color = MaterialTheme.colorScheme.onBackground,
@@ -98,7 +97,7 @@ private fun SelectIcon(
                         style = MaterialTheme.typography.bodyMedium,
                     )
                 }
-                items(iconGroup.icons) { icon ->
+                items(iconGroup.icons, key = { it.name }, contentType = { "icon" }) { icon ->
                     val isSelected = icon.name == state.value.icon.name
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,

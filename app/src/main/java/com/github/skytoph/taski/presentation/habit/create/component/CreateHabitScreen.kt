@@ -3,6 +3,7 @@ package com.github.skytoph.taski.presentation.habit.create.component
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -17,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.component.HabitAppBar
+import com.github.skytoph.taski.presentation.core.component.SaveIconButton
 import com.github.skytoph.taski.presentation.habit.create.CreateHabitEvent
 import com.github.skytoph.taski.presentation.habit.create.CreateHabitState
 import com.github.skytoph.taski.presentation.habit.create.CreateHabitViewModel
@@ -39,7 +41,7 @@ fun CreateHabitScreen(
         minHeight = TextFieldDefaults.MinHeight,
         navigateUp = navigateUp,
         onSelectIconClick = onSelectIconClick,
-        onSaveHabit = { viewModel.saveHabit() },
+        onSaveHabit = { viewModel.saveHabit(); navigateUp() },
         onTypeTitle = { viewModel.onEvent(CreateHabitEvent.EditTitle(it)) },
         onDecreaseGoal = { viewModel.onEvent(CreateHabitEvent.DecreaseGoal) },
         onIncreaseGoal = { viewModel.onEvent(CreateHabitEvent.IncreaseGoal) })
@@ -64,8 +66,7 @@ private fun CreateHabit(
         HabitAppBar(
             label = stringResource(R.string.create_new_habit),
             navigateUp = navigateUp,
-            isSaveButtonVisible = true,
-            onSaveButtonClick = onSaveHabit
+            actionButtons = listOf(SaveIconButton(MaterialTheme.colorScheme.onSurface, onSaveHabit))
         )
         EditBaseHabit(
             title = state.value.title,
@@ -76,7 +77,7 @@ private fun CreateHabit(
             minHeight = minHeight,
             onSelectIconClick = onSelectIconClick,
             onDecreaseGoal = onDecreaseGoal,
-            onIncreaseGoal = onIncreaseGoal
+            onIncreaseGoal = onIncreaseGoal,
         )
     }
 }

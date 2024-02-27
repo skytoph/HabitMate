@@ -107,17 +107,15 @@ import androidx.compose.material.icons.filled.Waves
 import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material.icons.filled.Wifi
 import androidx.compose.material.icons.filled.Work
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.skytoph.taski.R
-import com.github.skytoph.taski.presentation.habit.icon.component.SelectIconScreen
-import com.github.skytoph.taski.ui.theme.TaskiTheme
 
+@Immutable
 abstract class IconsGroup(@StringRes val title: Int) {
     abstract val icons: List<ImageVector>
 
+    @Immutable
     object ActivityIcons : IconsGroup(title = R.string.icons_activity) {
 
         override val icons by lazy {
@@ -148,6 +146,7 @@ abstract class IconsGroup(@StringRes val title: Int) {
         }
     }
 
+    @Immutable
     object SportsIcons : IconsGroup(title = R.string.icons_sports) {
         override val icons by lazy {
             listOf(
@@ -175,6 +174,7 @@ abstract class IconsGroup(@StringRes val title: Int) {
         }
     }
 
+    @Immutable
     object RestIcons : IconsGroup(title = R.string.icons_rest) {
         override val icons by lazy {
             listOf(
@@ -204,6 +204,7 @@ abstract class IconsGroup(@StringRes val title: Int) {
         }
     }
 
+    @Immutable
     object ArtIcons : IconsGroup(title = R.string.icons_art) {
         override val icons by lazy {
             listOf(
@@ -223,6 +224,7 @@ abstract class IconsGroup(@StringRes val title: Int) {
         }
     }
 
+    @Immutable
     object HealthIcons : IconsGroup(title = R.string.icons_health) {
         override val icons by lazy {
             listOf(
@@ -236,6 +238,7 @@ abstract class IconsGroup(@StringRes val title: Int) {
         }
     }
 
+    @Immutable
     object SocialIcons : IconsGroup(title = R.string.icons_social) {
         override val icons by lazy {
             listOf(
@@ -255,6 +258,7 @@ abstract class IconsGroup(@StringRes val title: Int) {
         }
     }
 
+    @Immutable
     object LearningIcons : IconsGroup(title = R.string.icons_learning) {
         override val icons by lazy {
             listOf(
@@ -273,6 +277,7 @@ abstract class IconsGroup(@StringRes val title: Int) {
         }
     }
 
+    @Immutable
     companion object {
         val allGroups by lazy {
             listOf(

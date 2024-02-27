@@ -36,21 +36,20 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.paging.PagingData
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.component.HabitAppBar
+import com.github.skytoph.taski.presentation.core.component.SaveIconButton
 import com.github.skytoph.taski.presentation.core.component.SquareButton
 import com.github.skytoph.taski.presentation.core.component.TitleTextField
 import com.github.skytoph.taski.presentation.core.preview.HabitsEditableProvider
 import com.github.skytoph.taski.presentation.core.state.FieldState
 import com.github.skytoph.taski.presentation.habit.create.GoalState
+import com.github.skytoph.taski.presentation.habit.details.components.DeleteAlertDialog
 import com.github.skytoph.taski.presentation.habit.edit.EditHabitEvent
 import com.github.skytoph.taski.presentation.habit.edit.EditHabitState
 import com.github.skytoph.taski.presentation.habit.edit.EditHabitViewModel
 import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
 import com.github.skytoph.taski.ui.theme.TaskiTheme
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 
 @Composable
 fun EditHabitScreen(
@@ -66,38 +65,28 @@ fun EditHabitScreen(
 
     EditHabit(
         state = viewModel.state(),
-        entries = viewModel.entries,
         minHeight = TextFieldDefaults.MinHeight,
         navigateUp = navigateUp,
         onSelectIconClick = onSelectIconClick,
-        onDeleteClick = { viewModel.onEvent(EditHabitEvent.ShowDialog(true)) },
-        onDeleteHabit = { viewModel.deleteHabit() },
-        onHideDialog = { viewModel.onEvent(EditHabitEvent.ShowDialog(false)) },
-        onSaveHabit = { viewModel.saveHabit() },
+        onSaveHabit = { viewModel.saveHabit(navigateUp = navigateUp) },
         onTypeTitle = { viewModel.onEvent(EditHabitEvent.EditTitle(it)) },
         onDecreaseGoal = { viewModel.onEvent(EditHabitEvent.DecreaseGoal) },
         onIncreaseGoal = { viewModel.onEvent(EditHabitEvent.IncreaseGoal) },
-        onDayClick = { viewModel.habitDone(it) },
-        onEditHistory = { viewModel.onEvent(EditHabitEvent.EditHistory) }
     )
 }
 
 @Composable
 private fun EditHabit(
     state: State<EditHabitState>,
-    entries: Flow<PagingData<EditableHistoryUi>>,
     minHeight: Dp = 56.dp,
     navigateUp: () -> Unit = {},
     onSelectIconClick: () -> Unit = {},
-    onDeleteClick: () -> Unit = {},
     onDeleteHabit: () -> Unit = {},
     onHideDialog: () -> Unit = {},
     onSaveHabit: () -> Unit = {},
     onTypeTitle: (String) -> Unit = {},
     onDecreaseGoal: () -> Unit = {},
     onIncreaseGoal: () -> Unit = {},
-    onDayClick: (Int) -> Unit = {},
-    onEditHistory: () -> Unit = {},
 ) {
     Column(
         modifier = Modifier
@@ -107,11 +96,8 @@ private fun EditHabit(
     ) {
         HabitAppBar(
             label = stringResource(R.string.edit_habit),
-            navigateUp = navigateUp,
-            isSaveButtonVisible = true,
-            onSaveButtonClick = onSaveHabit,
-            isDeleteButtonVisible = true,
-            onDeleteButtonClick = onDeleteClick
+            navigateUp = { navigateUp() },
+            actionButtons = listOf(SaveIconButton(MaterialTheme.colorScheme.onSurface, onSaveHabit))
         )
         EditBaseHabit(
             title = state.value.title,
@@ -122,21 +108,7 @@ private fun EditHabit(
             minHeight = minHeight,
             onSelectIconClick = onSelectIconClick,
             onDecreaseGoal = onDecreaseGoal,
-            onIncreaseGoal = onIncreaseGoal
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = stringResource(R.string.history_label),
-            style = MaterialTheme.typography.bodyMedium
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        HabitHistory(
-            entries = entries,
-            goal = state.value.goal.value,
-            habitColor = state.value.color,
-            onEdit = onEditHistory,
-            isEditable = state.value.isHistoryEditable,
-            onDayClick = onDayClick,
+            onIncreaseGoal = onIncreaseGoal,
         )
         Spacer(modifier = Modifier.height(16.dp))
     }
@@ -167,7 +139,7 @@ fun EditBaseHabit(
         TitleTextField(
             modifier = Modifier.weight(1f),
             value = title.field,
-            onValueChange = onTypeTitle
+            onValueChange = onTypeTitle,
         )
         IconSelector(
             icon = icon,
@@ -242,7 +214,9 @@ fun IconSelector(
 @Preview(showSystemUi = true, showBackground = true)
 fun HabitScreenPreview(@PreviewParameter(HabitsEditableProvider::class) entries: List<EditableHistoryUi>) {
     TaskiTheme(darkTheme = false) {
-        EditHabit(state = remember { mutableStateOf(EditHabitState()) }, entries = flowOf(PagingData.from(entries)))
+        EditHabit(
+            state = remember { mutableStateOf(EditHabitState()) }
+        )
     }
 }
 
@@ -250,6 +224,8 @@ fun HabitScreenPreview(@PreviewParameter(HabitsEditableProvider::class) entries:
 @Preview(showSystemUi = true, showBackground = true)
 fun DarkHabitScreenPreview(@PreviewParameter(HabitsEditableProvider::class) entries: List<EditableHistoryUi>) {
     TaskiTheme(darkTheme = true) {
-        EditHabit(state = remember { mutableStateOf(EditHabitState()) }, entries = flowOf(PagingData.from(entries)))
+        EditHabit(
+            state = remember { mutableStateOf(EditHabitState()) }
+        )
     }
 }

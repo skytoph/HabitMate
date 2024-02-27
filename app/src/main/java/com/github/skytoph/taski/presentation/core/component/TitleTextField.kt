@@ -21,7 +21,7 @@ import com.github.skytoph.taski.R
 fun TitleTextField(
     modifier: Modifier = Modifier,
     value: String,
-    onValueChange: (String) -> Unit
+    onValueChange: (String) -> Unit,
 ) {
     Column(modifier = modifier) {
         Text(text = stringResource(R.string.habit_label), style = MaterialTheme.typography.bodyMedium)
@@ -36,7 +36,8 @@ fun TitleTextField(
                 focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
                 unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
                 focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent
+                unfocusedIndicatorColor = Color.Transparent,
+                disabledIndicatorColor = Color.Transparent
             ),
             singleLine = true,
             shape = RoundedCornerShape(10),

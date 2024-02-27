@@ -17,5 +17,14 @@ abstract class HabitScreens(val route: String) {
         }
     }
 
+    class HabitDetails(habitId: String) : HabitScreens("$screenRoute?$habitIdArg=$habitId") {
+
+        companion object {
+            const val habitIdArg = "habitId"
+            const val screenRoute = "habit_details"
+            const val baseRoute = "$screenRoute?$habitIdArg={$habitIdArg}"
+        }
+    }
+
     object SelectIcon : HabitScreens("select_icon")
 }

@@ -6,7 +6,7 @@ import com.github.skytoph.taski.domain.habit.Habit
 import com.github.skytoph.taski.domain.habit.HabitRepository
 import com.github.skytoph.taski.presentation.habit.EntityPagerProvider
 import com.github.skytoph.taski.presentation.habit.HabitUi
-import com.github.skytoph.taski.presentation.habit.edit.mapper.EditableEntryDomainToUiMapper
+import com.github.skytoph.taski.presentation.habit.details.mapper.EditableEntryDomainToUiMapper
 import com.github.skytoph.taski.presentation.habit.list.HabitDoneInteractor
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitDomainMapper
 import kotlinx.coroutines.flow.Flow

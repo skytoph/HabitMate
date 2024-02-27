@@ -3,7 +3,7 @@
     ExperimentalMaterial3Api::class,
 )
 
-package com.github.skytoph.taski.presentation.habit.edit.component
+package com.github.skytoph.taski.presentation.habit.details.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -22,9 +22,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.staggeredgrid.LazyHorizontalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
@@ -52,9 +52,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemContentType
+import androidx.paging.compose.itemKey
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.component.getLocale
 import com.github.skytoph.taski.presentation.core.fadingEdge
+import com.github.skytoph.taski.presentation.core.format.getWeekDisplayName
 import com.github.skytoph.taski.presentation.core.habitColor
 import com.github.skytoph.taski.presentation.core.preview.HabitsEditableProvider
 import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
@@ -70,6 +73,7 @@ fun HabitHistory(
     entries: Flow<PagingData<EditableHistoryUi>>,
     goal: Int = 1,
     isEditable: Boolean = false,
+    isEditButtonVisible: Boolean = true,
     habitColor: Color = IconsColors.allColors.first(),
     onEdit: () -> Unit = {},
     onDayClick: (Int) -> Unit = {},
@@ -102,7 +106,7 @@ fun HabitHistory(
                     color = MaterialTheme.colorScheme.onBackground,
                     textAlign = TextAlign.End
                 )
-            IconButton(onClick = onEdit) {
+            if (isEditButtonVisible) IconButton(onClick = onEdit) {
                 Icon(
                     imageVector = if (isEditable) Icons.Outlined.Check else Icons.Default.Edit,
                     contentDescription = null,
@@ -139,6 +143,8 @@ fun HabitHistoryGrid(
         endX = with(LocalDensity.current) { (40.dp).toPx() }
     )
 
+    val fadingBrushHeader = Brush.horizontalGradient(0f to Color.Transparent, 0.1f to Color.Red)
+
     val minHeight = 8 * squareDp
 
     Column(
@@ -159,38 +165,74 @@ fun HabitHistoryGrid(
             contentPadding = PaddingValues(2.dp),
             reverseLayout = true,
         ) {
-            items(count = items.itemCount) { index ->
+            stickyHeader {
+                Column(
+                    Modifier
+                        .size(width = squareDp, height = squareDp.times(8))
+                        .fadingEdge(fadingBrushHeader)
+                        .background(color = MaterialTheme.colorScheme.secondaryContainer)
+                ) {
+                    Box(modifier = Modifier.size(squareDp))
+                    for (index in 0 until 7)
+                        WeekDayLabel(squareDp, index)
+                }
+            }
+            items(
+                count = items.itemCount,
+                key = items.itemKey { it.month.timestamp },
+                contentType = { items.itemContentType { it.month.weeks } }) { index ->
                 items[index]?.let { item ->
-                    LazyHorizontalStaggeredGrid(
-                        rows = StaggeredGridCells.Fixed(8),
-                        modifier = Modifier
-                            .width(squareDp.times(item.month.weeks))
-                            .height(minHeight),
-                        reverseLayout = true,
-                        userScrollEnabled = false
-                    ) {
-                        item {
-                            MonthLabel(
-                                month = item.month,
-                                entrySize = squareDp,
-                                padding = squareOffsetDp
-                            )
-                        }
-                        items(items = item.entries, key = { it.daysAgo }) { entry ->
-                            DailyEntry(
-                                entry,
-                                goal,
-                                isEditable,
-                                onDayClick,
-                                squareDp,
-                                squareOffsetDp,
-                                habitColor
-                            )
+                    Column {
+                        MonthLabel(
+                            month = item.month,
+                            entrySize = squareDp,
+                            padding = squareOffsetDp
+                        )
+                        LazyHorizontalGrid(
+                            rows = GridCells.Fixed(7),
+                            modifier = Modifier
+                                .width(squareDp.times(item.month.weeks))
+                                .height(squareDp.times(7)),
+                            reverseLayout = true,
+                            userScrollEnabled = false
+                        ) {
+                            items(
+                                items = item.entries,
+                                key = { it.daysAgo },
+                                contentType = { "entry" }) { entry ->
+                                DailyEntry(
+                                    entry,
+                                    goal,
+                                    isEditable,
+                                    onDayClick,
+                                    squareDp,
+                                    squareOffsetDp,
+                                    habitColor
+                                )
+                            }
                         }
                     }
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun WeekDayLabel(
+    squareDp: Dp,
+    index: Int
+) {
+    Box(
+        modifier = Modifier.size(squareDp),
+        contentAlignment = Alignment.CenterStart,
+    ) {
+        Text(
+            text = getWeekDisplayName(getLocale(), index),
+            modifier = Modifier.padding(start = 4.dp),
+            style = MaterialTheme.typography.labelSmall,
+            textAlign = TextAlign.Center
+        )
     }
 }
 
@@ -258,7 +300,7 @@ private fun MonthLabel(
             maxLines = 1,
         )
         Spacer(modifier = Modifier.width(2.dp))
-        Text(
+        if (month.weeks > 1) Text(
             text = month.getDisplayYear(getLocale()),
             color = MaterialTheme.colorScheme.onSecondaryContainer,
             style = MaterialTheme.typography.labelSmall,
