@@ -12,7 +12,7 @@
     <string name="icons_health">здоров\'я</string>
     <string name="icons_art">мистецтво</string>
     <string name="create_new_habit">нова звичка</string>
-    <string name="edit_habit">редагувати звичку</string>
+    <string name="edit_habit">редагувати</string>
     <string name="delete_habit_confirmation_dialog_title">ви дійсно хочете видалити звичку?</string>
     <string name="history_label">історія</string>
     <string name="icon_label">іконка</string>

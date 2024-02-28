@@ -1,7 +1,7 @@
 package com.github.skytoph.taski.presentation
 
-import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -91,7 +91,8 @@ fun TaskiApp(
                 }
             }
 
-            composable(route = HabitScreens.HabitList.route) {
+            composable(route = HabitScreens.HabitList.route,
+                exitTransition = { fadeOut(tween(delayMillis = 90)) }) {
                 HabitsScreen(
                     onCreateHabit = { navController.navigate(HabitScreens.CreateHabit.route) },
                     onHabitClick = { habit -> navController.navigate(HabitScreens.HabitDetails(habit.id.toString()).route) })
@@ -99,6 +100,7 @@ fun TaskiApp(
             composable(
                 route = HabitScreens.CreateHabit.route,
                 enterTransition = { scaleIntoContainer(direction = ScaleTransitionDirection.OUTWARDS) },
+                exitTransition = { fadeOut(tween(delayMillis = 90)) },
                 popExitTransition = { scaleOutOfContainer(direction = ScaleTransitionDirection.INWARDS) },
                 popEnterTransition = null,
             ) {
@@ -111,6 +113,7 @@ fun TaskiApp(
                     type = NavType.LongType
                 }),
                 enterTransition = { scaleIntoContainer(direction = ScaleTransitionDirection.OUTWARDS) },
+                exitTransition = { fadeOut(tween(delayMillis = 90)) },
                 popExitTransition = { scaleOutOfContainer(direction = ScaleTransitionDirection.INWARDS) },
                 popEnterTransition = null,
             ) {
@@ -126,17 +129,10 @@ fun TaskiApp(
                     type = NavType.LongType
                     defaultValue = HabitUi.ID_DEFAULT
                 }),
-                enterTransition = {
-                    slideIntoContainer(
-                        AnimatedContentTransitionScope.SlideDirection.Up, tween(500)
-                    )
-                },
-                popExitTransition = {
-                    slideOutOfContainer(
-                        AnimatedContentTransitionScope.SlideDirection.Down, tween(500)
-                    )
-                },
-                popEnterTransition = null
+                enterTransition = { scaleIntoContainer(direction = ScaleTransitionDirection.OUTWARDS) },
+                exitTransition = { fadeOut(tween(delayMillis = 90)) },
+                popExitTransition = { scaleOutOfContainer(direction = ScaleTransitionDirection.INWARDS) },
+                popEnterTransition = null,
             ) {
                 EditHabitScreen(
                     navigateUp = navController::navigateUp,

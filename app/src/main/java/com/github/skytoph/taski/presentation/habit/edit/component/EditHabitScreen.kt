@@ -30,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -62,13 +63,17 @@ fun EditHabitScreen(
     LaunchedEffect(iconState.value) {
         viewModel.onEvent(EditHabitEvent.UpdateIcon(iconState.value.icon, iconState.value.color))
     }
+    val validated = viewModel.state().value.isValidated
+    LaunchedEffect(validated) {
+        if (validated) viewModel.saveHabit(navigateUp = navigateUp)
+    }
 
     EditHabit(
         state = viewModel.state(),
         minHeight = TextFieldDefaults.MinHeight,
         navigateUp = navigateUp,
         onSelectIconClick = onSelectIconClick,
-        onSaveHabit = { viewModel.saveHabit(navigateUp = navigateUp) },
+        onSaveHabit = { viewModel.validate() },
         onTypeTitle = { viewModel.onEvent(EditHabitEvent.EditTitle(it)) },
         onDecreaseGoal = { viewModel.onEvent(EditHabitEvent.DecreaseGoal) },
         onIncreaseGoal = { viewModel.onEvent(EditHabitEvent.IncreaseGoal) },
@@ -97,7 +102,8 @@ private fun EditHabit(
         HabitAppBar(
             label = stringResource(R.string.edit_habit),
             navigateUp = { navigateUp() },
-            actionButtons = listOf(SaveIconButton(MaterialTheme.colorScheme.onSurface, onSaveHabit))
+            menuItems = listOf(SaveIconButton(MaterialTheme.colorScheme.onSurface, onSaveHabit)),
+            isDropDownMenu = false
         )
         EditBaseHabit(
             title = state.value.title,
@@ -140,6 +146,7 @@ fun EditBaseHabit(
             modifier = Modifier.weight(1f),
             value = title.field,
             onValueChange = onTypeTitle,
+            error = title.error?.getString(LocalContext.current)
         )
         IconSelector(
             icon = icon,

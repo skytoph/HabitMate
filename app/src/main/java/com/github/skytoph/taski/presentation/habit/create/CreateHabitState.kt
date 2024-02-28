@@ -12,6 +12,7 @@ data class CreateHabitState(
     val goal: GoalState = GoalState(),
     val icon: ImageVector = IconsGroup.allGroups.first().icons.first(),
     val color: Color = IconsColors.allColors.first(),
+    val isValidated: Boolean = false
 ) {
 
     fun toHabitUi() = HabitUi(

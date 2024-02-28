@@ -36,12 +36,17 @@ fun CreateHabitScreen(
         viewModel.onEvent(CreateHabitEvent.UpdateIcon(iconState.value.icon, iconState.value.color))
     }
 
+    val validated = viewModel.state().value.isValidated
+    LaunchedEffect(validated) {
+        if (validated) viewModel.saveHabit(navigateUp)
+    }
+
     CreateHabit(
         state = viewModel.state(),
         minHeight = TextFieldDefaults.MinHeight,
         navigateUp = navigateUp,
         onSelectIconClick = onSelectIconClick,
-        onSaveHabit = { viewModel.saveHabit(); navigateUp() },
+        onSaveHabit = { viewModel.validate() },
         onTypeTitle = { viewModel.onEvent(CreateHabitEvent.EditTitle(it)) },
         onDecreaseGoal = { viewModel.onEvent(CreateHabitEvent.DecreaseGoal) },
         onIncreaseGoal = { viewModel.onEvent(CreateHabitEvent.IncreaseGoal) })
@@ -66,7 +71,8 @@ private fun CreateHabit(
         HabitAppBar(
             label = stringResource(R.string.create_new_habit),
             navigateUp = navigateUp,
-            actionButtons = listOf(SaveIconButton(MaterialTheme.colorScheme.onSurface, onSaveHabit))
+            menuItems = listOf(SaveIconButton(MaterialTheme.colorScheme.onSurface, onSaveHabit)),
+            isDropDownMenu = false
         )
         EditBaseHabit(
             title = state.value.title,

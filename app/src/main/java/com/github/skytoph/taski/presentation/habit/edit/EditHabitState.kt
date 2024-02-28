@@ -17,6 +17,7 @@ data class EditHabitState(
     val isHistoryEditable: Boolean = false,
     val isLoading: Boolean = false,
     val isDialogShown: Boolean = false,
+    val isValidated: Boolean = false
 ) {
 
     fun toHabitUi() = HabitUi(

@@ -2,11 +2,12 @@ package com.github.skytoph.taski.di.habit
 
 import com.github.skytoph.taski.core.Now
 import com.github.skytoph.taski.presentation.core.ConvertIcon
-import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
 import com.github.skytoph.taski.presentation.habit.details.mapper.EditableEntryDomainToUiMapper
 import com.github.skytoph.taski.presentation.habit.details.mapper.EditableEntryUiMapper
 import com.github.skytoph.taski.presentation.habit.details.mapper.HabitWithEditableEntryUiMapper
 import com.github.skytoph.taski.presentation.habit.details.mapper.WeeksCache
+import com.github.skytoph.taski.presentation.habit.edit.EditHabitValidator
+import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitDomainMapper
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitHistoryUiMapper
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitUiMapper
@@ -44,4 +45,7 @@ object EditHabitViewModelModule {
 
     @Provides
     fun weekCache(): WeeksCache = WeeksCache()
+
+    @Provides
+    fun validator(): EditHabitValidator = EditHabitValidator()
 }

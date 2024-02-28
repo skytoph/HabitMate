@@ -82,8 +82,8 @@ fun HabitDetails(
 ) {
     val habit = state.value.habit ?: return
     val actionButtons = listOf(
+        EditIconButton(MaterialTheme.colorScheme.onSurface, action = onEdit),
         DeleteIconButton(MaterialTheme.colorScheme.error, onDeleteClick),
-        EditIconButton(MaterialTheme.colorScheme.onSurface, action = onEdit)
     )
 
     Column(
@@ -95,7 +95,7 @@ fun HabitDetails(
         HabitAppBar(
             label = stringResource(R.string.habit_details),
             navigateUp = navigateUp,
-            actionButtons = actionButtons
+            menuItems = actionButtons
         )
 
 

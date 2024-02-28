@@ -58,11 +58,11 @@ fun HabitCard(
                         modifier = Modifier
                             .size(32.dp)
                             .background(
-                                color = MaterialTheme.colorScheme.secondaryContainer,
+                                color = habit.color,
                                 shape = RoundedCornerShape(30)
                             )
                             .padding(4.dp),
-                        tint = habit.color
+                        tint = Color.White
                     )
                 }
                 Text(text = habit.title, Modifier.weight(1f))

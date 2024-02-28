@@ -1,5 +1,9 @@
 package com.github.skytoph.taski.presentation.core.component
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,9 +26,13 @@ fun TitleTextField(
     modifier: Modifier = Modifier,
     value: String,
     onValueChange: (String) -> Unit,
+    error: String? = null
 ) {
     Column(modifier = modifier) {
-        Text(text = stringResource(R.string.habit_label), style = MaterialTheme.typography.bodyMedium)
+        Text(
+            text = stringResource(R.string.habit_label),
+            style = MaterialTheme.typography.bodyMedium
+        )
         Spacer(modifier = Modifier.height(4.dp))
         TextField(
             modifier = Modifier
@@ -37,10 +45,23 @@ fun TitleTextField(
                 unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
-                disabledIndicatorColor = Color.Transparent
+                disabledIndicatorColor = Color.Transparent,
+                errorIndicatorColor = Color.Transparent
             ),
             singleLine = true,
             shape = RoundedCornerShape(10),
+            isError = error != null,
+            supportingText = {
+                AnimatedContent(
+                    targetState = error,
+                    transitionSpec = {
+                        slideInVertically().togetherWith(fadeOut())
+                    },
+                    label = ""
+                ) { target ->
+                    Text(text = target ?: "", minLines = 1)
+                }
+            },
         )
     }
 }

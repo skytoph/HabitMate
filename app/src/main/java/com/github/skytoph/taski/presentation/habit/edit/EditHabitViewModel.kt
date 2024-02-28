@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.skytoph.taski.presentation.core.EventHandler
 import com.github.skytoph.taski.presentation.habit.HabitScreens
 import com.github.skytoph.taski.presentation.habit.icon.IconState
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitUiMapper
@@ -21,8 +22,9 @@ class EditHabitViewModel @Inject constructor(
     private val iconState: MutableState<IconState>,
     private val interactor: EditHabitInteractor,
     private val habitMapper: HabitUiMapper,
+    private val validator: EditHabitValidator,
     savedStateHandle: SavedStateHandle,
-) : ViewModel() {
+) : ViewModel(), EventHandler<EditHabitEvent> {
 
     init {
         onEvent(EditHabitEvent.Progress(true))
@@ -37,7 +39,9 @@ class EditHabitViewModel @Inject constructor(
         withContext(Dispatchers.Main) { navigateUp() }
     }
 
-    fun onEvent(event: EditHabitEvent) = event.handle(state, iconState)
+    fun validate() = validator.validate(state.value.title, this)
+
+    override fun onEvent(event: EditHabitEvent) = event.handle(state, iconState)
 
     fun state(): State<EditHabitState> = state
 

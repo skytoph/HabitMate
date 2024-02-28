@@ -3,13 +3,27 @@ package com.github.skytoph.taski.presentation.habit.create
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.github.skytoph.taski.presentation.core.state.StringResource
 
 interface CreateHabitEvent {
     fun handle(state: MutableState<CreateHabitState>)
 
     class EditTitle(private val title: String) : CreateHabitEvent {
         override fun handle(state: MutableState<CreateHabitState>) {
-            state.value = state.value.copy(title = state.value.title.copy(field = title))
+            state.value =
+                state.value.copy(title = state.value.title.copy(field = title, error = null))
+        }
+    }
+
+    class TitleError(private val error: StringResource?) : CreateHabitEvent {
+        override fun handle(state: MutableState<CreateHabitState>) {
+            state.value = state.value.copy(title = state.value.title.copy(error = error))
+        }
+    }
+
+    object Validate : CreateHabitEvent {
+        override fun handle(state: MutableState<CreateHabitState>) {
+            state.value = state.value.copy(isValidated = true)
         }
     }
 

@@ -52,4 +52,5 @@
     <string name="edit_history_hint">tap on the day to update your progress\nchanges will be saved immediately</string>
     <string name="entry_tooltip_percent_done">%1$s / %2$s done</string>
     <string name="color_and_icon_label">color and icon</string>
+    <string name="error_habit_title_is_empty">enter a name for the habit</string>
 </resources>

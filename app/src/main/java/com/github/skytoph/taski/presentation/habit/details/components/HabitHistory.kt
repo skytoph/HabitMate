@@ -5,6 +5,12 @@
 
 package com.github.skytoph.taski.presentation.habit.details.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -99,27 +105,38 @@ fun HabitHistory(
             horizontalArrangement = Arrangement.End,
             modifier = Modifier.fillMaxWidth()
         ) {
-            if (isEditable)
+            AnimatedVisibility(
+                visible = isEditable,
+                enter = fadeIn() + slideInVertically(),
+                exit = fadeOut() + slideOutVertically(targetOffsetY = { it / 2 })
+            ) {
                 Text(
                     text = stringResource(R.string.edit_history_hint),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onBackground,
                     textAlign = TextAlign.End
                 )
-            if (isEditButtonVisible) IconButton(onClick = onEdit) {
-                Icon(
-                    imageVector = if (isEditable) Icons.Outlined.Check else Icons.Default.Edit,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(32.dp)
-                        .background(
-                            color = MaterialTheme.colorScheme.secondaryContainer,
-                            shape = RoundedCornerShape(30)
-                        )
-                        .padding(4.dp),
-                    tint = Color.White
-                )
             }
+            if (isEditButtonVisible)
+                IconButton(onClick = onEdit) {
+                    Crossfade(
+                        targetState = isEditable,
+                        label = "edit_history_crossfade"
+                    ) { isChecked ->
+                        Icon(
+                            imageVector = if (isChecked) Icons.Outlined.Check else Icons.Default.Edit,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(32.dp)
+                                .background(
+                                    color = MaterialTheme.colorScheme.secondaryContainer,
+                                    shape = RoundedCornerShape(30)
+                                )
+                                .padding(4.dp),
+                            tint = Color.White
+                        )
+                    }
+                }
         }
     }
 }
