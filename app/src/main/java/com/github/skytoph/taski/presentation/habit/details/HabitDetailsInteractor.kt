@@ -13,8 +13,8 @@ import kotlinx.coroutines.flow.Flow
 
 interface HabitDetailsInteractor : HabitDoneInteractor {
     fun entries(id: Long): Flow<PagingData<EditableHistoryUi>>
+    fun habit(id: Long): Flow<Habit>
     suspend fun entryEditable(id: Long, daysAgo: Int): EntryEditableUi
-    suspend fun habit(id: Long): Habit
     suspend fun delete(id: Long)
 
     class Base(
@@ -30,7 +30,7 @@ interface HabitDetailsInteractor : HabitDoneInteractor {
         override suspend fun entryEditable(id: Long, daysAgo: Int): EntryEditableUi =
             entry(id, daysAgo).let { entry -> entryMapper.map(daysAgo, entry.timesDone) }
 
-        override suspend fun habit(id: Long) = repository.habit(id)
+        override fun habit(id: Long) = repository.habitFlow(id)
 
         override suspend fun delete(id: Long) = repository.delete(id)
     }

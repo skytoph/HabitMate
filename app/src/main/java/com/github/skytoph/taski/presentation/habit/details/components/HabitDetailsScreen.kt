@@ -16,7 +16,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -127,10 +126,6 @@ fun HabitDetails(
             LabelWithIcon(
                 text = stringResource(R.string.goal_value, habit.goal),
                 icon = Icons.Default.CalendarMonth
-            )
-            LabelWithIcon(
-                text = "notification",
-                icon = Icons.Default.Notifications
             )
         }
         Spacer(modifier = Modifier.height(16.dp))
