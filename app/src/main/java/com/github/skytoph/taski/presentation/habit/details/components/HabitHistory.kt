@@ -7,6 +7,7 @@ package com.github.skytoph.taski.presentation.habit.details.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
@@ -60,16 +61,18 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.github.skytoph.taski.R
+import com.github.skytoph.taski.presentation.core.color.contrastColor
+import com.github.skytoph.taski.presentation.core.color.habitColor
 import com.github.skytoph.taski.presentation.core.component.getLocale
 import com.github.skytoph.taski.presentation.core.fadingEdge
 import com.github.skytoph.taski.presentation.core.format.getWeekDisplayName
-import com.github.skytoph.taski.presentation.core.habitColor
 import com.github.skytoph.taski.presentation.core.leftFadingEdge
 import com.github.skytoph.taski.presentation.core.preview.HabitsEditableProvider
 import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
 import com.github.skytoph.taski.presentation.habit.edit.EntryEditableUi
 import com.github.skytoph.taski.presentation.habit.edit.MonthUi
 import com.github.skytoph.taski.presentation.habit.icon.IconsColors
+import com.github.skytoph.taski.ui.theme.PurpleLightGray
 import com.github.skytoph.taski.ui.theme.TaskiTheme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -87,7 +90,7 @@ fun HabitHistory(
     Column(
         Modifier
             .background(
-                color = MaterialTheme.colorScheme.primaryContainer,
+                color = MaterialTheme.colorScheme.tertiaryContainer,
                 shape = RoundedCornerShape(10f)
             )
             .wrapContentHeight()
@@ -108,7 +111,7 @@ fun HabitHistory(
             AnimatedVisibility(
                 visible = isEditable,
                 enter = fadeIn() + slideInVertically(),
-                exit = fadeOut() + slideOutVertically(targetOffsetY = { it / 2 })
+                exit = fadeOut(tween(100)) + slideOutVertically(targetOffsetY = { it / 2 })
             ) {
                 Text(
                     text = stringResource(R.string.edit_history_hint),
@@ -169,7 +172,7 @@ fun HabitHistoryGrid(
             modifier = Modifier
                 .padding(start = initialOffsetDp)
                 .leftFadingEdge(
-                    color = MaterialTheme.colorScheme.primaryContainer,
+                    color = MaterialTheme.colorScheme.tertiaryContainer,
                     width = 4.dp
                 ),
             contentPadding = PaddingValues(2.dp),
@@ -180,7 +183,7 @@ fun HabitHistoryGrid(
                     Modifier
                         .size(width = squareDp, height = squareDp.times(8))
                         .fadingEdge(fadingBrushHeader)
-                        .background(color = MaterialTheme.colorScheme.primaryContainer)
+                        .background(color = MaterialTheme.colorScheme.tertiaryContainer)
                 ) {
                     Box(modifier = Modifier.size(squareDp))
                     for (index in 0 until 7)
@@ -261,19 +264,17 @@ private fun DailyEntry(
             Text(stringResource(R.string.entry_tooltip_percent_done, entry.timesDone, goal))
         }
     ) {
+        val backgroundColor = habitColor(
+            entry.colorPercent(goal),
+            MaterialTheme.colorScheme.onSecondaryContainer,
+            entryColor
+        )
         Box(
             modifier = Modifier
                 .tooltipAnchor()
                 .size(size)
                 .padding(padding)
-                .background(
-                    habitColor(
-                        entry.colorPercent(goal),
-                        MaterialTheme.colorScheme.onSecondaryContainer,
-                        entryColor
-                    ),
-                    shape = RoundedCornerShape(10)
-                )
+                .background(backgroundColor, shape = RoundedCornerShape(10))
                 .clickable(enabled = isEditable && entry.daysAgo >= 0) {
                     onDayClick(entry.daysAgo)
                 },
@@ -281,7 +282,7 @@ private fun DailyEntry(
         ) {
             Text(
                 text = entry.day,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = backgroundColor.contrastColor(),
                 style = MaterialTheme.typography.labelSmall
             )
         }
@@ -303,8 +304,7 @@ private fun MonthLabel(
     ) {
         Text(
             text = month.getDisplayName(getLocale()),
-            color = MaterialTheme.colorScheme.onSecondaryContainer,
-            style = MaterialTheme.typography.labelMedium,
+            style = MaterialTheme.typography.labelSmall,
             overflow = TextOverflow.Ellipsis,
             textAlign = month.alignment,
             maxLines = 1,
@@ -312,7 +312,6 @@ private fun MonthLabel(
         Spacer(modifier = Modifier.width(2.dp))
         if (month.weeks > 1) Text(
             text = month.getDisplayYear(getLocale()),
-            color = MaterialTheme.colorScheme.onSecondaryContainer,
             style = MaterialTheme.typography.labelSmall,
             overflow = TextOverflow.Ellipsis,
             textAlign = month.alignment,

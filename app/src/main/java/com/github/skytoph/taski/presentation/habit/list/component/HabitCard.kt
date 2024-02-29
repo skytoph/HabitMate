@@ -25,7 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import com.github.skytoph.taski.presentation.core.habitColor
+import com.github.skytoph.taski.presentation.core.color.habitColor
 import com.github.skytoph.taski.presentation.core.preview.HabitProvider
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.HabitWithHistoryUi
@@ -70,7 +70,11 @@ fun HabitCard(
                     val defaultColor = MaterialTheme.colorScheme.secondaryContainer
                     val colorPercent =
                         history.entries.getOrNull(history.todayPosition)?.colorPercent
-                    val color = habitColor(colorPercent ?: 0F, defaultColor, habit.color)
+                    val color = habitColor(
+                        colorPercent ?: 0F,
+                        defaultColor,
+                        habit.color
+                    )
                     Icon(
                         imageVector = Icons.Outlined.Check,
                         contentDescription = null,
@@ -96,7 +100,7 @@ fun HabitCard(
 
 @Composable
 @Preview(showSystemUi = true, showBackground = true)
-fun HabitCardPreview(@PreviewParameter(HabitProvider::class) habit: HabitWithHistoryUi<HistoryUi>) {
+fun HabitCardPreview(@PreviewParameter(HabitProvider::class, limit = 1) habit: HabitWithHistoryUi<HistoryUi>) {
     TaskiTheme {
         HabitCard(habit = habit.habit, history = habit.history, onDone = {})
     }
@@ -104,7 +108,7 @@ fun HabitCardPreview(@PreviewParameter(HabitProvider::class) habit: HabitWithHis
 
 @Composable
 @Preview(showSystemUi = true, showBackground = true)
-fun DarkHabitCardPreview(@PreviewParameter(HabitProvider::class) habit: HabitWithHistoryUi<HistoryUi>) {
+fun DarkHabitCardPreview(@PreviewParameter(HabitProvider::class, limit = 1) habit: HabitWithHistoryUi<HistoryUi>) {
     TaskiTheme(darkTheme = true) {
         HabitCard(habit = habit.habit, history = habit.history, onDone = {})
     }

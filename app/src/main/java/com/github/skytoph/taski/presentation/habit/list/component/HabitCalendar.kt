@@ -25,8 +25,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
-import com.github.skytoph.taski.presentation.core.borderColor
-import com.github.skytoph.taski.presentation.core.habitColor
+import com.github.skytoph.taski.presentation.core.color.borderColor
+import com.github.skytoph.taski.presentation.core.color.habitColor
 import com.github.skytoph.taski.presentation.core.leftFadingEdge
 import com.github.skytoph.taski.presentation.core.preview.HabitProvider
 import com.github.skytoph.taski.presentation.core.rightFadingEdge
@@ -123,7 +123,12 @@ fun HabitCalendar(
 
 @Composable
 @Preview(showSystemUi = true, showBackground = true)
-fun HabitCalendarPreview(@PreviewParameter(HabitProvider::class, limit = 1) habit: HabitWithHistoryUi<HistoryUi>) {
+fun HabitCalendarPreview(
+    @PreviewParameter(
+        HabitProvider::class,
+        limit = 1
+    ) habit: HabitWithHistoryUi<HistoryUi>
+) {
     TaskiTheme {
         HabitCard(onDone = {}, habit = habit.habit, history = habit.history)
     }
