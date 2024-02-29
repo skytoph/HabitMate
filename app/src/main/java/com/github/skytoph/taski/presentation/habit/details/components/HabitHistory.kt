@@ -47,7 +47,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -65,6 +64,7 @@ import com.github.skytoph.taski.presentation.core.component.getLocale
 import com.github.skytoph.taski.presentation.core.fadingEdge
 import com.github.skytoph.taski.presentation.core.format.getWeekDisplayName
 import com.github.skytoph.taski.presentation.core.habitColor
+import com.github.skytoph.taski.presentation.core.leftFadingEdge
 import com.github.skytoph.taski.presentation.core.preview.HabitsEditableProvider
 import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
 import com.github.skytoph.taski.presentation.habit.edit.EntryEditableUi
@@ -154,12 +154,6 @@ fun HabitHistoryGrid(
 ) {
     val items = entries.collectAsLazyPagingItems()
 
-    val fadingBrush = Brush.horizontalGradient(
-        0f to Color.Transparent,
-        0.1f to Color.Black,
-        endX = with(LocalDensity.current) { (40.dp).toPx() }
-    )
-
     val fadingBrushHeader = Brush.horizontalGradient(0f to Color.Transparent, 0.1f to Color.Red)
 
     val minHeight = 8 * squareDp
@@ -170,15 +164,14 @@ fun HabitHistoryGrid(
             .fillMaxWidth()
             .wrapContentHeight()
             .defaultMinSize(minHeight = minHeight)
-            .background(
-                color = MaterialTheme.colorScheme.secondaryContainer,
-                shape = RoundedCornerShape(10f)
-            )
     ) {
         LazyRow(
             modifier = Modifier
                 .padding(start = initialOffsetDp)
-                .fadingEdge(fadingBrush),
+                .leftFadingEdge(
+                    color = MaterialTheme.colorScheme.primaryContainer,
+                    width = 4.dp
+                ),
             contentPadding = PaddingValues(2.dp),
             reverseLayout = true,
         ) {
@@ -187,7 +180,7 @@ fun HabitHistoryGrid(
                     Modifier
                         .size(width = squareDp, height = squareDp.times(8))
                         .fadingEdge(fadingBrushHeader)
-                        .background(color = MaterialTheme.colorScheme.secondaryContainer)
+                        .background(color = MaterialTheme.colorScheme.primaryContainer)
                 ) {
                     Box(modifier = Modifier.size(squareDp))
                     for (index in 0 until 7)
