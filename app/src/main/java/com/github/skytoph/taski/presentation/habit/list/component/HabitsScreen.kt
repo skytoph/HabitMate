@@ -24,7 +24,7 @@ import com.github.skytoph.taski.presentation.habit.HabitWithHistoryUi
 import com.github.skytoph.taski.presentation.habit.list.HabitListState
 import com.github.skytoph.taski.presentation.habit.list.HabitsViewModel
 import com.github.skytoph.taski.presentation.habit.list.HistoryUi
-import com.github.skytoph.taski.ui.theme.TaskiTheme
+import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 
 @Composable
@@ -74,7 +74,7 @@ private fun Habits(
 @Composable
 @Preview(showSystemUi = true, showBackground = true)
 fun HabitScreenPreview(@PreviewParameter(HabitsProvider::class) habits: List<HabitWithHistoryUi<HistoryUi>>) {
-    TaskiTheme(darkTheme = true) {
+    HabitMateTheme(darkTheme = true) {
         Habits(state = remember {
             mutableStateOf(HabitListState(habits = habits, isLoading = false))
         })

@@ -32,7 +32,7 @@ import com.github.skytoph.taski.presentation.core.preview.HabitProvider
 import com.github.skytoph.taski.presentation.core.rightFadingEdge
 import com.github.skytoph.taski.presentation.habit.HabitWithHistoryUi
 import com.github.skytoph.taski.presentation.habit.list.HistoryUi
-import com.github.skytoph.taski.ui.theme.TaskiTheme
+import com.github.skytoph.taski.ui.theme.HabitMateTheme
 import kotlin.math.ceil
 
 @Composable
@@ -129,7 +129,7 @@ fun HabitCalendarPreview(
         limit = 1
     ) habit: HabitWithHistoryUi<HistoryUi>
 ) {
-    TaskiTheme {
+    HabitMateTheme {
         HabitCard(onDone = {}, habit = habit.habit, history = habit.history)
     }
 }

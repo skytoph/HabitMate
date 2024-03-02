@@ -14,7 +14,7 @@ import com.github.skytoph.taski.presentation.core.preview.HabitsProvider
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.HabitWithHistoryUi
 import com.github.skytoph.taski.presentation.habit.list.HistoryUi
-import com.github.skytoph.taski.ui.theme.TaskiTheme
+import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
 fun HabitList(
@@ -41,7 +41,7 @@ fun HabitList(
 @Composable
 @Preview(showSystemUi = true, showBackground = true)
 fun HabitListPreview(@PreviewParameter(HabitsProvider::class) habits: List<HabitWithHistoryUi<HistoryUi>>) {
-    TaskiTheme {
+    HabitMateTheme {
         HabitList(habits = habits, onDoneHabit = {}) {}
     }
 }
@@ -49,7 +49,7 @@ fun HabitListPreview(@PreviewParameter(HabitsProvider::class) habits: List<Habit
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
 fun DarkHabitListPreview(@PreviewParameter(HabitsProvider::class) habits: List<HabitWithHistoryUi<HistoryUi>>) {
-    TaskiTheme(darkTheme = true) {
+    HabitMateTheme(darkTheme = true) {
         HabitList(habits = habits, onDoneHabit = {}) {}
     }
 }

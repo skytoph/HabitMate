@@ -24,7 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.github.skytoph.taski.ui.theme.TaskiTheme
+import com.github.skytoph.taski.ui.theme.HabitMateTheme
 import kotlinx.coroutines.delay
 
 
@@ -98,7 +98,7 @@ fun LoadingCircles(
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
 fun CirclesAnimationPreview() {
-    TaskiTheme {
+    HabitMateTheme {
         LoadingCirclesFullscreen()
     }
 }

@@ -72,8 +72,7 @@ import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
 import com.github.skytoph.taski.presentation.habit.edit.EntryEditableUi
 import com.github.skytoph.taski.presentation.habit.edit.MonthUi
 import com.github.skytoph.taski.presentation.habit.icon.IconsColors
-import com.github.skytoph.taski.ui.theme.PurpleLightGray
-import com.github.skytoph.taski.ui.theme.TaskiTheme
+import com.github.skytoph.taski.ui.theme.HabitMateTheme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
@@ -323,7 +322,7 @@ private fun MonthLabel(
 @Composable
 @Preview
 fun DarkCalendarEditableGridPreview(@PreviewParameter(HabitsEditableProvider::class) entries: List<EditableHistoryUi>) {
-    TaskiTheme(darkTheme = true) {
+    HabitMateTheme(darkTheme = true) {
         Surface(modifier = Modifier.padding(16.dp)) {
             HabitHistory(flowOf(PagingData.from(entries)))
         }

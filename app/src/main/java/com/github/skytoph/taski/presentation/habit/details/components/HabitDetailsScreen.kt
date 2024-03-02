@@ -45,7 +45,7 @@ import com.github.skytoph.taski.presentation.habit.details.HabitDetailsViewModel
 import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
 import com.github.skytoph.taski.presentation.habit.icon.IconsColors
 import com.github.skytoph.taski.presentation.habit.icon.IconsGroup
-import com.github.skytoph.taski.ui.theme.TaskiTheme
+import com.github.skytoph.taski.ui.theme.HabitMateTheme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
@@ -182,7 +182,7 @@ fun HabitDetailsScreenPreview(
         color = IconsColors.allColors.first()
     )
 ) {
-    TaskiTheme(darkTheme = false) {
+    HabitMateTheme(darkTheme = false) {
         HabitDetails(
             state = remember { mutableStateOf(HabitDetailsState(habit)) },
             entries = flowOf(PagingData.from(entries))
@@ -200,7 +200,7 @@ fun DarkHabitDetailsScreenPreview(
         color = IconsColors.allColors.first()
     )
 ) {
-    TaskiTheme(darkTheme = true) {
+    HabitMateTheme(darkTheme = true) {
         HabitDetails(
             state = remember { mutableStateOf(HabitDetailsState(habit)) },
             entries = flowOf(PagingData.from(entries))

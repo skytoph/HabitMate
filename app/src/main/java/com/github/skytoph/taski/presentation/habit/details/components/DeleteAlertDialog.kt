@@ -11,7 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.github.skytoph.taski.R
-import com.github.skytoph.taski.ui.theme.TaskiTheme
+import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
 fun DeleteAlertDialog(
@@ -46,7 +46,7 @@ fun DeleteAlertDialog(
 @Composable
 @Preview
 fun DeleteDialogPreview() {
-    TaskiTheme {
+    HabitMateTheme {
         DeleteAlertDialog(onDismissRequest = {}, onConfirm = {})
     }
 }
@@ -54,7 +54,7 @@ fun DeleteDialogPreview() {
 @Composable
 @Preview
 fun DarkDeleteDialogPreview() {
-    TaskiTheme(darkTheme = true) {
+    HabitMateTheme(darkTheme = true) {
         DeleteAlertDialog(onDismissRequest = {}, onConfirm = {})
     }
 }

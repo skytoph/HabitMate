@@ -8,6 +8,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -45,7 +46,7 @@ private abstract class AuthScreens(val route: String) {
 }
 
 @Composable
-fun TaskiApp(
+fun HabitMateApp(
     navController: NavHostController = rememberNavController(),
     viewModel: AuthViewModel = hiltViewModel()
 ) {

@@ -16,7 +16,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.github.skytoph.taski.ui.theme.TaskiTheme
+import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
 fun SquareButton(onClick: () -> Unit, icon: ImageVector, size: Dp, isEnabled: Boolean) {
@@ -39,7 +39,7 @@ fun SquareButton(onClick: () -> Unit, icon: ImageVector, size: Dp, isEnabled: Bo
 @Composable
 @Preview
 fun SquareButtonPreview() {
-    TaskiTheme {
+    HabitMateTheme {
         Row {
             SquareButton({}, icon = Icons.Default.Remove, size = 60.dp, isEnabled = false)
             SquareButton({}, icon = Icons.Default.Add, size = 60.dp, isEnabled = true)
@@ -50,7 +50,7 @@ fun SquareButtonPreview() {
 @Composable
 @Preview
 fun DarkSquareButtonPreview() {
-    TaskiTheme(darkTheme = true) {
+    HabitMateTheme(darkTheme = true) {
         Row {
             SquareButton({}, icon = Icons.Default.Remove, size = 60.dp, isEnabled = false)
             SquareButton({}, icon = Icons.Default.Add, size = 60.dp, isEnabled = true)

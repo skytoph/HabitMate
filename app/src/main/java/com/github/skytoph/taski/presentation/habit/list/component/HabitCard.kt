@@ -30,7 +30,7 @@ import com.github.skytoph.taski.presentation.core.preview.HabitProvider
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.HabitWithHistoryUi
 import com.github.skytoph.taski.presentation.habit.list.HistoryUi
-import com.github.skytoph.taski.ui.theme.TaskiTheme
+import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
 fun HabitCard(
@@ -101,7 +101,7 @@ fun HabitCard(
 @Composable
 @Preview(showSystemUi = true, showBackground = true)
 fun HabitCardPreview(@PreviewParameter(HabitProvider::class, limit = 1) habit: HabitWithHistoryUi<HistoryUi>) {
-    TaskiTheme {
+    HabitMateTheme {
         HabitCard(habit = habit.habit, history = habit.history, onDone = {})
     }
 }
@@ -109,7 +109,7 @@ fun HabitCardPreview(@PreviewParameter(HabitProvider::class, limit = 1) habit: H
 @Composable
 @Preview(showSystemUi = true, showBackground = true)
 fun DarkHabitCardPreview(@PreviewParameter(HabitProvider::class, limit = 1) habit: HabitWithHistoryUi<HistoryUi>) {
-    TaskiTheme(darkTheme = true) {
+    HabitMateTheme(darkTheme = true) {
         HabitCard(habit = habit.habit, history = habit.history, onDone = {})
     }
 }

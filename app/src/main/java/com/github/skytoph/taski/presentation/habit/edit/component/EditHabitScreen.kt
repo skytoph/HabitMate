@@ -50,7 +50,7 @@ import com.github.skytoph.taski.presentation.habit.edit.EditHabitEvent
 import com.github.skytoph.taski.presentation.habit.edit.EditHabitState
 import com.github.skytoph.taski.presentation.habit.edit.EditHabitViewModel
 import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
-import com.github.skytoph.taski.ui.theme.TaskiTheme
+import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
 fun EditHabitScreen(
@@ -220,7 +220,7 @@ fun IconSelector(
 @Composable
 @Preview(showSystemUi = true, showBackground = true)
 fun HabitScreenPreview(@PreviewParameter(HabitsEditableProvider::class) entries: List<EditableHistoryUi>) {
-    TaskiTheme(darkTheme = false) {
+    HabitMateTheme(darkTheme = false) {
         EditHabit(
             state = remember { mutableStateOf(EditHabitState()) }
         )
@@ -230,7 +230,7 @@ fun HabitScreenPreview(@PreviewParameter(HabitsEditableProvider::class) entries:
 @Composable
 @Preview(showSystemUi = true, showBackground = true)
 fun DarkHabitScreenPreview(@PreviewParameter(HabitsEditableProvider::class) entries: List<EditableHistoryUi>) {
-    TaskiTheme(darkTheme = true) {
+    HabitMateTheme(darkTheme = true) {
         EditHabit(
             state = remember { mutableStateOf(EditHabitState()) }
         )

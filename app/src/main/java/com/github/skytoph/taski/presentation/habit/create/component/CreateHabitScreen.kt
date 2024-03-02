@@ -23,7 +23,7 @@ import com.github.skytoph.taski.presentation.habit.create.CreateHabitEvent
 import com.github.skytoph.taski.presentation.habit.create.CreateHabitState
 import com.github.skytoph.taski.presentation.habit.create.CreateHabitViewModel
 import com.github.skytoph.taski.presentation.habit.edit.component.EditBaseHabit
-import com.github.skytoph.taski.ui.theme.TaskiTheme
+import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
 fun CreateHabitScreen(
@@ -91,7 +91,7 @@ private fun CreateHabit(
 @Composable
 @Preview(showSystemUi = true, showBackground = true)
 fun HabitScreenPreview() {
-    TaskiTheme {
+    HabitMateTheme {
         CreateHabit(state = remember { mutableStateOf(CreateHabitState()) })
     }
 }
@@ -99,7 +99,7 @@ fun HabitScreenPreview() {
 @Composable
 @Preview(showSystemUi = true, showBackground = true)
 fun DarkHabitScreenPreview() {
-    TaskiTheme(darkTheme = true) {
+    HabitMateTheme(darkTheme = true) {
         CreateHabit(state = remember { mutableStateOf(CreateHabitState()) })
     }
 }

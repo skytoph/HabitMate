@@ -38,7 +38,7 @@ import com.github.skytoph.taski.presentation.habit.icon.IconsColors
 import com.github.skytoph.taski.presentation.habit.icon.IconsGroup
 import com.github.skytoph.taski.presentation.habit.icon.SelectIconEvent
 import com.github.skytoph.taski.presentation.habit.icon.SelectIconViewModel
-import com.github.skytoph.taski.ui.theme.TaskiTheme
+import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
 fun SelectIconScreen(viewModel: SelectIconViewModel = hiltViewModel(), navigateUp: () -> Unit) {
@@ -126,7 +126,7 @@ private fun SelectIcon(
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
 fun SelectIconScreenPreview() {
-    TaskiTheme {
+    HabitMateTheme {
         SelectIcon(remember { mutableStateOf(IconState()) })
     }
 }
@@ -134,7 +134,7 @@ fun SelectIconScreenPreview() {
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
 fun DarkSelectIconScreenPreview() {
-    TaskiTheme(darkTheme = true) {
+    HabitMateTheme(darkTheme = true) {
         SelectIcon(remember { mutableStateOf(IconState()) })
     }
 }
