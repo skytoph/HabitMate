@@ -4,7 +4,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -38,7 +40,12 @@ fun BasicTextField(
                 text = error ?: "",
                 minLines = 2,
             )
-        }
+        },
+        colors = OutlinedTextFieldDefaults.colors(
+            unfocusedLabelColor = MaterialTheme.colorScheme.onBackground,
+            focusedTrailingIconColor = MaterialTheme.colorScheme.outline,
+            unfocusedTrailingIconColor = MaterialTheme.colorScheme.outline,
+        )
     )
 }
 

@@ -6,7 +6,7 @@ import com.github.skytoph.taski.presentation.auth.authentication.user.UserData
 interface AuthRepository {
     suspend fun signIn(email: String, password: String): AuthResult?
     suspend fun signUp(email: String, password: String): AuthResult?
-    suspend fun reloadUser()
+    suspend fun reloadUser(onVerified: (Boolean) -> Unit)
     suspend fun sendVerificationEmail()
     suspend fun signOut()
     fun currentUser(): UserData?

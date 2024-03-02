@@ -3,6 +3,7 @@ package com.github.skytoph.taski.presentation.auth.authentication
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.skytoph.taski.domain.auth.repository.AuthRepository
+import com.github.skytoph.taski.presentation.Graph
 import com.github.skytoph.taski.presentation.auth.authentication.user.UserData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -18,4 +19,7 @@ class AuthViewModel @Inject constructor(
     fun signOut() = viewModelScope.launch {
         repository.signOut()
     }
+
+    fun startDestination(): String =
+        if (currentUser()?.isVerified == true) Graph.HABITS else Graph.AUTH
 }

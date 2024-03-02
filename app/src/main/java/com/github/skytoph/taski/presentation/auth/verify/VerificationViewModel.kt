@@ -7,7 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.skytoph.taski.domain.auth.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -16,14 +18,17 @@ class VerificationViewModel @Inject constructor(
     private val state: MutableState<Boolean?> = mutableStateOf(null)
 ) : ViewModel() {
 
-    fun sendVerificationEmail() = viewModelScope.launch {
-        repository.sendVerificationEmail()
+    init {
+        sendVerificationEmail()
     }
 
-    fun verify() = viewModelScope.launch {
-        repository.reloadUser()
-        val verified = repository.currentUser()?.isVerified ?: false
-        state.value = verified
+    fun sendVerificationEmail() = viewModelScope.launch {
+        repository.sendVerificationEmail()
+        withContext(Dispatchers.Main) { state.value = null }
+    }
+
+    fun verify() = viewModelScope.launch(Dispatchers.IO) {
+        repository.reloadUser(onVerified = { isVerified -> state.value = isVerified })
     }
 
     fun signOut() = viewModelScope.launch {

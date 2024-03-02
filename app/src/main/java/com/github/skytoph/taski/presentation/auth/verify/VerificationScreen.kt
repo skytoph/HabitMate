@@ -42,7 +42,7 @@ fun VerificationScreen(
     navigateUp: () -> Unit,
     buttonTimeoutInSeconds: Int = 30
 ) {
-    var secondsLeft by remember { mutableStateOf(0) }
+    var secondsLeft by remember { mutableStateOf(buttonTimeoutInSeconds) }
 
     LaunchedEffect(key1 = secondsLeft) {
         while (secondsLeft > 0) {
@@ -59,7 +59,7 @@ fun VerificationScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { },
+                title = { Text(text = stringResource(R.string.verification)) },
                 navigationIcon = {
                     IconButton(onClick = {
                         viewModel.signOut()
@@ -91,7 +91,9 @@ fun VerificationScreen(
                 Text(
                     text =
                     if (secondsLeft > 0) stringResource(R.string.send_email_again, secondsLeft)
-                    else ""
+                    else "",
+                    minLines = 2,
+                    textAlign = TextAlign.Center
                 )
                 OutlinedButton(
                     onClick = {

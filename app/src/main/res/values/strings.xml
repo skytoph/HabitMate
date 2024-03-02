@@ -9,10 +9,11 @@
     <string name="email">email</string>
     <string name="password">password</string>
 
-    <string name="send_email_button">Send email</string>
-    <string name="send_email_again">We can send email again after %1$ss</string>
-    <string name="verify_email_button">Verify</string>
-    <string name="verify_email_description">Verify your email please</string>
+    <string name="verification">verification</string>
+    <string name="send_email_button">send email</string>
+    <string name="send_email_again">Email sent!\nWe can send you an email again in %1$ss</string>
+    <string name="verify_email_button">verify</string>
+    <string name="verify_email_description">Please verify your email address by clicking the link we sent. If you don’t see it, check your spam folder.\nAfter following the link, click on the “verify” button.</string>
 
     <string name="error_auth_general">Something went wrong, please try again later</string>
     <string name="error_password_is_short">Password must be at least 6 characters long and contain a minimum of 1 numeric character [0–9]</string>
