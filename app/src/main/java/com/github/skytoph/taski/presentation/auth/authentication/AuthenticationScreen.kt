@@ -10,6 +10,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,10 +26,8 @@ import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
 fun AuthenticationScreen(
-//    viewModel: AuthViewModel,
-    onSignInClick: () -> Unit,
-    onSignUpClick: () -> Unit,
-//    onSignInWithGoogleClick: () -> Unit,
+    onSignInClick: () -> Unit = {},
+    onSignUpClick: () -> Unit = {},
 ) {
 
     Column(
@@ -40,8 +39,6 @@ fun AuthenticationScreen(
     ) {
         SignInButton(onSignInClick)
         SignUpButton(onSignUpClick)
-//        TextDivider(stringResource(id = R.string.sign_in_with))
-//        SignInWithGoogle(onClick = onSignInWithGoogleClick)
     }
 }
 
@@ -73,13 +70,11 @@ fun SignInWithGoogle(onClick: () -> Unit) {
 @Composable
 fun TextDivider(label: String) {
     Row(
-        modifier = Modifier
-            .padding(top = 32.dp, bottom = 8.dp)
-            .fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Divider(modifier = Modifier.weight(1f), thickness = 1.dp)
-        Text(text = label, Modifier.padding(8.dp))
+        Text(text = label, Modifier.padding(8.dp), style = MaterialTheme.typography.labelSmall)
         Divider(modifier = Modifier.weight(1f), thickness = 1.dp)
     }
 }
@@ -88,10 +83,6 @@ fun TextDivider(label: String) {
 @Composable
 fun AuthenticationScreenPreview() {
     HabitMateTheme {
-        AuthenticationScreen(
-            {},
-            {},
-//            {}
-        )
+        AuthenticationScreen()
     }
 }

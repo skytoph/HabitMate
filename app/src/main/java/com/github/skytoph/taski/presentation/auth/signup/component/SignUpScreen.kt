@@ -1,4 +1,4 @@
-package com.github.skytoph.taski.presentation.auth.signin
+package com.github.skytoph.taski.presentation.auth.signup.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -29,51 +29,57 @@ import com.github.skytoph.taski.presentation.auth.authentication.SignInWithGoogl
 import com.github.skytoph.taski.presentation.auth.authentication.TextDivider
 import com.github.skytoph.taski.presentation.auth.authentication.client.makeLauncher
 import com.github.skytoph.taski.presentation.auth.authentication.client.signInWithGoogle
-import com.github.skytoph.taski.presentation.auth.signin.mapper.map
+import com.github.skytoph.taski.presentation.auth.signup.SignUpEvent
+import com.github.skytoph.taski.presentation.auth.signup.SignUpState
+import com.github.skytoph.taski.presentation.auth.signup.SignUpViewModel
+import com.github.skytoph.taski.presentation.auth.signup.mapper.map
 import com.github.skytoph.taski.presentation.core.component.BasicTextField
 import com.github.skytoph.taski.presentation.core.component.ErrorText
 import com.github.skytoph.taski.presentation.core.component.PasswordField
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
-fun SignInScreen(
-    viewModel: SignInViewModel = hiltViewModel(),
-    onNavigate: () -> Unit,
+fun SignUpScreen(
+    viewModel: SignUpViewModel = hiltViewModel(),
+    onNavigate: () -> Unit
 ) {
     val lifecycleScope = LocalLifecycleOwner.current.lifecycleScope
     val launcher = makeLauncher(lifecycleScope, viewModel.client, viewModel)
+
     val state = viewModel.state()
 
     SignIn(
         state = state,
-        onNavigate = { viewModel.resetState(); onNavigate() },
+        onNavigate = { viewModel.resetState();onNavigate() },
         onSignInWithGoogle = {
             signInWithGoogle(lifecycleScope, viewModel.client, launcher, viewModel)
         },
-        signIn = { viewModel.signIn(state.value.email.field, state.value.password.field) },
+        onValidateState = { viewModel.validate() },
+        signUp = { viewModel.signUp(state.value.email.field, state.value.password.field) },
         handleError = { viewModel.onEvent(state.value.auth.signInError?.map() ?: return@SignIn) },
-        onEditEmail = { viewModel.onEvent(SignInEvent.TypeEmail(it)) },
-        onEditPassword = { viewModel.onEvent(SignInEvent.TypePassword(it)) },
-        onPasswordVisibleClick = { viewModel.onEvent(SignInEvent.ChangeVisibility) },
-        onValidate = { viewModel.validate() }
-    )
+        onEditEmail = { viewModel.onEvent(SignUpEvent.TypeEmail(it)) },
+        onEditPassword = { viewModel.onEvent(SignUpEvent.TypePassword(it)) },
+        onPasswordVisibleClick = { viewModel.onEvent(SignUpEvent.ChangeVisibility) },
+        onEditPasswordConfirmation = { viewModel.onEvent(SignUpEvent.TypePasswordConfirmation(it)) })
 }
 
 @Composable
 private fun SignIn(
-    state: State<SignInState>,
+    state: State<SignUpState>,
     onNavigate: () -> Unit = {},
     onSignInWithGoogle: () -> Unit = {},
-    signIn: () -> Unit = {},
+    onValidateState: () -> Unit = {},
+    signUp: () -> Unit = {},
     handleError: () -> Unit = {},
     onEditEmail: (String) -> Unit = {},
     onEditPassword: (String) -> Unit = {},
     onPasswordVisibleClick: () -> Unit = {},
-    onValidate: () -> Unit = {}
+    onEditPasswordConfirmation: (String) -> Unit = {},
 ) {
+    val context = LocalContext.current
 
     LaunchedEffect(key1 = state.value.isValid) {
-        if (state.value.isValid) signIn()
+        if (state.value.isValid) signUp()
     }
     LaunchedEffect(key1 = state.value.auth.signInError) {
         if (state.value.isValid) handleError()
@@ -90,36 +96,39 @@ private fun SignIn(
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Column(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth(),
+            modifier = Modifier.weight(1f).fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            ErrorText(error = state.value.error?.let { it.getString(LocalContext.current) })
-            Spacer(modifier = Modifier.height(8.dp))
             BasicTextField(
-                value = state.value.email.field,
-                error = state.value.email.error?.getString(LocalContext.current),
+                state.value.email.field,
+                error = state.value.email.error?.getString(context),
                 onValueChange = onEditEmail
             )
             PasswordField(
                 value = state.value.password.field,
                 onValueChange = onEditPassword,
-                label = stringResource(R.string.password),
+                label = "password",
                 isVisible = state.value.isPasswordVisible,
-                error = state.value.password.error?.getString(LocalContext.current),
-                imeAction = ImeAction.Done,
-                onVisibleClick = onPasswordVisibleClick,
+                error = state.value.password.error?.getString(context),
+                imeAction = ImeAction.Next,
+                onVisibleClick = onPasswordVisibleClick
             )
-            Button(
-                modifier = Modifier.padding(top = 8.dp),
-                onClick = onValidate,
-            ) {
-                Text(text = stringResource(id = R.string.sign_in))
+            PasswordField(
+                value = state.value.passwordConfirmation.field,
+                onValueChange = onEditPasswordConfirmation,
+                label = "confirm the password",
+                isVisible = state.value.isPasswordVisible,
+                error = state.value.passwordConfirmation.error?.getString(context),
+                imeAction = ImeAction.Done,
+                onVisibleClick = onPasswordVisibleClick
+            )
+            ErrorText(error = state.value.error?.getString(context))
+            Spacer(modifier = Modifier.height(8.dp))
+            Button(onClick = onValidateState) {
+                Text(text = "Sign up")
             }
         }
-
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -132,8 +141,8 @@ private fun SignIn(
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun SignInScreenPreview() {
+fun SignUpScreenPreview() {
     HabitMateTheme {
-        SignIn(remember { mutableStateOf(SignInState()) })
+        SignIn(remember { mutableStateOf(SignUpState()) })
     }
 }
