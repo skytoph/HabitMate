@@ -8,7 +8,7 @@ import com.github.skytoph.taski.presentation.Graph
 import com.github.skytoph.taski.presentation.auth.authentication.AuthViewModel
 import com.github.skytoph.taski.presentation.auth.authentication.AuthenticationScreen
 import com.github.skytoph.taski.presentation.auth.authentication.user.UserData
-import com.github.skytoph.taski.presentation.auth.signin.SignInScreen
+import com.github.skytoph.taski.presentation.auth.signin.component.SignInScreen
 import com.github.skytoph.taski.presentation.auth.signup.component.SignUpScreen
 import com.github.skytoph.taski.presentation.auth.verify.VerificationScreen
 import com.github.skytoph.taski.presentation.habit.HabitScreens

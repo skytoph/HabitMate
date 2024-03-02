@@ -1,4 +1,4 @@
-package com.github.skytoph.taski.presentation.auth.signin
+package com.github.skytoph.taski.presentation.auth.signin.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -29,6 +29,9 @@ import com.github.skytoph.taski.presentation.auth.authentication.SignInWithGoogl
 import com.github.skytoph.taski.presentation.auth.authentication.TextDivider
 import com.github.skytoph.taski.presentation.auth.authentication.client.makeLauncher
 import com.github.skytoph.taski.presentation.auth.authentication.client.signInWithGoogle
+import com.github.skytoph.taski.presentation.auth.signin.SignInEvent
+import com.github.skytoph.taski.presentation.auth.signin.SignInState
+import com.github.skytoph.taski.presentation.auth.signin.SignInViewModel
 import com.github.skytoph.taski.presentation.auth.signin.mapper.map
 import com.github.skytoph.taski.presentation.core.component.BasicTextField
 import com.github.skytoph.taski.presentation.core.component.ErrorText
