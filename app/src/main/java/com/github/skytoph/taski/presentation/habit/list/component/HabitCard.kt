@@ -22,6 +22,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
@@ -53,7 +56,7 @@ fun HabitCard(
             ) {
                 Box(Modifier.padding(8.dp)) {
                     Icon(
-                        imageVector = habit.icon,
+                        imageVector = ImageVector.vectorResource(habit.icon.id(LocalContext.current)),
                         contentDescription = null,
                         modifier = Modifier
                             .size(32.dp)
@@ -100,7 +103,12 @@ fun HabitCard(
 
 @Composable
 @Preview(showSystemUi = true, showBackground = true)
-fun HabitCardPreview(@PreviewParameter(HabitProvider::class, limit = 1) habit: HabitWithHistoryUi<HistoryUi>) {
+fun HabitCardPreview(
+    @PreviewParameter(
+        HabitProvider::class,
+        limit = 1
+    ) habit: HabitWithHistoryUi<HistoryUi>
+) {
     HabitMateTheme {
         HabitCard(habit = habit.habit, history = habit.history, onDone = {})
     }
@@ -108,7 +116,12 @@ fun HabitCardPreview(@PreviewParameter(HabitProvider::class, limit = 1) habit: H
 
 @Composable
 @Preview(showSystemUi = true, showBackground = true)
-fun DarkHabitCardPreview(@PreviewParameter(HabitProvider::class, limit = 1) habit: HabitWithHistoryUi<HistoryUi>) {
+fun DarkHabitCardPreview(
+    @PreviewParameter(
+        HabitProvider::class,
+        limit = 1
+    ) habit: HabitWithHistoryUi<HistoryUi>
+) {
     HabitMateTheme(darkTheme = true) {
         HabitCard(habit = habit.habit, history = habit.history, onDone = {})
     }

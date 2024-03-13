@@ -1,5 +1,6 @@
 package com.github.skytoph.taski.presentation.habit.edit
 
+import android.content.Context
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -34,10 +35,11 @@ class EditHabitViewModel @Inject constructor(
         }
     }
 
-    fun saveHabit(navigateUp: () -> Unit) = viewModelScope.launch(Dispatchers.IO) {
-        interactor.insert(state.value.toHabitUi())
-        withContext(Dispatchers.Main) { navigateUp() }
-    }
+    fun saveHabit(navigateUp: () -> Unit, context: Context) =
+        viewModelScope.launch(Dispatchers.IO) {
+            interactor.insert(state.value.toHabitUi(), context)
+            withContext(Dispatchers.Main) { navigateUp() }
+        }
 
     fun validate() = validator.validate(state.value.title, this)
 

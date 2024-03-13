@@ -1,9 +1,9 @@
 package com.github.skytoph.taski.presentation.habit.icon
 
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import com.github.skytoph.taski.presentation.core.state.IconResource
 
 data class IconState(
-    val icon: ImageVector = IconsGroup.allGroups.first().icons.first(),
-    val color: Color = IconsColors.allColors.first()
+    val icon: IconResource = IconResource.Default,
+    val color: Color = IconsColors.Default
 )

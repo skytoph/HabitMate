@@ -11,5 +11,5 @@ import dagger.hilt.components.SingletonComponent
 object ConvertIconModule {
 
     @Provides
-    fun convertIcon(): ConvertIcon = ConvertIcon.Base()
+    fun convertIcon(): ConvertIcon = ConvertIcon.Outlined()
 }

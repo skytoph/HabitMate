@@ -1,18 +1,21 @@
 package com.github.skytoph.taski.presentation.habit
 
+import android.content.Context
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import com.github.skytoph.taski.presentation.core.state.IconResource
+import com.github.skytoph.taski.presentation.habit.icon.IconsColors
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitDomainMapper
 
 data class HabitUi(
     val id: Long = ID_DEFAULT,
     val title: String,
     val goal: Int = 1,
-    val icon: ImageVector,
-    val color: Color,
+    val color: Color = IconsColors.Default,
+    val icon: IconResource = IconResource.Default,
 ) {
 
-    fun map(mapper: HabitDomainMapper) = mapper.map(id, title, goal, icon, color)
+    fun map(mapper: HabitDomainMapper, context: Context) =
+        mapper.map(id, title, goal, color, icon.name(context.resources))
 
     companion object {
         const val MIN_GOAL: Int = 1

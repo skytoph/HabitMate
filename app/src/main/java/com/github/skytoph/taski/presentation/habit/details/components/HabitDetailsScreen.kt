@@ -27,7 +27,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
@@ -79,6 +81,7 @@ fun HabitDetails(
     onDayClick: (Int) -> Unit = {},
     onEditHistory: () -> Unit = {},
 ) {
+    val context = LocalContext.current
     val habit = state.value.habit ?: return
     val actionButtons = listOf(
         EditIconButton(MaterialTheme.colorScheme.onSurface, action = onEdit),
@@ -110,8 +113,8 @@ fun HabitDetails(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    imageVector = habit.icon,
-                    contentDescription = null,
+                    imageVector = ImageVector.vectorResource(habit.icon.id(context)),
+                    contentDescription = habit.icon.name(context.resources),
                     modifier = Modifier.size(32.dp),
                     tint = Color.White
                 )
@@ -176,11 +179,7 @@ fun LabelWithIcon(text: String, icon: ImageVector) {
 @Preview(showSystemUi = true, showBackground = true)
 fun HabitDetailsScreenPreview(
     @PreviewParameter(HabitsEditableProvider::class) entries: List<EditableHistoryUi>,
-    habit: HabitUi = HabitUi(
-        title = "Dev",
-        icon = IconsGroup.allGroups.first().icons.first(),
-        color = IconsColors.allColors.first()
-    )
+    habit: HabitUi = HabitUi(title = "Dev")
 ) {
     HabitMateTheme(darkTheme = false) {
         HabitDetails(
@@ -194,11 +193,7 @@ fun HabitDetailsScreenPreview(
 @Preview(showSystemUi = true, showBackground = true)
 fun DarkHabitDetailsScreenPreview(
     @PreviewParameter(HabitsEditableProvider::class) entries: List<EditableHistoryUi>,
-    habit: HabitUi = HabitUi(
-        title = "dev",
-        icon = IconsGroup.allGroups.first().icons.first(),
-        color = IconsColors.allColors.first()
-    )
+    habit: HabitUi = HabitUi(title = "dev")
 ) {
     HabitMateTheme(darkTheme = true) {
         HabitDetails(

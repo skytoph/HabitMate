@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 import com.github.skytoph.taski.domain.habit.Habit
 import com.github.skytoph.taski.presentation.core.ConvertIcon
 import com.github.skytoph.taski.presentation.habit.HabitUi
+import com.github.skytoph.taski.presentation.core.state.IconResource
 
 interface HabitUiMapper {
     fun map(habit: Habit): HabitUi
@@ -14,7 +15,7 @@ interface HabitUiMapper {
             id = habit.id,
             title = habit.title,
             goal = habit.goal,
-            icon = convertIcon.filledIconByName(habit.iconName),
+            icon = IconResource.Name(habit.iconName),
             color = Color(habit.color),
         )
     }

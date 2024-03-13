@@ -27,12 +27,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.component.HabitAppBar
+import com.github.skytoph.taski.presentation.core.state.IconResource
 import com.github.skytoph.taski.presentation.habit.icon.IconState
 import com.github.skytoph.taski.presentation.habit.icon.IconsColors
 import com.github.skytoph.taski.presentation.habit.icon.IconsGroup
@@ -54,8 +58,10 @@ private fun SelectIcon(
     state: State<IconState>,
     navigateUp: () -> Unit = {},
     onSelectColor: (Color) -> Unit = {},
-    onSelectIcon: (ImageVector) -> Unit = {},
+    onSelectIcon: (IconResource) -> Unit = {},
 ) {
+    val iconSize = 32.dp
+    val iconPadding = 4.dp
     Scaffold(topBar = {
         HabitAppBar(
             modifier = Modifier.padding(horizontal = 16.dp),
@@ -64,62 +70,97 @@ private fun SelectIcon(
         )
     }) { paddingValue ->
         LazyVerticalGrid(
-            modifier = Modifier.padding(paddingValue),
-            columns = GridCells.Adaptive(56.dp),
-            contentPadding = PaddingValues(8.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            modifier = Modifier.padding(
+                top = paddingValue.calculateTopPadding(), start = 16.dp, end = 16.dp
+            ),
+            columns = GridCells.Adaptive(iconSize + iconPadding),
+            contentPadding = PaddingValues(iconPadding),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            item(
+                span = { GridItemSpan(maxLineSpan) },
+                contentType = { "title" }) {
+                IconGroupLabel(stringResource(R.string.color), iconPadding)
+            }
             items(IconsColors.allColors, contentType = { "color" }) { color ->
                 val isSelected = color == state.value.color
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Box(
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .clickable { onSelectColor(color) }
-                            .size(32.dp)
-                            .background(color = color, shape = CircleShape)
-                            .border(
-                                1.dp,
-                                if (isSelected) MaterialTheme.colorScheme.onSurface else Color.Transparent,
-                                CircleShape
-                            )
-                    )
-                }
+                ColorItem(onSelectColor, color, iconSize, isSelected)
             }
             IconsGroup.allGroups.forEach { iconGroup ->
                 item(
                     span = { GridItemSpan(maxLineSpan) },
                     contentType = { "title" }) {
-                    Text(
-                        text = stringResource(iconGroup.title),
-                        color = MaterialTheme.colorScheme.onBackground,
-                        modifier = Modifier.padding(horizontal = 24.dp),
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
+                    IconGroupLabel(stringResource(iconGroup.title), iconPadding)
                 }
-                items(iconGroup.icons, key = { it.name }, contentType = { "icon" }) { icon ->
-                    val isSelected = icon.name == state.value.icon.name
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        Icon(
-                            imageVector = icon,
-                            contentDescription = icon.name,
-                            modifier = Modifier
-                                .clip(MaterialTheme.shapes.medium)
-                                .clickable { onSelectIcon(icon) }
-                                .size(48.dp)
-                                .background(
-                                    if (isSelected) state.value.color else MaterialTheme.colorScheme.secondary,
-                                    shape = MaterialTheme.shapes.medium
-                                )
-                                .padding(8.dp),
-                            tint = Color.White
-                        )
-                    }
+                items(iconGroup.icons, contentType = { "icon" }) { iconId ->
+                    val icon = IconResource.Id(iconId)
+                    val isSelected = state.value.icon.matches(icon, LocalContext.current)
+                    IconItem(icon, onSelectIcon, iconSize, isSelected, state.value.color)
                 }
             }
         }
+    }
+}
+
+@Composable
+fun IconItem(
+    icon: IconResource,
+    onSelectIcon: (IconResource) -> Unit = { _ -> },
+    iconSize: Dp = 32.dp,
+    isSelected: Boolean = false,
+    color: Color = MaterialTheme.colorScheme.secondary,
+) {
+    val context = LocalContext.current
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Icon(
+            ImageVector.vectorResource(icon.id(context)),
+            contentDescription = icon.name(context.resources),
+            modifier = Modifier
+                .clip(MaterialTheme.shapes.small)
+                .clickable { onSelectIcon(icon) }
+                .size(iconSize)
+                .background(if (isSelected) color else MaterialTheme.colorScheme.secondary)
+                .padding(4.dp),
+            tint = Color.White
+        )
+    }
+}
+
+@Composable
+fun IconGroupLabel(
+    title: String,
+    iconPadding: Dp = 8.dp
+) {
+    Text(
+        text = title,
+        color = MaterialTheme.colorScheme.onBackground,
+        modifier = Modifier.padding(horizontal = iconPadding),
+        style = MaterialTheme.typography.bodyMedium,
+    )
+}
+
+@Composable
+fun ColorItem(
+    onSelectColor: (Color) -> Unit,
+    color: Color,
+    iconSize: Dp,
+    isSelected: Boolean
+) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Box(
+            modifier = Modifier
+                .clip(CircleShape)
+                .clickable { onSelectColor(color) }
+                .size(iconSize)
+                .background(color = color, shape = CircleShape)
+                .border(
+                    2.dp,
+                    if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else Color.Transparent,
+                    CircleShape
+                )
+        )
     }
 }
 

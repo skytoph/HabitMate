@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
@@ -50,6 +51,7 @@ import com.github.skytoph.taski.presentation.habit.edit.EditHabitEvent
 import com.github.skytoph.taski.presentation.habit.edit.EditHabitState
 import com.github.skytoph.taski.presentation.habit.edit.EditHabitViewModel
 import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
+import com.github.skytoph.taski.presentation.core.state.IconResource
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
@@ -58,6 +60,7 @@ fun EditHabitScreen(
     navigateUp: () -> Unit,
     onSelectIconClick: () -> Unit
 ) {
+    val context = LocalContext.current
 
     val iconState = remember { viewModel.iconState() }
     LaunchedEffect(iconState.value) {
@@ -65,7 +68,7 @@ fun EditHabitScreen(
     }
     val validated = viewModel.state().value.isValidated
     LaunchedEffect(validated) {
-        if (validated) viewModel.saveHabit(navigateUp = navigateUp)
+        if (validated) viewModel.saveHabit(navigateUp = navigateUp, context = context)
     }
 
     EditHabit(
@@ -133,7 +136,7 @@ private fun EditHabit(
 fun EditBaseHabit(
     title: FieldState,
     goal: GoalState,
-    icon: ImageVector,
+    icon: IconResource,
     color: Color,
     onTypeTitle: (String) -> Unit,
     minHeight: Dp,
@@ -189,11 +192,12 @@ fun EditBaseHabit(
 @Composable
 fun IconSelector(
     modifier: Modifier = Modifier,
-    icon: ImageVector,
+    icon: IconResource,
     color: Color,
     size: Dp,
     onClick: () -> Unit
 ) {
+    val context = LocalContext.current
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
             modifier = modifier,
@@ -208,8 +212,8 @@ fun IconSelector(
                 .background(color = color, shape = RoundedCornerShape(10))
         ) {
             Icon(
-                imageVector = icon,
-                contentDescription = null,
+                imageVector = ImageVector.vectorResource(icon.id(context)),
+                contentDescription = icon.name(context.resources),
                 modifier = Modifier.size(32.dp),
                 tint = Color.White
             )

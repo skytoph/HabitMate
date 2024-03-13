@@ -33,4 +33,6 @@ object IconsColors {
         OrangeBright,
         Red,
     )
+
+    val Default = allColors.first()
 }

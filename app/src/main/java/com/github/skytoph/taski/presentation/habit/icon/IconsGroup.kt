@@ -290,5 +290,7 @@ abstract class IconsGroup(@StringRes val title: Int) {
                 LearningIcons,
             )
         }
+
+        val Default = allGroups.first().icons.first()
     }
 }

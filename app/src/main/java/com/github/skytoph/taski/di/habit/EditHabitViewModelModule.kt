@@ -28,8 +28,7 @@ object EditHabitViewModelModule {
         HabitWithEditableEntryUiMapper(habitMapper, mapper)
 
     @Provides
-    fun domainMapper(convertIcon: ConvertIcon, now: Now): HabitDomainMapper =
-        HabitDomainMapper.Base(convertIcon, now)
+    fun domainMapper(now: Now): HabitDomainMapper = HabitDomainMapper.Base(now)
 
     @Provides
     fun uiMapper(convertIcon: ConvertIcon): HabitUiMapper = HabitUiMapper.Base(convertIcon)

@@ -1,5 +1,6 @@
 package com.github.skytoph.taski.presentation.habit.create
 
+import android.content.Context
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -29,11 +30,12 @@ class CreateHabitViewModel @Inject constructor(
         SelectIconEvent.Clear.handle(iconState)
     }
 
-    fun saveHabit(onNavigate: () -> Unit) = viewModelScope.launch(Dispatchers.IO) {
-        val habit = state.value.toHabitUi().map(mapper)
-        repository.insert(habit)
-        withContext(Dispatchers.Main) { onNavigate() }
-    }
+    fun saveHabit(onNavigate: () -> Unit, context: Context) =
+        viewModelScope.launch(Dispatchers.IO) {
+            val habit = state.value.toHabitUi().map(mapper, context)
+            repository.insert(habit)
+            withContext(Dispatchers.Main) { onNavigate() }
+        }
 
     fun validate() = validator.validate(state.value.title, this)
 

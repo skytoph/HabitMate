@@ -2,13 +2,13 @@ package com.github.skytoph.taski.presentation.habit.icon
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import com.github.skytoph.taski.presentation.core.state.IconResource
 
 interface SelectIconEvent {
     fun handle(state: MutableState<IconState>)
 
     class Update(
-        private val icon: ImageVector? = null,
+        private val icon: IconResource? = null,
         private val color: Color? = null
     ) : SelectIconEvent {
         override fun handle(state: MutableState<IconState>) {

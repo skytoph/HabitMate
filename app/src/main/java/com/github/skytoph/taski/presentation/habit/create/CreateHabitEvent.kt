@@ -2,8 +2,8 @@ package com.github.skytoph.taski.presentation.habit.create
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import com.github.skytoph.taski.presentation.core.state.StringResource
+import com.github.skytoph.taski.presentation.core.state.IconResource
 
 interface CreateHabitEvent {
     fun handle(state: MutableState<CreateHabitState>)
@@ -46,7 +46,7 @@ interface CreateHabitEvent {
     }
 
     class UpdateIcon(
-        private val icon: ImageVector? = null,
+        private val icon: IconResource? = null,
         private val color: Color? = null
     ) : CreateHabitEvent {
         override fun handle(state: MutableState<CreateHabitState>) {

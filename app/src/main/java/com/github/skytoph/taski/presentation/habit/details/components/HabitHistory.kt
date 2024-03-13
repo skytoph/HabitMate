@@ -82,7 +82,7 @@ fun HabitHistory(
     goal: Int = 1,
     isEditable: Boolean = false,
     isEditButtonVisible: Boolean = true,
-    habitColor: Color = IconsColors.allColors.first(),
+    habitColor: Color = IconsColors.Default,
     onEdit: () -> Unit = {},
     onDayClick: (Int) -> Unit = {},
 ) {
@@ -148,7 +148,7 @@ fun HabitHistoryGrid(
     entries: Flow<PagingData<EditableHistoryUi>>,
     goal: Int = 1,
     isEditable: Boolean,
-    habitColor: Color = IconsColors.allColors.first(),
+    habitColor: Color = IconsColors.Default,
     onDayClick: (Int) -> Unit = {},
     squareDp: Dp = 32.dp,
     squareOffsetDp: Dp = 1.dp,

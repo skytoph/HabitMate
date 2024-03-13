@@ -2,11 +2,11 @@ package com.github.skytoph.taski.presentation.habit.edit
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import com.github.skytoph.taski.presentation.core.state.FieldState
 import com.github.skytoph.taski.presentation.core.state.StringResource
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.create.GoalState
+import com.github.skytoph.taski.presentation.core.state.IconResource
 import com.github.skytoph.taski.presentation.habit.icon.IconState
 
 interface EditHabitEvent {
@@ -52,7 +52,7 @@ interface EditHabitEvent {
         }
     }
 
-    class UpdateIcon(private val icon: ImageVector? = null, private val color: Color? = null) :
+    class UpdateIcon(private val icon: IconResource? = null, private val color: Color? = null) :
         EditHabitEvent {
         override fun handle(state: MutableState<EditHabitState>, icon: MutableState<IconState>) {
             this.icon?.let { state.value = state.value.copy(icon = this.icon) }
