@@ -3,7 +3,7 @@ package com.github.skytoph.taski.presentation.core.state
 import android.content.Context
 import android.content.res.Resources
 import androidx.annotation.DrawableRes
-import com.github.skytoph.taski.R
+import com.github.skytoph.taski.presentation.habit.icon.IconsGroup
 
 interface IconResource {
     fun id(context: Context): Int
@@ -30,6 +30,6 @@ interface IconResource {
     }
 
     companion object {
-        val Default = Id(R.drawable.activity)
+        val Default = Id(IconsGroup.Default)
     }
 }

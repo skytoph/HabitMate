@@ -4,12 +4,21 @@
     <string name="action_delete_habit">видалити звичку</string>
     <string name="action_save_habit">зберегти звичку</string>
 
-    <string name="icons_activity">активність</string>
+    <string name="icons_household">побут</string>
+    <string name="icons_nature">природа</string>
+    <string name="icons_organizing">планування</string>
+    <string name="icons_miscellaneous">різне</string>
+    <string name="icons_places">місця</string>
+    <string name="icons_knowledge">знання</string>
+    <string name="icons_symbols">символи</string>
+    <string name="icons_tech">техніка</string>
+    <string name="icons_transportation">транспорт</string>
+    <string name="icons_arrows">стрілки</string>
     <string name="icons_sports">спорт</string>
-    <string name="icons_rest">відпочинок</string>
     <string name="icons_social">соціум</string>
-    <string name="icons_learning">навчання</string>
-    <string name="icons_health">здоров\'я</string>
+    <string name="icons_notes">записи</string>
+    <string name="icons_finances">фінанси</string>
+    <string name="icons_food">їжа</string>
     <string name="icons_art">мистецтво</string>
     <string name="create_new_habit">нова звичка</string>
     <string name="edit_habit">редагувати</string>
@@ -23,5 +32,8 @@
     <string name="color_and_icon_label">колір та іконка</string>
     <string name="action_delete">видалити</string>
     <string name="action_cancel">відмінити</string>
+    <string name="habit_details">звичка</string>
     <string name="habit_label">звичка</string>
+    <string name="error_habit_title_is_empty">введіть назву звички</string>
+    <string name="color">колір</string>
 </resources>

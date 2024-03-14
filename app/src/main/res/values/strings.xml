@@ -30,12 +30,21 @@
     <string name="action_save_habit">save habit</string>
 
     <!--    Icon lists titles-->
-    <string name="icons_activity">activity</string>
+    <string name="icons_notes">notes</string>
+    <string name="icons_finances">finances</string>
+    <string name="icons_food">food</string>
+    <string name="icons_household">household</string>
+    <string name="icons_nature">nature</string>
+    <string name="icons_organizing">organizing and planning</string>
+    <string name="icons_miscellaneous">miscellaneous</string>
+    <string name="icons_places">places</string>
+    <string name="icons_knowledge">knowledge</string>
+    <string name="icons_symbols">symbols</string>
+    <string name="icons_tech">tech</string>
+    <string name="icons_transportation">transportation</string>
+    <string name="icons_arrows">arrows</string>
     <string name="icons_sports">sports</string>
-    <string name="icons_rest">rest</string>
     <string name="icons_social">social</string>
-    <string name="icons_learning">learning</string>
-    <string name="icons_health">health</string>
     <string name="icons_art">art</string>
 
     <!--    Create or edit habit-->
@@ -54,4 +63,5 @@
     <string name="entry_tooltip_percent_done">%1$s / %2$s done</string>
     <string name="color_and_icon_label">color and icon</string>
     <string name="error_habit_title_is_empty">enter a name for the habit</string>
+    <string name="color">color</string>
 </resources>
