@@ -320,6 +320,12 @@ abstract class IconsGroup(@StringRes val title: Int) {
     object MiscellaneousIcons : IconsGroup(title = R.string.icons_miscellaneous) {
         override val icons by lazy {
             listOf(
+                R.drawable.sparkle,
+                R.drawable.sparkles,
+                R.drawable.star,
+                R.drawable.loader,
+                R.drawable.wand,
+                R.drawable.wand_2,
                 R.drawable.fan,
                 R.drawable.gem,
                 R.drawable.crown,
@@ -333,14 +339,8 @@ abstract class IconsGroup(@StringRes val title: Int) {
                 R.drawable.ribbon,
                 R.drawable.party_popper,
                 R.drawable.gift,
-                R.drawable.lightbulb,
                 R.drawable.yinyang,
-                R.drawable.sparkle,
-                R.drawable.sparkles,
-                R.drawable.star,
-                R.drawable.loader,
-                R.drawable.wand,
-                R.drawable.wand_2,
+                R.drawable.lightbulb,
                 R.drawable.dices,
                 R.drawable.box,
                 R.drawable.cuboid,
@@ -408,6 +408,7 @@ abstract class IconsGroup(@StringRes val title: Int) {
             listOf(
                 R.drawable.self_improvement,
                 R.drawable.gymnastics,
+                R.drawable.martial_arts,
                 R.drawable.snowshoeing,
                 R.drawable.sprint,
                 R.drawable.bike,
@@ -427,6 +428,7 @@ abstract class IconsGroup(@StringRes val title: Int) {
                 R.drawable.footprints,
                 R.drawable.mma,
                 R.drawable.tennis,
+                R.drawable.cricket,
                 R.drawable.hockey,
                 R.drawable.swords,
 
@@ -434,6 +436,7 @@ abstract class IconsGroup(@StringRes val title: Int) {
                 R.drawable.volleyball,
                 R.drawable.baseball,
                 R.drawable.rugby,
+                R.drawable.football,
 
                 R.drawable.trophy,
                 R.drawable.award,

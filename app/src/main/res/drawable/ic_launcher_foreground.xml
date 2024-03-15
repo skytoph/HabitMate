@@ -9,7 +9,7 @@
       android:translateY="95">
     <path
         android:pathData="M0,0h500v500h-500z"
-        android:fillColor="#ffffff"/>
+        android:fillColor="?android:attr/colorBackground"/>
     <path
         android:pathData="M220,205L280,205A15,15 0,0 1,295 220L295,280A15,15 0,0 1,280 295L220,295A15,15 0,0 1,205 280L205,220A15,15 0,0 1,220 205z"
         android:fillColor="#6650A4"/>
@@ -21,7 +21,7 @@
         android:fillColor="#6650A4"/>
     <path
         android:pathData="M220,329L280,329A15,15 0,0 1,295 344L295,404A15,15 0,0 1,280 419L220,419A15,15 0,0 1,205 404L205,344A15,15 0,0 1,220 329z"
-        android:fillColor="#EAE2F6"/>
+        android:fillColor="#eae2f6"/>
     <path
         android:pathData="M101,329L161,329A15,15 0,0 1,176 344L176,404A15,15 0,0 1,161 419L101,419A15,15 0,0 1,86 404L86,344A15,15 0,0 1,101 329z"
         android:fillColor="#6650A4"/>
