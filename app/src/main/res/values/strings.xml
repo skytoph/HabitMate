@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Habit</string>
+    <string name="app_name">HabitMate</string>
 
 <!--    Auth-->
     <string name="sign_in">Sign In</string>

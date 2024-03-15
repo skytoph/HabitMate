@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Звички</string>
+    <string name="app_name">HabitMate</string>
     <string name="action_delete_habit">видалити звичку</string>
     <string name="action_save_habit">зберегти звичку</string>
 
