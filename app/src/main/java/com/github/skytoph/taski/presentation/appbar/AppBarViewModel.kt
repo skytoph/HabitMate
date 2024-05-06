@@ -1,4 +1,4 @@
-package com.github.skytoph.taski.presentation.nav
+package com.github.skytoph.taski.presentation.appbar
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State

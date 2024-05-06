@@ -5,7 +5,6 @@ import androidx.compose.runtime.MutableState
 import com.github.skytoph.taski.presentation.core.component.AppBarAction
 import com.github.skytoph.taski.presentation.core.component.AppBarState
 import com.github.skytoph.taski.presentation.core.state.StringResource
-import com.github.skytoph.taski.presentation.nav.AppBarEvent
 
 interface InitAppBar {
     fun initAppBar(
