@@ -17,22 +17,26 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
+    background = Black,
+
     primary = PurpleBright,
     onPrimary = PurpleLight,
 
-    secondary = PurpleGray,
+    secondary = PurpleBright,
     onSecondary = PurpleLight,
 
     tertiary = PurpleDark,
     onTertiary = Color.White,
 
-    onSurfaceVariant = Color.Black,
+    onSurfaceVariant = Color.White,
 
     primaryContainer = PurpleVeryDark,
     onPrimaryContainer = Color.White,
 
     secondaryContainer = PurpleDark,
     onSecondaryContainer = PurpleLight,
+
+    surfaceVariant = PurpleVeryDark,
 
     inverseSurface = Color.White,
 
@@ -42,7 +46,7 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = PurpleBright,
+    primary = PurpleLightBright,
     onPrimary = PurpleLight,
 
     secondary = PurpleGrey40,

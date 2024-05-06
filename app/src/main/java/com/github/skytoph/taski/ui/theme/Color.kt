@@ -4,17 +4,19 @@ import androidx.compose.ui.graphics.Color
 
 val PurpleGrey80 = Color(0xFFCCC2DC)
 val Pink80 = Color(0xFFEFB8C8)
-val PurpleBright = Color(0xFF66588D)
+val Black = Color(0xFF111112)
+val PurpleBright = Color(0xFF3C3350)
+val PurpleLightBright = Color(0xFF8A7BAA)
 
-val PurpleGrey40 = Color(0xFF625b71)
+val PurpleGrey40 = Color(0xFFBBB3CD)
 
 val DarkRed = Color(0xFFCD3056)
 val BrightDarkRed = Color(0xFFA64058)
 
-
-val PurpleLight = Color(0xFFeae2f6)
 val BlueLight = Color(0xFFE3DEF6)
-val PurpleLightGray = Color(0xFFC9C3E0)
-val PurpleGray = Color(0xFF433E4E)
-val PurpleVeryDark = Color(0xFF2D2635)
-val PurpleDark = Color(0xFF423A4F)
+
+val PurpleLight = Color(0xFFEAE4F1)
+val PurpleLightGray = Color(0xFFCCC8E2)
+
+val PurpleVeryDark = Color(0xFF27242D)
+val PurpleDark = Color(0xFF463E57)
