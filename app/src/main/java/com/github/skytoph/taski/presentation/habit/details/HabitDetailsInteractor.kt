@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface HabitDetailsInteractor : HabitDoneInteractor {
     fun entries(id: Long): Flow<PagingData<EditableHistoryUi>>
-    fun habit(id: Long): Flow<Habit>
+    fun habit(id: Long): Flow<Habit?>
     suspend fun entryEditable(id: Long, daysAgo: Int): EntryEditableUi
     suspend fun delete(id: Long)
 

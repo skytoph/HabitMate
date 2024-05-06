@@ -2,12 +2,12 @@ package com.github.skytoph.taski.presentation.nav
 
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeOut
-import androidx.navigation.NavGraphBuilder
+import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import androidx.navigation.navigation
 import com.github.skytoph.taski.presentation.Graph
 import com.github.skytoph.taski.presentation.core.nav.ScaleTransitionDirection
 import com.github.skytoph.taski.presentation.core.nav.scaleIntoContainer
@@ -20,8 +20,13 @@ import com.github.skytoph.taski.presentation.habit.edit.component.EditHabitScree
 import com.github.skytoph.taski.presentation.habit.icon.component.SelectIconScreen
 import com.github.skytoph.taski.presentation.habit.list.component.HabitsScreen
 
-fun NavGraphBuilder.mainNavigation(navController: NavHostController) {
-    navigation(startDestination = HabitScreens.HabitList.route, route = Graph.HABITS) {
+@Composable
+fun MainNavGraph(navController: NavHostController) {
+    NavHost(
+        navController = navController,
+        startDestination = HabitScreens.HabitList.route,
+        route = Graph.HABITS
+    ) {
         composable(route = HabitScreens.HabitList.route,
             exitTransition = { fadeOut(tween(delayMillis = 90)) }) {
             HabitsScreen(

@@ -11,7 +11,6 @@ import com.github.skytoph.taski.presentation.auth.authentication.user.UserData
 import com.github.skytoph.taski.presentation.auth.signin.component.SignInScreen
 import com.github.skytoph.taski.presentation.auth.signup.component.SignUpScreen
 import com.github.skytoph.taski.presentation.auth.verify.VerificationScreen
-import com.github.skytoph.taski.presentation.habit.HabitScreens
 import com.github.skytoph.taski.presentation.profile.ProfileScreen
 
 private abstract class AuthScreens(val route: String) {
@@ -19,6 +18,7 @@ private abstract class AuthScreens(val route: String) {
     object SignIn : AuthScreens("sign_in")
     object SignUp : AuthScreens("sign_up")
     object Verify : AuthScreens("verify")
+    object Profile : AuthScreens("profile")
 }
 
 fun NavGraphBuilder.authNavigation(
@@ -50,7 +50,7 @@ fun NavGraphBuilder.authNavigation(
                     else navController.navigateAndClear(AuthScreens.Authentication.route)
                 })
         }
-        composable(route = HabitScreens.Profile.route) {    //todo move to habits package
+        composable(route = AuthScreens.Profile.route) {
             ProfileScreen(onSignOut = { navController.signOut(viewModel) })
         }
     }

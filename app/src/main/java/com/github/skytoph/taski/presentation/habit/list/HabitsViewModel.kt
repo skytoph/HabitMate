@@ -4,6 +4,8 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.skytoph.taski.presentation.appbar.InitAppBar
+import com.github.skytoph.taski.presentation.core.component.AppBarState
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitWithHistoryUiMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,8 +21,9 @@ import javax.inject.Inject
 class HabitsViewModel @Inject constructor(
     private val state: MutableState<HabitListState>,
     private val mapper: HabitWithHistoryUiMapper<HistoryUi>,
-    private val interactor: HabitListInteractor
-) : ViewModel() {
+    private val interactor: HabitListInteractor,
+    appBarState: MutableState<AppBarState>
+) : ViewModel(), InitAppBar by InitAppBar.Base(appBarState) {
 
     init {
         onEvent(HabitListEvent.Progress)

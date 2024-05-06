@@ -10,10 +10,11 @@ interface IconResource {
     fun name(resources: Resources): String
     fun matches(icon: IconResource, context: Context): Boolean
 
-    class Id(@DrawableRes private val id: Int) : IconResource {
+    class Id(@DrawableRes private val id: Int, private var name: String? = null) : IconResource {
         override fun id(context: Context): Int = id
 
-        override fun name(resources: Resources): String = resources.getResourceEntryName(id)
+        override fun name(resources: Resources): String =
+            name ?: resources.getResourceEntryName(id).also { name = it }
 
         override fun matches(icon: IconResource, context: Context): Boolean =
             id == icon.id(context)

@@ -20,7 +20,7 @@ interface HabitDao {
     suspend fun habit(id: Long): HabitEntity
 
     @Query("SELECT * FROM habit WHERE id = :id")
-    fun habitFlow(id: Long): Flow<HabitEntity>
+    fun habitFlow(id: Long): Flow<HabitEntity?>
 
     @Query("DELETE FROM habit WHERE id = :id")
     suspend fun delete(id: Long)

@@ -9,6 +9,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
+import com.github.skytoph.taski.presentation.appbar.InitAppBar
+import com.github.skytoph.taski.presentation.core.component.AppBarState
 import com.github.skytoph.taski.presentation.habit.HabitScreens
 import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitUiMapper
@@ -30,8 +32,9 @@ class HabitDetailsViewModel @Inject constructor(
     private val state: MutableState<HabitDetailsState> = mutableStateOf(HabitDetailsState()),
     private val interactor: HabitDetailsInteractor,
     private val habitMapper: HabitUiMapper,
-    savedStateHandle: SavedStateHandle,
-) : ViewModel() {
+    appBarState: MutableState<AppBarState>,
+    savedStateHandle: SavedStateHandle
+) : ViewModel(), InitAppBar by InitAppBar.Base(appBarState) {
 
     private val actions = MutableStateFlow<List<UpdateEntryAction>>(emptyList())
 
@@ -43,9 +46,9 @@ class HabitDetailsViewModel @Inject constructor(
 
     init {
         interactor.habit(savedStateHandle.id())
-            .map { habit -> habitMapper.map(habit) }
+            .map { habit -> habit?.let { habitMapper.map(it) } }
             .flowOn(Dispatchers.IO)
-            .onEach { habit -> onEvent(HabitDetailsEvent.Init(habit)) }
+            .onEach { it?.let { habit -> onEvent(HabitDetailsEvent.Init(habit)) } }
             .launchIn(viewModelScope)
     }
 
@@ -56,8 +59,13 @@ class HabitDetailsViewModel @Inject constructor(
             else data.copy(entries = data.entries.toMutableList().also { it[index] = action.entry })
         }
 
-    fun deleteHabit() = viewModelScope.launch(Dispatchers.IO) {
-        state.value.habit?.id?.let { id -> interactor.delete(id) }
+    fun deleteHabit(navigateUp: () -> Unit) {
+        val id = state.value.habit?.id
+        state.clear()
+        viewModelScope.launch(Dispatchers.IO) {
+            id?.let { id -> interactor.delete(id) }
+            withContext(Dispatchers.Main) { navigateUp() }
+        }
     }
 
     fun habitDone(daysAgo: Int) = state.value.habit?.let { habit ->

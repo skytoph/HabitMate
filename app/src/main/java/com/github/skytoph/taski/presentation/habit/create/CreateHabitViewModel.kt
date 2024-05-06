@@ -7,7 +7,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.skytoph.taski.domain.habit.HabitRepository
+import com.github.skytoph.taski.presentation.appbar.InitAppBar
 import com.github.skytoph.taski.presentation.core.EventHandler
+import com.github.skytoph.taski.presentation.core.component.AppBarState
 import com.github.skytoph.taski.presentation.habit.icon.IconState
 import com.github.skytoph.taski.presentation.habit.icon.SelectIconEvent
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitDomainMapper
@@ -23,8 +25,9 @@ class CreateHabitViewModel @Inject constructor(
     private val iconState: MutableState<IconState>,
     private val repository: HabitRepository,
     private val mapper: HabitDomainMapper,
-    private val validator: NewHabitValidator
-) : ViewModel(), EventHandler<CreateHabitEvent> {
+    private val validator: NewHabitValidator,
+    appBarState: MutableState<AppBarState>
+) : ViewModel(), EventHandler<CreateHabitEvent>, InitAppBar by InitAppBar.Base(appBarState) {
 
     init {
         SelectIconEvent.Clear.handle(iconState)

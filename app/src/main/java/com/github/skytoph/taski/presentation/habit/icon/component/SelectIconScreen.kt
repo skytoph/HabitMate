@@ -16,9 +16,9 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,7 +35,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.skytoph.taski.R
-import com.github.skytoph.taski.presentation.core.component.HabitAppBar
 import com.github.skytoph.taski.presentation.core.state.IconResource
 import com.github.skytoph.taski.presentation.habit.icon.IconState
 import com.github.skytoph.taski.presentation.habit.icon.IconsColors
@@ -46,9 +45,12 @@ import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
 fun SelectIconScreen(viewModel: SelectIconViewModel = hiltViewModel(), navigateUp: () -> Unit) {
+    LaunchedEffect(Unit) {
+        viewModel.initAppBar(title = R.string.color_and_icon_label)
+    }
+
     SelectIcon(
         state = viewModel.state(),
-        navigateUp = navigateUp,
         onSelectColor = { viewModel.onEvent(SelectIconEvent.Update(color = it)) },
         onSelectIcon = { viewModel.onEvent(SelectIconEvent.Update(icon = it)) })
 }
@@ -56,47 +58,36 @@ fun SelectIconScreen(viewModel: SelectIconViewModel = hiltViewModel(), navigateU
 @Composable
 private fun SelectIcon(
     state: State<IconState>,
-    navigateUp: () -> Unit = {},
     onSelectColor: (Color) -> Unit = {},
     onSelectIcon: (IconResource) -> Unit = {},
 ) {
     val iconSize = 32.dp
     val iconPadding = 4.dp
-    Scaffold(topBar = {
-        HabitAppBar(
-            modifier = Modifier.padding(horizontal = 16.dp),
-            label = stringResource(R.string.color_and_icon_label),
-            navigateUp = navigateUp,
-        )
-    }) { paddingValue ->
-        LazyVerticalGrid(
-            modifier = Modifier.padding(
-                top = paddingValue.calculateTopPadding(), start = 16.dp, end = 16.dp
-            ),
-            columns = GridCells.Adaptive(iconSize + iconPadding),
-            contentPadding = PaddingValues(iconPadding),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
+    LazyVerticalGrid(
+        modifier = Modifier.padding(horizontal = 16.dp),
+        columns = GridCells.Adaptive(iconSize + iconPadding),
+        contentPadding = PaddingValues(iconPadding),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        item(
+            span = { GridItemSpan(maxLineSpan) },
+            contentType = { "title" }) {
+            IconGroupLabel(stringResource(R.string.color), iconPadding)
+        }
+        items(IconsColors.allColors, contentType = { "color" }) { color ->
+            val isSelected = color == state.value.color
+            ColorItem(onSelectColor, color, iconSize, isSelected)
+        }
+        IconsGroup.allGroups.forEach { iconGroup ->
             item(
                 span = { GridItemSpan(maxLineSpan) },
                 contentType = { "title" }) {
-                IconGroupLabel(stringResource(R.string.color), iconPadding)
+                IconGroupLabel(stringResource(iconGroup.title), iconPadding)
             }
-            items(IconsColors.allColors, contentType = { "color" }) { color ->
-                val isSelected = color == state.value.color
-                ColorItem(onSelectColor, color, iconSize, isSelected)
-            }
-            IconsGroup.allGroups.forEach { iconGroup ->
-                item(
-                    span = { GridItemSpan(maxLineSpan) },
-                    contentType = { "title" }) {
-                    IconGroupLabel(stringResource(iconGroup.title), iconPadding)
-                }
-                items(iconGroup.icons, contentType = { "icon" }) { iconId ->
-                    val icon = IconResource.Id(iconId)
-                    val isSelected = state.value.icon.matches(icon, LocalContext.current)
-                    IconItem(icon, onSelectIcon, iconSize, isSelected, state.value.color)
-                }
+            items(iconGroup.icons, contentType = { "icon" }) { iconId ->
+                val icon = IconResource.Id(iconId)
+                val isSelected = state.value.icon.matches(icon, LocalContext.current)
+                IconItem(icon, onSelectIcon, iconSize, isSelected, state.value.color)
             }
         }
     }

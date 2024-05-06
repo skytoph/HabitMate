@@ -20,6 +20,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,17 +37,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.PagingData
 import com.github.skytoph.taski.R
-import com.github.skytoph.taski.presentation.core.component.DeleteIconButton
-import com.github.skytoph.taski.presentation.core.component.EditIconButton
-import com.github.skytoph.taski.presentation.core.component.HabitAppBar
+import com.github.skytoph.taski.presentation.core.component.AppBarAction
 import com.github.skytoph.taski.presentation.core.preview.HabitsEditableProvider
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.details.HabitDetailsEvent
 import com.github.skytoph.taski.presentation.habit.details.HabitDetailsState
 import com.github.skytoph.taski.presentation.habit.details.HabitDetailsViewModel
 import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
-import com.github.skytoph.taski.presentation.habit.icon.IconsColors
-import com.github.skytoph.taski.presentation.habit.icon.IconsGroup
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -57,36 +54,37 @@ fun HabitDetailsScreen(
     navigateUp: () -> Unit,
     onEditHabit: () -> Unit,
 ) {
+    val colorEdit = MaterialTheme.colorScheme.onSurface
+    val colorDelete = MaterialTheme.colorScheme.error
+    LaunchedEffect(Unit) {
+        val edit = AppBarAction.edit.copy(color = colorEdit, onClick = onEditHabit)
+        val delete = AppBarAction.delete.copy(
+            color = colorDelete,
+            onClick = { viewModel.onEvent(HabitDetailsEvent.ShowDialog(true)) })
+        viewModel.initAppBar(title = R.string.habit_details, dropDownItems = listOf(edit, delete))
+    }
+
+    val onHideDialog = { viewModel.onEvent(HabitDetailsEvent.ShowDialog(false)) }
     HabitDetails(
         state = viewModel.state(),
         entries = viewModel.entries,
-        navigateUp = navigateUp,
-        onEdit = onEditHabit,
-        onDeleteClick = { viewModel.onEvent(HabitDetailsEvent.ShowDialog(true)) },
-        onDeleteHabit = { viewModel.deleteHabit() },
-        onHideDialog = { viewModel.onEvent(HabitDetailsEvent.ShowDialog(false)) },
-        onDayClick = { viewModel.habitDone(it) }
-    ) { viewModel.onEvent(HabitDetailsEvent.EditHistory) }
+        onDayClick = { viewModel.habitDone(it) },
+        onHideDialog = onHideDialog,
+        onDeleteHabit = { viewModel.deleteHabit(navigateUp = { onHideDialog(); navigateUp() }) },
+        onEditHistory = { viewModel.onEvent(HabitDetailsEvent.EditHistory) })
 }
 
 @Composable
 fun HabitDetails(
     state: State<HabitDetailsState>,
     entries: Flow<PagingData<EditableHistoryUi>>,
-    navigateUp: () -> Unit = {},
-    onDeleteClick: () -> Unit = {},
-    onDeleteHabit: () -> Unit = {},
     onHideDialog: () -> Unit = {},
-    onEdit: () -> Unit = {},
+    onDeleteHabit: () -> Unit = {},
     onDayClick: (Int) -> Unit = {},
     onEditHistory: () -> Unit = {},
 ) {
     val context = LocalContext.current
     val habit = state.value.habit ?: return
-    val actionButtons = listOf(
-        EditIconButton(MaterialTheme.colorScheme.onSurface, action = onEdit),
-        DeleteIconButton(MaterialTheme.colorScheme.error, onDeleteClick),
-    )
 
     Column(
         modifier = Modifier
@@ -94,12 +92,6 @@ fun HabitDetails(
             .fillMaxSize()
             .verticalScroll(rememberScrollState()),
     ) {
-        HabitAppBar(
-            label = stringResource(R.string.habit_details),
-            navigateUp = navigateUp,
-            menuItems = actionButtons
-        )
-
 
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -150,13 +142,7 @@ fun HabitDetails(
     }
 
     if (state.value.isDeleteDialogShown)
-        DeleteAlertDialog(
-            onDismissRequest = onHideDialog,
-            onConfirm = {
-                onDeleteHabit()
-                onHideDialog()
-                navigateUp()
-            })
+        DeleteAlertDialog(onDismissRequest = onHideDialog, onConfirm = onDeleteHabit)
 }
 
 @Composable

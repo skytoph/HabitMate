@@ -39,19 +39,18 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.skytoph.taski.R
-import com.github.skytoph.taski.presentation.core.component.HabitAppBar
-import com.github.skytoph.taski.presentation.core.component.SaveIconButton
+import com.github.skytoph.taski.presentation.core.component.AppBarAction
 import com.github.skytoph.taski.presentation.core.component.SquareButton
 import com.github.skytoph.taski.presentation.core.component.TitleTextField
 import com.github.skytoph.taski.presentation.core.preview.HabitsEditableProvider
 import com.github.skytoph.taski.presentation.core.state.FieldState
+import com.github.skytoph.taski.presentation.core.state.IconResource
 import com.github.skytoph.taski.presentation.habit.create.GoalState
 import com.github.skytoph.taski.presentation.habit.details.components.DeleteAlertDialog
 import com.github.skytoph.taski.presentation.habit.edit.EditHabitEvent
 import com.github.skytoph.taski.presentation.habit.edit.EditHabitState
 import com.github.skytoph.taski.presentation.habit.edit.EditHabitViewModel
 import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
-import com.github.skytoph.taski.presentation.core.state.IconResource
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
@@ -61,6 +60,16 @@ fun EditHabitScreen(
     onSelectIconClick: () -> Unit
 ) {
     val context = LocalContext.current
+
+    val actionColor = MaterialTheme.colorScheme.onSurface
+    LaunchedEffect(Unit) {
+        val actionSave =
+            AppBarAction.save.copy(color = actionColor, onClick = { viewModel.validate() })
+        viewModel.initAppBar(
+            title = R.string.edit_habit,
+            menuItems = listOf(actionSave)
+        )
+    }
 
     val iconState = remember { viewModel.iconState() }
     LaunchedEffect(iconState.value) {
@@ -76,7 +85,6 @@ fun EditHabitScreen(
         minHeight = TextFieldDefaults.MinHeight,
         navigateUp = navigateUp,
         onSelectIconClick = onSelectIconClick,
-        onSaveHabit = { viewModel.validate() },
         onTypeTitle = { viewModel.onEvent(EditHabitEvent.EditTitle(it)) },
         onDecreaseGoal = { viewModel.onEvent(EditHabitEvent.DecreaseGoal) },
         onIncreaseGoal = { viewModel.onEvent(EditHabitEvent.IncreaseGoal) },
@@ -91,7 +99,6 @@ private fun EditHabit(
     onSelectIconClick: () -> Unit = {},
     onDeleteHabit: () -> Unit = {},
     onHideDialog: () -> Unit = {},
-    onSaveHabit: () -> Unit = {},
     onTypeTitle: (String) -> Unit = {},
     onDecreaseGoal: () -> Unit = {},
     onIncreaseGoal: () -> Unit = {},
@@ -102,12 +109,6 @@ private fun EditHabit(
             .fillMaxSize()
             .verticalScroll(rememberScrollState()),
     ) {
-        HabitAppBar(
-            label = stringResource(R.string.edit_habit),
-            navigateUp = { navigateUp() },
-            menuItems = listOf(SaveIconButton(MaterialTheme.colorScheme.onSurface, onSaveHabit)),
-            isDropDownMenu = false
-        )
         EditBaseHabit(
             title = state.value.title,
             goal = state.value.goal,

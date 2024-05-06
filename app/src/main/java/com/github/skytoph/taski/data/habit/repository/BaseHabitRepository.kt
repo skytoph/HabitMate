@@ -33,8 +33,8 @@ class BaseHabitRepository(
 
     override suspend fun habit(id: Long): Habit = habitDao.habit(id).toHabit()
 
-    override fun habitFlow(id: Long): Flow<Habit> =
-        habitDao.habitFlow(id).map { it.toHabit() }
+    override fun habitFlow(id: Long): Flow<Habit?> =
+        habitDao.habitFlow(id).map { it?.toHabit() }
 
     override suspend fun entry(id: Long, timestamp: Long) = entryDao.entry(id, timestamp)?.toEntry()
 

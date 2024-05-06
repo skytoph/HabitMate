@@ -12,14 +12,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.skytoph.taski.R
-import com.github.skytoph.taski.presentation.core.component.HabitAppBar
-import com.github.skytoph.taski.presentation.core.component.SaveIconButton
+import com.github.skytoph.taski.presentation.core.component.AppBarAction
 import com.github.skytoph.taski.presentation.habit.create.CreateHabitEvent
 import com.github.skytoph.taski.presentation.habit.create.CreateHabitState
 import com.github.skytoph.taski.presentation.habit.create.CreateHabitViewModel
@@ -44,12 +42,17 @@ fun CreateHabitScreen(
         if (validated) viewModel.saveHabit(navigateUp, context)
     }
 
+    val menuItemColor = MaterialTheme.colorScheme.onSurface
+    LaunchedEffect(Unit) {
+        val actionSave =
+            AppBarAction.save.copy(color = menuItemColor, onClick = { viewModel.validate() })
+        viewModel.initAppBar(title = R.string.create_new_habit, menuItems = listOf(actionSave))
+    }
+
     CreateHabit(
         state = viewModel.state(),
         minHeight = TextFieldDefaults.MinHeight,
-        navigateUp = navigateUp,
         onSelectIconClick = onSelectIconClick,
-        onSaveHabit = { viewModel.validate() },
         onTypeTitle = { viewModel.onEvent(CreateHabitEvent.EditTitle(it)) },
         onDecreaseGoal = { viewModel.onEvent(CreateHabitEvent.DecreaseGoal) },
         onIncreaseGoal = { viewModel.onEvent(CreateHabitEvent.IncreaseGoal) })
@@ -59,9 +62,7 @@ fun CreateHabitScreen(
 private fun CreateHabit(
     state: State<CreateHabitState>,
     minHeight: Dp = 56.dp,
-    navigateUp: () -> Unit = {},
     onSelectIconClick: () -> Unit = {},
-    onSaveHabit: () -> Unit = {},
     onTypeTitle: (String) -> Unit = {},
     onDecreaseGoal: () -> Unit = {},
     onIncreaseGoal: () -> Unit = {},
@@ -71,12 +72,6 @@ private fun CreateHabit(
             .padding(horizontal = 16.dp)
             .fillMaxSize()
     ) {
-        HabitAppBar(
-            label = stringResource(R.string.create_new_habit),
-            navigateUp = navigateUp,
-            menuItems = listOf(SaveIconButton(MaterialTheme.colorScheme.onSurface, onSaveHabit)),
-            isDropDownMenu = false
-        )
         EditBaseHabit(
             title = state.value.title,
             goal = state.value.goal,

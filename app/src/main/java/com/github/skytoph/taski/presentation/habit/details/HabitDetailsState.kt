@@ -1,5 +1,6 @@
 package com.github.skytoph.taski.presentation.habit.details
 
+import androidx.compose.runtime.MutableState
 import com.github.skytoph.taski.presentation.habit.HabitUi
 
 data class HabitDetailsState(
@@ -7,3 +8,7 @@ data class HabitDetailsState(
     val isHistoryEditable: Boolean = false,
     val isDeleteDialogShown: Boolean = false
 )
+
+fun MutableState<HabitDetailsState>.clear() {
+    this.value = HabitDetailsState()
+}

@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 interface HabitRepository {
     fun habits(): Flow<List<HabitWithEntries>>
     fun entriesFlow(id: Long): Flow<EntryList>
-    fun habitFlow(id: Long): Flow<Habit>
+    fun habitFlow(id: Long): Flow<Habit?>
     suspend fun entries(id: Long): EntryList
     suspend fun habit(id: Long): Habit
     suspend fun entry(id: Long, timestamp: Long): Entry?
