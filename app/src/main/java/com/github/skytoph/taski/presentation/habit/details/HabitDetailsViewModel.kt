@@ -53,11 +53,7 @@ class HabitDetailsViewModel @Inject constructor(
     }
 
     private fun applyAction(pagingData: PagingData<EditableHistoryUi>, action: UpdateEntryAction) =
-        pagingData.map { data ->
-            val index = data.entries.indexOfFirst { it.daysAgo == action.entry.daysAgo }
-            if (index == -1) data
-            else data.copy(entries = data.entries.toMutableList().also { it[index] = action.entry })
-        }
+        pagingData.map { data -> interactor.mapData(data, action.entry) }
 
     fun deleteHabit(navigateUp: () -> Unit) {
         val id = state.value.habit?.id
