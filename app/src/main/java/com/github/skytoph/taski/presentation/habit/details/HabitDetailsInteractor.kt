@@ -1,5 +1,6 @@
 package com.github.skytoph.taski.presentation.habit.details
 
+import androidx.compose.ui.graphics.Color
 import androidx.paging.PagingData
 import com.github.skytoph.taski.core.Now
 import com.github.skytoph.taski.domain.habit.Habit
@@ -12,10 +13,13 @@ import com.github.skytoph.taski.presentation.habit.list.HabitDoneInteractor
 import kotlinx.coroutines.flow.Flow
 
 interface HabitDetailsInteractor : HabitDoneInteractor {
-    fun entries(id: Long): Flow<PagingData<EditableHistoryUi>>
+    fun entries(id: Long, defaultColor: Color): Flow<PagingData<EditableHistoryUi>>
     fun habit(id: Long): Flow<Habit?>
     fun mapData(data: EditableHistoryUi, entry: EntryEditableUi): EditableHistoryUi
-    suspend fun entryEditable(id: Long, daysAgo: Int): EntryEditableUi
+    suspend fun entryEditable(
+        id: Long, daysAgo: Int, goal: Int, habitColor: Color, defaultColor: Color
+    ): EntryEditableUi
+
     suspend fun delete(id: Long)
 
     class Base(
@@ -25,11 +29,14 @@ interface HabitDetailsInteractor : HabitDoneInteractor {
         now: Now,
     ) : HabitDetailsInteractor, HabitDoneInteractor.Abstract(repository, now) {
 
-        override fun entries(id: Long): Flow<PagingData<EditableHistoryUi>> =
-            pagerProvider.getEntries(id)
+        override fun entries(id: Long, defaultColor: Color): Flow<PagingData<EditableHistoryUi>> =
+            pagerProvider.getEntries(id, defaultColor)
 
-        override suspend fun entryEditable(id: Long, daysAgo: Int): EntryEditableUi =
-            entry(id, daysAgo).let { entry -> entryMapper.map(daysAgo, entry.timesDone) }
+        override suspend fun entryEditable(
+            id: Long, daysAgo: Int, goal: Int, habitColor: Color, defaultColor: Color
+        ): EntryEditableUi = entry(id, daysAgo).let { entry ->
+            entryMapper.map(daysAgo, entry.timesDone, goal, habitColor, defaultColor)
+        }
 
         override fun habit(id: Long) = repository.habitFlow(id)
 

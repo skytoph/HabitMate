@@ -29,10 +29,11 @@ fun HabitList(
     ) {
         items(items = habits, key = { it.habit.id }) {
             HabitCard(
+                modifier = Modifier.clickable { onHabitClick(it.habit) },
+                onDone = { onDoneHabit(it.habit) },
                 habit = it.habit,
                 history = it.history,
-                onDone = { onDoneHabit(it.habit) },
-                modifier = Modifier.clickable { onHabitClick(it.habit) },
+                todayDonePercent = it.history.todayDonePercent,
             )
         }
     }

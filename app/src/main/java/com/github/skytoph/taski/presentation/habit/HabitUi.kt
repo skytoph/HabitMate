@@ -1,11 +1,13 @@
 package com.github.skytoph.taski.presentation.habit
 
 import android.content.Context
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
 import com.github.skytoph.taski.presentation.core.state.IconResource
 import com.github.skytoph.taski.presentation.habit.icon.IconsColors
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitDomainMapper
 
+@Stable
 data class HabitUi(
     val id: Long = ID_DEFAULT,
     val title: String,
@@ -28,6 +30,7 @@ interface HabitHistoryUi
 
 interface HabitEntryUi
 
+@Stable
 data class HabitWithHistoryUi<T : HabitHistoryUi>(
     val habit: HabitUi,
     val history: T

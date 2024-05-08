@@ -31,5 +31,5 @@ interface EntriesDao {
 
     @Transaction
     @Query("SELECT * FROM habit WHERE id = :id")
-    fun habitWithEntriesById(id: Long): Flow<HabitWithEntriesEntity>
+    suspend fun habitWithEntriesById(id: Long): HabitWithEntriesEntity
 }

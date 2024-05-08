@@ -3,6 +3,7 @@ package com.github.skytoph.taski.presentation.habit.details
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -32,17 +33,13 @@ class HabitDetailsViewModel @Inject constructor(
     private val state: MutableState<HabitDetailsState> = mutableStateOf(HabitDetailsState()),
     private val interactor: HabitDetailsInteractor,
     private val habitMapper: HabitUiMapper,
-    appBarState: MutableState<AppBarState>,
-    savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle,
+    appBarState: MutableState<AppBarState>
 ) : ViewModel(), InitAppBar by InitAppBar.Base(appBarState) {
 
     private val actions = MutableStateFlow<List<UpdateEntryAction>>(emptyList())
 
-    val entries: Flow<PagingData<EditableHistoryUi>> =
-        interactor.entries(savedStateHandle.id()).cachedIn(viewModelScope)
-            .combine(actions) { pagingData, actions ->
-                actions.fold(pagingData) { paging, event -> applyAction(paging, event) }
-            }
+    private var entries: Flow<PagingData<EditableHistoryUi>>? = null
 
     init {
         interactor.habit(savedStateHandle.id())
@@ -64,10 +61,11 @@ class HabitDetailsViewModel @Inject constructor(
         }
     }
 
-    fun habitDone(daysAgo: Int) = state.value.habit?.let { habit ->
+    fun habitDone(daysAgo: Int, defaultColor: Color) = state.value.habit?.let { habit ->
         viewModelScope.launch(Dispatchers.IO) {
             interactor.habitDone(habit, daysAgo)
-            val entry = interactor.entryEditable(habit.id, daysAgo)
+            val entry =
+                interactor.entryEditable(habit.id, daysAgo, habit.goal, habit.color, defaultColor)
             withContext(Dispatchers.Main) { UpdateEntryAction(entry).handle(actions) }
         }
     }
@@ -78,4 +76,12 @@ class HabitDetailsViewModel @Inject constructor(
 
     fun SavedStateHandle.id(): Long = this[HabitScreens.EditHabit.habitIdArg]
         ?: throw IllegalStateException("Edit Habit screen must contain habit id")
+
+    fun entries(defaultColor: Color): Flow<PagingData<EditableHistoryUi>> = entries ?: run {
+        entries = interactor.entries(savedStateHandle.id(), defaultColor).cachedIn(viewModelScope)
+            .combine(actions) { pagingData, actions ->
+                actions.fold(pagingData) { paging, event -> applyAction(paging, event) }
+            }
+        entries!!
+    }
 }

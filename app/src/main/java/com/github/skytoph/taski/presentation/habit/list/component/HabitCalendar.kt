@@ -26,7 +26,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import com.github.skytoph.taski.presentation.core.color.borderColor
-import com.github.skytoph.taski.presentation.core.color.habitColor
 import com.github.skytoph.taski.presentation.core.leftFadingEdge
 import com.github.skytoph.taski.presentation.core.preview.HabitProvider
 import com.github.skytoph.taski.presentation.core.rightFadingEdge
@@ -101,13 +100,13 @@ fun HabitCalendar(
                         val offsetY = squareSize * stepY + squareOffset * stepY
 
                         drawRoundRect(
-                            color = habitColor(entry.colorPercent, defaultColor, habitColor),
+                            color = entry.color,
                             cornerRadius = CornerRadius(5f, 5f),
                             style = Fill,
                             topLeft = Offset(offsetX, offsetY),
                             size = rectSize
                         )
-                        if (index == history.todayPosition) drawRoundRect(
+                        if (entry.hasBorder) drawRoundRect(
                             color = borderColor(habitColor),
                             cornerRadius = CornerRadius(5f, 5f),
                             style = Stroke(1.dp.toPx()),
@@ -130,6 +129,11 @@ fun HabitCalendarPreview(
     ) habit: HabitWithHistoryUi<HistoryUi>
 ) {
     HabitMateTheme {
-        HabitCard(onDone = {}, habit = habit.habit, history = habit.history)
+        HabitCard(
+            onDone = {},
+            habit = habit.habit,
+            history = habit.history,
+            todayDonePercent = habit.history.todayDonePercent
+        )
     }
 }

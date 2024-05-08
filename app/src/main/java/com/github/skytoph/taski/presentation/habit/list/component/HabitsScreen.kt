@@ -26,9 +26,14 @@ fun HabitsScreen(
     onCreateHabit: () -> Unit,
     onHabitClick: (HabitUi) -> Unit,
 ) {
-    val color = MaterialTheme.colorScheme.onSurface
+    val onSecondaryContainer = MaterialTheme.colorScheme.onSecondaryContainer
     LaunchedEffect(Unit) {
-        val actionAdd = AppBarAction.add.copy(color = color, onClick = onCreateHabit)
+        viewModel.init(onSecondaryContainer)
+    }
+
+    val onSurface = MaterialTheme.colorScheme.onSurface
+    LaunchedEffect(Unit) {
+        val actionAdd = AppBarAction.add.copy(color = onSurface, onClick = onCreateHabit)
         viewModel.initAppBar(canNavigateUp = false, menuItems = listOf(actionAdd))
     }
 

@@ -3,8 +3,8 @@ package com.github.skytoph.taski.presentation.habit.list.mapper
 
 object ColorPercentMapper {
     fun toColorPercent(timesDone: Int, goal: Int): Float = when {
-        timesDone >= goal -> 1F
         timesDone <= 0 -> 0F
+        timesDone >= goal -> 1F
         else -> percent(timesDone, goal)
     }
 

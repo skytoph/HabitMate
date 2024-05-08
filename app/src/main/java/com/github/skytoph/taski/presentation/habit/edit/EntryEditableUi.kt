@@ -1,10 +1,10 @@
 package com.github.skytoph.taski.presentation.habit.edit
 
 import androidx.compose.runtime.Stable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import com.github.skytoph.taski.presentation.habit.HabitEntryUi
 import com.github.skytoph.taski.presentation.habit.HabitHistoryUi
-import com.github.skytoph.taski.presentation.habit.list.mapper.ColorPercentMapper
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -15,17 +15,15 @@ data class EditableHistoryUi(
     val month: MonthUi
 ) : HabitHistoryUi
 
+@Stable
 data class EntryEditableUi(
     val day: String,
     val timesDone: Int = 0,
+    val color: Color,
     val daysAgo: Int
-) : HabitEntryUi {
+) : HabitEntryUi
 
-    fun donePercent(goal: Int): Int = ColorPercentMapper.percentDone(timesDone, goal)
-
-    fun colorPercent(goal: Int): Float = ColorPercentMapper.toColorPercent(timesDone, goal)
-}
-
+@Stable
 data class MonthUi(
     val timestamp: Long = 0,
     val weeks: Int,

@@ -2,6 +2,7 @@ package com.github.skytoph.taski.presentation.habit.list
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.skytoph.taski.presentation.appbar.InitAppBar
@@ -25,10 +26,10 @@ class HabitsViewModel @Inject constructor(
     appBarState: MutableState<AppBarState>
 ) : ViewModel(), InitAppBar by InitAppBar.Base(appBarState) {
 
-    init {
+    fun init(defaultColor: Color) {
         onEvent(HabitListEvent.Progress)
         interactor.habits()
-            .map { habits -> habits.map { habit -> habit.map(mapper) } }
+            .map { habits -> habits.map { habit -> habit.map(mapper, defaultColor) } }
             .flowOn(Dispatchers.IO)
             .onEach { habits -> onEvent(HabitListEvent.UpdateList(habits)) }
             .launchIn(viewModelScope)

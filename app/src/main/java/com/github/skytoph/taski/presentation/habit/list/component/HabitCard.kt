@@ -41,6 +41,7 @@ fun HabitCard(
     onDone: () -> Unit,
     habit: HabitUi,
     history: HistoryUi,
+    todayDonePercent: Float,
 ) {
     Card(
         modifier = modifier
@@ -57,7 +58,7 @@ fun HabitCard(
                 Box(Modifier.padding(8.dp)) {
                     Icon(
                         imageVector = ImageVector.vectorResource(habit.icon.id(LocalContext.current)),
-                        contentDescription = null,
+                        contentDescription = "habit icon",
                         modifier = Modifier
                             .size(32.dp)
                             .background(
@@ -71,13 +72,7 @@ fun HabitCard(
                 Text(text = habit.title, Modifier.weight(1f))
                 IconButton(onClick = onDone) {
                     val defaultColor = MaterialTheme.colorScheme.secondaryContainer
-                    val colorPercent =
-                        history.entries.getOrNull(history.todayPosition)?.colorPercent
-                    val color = habitColor(
-                        colorPercent ?: 0F,
-                        defaultColor,
-                        habit.color
-                    )
+                    val color = habitColor(todayDonePercent, defaultColor, habit.color)
                     Icon(
                         imageVector = Icons.Outlined.Check,
                         contentDescription = null,
@@ -104,25 +99,29 @@ fun HabitCard(
 @Composable
 @Preview(showSystemUi = true, showBackground = true)
 fun HabitCardPreview(
-    @PreviewParameter(
-        HabitProvider::class,
-        limit = 1
-    ) habit: HabitWithHistoryUi<HistoryUi>
+    @PreviewParameter(HabitProvider::class, limit = 1) habit: HabitWithHistoryUi<HistoryUi>
 ) {
     HabitMateTheme {
-        HabitCard(habit = habit.habit, history = habit.history, onDone = {})
+        HabitCard(
+            onDone = {},
+            habit = habit.habit,
+            history = habit.history,
+            todayDonePercent = habit.history.todayDonePercent
+        )
     }
 }
 
 @Composable
 @Preview(showSystemUi = true, showBackground = true)
 fun DarkHabitCardPreview(
-    @PreviewParameter(
-        HabitProvider::class,
-        limit = 1
-    ) habit: HabitWithHistoryUi<HistoryUi>
+    @PreviewParameter(HabitProvider::class, limit = 1) habit: HabitWithHistoryUi<HistoryUi>
 ) {
     HabitMateTheme(darkTheme = true) {
-        HabitCard(habit = habit.habit, history = habit.history, onDone = {})
+        HabitCard(
+            onDone = {},
+            habit = habit.habit,
+            history = habit.history,
+            todayDonePercent = habit.history.todayDonePercent
+        )
     }
 }

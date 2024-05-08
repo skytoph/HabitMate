@@ -26,13 +26,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun HabitAppBar(
     modifier: Modifier = Modifier,
     state: State<AppBarState>,
-    navigateUp:() -> Unit
+    navigateUp: () -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -87,10 +89,13 @@ fun HabitAppBar(
             LazyRow {
                 items(state.value.menuItems, key = { it.title }) { button ->
                     IconButton(onClick = button.onClick) {
+                        val description = button.title.getString(context)
                         Icon(
                             imageVector = button.icon,
-                            contentDescription = button.title.getString(context),
-                            modifier = Modifier.size(24.dp),
+                            contentDescription = description,
+                            modifier = Modifier
+                                .size(24.dp)
+                                .semantics { contentDescription = description },
                             tint = button.color
                         )
                     }

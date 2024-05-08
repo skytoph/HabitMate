@@ -21,3 +21,10 @@ abstract class HabitValidator<Event>(
     abstract fun titleErrorEvent(result: StringResource?): Event
     abstract fun validateEvent(): Event
 }
+
+class TestValidator : HabitValidator<CreateHabitEvent>() {
+    override fun titleErrorEvent(result: StringResource?): CreateHabitEvent =
+        CreateHabitEvent.TitleError(null)
+
+    override fun validateEvent(): CreateHabitEvent = CreateHabitEvent.Validate
+}

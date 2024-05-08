@@ -65,10 +65,11 @@ fun HabitDetailsScreen(
     }
 
     val onHideDialog = { viewModel.onEvent(HabitDetailsEvent.ShowDialog(false)) }
+    val defaultColor = MaterialTheme.colorScheme.onSecondaryContainer
     HabitDetails(
         state = viewModel.state(),
-        entries = viewModel.entries,
-        onDayClick = { viewModel.habitDone(it) },
+        entries = viewModel.entries(defaultColor = defaultColor),
+        onDayClick = { viewModel.habitDone(it, defaultColor) },
         onHideDialog = onHideDialog,
         onDeleteHabit = { viewModel.deleteHabit(navigateUp = { onHideDialog(); navigateUp() }) },
         onEditHistory = { viewModel.onEvent(HabitDetailsEvent.EditHistory) })

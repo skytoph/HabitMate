@@ -1,6 +1,7 @@
 package com.github.skytoph.taski.presentation.nav
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -30,8 +31,10 @@ fun MainScreen(
             state = viewModel.state(),
             navigateUp = navController::navigateUp
         )
-    }) { paddingValue ->
-        Box(modifier = Modifier.padding(top = paddingValue.calculateTopPadding())) {
+    }, modifier = Modifier.fillMaxSize()) { paddingValue ->
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .padding(top = paddingValue.calculateTopPadding())) {
             MainNavGraph(navController)
         }
     }

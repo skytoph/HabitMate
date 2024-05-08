@@ -25,7 +25,7 @@ class CreateHabitViewModel @Inject constructor(
     private val iconState: MutableState<IconState>,
     private val repository: HabitRepository,
     private val mapper: HabitDomainMapper,
-    private val validator: NewHabitValidator,
+    private val validator: HabitValidator<CreateHabitEvent>,
     appBarState: MutableState<AppBarState>
 ) : ViewModel(), EventHandler<CreateHabitEvent>, InitAppBar by InitAppBar.Base(appBarState) {
 

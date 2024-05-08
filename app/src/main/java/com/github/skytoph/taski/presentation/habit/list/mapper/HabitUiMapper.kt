@@ -9,7 +9,7 @@ import com.github.skytoph.taski.presentation.core.state.IconResource
 interface HabitUiMapper {
     fun map(habit: Habit): HabitUi
 
-    class Base(private val convertIcon: ConvertIcon) : HabitUiMapper {
+    class Base : HabitUiMapper {
 
         override fun map(habit: Habit): HabitUi = HabitUi(
             id = habit.id,

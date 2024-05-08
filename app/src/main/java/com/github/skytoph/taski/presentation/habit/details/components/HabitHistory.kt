@@ -44,6 +44,7 @@ import androidx.compose.material3.PlainTooltipBox
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -62,7 +63,6 @@ import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.color.contrastColor
-import com.github.skytoph.taski.presentation.core.color.habitColor
 import com.github.skytoph.taski.presentation.core.component.getLocale
 import com.github.skytoph.taski.presentation.core.fadingEdge
 import com.github.skytoph.taski.presentation.core.format.getWeekDisplayName
@@ -99,7 +99,6 @@ fun HabitHistory(
             entries = entries,
             goal = goal,
             isEditable = isEditable,
-            habitColor = habitColor,
             onDayClick = onDayClick,
         )
         Row(
@@ -148,7 +147,6 @@ fun HabitHistoryGrid(
     entries: Flow<PagingData<EditableHistoryUi>>,
     goal: Int = 1,
     isEditable: Boolean,
-    habitColor: Color = IconsColors.Default,
     onDayClick: (Int) -> Unit = {},
     squareDp: Dp = 32.dp,
     squareOffsetDp: Dp = 1.dp,
@@ -156,7 +154,8 @@ fun HabitHistoryGrid(
 ) {
     val items = entries.collectAsLazyPagingItems()
 
-    val fadingBrushHeader = Brush.horizontalGradient(0f to Color.Transparent, 0.1f to Color.Red)
+    val fadingBrushHeader =
+        remember { Brush.horizontalGradient(0f to Color.Transparent, 0.1f to Color.Red) }
 
     val minHeight = 8 * squareDp
 
@@ -194,37 +193,48 @@ fun HabitHistoryGrid(
                 key = items.itemKey { it.month.timestamp },
                 contentType = { items.itemContentType { it.month.weeks } }) { index ->
                 items[index]?.let { item ->
-                    Column {
-                        MonthLabel(
-                            month = item.month,
-                            entrySize = squareDp,
-                            padding = squareOffsetDp
-                        )
-                        LazyHorizontalGrid(
-                            rows = GridCells.Fixed(7),
-                            modifier = Modifier
-                                .width(squareDp.times(item.month.weeks))
-                                .height(squareDp.times(7)),
-                            reverseLayout = true,
-                            userScrollEnabled = false
-                        ) {
-                            items(
-                                items = item.entries,
-                                key = { it.daysAgo },
-                                contentType = { "entry" }) { entry ->
-                                DailyEntry(
-                                    entry,
-                                    goal,
-                                    isEditable,
-                                    onDayClick,
-                                    squareDp,
-                                    squareOffsetDp,
-                                    habitColor
-                                )
-                            }
-                        }
-                    }
+                    MonthWithEntries(item, squareDp, squareOffsetDp, goal, isEditable, onDayClick)
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun MonthWithEntries(
+    item: EditableHistoryUi,
+    squareDp: Dp,
+    squareOffsetDp: Dp,
+    goal: Int,
+    isEditable: Boolean,
+    onDayClick: (Int) -> Unit
+) {
+    Column {
+        MonthLabel(
+            month = item.month,
+            entrySize = squareDp,
+            padding = squareOffsetDp
+        )
+        LazyHorizontalGrid(
+            rows = GridCells.Fixed(7),
+            modifier = Modifier
+                .width(squareDp.times(item.month.weeks))
+                .height(squareDp.times(7)),
+            reverseLayout = true,
+            userScrollEnabled = false
+        ) {
+            items(
+                items = item.entries,
+                key = { it.daysAgo },
+                contentType = { "entry" }) { entry ->
+                DailyEntry(
+                    entry,
+                    goal,
+                    isEditable,
+                    onDayClick,
+                    squareDp,
+                    squareOffsetDp,
+                )
             }
         }
     }
@@ -256,24 +266,18 @@ private fun DailyEntry(
     onDayClick: (Int) -> Unit,
     size: Dp,
     padding: Dp,
-    entryColor: Color
 ) {
     PlainTooltipBox(
         tooltip = {
             Text(stringResource(R.string.entry_tooltip_percent_done, entry.timesDone, goal))
         }
     ) {
-        val backgroundColor = habitColor(
-            entry.colorPercent(goal),
-            MaterialTheme.colorScheme.onSecondaryContainer,
-            entryColor
-        )
         Box(
             modifier = Modifier
                 .tooltipAnchor()
                 .size(size)
                 .padding(padding)
-                .background(backgroundColor, shape = RoundedCornerShape(10))
+                .background(entry.color, shape = MaterialTheme.shapes.extraSmall)
                 .clickable(enabled = isEditable && entry.daysAgo >= 0) {
                     onDayClick(entry.daysAgo)
                 },
@@ -281,7 +285,7 @@ private fun DailyEntry(
         ) {
             Text(
                 text = entry.day,
-                color = backgroundColor.contrastColor(),
+                color = entry.color.contrastColor(),
                 style = MaterialTheme.typography.labelSmall
             )
         }

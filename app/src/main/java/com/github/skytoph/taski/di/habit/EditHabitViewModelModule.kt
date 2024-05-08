@@ -31,7 +31,7 @@ object EditHabitViewModelModule {
     fun domainMapper(now: Now): HabitDomainMapper = HabitDomainMapper.Base(now)
 
     @Provides
-    fun uiMapper(convertIcon: ConvertIcon): HabitUiMapper = HabitUiMapper.Base(convertIcon)
+    fun uiMapper(): HabitUiMapper = HabitUiMapper.Base()
 
     @Provides
     fun historyMapper(

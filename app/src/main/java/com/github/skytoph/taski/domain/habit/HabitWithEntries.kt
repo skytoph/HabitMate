@@ -1,6 +1,8 @@
 package com.github.skytoph.taski.domain.habit
 
-import com.github.skytoph.taski.presentation.habit.HabitHistoryUi
+import androidx.compose.ui.graphics.Color
+import com.github.skytoph.taski.presentation.habit.HabitWithHistoryUi
+import com.github.skytoph.taski.presentation.habit.list.HistoryUi
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitWithHistoryUiMapper
 
 data class HabitWithEntries(
@@ -8,5 +10,7 @@ data class HabitWithEntries(
     val entries: EntryList
 ) {
 
-    fun <T : HabitHistoryUi> map(mapper: HabitWithHistoryUiMapper<T>) = mapper.map(habit, entries)
+    fun map(
+        mapper: HabitWithHistoryUiMapper<HistoryUi>, defaultColor: Color
+    ): HabitWithHistoryUi<HistoryUi> = mapper.map(habit, entries, defaultColor)
 }

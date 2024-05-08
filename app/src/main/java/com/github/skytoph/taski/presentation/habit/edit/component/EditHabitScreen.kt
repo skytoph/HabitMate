@@ -62,7 +62,8 @@ fun EditHabitScreen(
     val context = LocalContext.current
 
     val actionColor = MaterialTheme.colorScheme.onSurface
-    LaunchedEffect(Unit) {
+    LaunchedEffect(viewModel.state().value.isLoading) {
+        if (viewModel.state().value.isLoading) return@LaunchedEffect
         val actionSave =
             AppBarAction.save.copy(color = actionColor, onClick = { viewModel.validate() })
         viewModel.initAppBar(
@@ -150,7 +151,7 @@ fun EditBaseHabit(
             modifier = Modifier.weight(1f),
             value = title.field,
             onValueChange = onTypeTitle,
-            error = title.error?.getString(LocalContext.current)
+            error = title.error?.getString(LocalContext.current),
         )
         IconSelector(
             icon = icon,
