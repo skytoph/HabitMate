@@ -2,7 +2,6 @@
 <resources>
     <string name="app_name">HabitMate</string>
     <string name="action_delete_habit">видалити звичку</string>
-    <string name="action_save_habit">зберегти звичку</string>
 
     <string name="icons_household">побут</string>
     <string name="icons_nature">природа</string>

@@ -7,6 +7,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
@@ -29,7 +31,9 @@ fun HabitList(
     ) {
         items(items = habits, key = { it.habit.id }) {
             HabitCard(
-                modifier = Modifier.clickable { onHabitClick(it.habit) },
+                modifier = Modifier
+                    .clickable { onHabitClick(it.habit) }
+                    .semantics { contentDescription = "habit" },
                 onDone = { onDoneHabit(it.habit) },
                 habit = it.habit,
                 history = it.history,

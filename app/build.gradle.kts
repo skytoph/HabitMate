@@ -31,6 +31,12 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
+        }
+        create("benchmark") {
+            initWith(buildTypes.getByName("release"))
+            matchingFallbacks += listOf("release")
+            isDebuggable = false
         }
     }
     compileOptions {
@@ -104,4 +110,6 @@ dependencies {
     implementation("androidx.paging:paging-runtime-ktx:3.2.1")
     implementation("androidx.paging:paging-compose:3.2.1")
     implementation("androidx.room:room-paging:2.6.1")
+
+    implementation("androidx.profileinstaller:profileinstaller:1.3.1")
 }

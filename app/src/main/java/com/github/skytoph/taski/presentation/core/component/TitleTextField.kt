@@ -39,7 +39,8 @@ fun TitleTextField(
         TextField(
             modifier = Modifier
                 .fillMaxWidth()
-                .wrapContentHeight(),
+                .wrapContentHeight()
+                .semantics { contentDescription = "text field" },
             value = value,
             onValueChange = onValueChange,
             colors = TextFieldDefaults.colors(

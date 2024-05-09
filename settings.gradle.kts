@@ -15,4 +15,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Taski"
 include(":app")
- 
+include(":benchmark")
