@@ -1,5 +1,7 @@
 package com.github.skytoph.taski.presentation.core.component
 
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -38,55 +40,34 @@ fun HabitAppBar(
     var expanded by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        if (state.value.navigateUp.canNavigateUp)
-            IconButton(onClick = navigateUp) {
-                Icon(
-                    imageVector = state.value.navigateUp.action.icon,
-                    contentDescription = state.value.navigateUp.action.title.getString(context),
-                    modifier = Modifier.size(24.dp),
-                    tint = MaterialTheme.colorScheme.onSurface
-                )
-            }
-        Text(
-            text = state.value.title.getString(context),
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.weight(1f)
-        )
-        if (state.value.dropdownItems.isNotEmpty())
-            Box {
-                IconButton(onClick = { expanded = !expanded }) {
-                    Icon(Icons.Default.MoreVert, "menu")
+    Crossfade(
+        targetState = state.value,
+        label = "app_bar_crossfade",
+        animationSpec = tween(60)
+    ) { state ->
+        Row(
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if (state.navigateUp.canNavigateUp)
+                IconButton(onClick = navigateUp) {
+                    Icon(
+                        imageVector = state.navigateUp.action.icon,
+                        contentDescription = state.navigateUp.action.title.getString(context),
+                        modifier = Modifier.size(24.dp),
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
                 }
-
-                DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false },
-                ) {
-                    state.value.dropdownItems.forEach { item ->
-                        DropdownMenuItem(
-                            text = {
-                                Text(
-                                    text = item.title.getString(context),
-                                    color = item.color
-                                )
-                            },
-                            onClick = {
-                                expanded = false
-                                item.onClick()
-                            })
-                    }
-                }
-            }
-        else
+            Text(
+                text = state.title.getString(context),
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.weight(1f)
+            )
             LazyRow {
-                items(state.value.menuItems, key = { it.title }) { button ->
+                items(state.menuItems, key = { it.title }) { button ->
                     IconButton(onClick = button.onClick) {
                         val description = button.title.getString(context)
                         Icon(
@@ -100,5 +81,31 @@ fun HabitAppBar(
                     }
                 }
             }
+            if (state.dropdownItems.isNotEmpty())
+                Box {
+                    IconButton(onClick = { expanded = !expanded }) {
+                        Icon(Icons.Default.MoreVert, "menu")
+                    }
+
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false },
+                    ) {
+                        state.dropdownItems.forEach { item ->
+                            DropdownMenuItem(
+                                text = {
+                                    Text(
+                                        text = item.title.getString(context),
+                                        color = item.color
+                                    )
+                                },
+                                onClick = {
+                                    expanded = false
+                                    item.onClick()
+                                })
+                        }
+                    }
+                }
+        }
     }
 }
