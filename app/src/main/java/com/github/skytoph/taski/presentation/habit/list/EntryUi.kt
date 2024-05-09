@@ -1,6 +1,5 @@
 package com.github.skytoph.taski.presentation.habit.list
 
-import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
 import com.github.skytoph.taski.presentation.habit.HabitEntryUi
 import com.github.skytoph.taski.presentation.habit.HabitHistoryUi

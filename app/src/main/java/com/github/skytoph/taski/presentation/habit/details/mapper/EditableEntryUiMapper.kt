@@ -40,7 +40,7 @@ class EditableEntryUiMapper(
         defaultColor: Color
     ) = (weeksAgo * ROWS until weeksAgo * ROWS + weeks * ROWS).map { index ->
         val daysAgo =
-            now.dayOfWeek() - index % ROWS - now.firstDayOfWeek() + index / ROWS * ROWS
+            now.dayOfWeek() - index % ROWS + index / ROWS * ROWS
         val timesDone = history[daysAgo]?.timesDone ?: 0
         entryMapper.map(daysAgo, timesDone, goal, habitColor, defaultColor)
     }

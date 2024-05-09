@@ -15,19 +15,17 @@ class EntriesUiMapper(
     override fun map(
         column: Int, goal: Int, history: EntryList, habitColor: Color, defaultColor: Color
     ): HistoryUi {
-        val todayPosition = 7 - now.dayOfWeek()
+        val todayPosition = 6 - now.dayOfWeek()
         val entries = (numberOfCells - todayPosition - 1 downTo -todayPosition).map { index ->
             val timesDone = history.entries[index]?.timesDone ?: 0
             val colorPercent = ColorPercentMapper.toColorPercent(timesDone, goal)
             val color = habitColor(colorPercent, defaultColor, habitColor)
-            EntryUi(color = color, hasBorder = index == todayPosition)
+            EntryUi(color = color, hasBorder = index == 0)
         }
         val todayDonePercent =
-            ColorPercentMapper.toColorPercent(history.entries[todayPosition]?.timesDone ?: 0, goal)
+            ColorPercentMapper.toColorPercent(history.entries[0]?.timesDone ?: 0, goal)
         return HistoryUi(entries = entries, todayDonePercent = todayDonePercent)
     }
-
-    private fun todayPosition(): Int = numberOfCells - 8 + now.dayOfWeek() // todo remove
 
     private companion object {
         const val COLUMNS = 50

@@ -14,12 +14,12 @@ interface Now {
     fun lastDayOfWeekDate(weeksAgo: Int = 0): Int
     fun lastDayOfWeekMillis(weeksAgo: Int = 0): Long
     fun monthMillis(monthsAgo: Int = 0): Long
-    fun firstDayOfWeek(): Int
     fun weeksInMonth(monthsAgo: Int = 0): Int
 
     class Base(private val timeZone: TimeZone = TimeZone.getTimeZone("UTC")) : Now {
 
-        override fun dayOfWeek(): Int = calendar().get(Calendar.DAY_OF_WEEK)
+        override fun dayOfWeek(): Int =
+            calendar().run { get(Calendar.DAY_OF_WEEK) - firstDayOfWeek }
 
         override fun milliseconds(): Long = System.currentTimeMillis()
 
@@ -40,8 +40,6 @@ interface Now {
             endOfTheWeek(weeksAgo).timeInMillis
 
         override fun monthMillis(monthsAgo: Int): Long = month(monthsAgo).timeInMillis
-
-        override fun firstDayOfWeek(): Int = calendar().firstDayOfWeek
 
         override fun weeksInMonth(monthsAgo: Int): Int =
             month(monthsAgo).getActualMaximum(Calendar.WEEK_OF_MONTH)
