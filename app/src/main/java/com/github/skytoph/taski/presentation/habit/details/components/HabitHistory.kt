@@ -68,6 +68,7 @@ import com.github.skytoph.taski.presentation.core.fadingEdge
 import com.github.skytoph.taski.presentation.core.format.getWeekDisplayName
 import com.github.skytoph.taski.presentation.core.leftFadingEdge
 import com.github.skytoph.taski.presentation.core.preview.HabitsEditableProvider
+import com.github.skytoph.taski.presentation.habit.applyColor
 import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
 import com.github.skytoph.taski.presentation.habit.edit.EntryEditableUi
 import com.github.skytoph.taski.presentation.habit.edit.MonthUi
@@ -97,6 +98,7 @@ fun HabitHistory(
     ) {
         HabitHistoryGrid(
             entries = entries,
+            habitColor = habitColor,
             goal = goal,
             isEditable = isEditable,
             onDayClick = onDayClick,
@@ -145,6 +147,7 @@ fun HabitHistory(
 @Composable
 fun HabitHistoryGrid(
     entries: Flow<PagingData<EditableHistoryUi>>,
+    habitColor: Color = IconsColors.Default,
     goal: Int = 1,
     isEditable: Boolean,
     onDayClick: (Int) -> Unit = {},
@@ -155,7 +158,7 @@ fun HabitHistoryGrid(
     val items = entries.collectAsLazyPagingItems()
 
     val fadingBrushHeader =
-        remember { Brush.horizontalGradient(0f to Color.Transparent, 0.1f to Color.Red) }
+        remember { Brush.horizontalGradient(0f to Color.Transparent, 0.05f to Color.Red) }
 
     val minHeight = 8 * squareDp
 
@@ -171,7 +174,7 @@ fun HabitHistoryGrid(
                 .padding(start = initialOffsetDp)
                 .leftFadingEdge(
                     color = MaterialTheme.colorScheme.tertiaryContainer,
-                    width = 4.dp
+                    width = 2.dp
                 ),
             contentPadding = PaddingValues(2.dp),
             reverseLayout = true,
@@ -193,7 +196,7 @@ fun HabitHistoryGrid(
                 key = items.itemKey { it.month.timestamp },
                 contentType = { items.itemContentType { it.month.weeks } }) { index ->
                 items[index]?.let { item ->
-                    MonthWithEntries(item, squareDp, squareOffsetDp, goal, isEditable, onDayClick)
+                    MonthWithEntries(item, habitColor, squareDp, squareOffsetDp, goal, isEditable, onDayClick)
                 }
             }
         }
@@ -203,6 +206,7 @@ fun HabitHistoryGrid(
 @Composable
 private fun MonthWithEntries(
     item: EditableHistoryUi,
+    habitColor: Color,
     squareDp: Dp,
     squareOffsetDp: Dp,
     goal: Int,
@@ -229,6 +233,7 @@ private fun MonthWithEntries(
                 contentType = { "entry" }) { entry ->
                 DailyEntry(
                     entry,
+                    habitColor,
                     goal,
                     isEditable,
                     onDayClick,
@@ -261,12 +266,14 @@ private fun WeekDayLabel(
 @Composable
 private fun DailyEntry(
     entry: EntryEditableUi,
+    habitColor: Color,
     goal: Int = 1,
     isEditable: Boolean,
     onDayClick: (Int) -> Unit,
     size: Dp,
     padding: Dp,
 ) {
+    val color = habitColor.applyColor(MaterialTheme.colorScheme.onSecondaryContainer, entry.percentDone)
     PlainTooltipBox(
         tooltip = {
             Text(stringResource(R.string.entry_tooltip_percent_done, entry.timesDone, goal))
@@ -277,7 +284,7 @@ private fun DailyEntry(
                 .tooltipAnchor()
                 .size(size)
                 .padding(padding)
-                .background(entry.color, shape = MaterialTheme.shapes.extraSmall)
+                .background(color, shape = MaterialTheme.shapes.extraSmall)
                 .clickable(enabled = isEditable && entry.daysAgo >= 0) {
                     onDayClick(entry.daysAgo)
                 },
@@ -285,7 +292,7 @@ private fun DailyEntry(
         ) {
             Text(
                 text = entry.day,
-                color = entry.color.contrastColor(),
+                color = color.contrastColor(),
                 style = MaterialTheme.typography.labelSmall
             )
         }

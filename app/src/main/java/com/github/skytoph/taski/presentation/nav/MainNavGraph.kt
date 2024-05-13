@@ -2,7 +2,9 @@ package com.github.skytoph.taski.presentation.nav
 
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -25,7 +27,8 @@ fun MainNavGraph(navController: NavHostController) {
     NavHost(
         navController = navController,
         startDestination = HabitScreens.HabitList.route,
-        route = Graph.HABITS
+        route = Graph.HABITS,
+        modifier = Modifier.fillMaxSize()
     ) {
         composable(route = HabitScreens.HabitList.route,
             exitTransition = { fadeOut(tween(delayMillis = 90)) }) {

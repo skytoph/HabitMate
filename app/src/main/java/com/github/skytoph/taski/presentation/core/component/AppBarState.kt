@@ -6,6 +6,7 @@ import androidx.compose.material.icons.filled.ArrowBackIos
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.github.skytoph.taski.R
@@ -45,5 +46,8 @@ data class AppBarAction(
 
         val add =
             AppBarAction(StringResource.ResId(R.string.action_add), Icons.Filled.Add)
+
+        val view =
+            AppBarAction(StringResource.ResId(R.string.action_view), Icons.Filled.FilterList)
     }
 }

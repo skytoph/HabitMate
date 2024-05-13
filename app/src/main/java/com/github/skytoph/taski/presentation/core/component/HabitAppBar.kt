@@ -66,7 +66,7 @@ fun HabitAppBar(
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.weight(1f)
             )
-            LazyRow {
+            LazyRow(horizontalArrangement = Arrangement.spacedBy((-8).dp)) {
                 items(state.menuItems, key = { it.title }) { button ->
                     IconButton(onClick = button.onClick) {
                         val description = button.title.getString(context)

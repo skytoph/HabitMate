@@ -2,8 +2,8 @@ package com.github.skytoph.taski.presentation.habit.create
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.graphics.Color
-import com.github.skytoph.taski.presentation.core.state.StringResource
 import com.github.skytoph.taski.presentation.core.state.IconResource
+import com.github.skytoph.taski.presentation.core.state.StringResource
 
 interface CreateHabitEvent {
     fun handle(state: MutableState<CreateHabitState>)

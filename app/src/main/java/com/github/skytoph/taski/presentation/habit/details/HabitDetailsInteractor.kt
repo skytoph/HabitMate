@@ -13,7 +13,7 @@ import com.github.skytoph.taski.presentation.habit.list.HabitDoneInteractor
 import kotlinx.coroutines.flow.Flow
 
 interface HabitDetailsInteractor : HabitDoneInteractor {
-    fun entries(id: Long, defaultColor: Color): Flow<PagingData<EditableHistoryUi>>
+    fun entries(id: Long): Flow<PagingData<EditableHistoryUi>>
     fun habit(id: Long): Flow<Habit?>
     fun mapData(data: EditableHistoryUi, entry: EntryEditableUi): EditableHistoryUi
     suspend fun entryEditable(
@@ -29,13 +29,13 @@ interface HabitDetailsInteractor : HabitDoneInteractor {
         now: Now,
     ) : HabitDetailsInteractor, HabitDoneInteractor.Abstract(repository, now) {
 
-        override fun entries(id: Long, defaultColor: Color): Flow<PagingData<EditableHistoryUi>> =
-            pagerProvider.getEntries(id, defaultColor)
+        override fun entries(id: Long): Flow<PagingData<EditableHistoryUi>> =
+            pagerProvider.getEntries(id)
 
         override suspend fun entryEditable(
             id: Long, daysAgo: Int, goal: Int, habitColor: Color, defaultColor: Color
         ): EntryEditableUi = entry(id, daysAgo).let { entry ->
-            entryMapper.map(daysAgo, entry.timesDone, goal, habitColor, defaultColor)
+            entryMapper.map(daysAgo, entry.timesDone, goal)
         }
 
         override fun habit(id: Long) = repository.habitFlow(id)

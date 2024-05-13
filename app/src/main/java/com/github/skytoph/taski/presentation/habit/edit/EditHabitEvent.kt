@@ -3,10 +3,10 @@ package com.github.skytoph.taski.presentation.habit.edit
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.graphics.Color
 import com.github.skytoph.taski.presentation.core.state.FieldState
+import com.github.skytoph.taski.presentation.core.state.IconResource
 import com.github.skytoph.taski.presentation.core.state.StringResource
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.create.GoalState
-import com.github.skytoph.taski.presentation.core.state.IconResource
 import com.github.skytoph.taski.presentation.habit.icon.IconState
 
 interface EditHabitEvent {

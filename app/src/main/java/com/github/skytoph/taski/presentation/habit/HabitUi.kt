@@ -3,6 +3,7 @@ package com.github.skytoph.taski.presentation.habit
 import android.content.Context
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
 import com.github.skytoph.taski.presentation.core.state.IconResource
 import com.github.skytoph.taski.presentation.habit.icon.IconsColors
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitDomainMapper
@@ -25,6 +26,9 @@ data class HabitUi(
         const val ID_DEFAULT: Long = -1L
     }
 }
+
+fun Color.applyColor(background: Color, alpha: Float): Color =
+    this.copy(alpha = alpha).compositeOver(background)
 
 interface HabitHistoryUi
 

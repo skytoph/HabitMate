@@ -4,12 +4,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Check
@@ -31,24 +34,25 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.github.skytoph.taski.R
-import com.github.skytoph.taski.presentation.core.color.habitColor
 import com.github.skytoph.taski.presentation.core.preview.HabitProvider
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.HabitWithHistoryUi
+import com.github.skytoph.taski.presentation.habit.applyColor
 import com.github.skytoph.taski.presentation.habit.list.HistoryUi
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 
 @Composable
-fun HabitCalendar(
+fun HabitDaily(
     modifier: Modifier = Modifier,
-    onDone: () -> Unit,
     habit: HabitUi,
     history: HistoryUi,
     updateEntries: (Int) -> Unit = {},
+    onDone: (HabitUi, Int) -> Unit = { _, _ -> },
 ) {
+    val defaultColor = MaterialTheme.colorScheme.secondaryContainer
     BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
-        val entries = calculateNumberOfCalendarEntries(maxWidth = maxWidth)
+        val entries = calculateNumberOfDailyEntries(maxWidth = maxWidth)
         updateEntries(entries)
         Card(
             modifier = modifier
@@ -56,18 +60,20 @@ fun HabitCalendar(
                 .wrapContentHeight(),
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
         ) {
-            Column {
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Box(Modifier.padding(8.dp)) {
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Box(Modifier.padding(dimensionResource(id = R.dimen.habit_icon_padding))) {
                         Icon(
                             imageVector = ImageVector.vectorResource(habit.icon.id(LocalContext.current)),
                             contentDescription = "habit icon",
                             modifier = Modifier
-                                .size(32.dp)
+                                .size(dimensionResource(id = R.dimen.habit_icon_size))
                                 .background(
                                     color = habit.color,
                                     shape = RoundedCornerShape(30)
@@ -76,58 +82,44 @@ fun HabitCalendar(
                             tint = Color.White
                         )
                     }
-                    Text(text = habit.title, Modifier.weight(1f))
-                    IconButton(onClick = onDone) {
-                        val defaultColor = MaterialTheme.colorScheme.secondaryContainer
-                        val color = habitColor(history.todayDonePercent, defaultColor, habit.color)
-                        Icon(
-                            imageVector = Icons.Outlined.Check,
-                            contentDescription = null,
-                            modifier = Modifier
-                                .size(32.dp)
-                                .background(
-                                    color = color,
-                                    shape = RoundedCornerShape(30)
-                                )
-                                .padding(4.dp),
-                            tint = Color.White
-                        )
-                    }
+                    Text(
+                        text = habit.title,
+                        modifier = Modifier.width(dimensionResource(id = R.dimen.habit_title_width))
+                    )
                 }
-                val padding = dimensionResource(R.dimen.entry_calendar_content_padding)
-                HabitHistoryTable(
-                    Modifier.padding(start = padding, end = padding, bottom = padding),
-                    habit.color,
-                    history.entries
-                )
+                LazyRow(horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.entries_daily_spaced_by))) {
+                    if (entries == history.entries.size)
+                        items(history.entries) { entry ->
+                            IconButton(onClick = { onDone(habit, entry.daysAgo) }) {
+                                Icon(
+                                    imageVector = Icons.Outlined.Check,
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .size(26.dp)
+                                        .background(
+                                            color = habit.color.applyColor(
+                                                defaultColor,
+                                                entry.percentDone
+                                            ),
+                                            shape = MaterialTheme.shapes.large
+                                        )
+                                        .padding(4.dp),
+                                    tint = Color.White
+                                )
+                            }
+                        }
+                }
             }
         }
     }
 }
-@Composable
-@Preview(showSystemUi = true, showBackground = true)
-fun HabitCardPreview(
-    @PreviewParameter(HabitProvider::class, limit = 1) habit: HabitWithHistoryUi<HistoryUi>
-) {
-    HabitMateTheme {
-        HabitCalendar(
-            onDone = {},
-            habit = habit.habit,
-            history = habit.history,
-        )
-    }
-}
 
 @Composable
-@Preview(showSystemUi = true, showBackground = true)
-fun DarkHabitCardPreview(
+@Preview(showBackground = true, showSystemUi = true)
+fun DarkHabitDailyPreview(
     @PreviewParameter(HabitProvider::class, limit = 1) habit: HabitWithHistoryUi<HistoryUi>
 ) {
     HabitMateTheme(darkTheme = true) {
-        HabitCalendar(
-            onDone = {},
-            habit = habit.habit,
-            history = habit.history,
-        )
+        HabitDaily(habit = habit.habit, history = habit.history)
     }
 }

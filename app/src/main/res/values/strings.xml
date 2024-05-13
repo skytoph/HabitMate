@@ -66,4 +66,8 @@
     <string name="color_and_icon_label">color and icon</string>
     <string name="error_habit_title_is_empty">enter a name for the habit</string>
     <string name="color">color</string>
+
+    <string name="action_view">view</string>
+    <string name="option_calendar">calendar</string>
+    <string name="option_daily">daily</string>
 </resources>

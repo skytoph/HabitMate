@@ -19,7 +19,7 @@ interface Now {
     class Base(private val timeZone: TimeZone = TimeZone.getTimeZone("UTC")) : Now {
 
         override fun dayOfWeek(): Int =
-            calendar().run { get(Calendar.DAY_OF_WEEK) - firstDayOfWeek }
+            calendar().run { (get(Calendar.DAY_OF_WEEK) - firstDayOfWeek + 7) % 7 }
 
         override fun milliseconds(): Long = System.currentTimeMillis()
 

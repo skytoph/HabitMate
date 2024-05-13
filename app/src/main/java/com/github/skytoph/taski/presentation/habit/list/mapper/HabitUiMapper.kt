@@ -2,9 +2,8 @@ package com.github.skytoph.taski.presentation.habit.list.mapper
 
 import androidx.compose.ui.graphics.Color
 import com.github.skytoph.taski.domain.habit.Habit
-import com.github.skytoph.taski.presentation.core.ConvertIcon
-import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.core.state.IconResource
+import com.github.skytoph.taski.presentation.habit.HabitUi
 
 interface HabitUiMapper {
     fun map(habit: Habit): HabitUi

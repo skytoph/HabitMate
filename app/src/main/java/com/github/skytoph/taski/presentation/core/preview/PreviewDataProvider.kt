@@ -1,6 +1,5 @@
 package com.github.skytoph.taski.presentation.core.preview
 
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.HabitWithHistoryUi
@@ -14,23 +13,23 @@ import com.github.skytoph.taski.presentation.habit.list.HistoryUi
 
 class HabitsProvider : PreviewParameterProvider<List<HabitWithHistoryUi<HistoryUi>>> {
 
+    private val history =
+        HistoryUi((0..363).map { EntryUi(percentDone = 1F / (it % 20)) }.toList())
+
     private val habits = IconsColors.allColors.mapIndexed { i, color ->
         HabitWithHistoryUi(HabitUi(i.toLong(), "habit", 1, color), history)
     }
-
-    private val history =
-        HistoryUi((0..363).map { EntryUi(Color.White) }.toList())
 
     override val values: Sequence<List<HabitWithHistoryUi<HistoryUi>>> = sequenceOf(habits)
 }
 
 class HabitProvider : PreviewParameterProvider<HabitWithHistoryUi<HistoryUi>> {
+    private val history =
+        HistoryUi((0..363).map { EntryUi(percentDone = 1F / (it % 20)) }.toList())
+
     private val habits = IconsColors.allColors.mapIndexed { i, color ->
         HabitWithHistoryUi(HabitUi(i.toLong(), "habit", 1, color), history)
     }
-
-    private val history =
-        HistoryUi((0..363).map { EntryUi(Color.White) }.toList())
 
     override val values: Sequence<HabitWithHistoryUi<HistoryUi>> = habits.asSequence()
 
@@ -39,7 +38,7 @@ class HabitProvider : PreviewParameterProvider<HabitWithHistoryUi<HistoryUi>> {
 class HabitsEditableProvider : PreviewParameterProvider<List<EditableHistoryUi>> {
 
     private val entries =
-        (0..28).map { EntryEditableUi((it).toString(), if (it == 4) 1 else 0, Color.White, it) }
+        (0..28).map { EntryEditableUi((it).toString(), if (it == 4) 1 else 0, 1F / (it % 20), it) }
 
     private val months = (1..12).map { MonthUi(timestamp = it.toLong(), weeks = 4) }
 

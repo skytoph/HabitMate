@@ -1,29 +1,22 @@
 package com.github.skytoph.taski.presentation.habit.list.mapper
 
-import androidx.compose.ui.graphics.Color
 import com.github.skytoph.taski.domain.habit.EntryList
 import com.github.skytoph.taski.domain.habit.Habit
 import com.github.skytoph.taski.presentation.habit.HabitHistoryUi
 import com.github.skytoph.taski.presentation.habit.HabitWithHistoryUi
+import com.github.skytoph.taski.presentation.habit.list.HabitsView
 
-interface HabitWithHistoryUiMapper<T : HabitHistoryUi> {
-    fun map(habit: Habit, history: EntryList, defaultColor: Color): HabitWithHistoryUi<T>
+interface HabitWithHistoryUiMapper<T : HabitHistoryUi, V : HabitsView> {
+    fun map(habit: Habit, history: EntryList, entries: Int): HabitWithHistoryUi<T>
 
-    abstract class Abstract<T : HabitHistoryUi>(
+    abstract class Abstract<T : HabitHistoryUi, V : HabitsView>(
         private val habitMapper: HabitUiMapper,
-        private val historyMapper: HabitHistoryUiMapper<T>
-    ) : HabitWithHistoryUiMapper<T> {
+        private val historyMapper: HabitHistoryUiMapper<T, V>
+    ) : HabitWithHistoryUiMapper<T, V> {
 
-        override fun map(
-            habit: Habit, history: EntryList, defaultColor: Color
-        ): HabitWithHistoryUi<T> {
+        override fun map(habit: Habit, history: EntryList, entries: Int): HabitWithHistoryUi<T> {
             val habitUi = habitMapper.map(habit)
-            val historyUi = historyMapper.map(
-                goal = habit.goal,
-                history = history,
-                habitColor = habitUi.color,
-                defaultColor = defaultColor
-            )
+            val historyUi = historyMapper.map(page = entries, goal = habit.goal, history = history)
             return HabitWithHistoryUi(habit = habitUi, history = historyUi)
         }
     }

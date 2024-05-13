@@ -33,13 +33,17 @@ class HabitDetailsViewModel @Inject constructor(
     private val state: MutableState<HabitDetailsState> = mutableStateOf(HabitDetailsState()),
     private val interactor: HabitDetailsInteractor,
     private val habitMapper: HabitUiMapper,
-    private val savedStateHandle: SavedStateHandle,
+    savedStateHandle: SavedStateHandle,
     appBarState: MutableState<AppBarState>
 ) : ViewModel(), InitAppBar by InitAppBar.Base(appBarState) {
 
     private val actions = MutableStateFlow<List<UpdateEntryAction>>(emptyList())
 
-    private var entries: Flow<PagingData<EditableHistoryUi>>? = null
+    val entries: Flow<PagingData<EditableHistoryUi>> =
+        interactor.entries(savedStateHandle.id()).cachedIn(viewModelScope)
+            .combine(actions) { pagingData, actions ->
+                actions.fold(pagingData) { paging, event -> applyAction(paging, event) }
+            }
 
     init {
         interactor.habit(savedStateHandle.id())
@@ -76,12 +80,4 @@ class HabitDetailsViewModel @Inject constructor(
 
     fun SavedStateHandle.id(): Long = this[HabitScreens.EditHabit.habitIdArg]
         ?: throw IllegalStateException("Edit Habit screen must contain habit id")
-
-    fun entries(defaultColor: Color): Flow<PagingData<EditableHistoryUi>> = entries ?: run {
-        entries = interactor.entries(savedStateHandle.id(), defaultColor).cachedIn(viewModelScope)
-            .combine(actions) { pagingData, actions ->
-                actions.fold(pagingData) { paging, event -> applyAction(paging, event) }
-            }
-        entries!!
-    }
 }

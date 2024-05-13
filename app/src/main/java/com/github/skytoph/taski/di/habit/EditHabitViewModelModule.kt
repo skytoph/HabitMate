@@ -1,13 +1,13 @@
 package com.github.skytoph.taski.di.habit
 
 import com.github.skytoph.taski.core.Now
-import com.github.skytoph.taski.presentation.core.ConvertIcon
 import com.github.skytoph.taski.presentation.habit.details.mapper.EditableEntryDomainToUiMapper
 import com.github.skytoph.taski.presentation.habit.details.mapper.EditableEntryUiMapper
 import com.github.skytoph.taski.presentation.habit.details.mapper.HabitWithEditableEntryUiMapper
 import com.github.skytoph.taski.presentation.habit.details.mapper.WeeksCache
 import com.github.skytoph.taski.presentation.habit.edit.EditHabitValidator
 import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
+import com.github.skytoph.taski.presentation.habit.list.HabitsView
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitDomainMapper
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitHistoryUiMapper
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitUiMapper
@@ -23,8 +23,8 @@ object EditHabitViewModelModule {
 
     @Provides
     fun habitWithEditableEntryMapper(
-        habitMapper: HabitUiMapper, mapper: HabitHistoryUiMapper<EditableHistoryUi>,
-    ): HabitWithHistoryUiMapper<EditableHistoryUi> =
+        habitMapper: HabitUiMapper, mapper: HabitHistoryUiMapper<EditableHistoryUi, HabitsView>,
+    ): HabitWithHistoryUiMapper<EditableHistoryUi, HabitsView> =
         HabitWithEditableEntryUiMapper(habitMapper, mapper)
 
     @Provides
@@ -36,7 +36,7 @@ object EditHabitViewModelModule {
     @Provides
     fun historyMapper(
         now: Now, weekCache: WeeksCache, mapper: EditableEntryDomainToUiMapper
-    ): HabitHistoryUiMapper<EditableHistoryUi> = EditableEntryUiMapper(now, weekCache, mapper)
+    ): HabitHistoryUiMapper<EditableHistoryUi, HabitsView> = EditableEntryUiMapper(now, weekCache, mapper)
 
     @Provides
     fun entryMapper(now: Now): EditableEntryDomainToUiMapper =
