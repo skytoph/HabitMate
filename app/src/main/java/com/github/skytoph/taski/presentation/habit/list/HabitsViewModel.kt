@@ -8,7 +8,8 @@ import com.github.skytoph.taski.domain.habit.HabitWithEntries
 import com.github.skytoph.taski.presentation.appbar.InitAppBar
 import com.github.skytoph.taski.presentation.core.component.AppBarState
 import com.github.skytoph.taski.presentation.habit.HabitUi
-import com.github.skytoph.taski.presentation.habit.list.mapper.HabitListUiMapper
+import com.github.skytoph.taski.presentation.habit.list.mapper.HabitsViewMapper
+import com.github.skytoph.taski.presentation.habit.list.view.HabitsView
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,12 +23,12 @@ import javax.inject.Inject
 @HiltViewModel
 class HabitsViewModel @Inject constructor(
     private val state: MutableState<HabitListState>,
-    private val mapper: HabitListUiMapper,
+    private val mapper: HabitsViewMapper,
     private val interactor: HabitListInteractor,
     appBarState: MutableState<AppBarState>
 ) : ViewModel(), InitAppBar by InitAppBar.Base(appBarState) {
 
-    val view = MutableStateFlow<HabitsView>(HabitsView.Calendar(0))
+    val view = MutableStateFlow(HabitsView())
 
     init {
         onEvent(HabitListEvent.Progress)

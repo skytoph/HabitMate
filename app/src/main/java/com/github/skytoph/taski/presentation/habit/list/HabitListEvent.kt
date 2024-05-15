@@ -2,6 +2,10 @@ package com.github.skytoph.taski.presentation.habit.list
 
 import androidx.compose.runtime.MutableState
 import com.github.skytoph.taski.presentation.habit.HabitWithHistoryUi
+import com.github.skytoph.taski.presentation.habit.list.view.FilterOption
+import com.github.skytoph.taski.presentation.habit.list.view.HabitsView
+import com.github.skytoph.taski.presentation.habit.list.view.SortOption
+import com.github.skytoph.taski.presentation.habit.list.view.ViewOption
 import kotlinx.coroutines.flow.MutableStateFlow
 
 interface HabitListEvent {
@@ -15,11 +19,27 @@ interface HabitListEvent {
         }
     }
 
-    class UpdateView(private val viewState: HabitsView) : HabitListEvent {
+    class UpdateView(
+        private val viewType: ViewOption? = null,
+        private val sortBy: SortOption? = null,
+        private val filterBy: FilterOption? = null
+    ) : HabitListEvent {
         override fun handle(
             state: MutableState<HabitListState>, view: MutableStateFlow<HabitsView>
         ) {
-            view.value = viewState
+            viewType?.let { view.value = view.value.copy(viewType = viewType) }
+            sortBy?.let { view.value = view.value.copy(sortBy = sortBy) }
+            filterBy?.let { view.value = view.value.copy(filterBy = filterBy) }
+        }
+
+    }
+
+    class UpdateEntries(private val entries: Int) : HabitListEvent {
+        override fun handle(
+            state: MutableState<HabitListState>, view: MutableStateFlow<HabitsView>
+        ) {
+            val item = view.value.viewType.item.withEntries(entries)
+            view.value = view.value.copy(viewType = view.value.viewType.copy(item = item))
         }
     }
 
@@ -31,11 +51,11 @@ interface HabitListEvent {
         }
     }
 
-    object ShowMenu : HabitListEvent {
+    class ShowViewType(private val show: Boolean) : HabitListEvent {
         override fun handle(
             state: MutableState<HabitListState>, view: MutableStateFlow<HabitsView>
         ) {
-            state.value = state.value.copy(isViewTypeVisible = state.value.isViewTypeVisible.not())
+            state.value = state.value.copy(isViewTypeVisible = show)
         }
     }
 }

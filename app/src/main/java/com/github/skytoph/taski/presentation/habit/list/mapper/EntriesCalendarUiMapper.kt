@@ -2,14 +2,14 @@ package com.github.skytoph.taski.presentation.habit.list.mapper
 
 import com.github.skytoph.taski.core.Now
 import com.github.skytoph.taski.domain.habit.EntryList
-import com.github.skytoph.taski.presentation.habit.list.HabitsView
+import com.github.skytoph.taski.presentation.habit.list.view.ViewType
 import com.github.skytoph.taski.presentation.habit.list.HistoryUi
 import kotlin.math.max
 
 class EntriesCalendarUiMapper(
     private val now: Now,
     private val mapper: EntryUiMapper,
-) : HabitHistoryUiMapper<HistoryUi, HabitsView.Calendar> {
+) : HabitHistoryUiMapper<HistoryUi, ViewType.Calendar> {
 
     override fun map(numberOfColumns: Int, goal: Int, history: EntryList): HistoryUi {
         val todayDonePercent =
@@ -33,7 +33,7 @@ class EntriesCalendarUiMapper(
 
 class EntriesDailyUiMapper(
     private val mapper: EntryUiMapper,
-) : HabitHistoryUiMapper<HistoryUi, HabitsView.Daily> {
+) : HabitHistoryUiMapper<HistoryUi, ViewType.Daily> {
 
     override fun map(numberOfEntries: Int, goal: Int, history: EntryList): HistoryUi {
         val entries = (0 until numberOfEntries).map { index ->

@@ -17,14 +17,14 @@ import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.preview.HabitsProvider
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.HabitWithHistoryUi
-import com.github.skytoph.taski.presentation.habit.list.HabitsView
+import com.github.skytoph.taski.presentation.habit.list.view.ViewType
 import com.github.skytoph.taski.presentation.habit.list.HistoryUi
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
 fun HabitList(
     modifier: Modifier = Modifier,
-    view: HabitsView = HabitsView.Calendar(),
+    view: ViewType = ViewType.Calendar(),
     habits: List<HabitWithHistoryUi<HistoryUi>>,
     onDoneHabit: (HabitUi, Int) -> Unit = { _, _ -> },
     onHabitClick: (HabitUi) -> Unit = {},
@@ -42,13 +42,13 @@ fun HabitList(
 
 @Composable
 private fun HabitCard(
-    view: HabitsView,
+    view: ViewType,
     habitWithHistory: HabitWithHistoryUi<HistoryUi>,
     updateViewState: (Int) -> Unit,
     onHabitClick: (HabitUi) -> Unit,
     onDoneHabit: (HabitUi, Int) -> Unit
 ) {
-    if (view is HabitsView.Daily)
+    if (view is ViewType.Daily)
         HabitDaily(
             modifier = Modifier
                 .clickable { onHabitClick(habitWithHistory.habit) }

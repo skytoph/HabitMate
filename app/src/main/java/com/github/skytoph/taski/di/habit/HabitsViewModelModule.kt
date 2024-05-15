@@ -4,8 +4,9 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import com.github.skytoph.taski.core.Now
 import com.github.skytoph.taski.presentation.habit.list.HabitListState
-import com.github.skytoph.taski.presentation.habit.list.HabitsView
+import com.github.skytoph.taski.presentation.habit.list.mapper.HabitsViewMapper
 import com.github.skytoph.taski.presentation.habit.list.HistoryUi
+import com.github.skytoph.taski.presentation.habit.list.view.ViewType
 import com.github.skytoph.taski.presentation.habit.list.mapper.EntriesCalendarUiMapper
 import com.github.skytoph.taski.presentation.habit.list.mapper.EntriesDailyUiMapper
 import com.github.skytoph.taski.presentation.habit.list.mapper.EntryUiMapper
@@ -26,14 +27,14 @@ object HabitsViewModelModule {
 
     @Provides
     fun habitWithEntriesDailyMapper(
-        habitMapper: HabitUiMapper, mapper: HabitHistoryUiMapper<HistoryUi, HabitsView.Daily>,
-    ): HabitWithHistoryUiMapper<HistoryUi, HabitsView.Daily> =
+        habitMapper: HabitUiMapper, mapper: HabitHistoryUiMapper<HistoryUi, ViewType.Daily>,
+    ): HabitWithHistoryUiMapper<HistoryUi, ViewType.Daily> =
         HabitWithEntriesDailyUiMapper(habitMapper, mapper)
 
     @Provides
     fun habitWithEntriesCalendarMapper(
-        habitMapper: HabitUiMapper, mapper: HabitHistoryUiMapper<HistoryUi, HabitsView.Calendar>,
-    ): HabitWithHistoryUiMapper<HistoryUi, HabitsView.Calendar> =
+        habitMapper: HabitUiMapper, mapper: HabitHistoryUiMapper<HistoryUi, ViewType.Calendar>,
+    ): HabitWithHistoryUiMapper<HistoryUi, ViewType.Calendar> =
         HabitWithEntriesCalendarUiMapper(habitMapper, mapper)
 
     @Provides
@@ -41,18 +42,22 @@ object HabitsViewModelModule {
 
     @Provides
     fun historyCalendarMapper(now: Now, mapper: EntryUiMapper)
-            : HabitHistoryUiMapper<HistoryUi, HabitsView.Calendar> =
+            : HabitHistoryUiMapper<HistoryUi, ViewType.Calendar> =
         EntriesCalendarUiMapper(now, mapper)
 
     @Provides
     fun historyDailyMapper(mapper: EntryUiMapper)
-            : HabitHistoryUiMapper<HistoryUi, HabitsView.Daily> = EntriesDailyUiMapper(mapper)
+            : HabitHistoryUiMapper<HistoryUi, ViewType.Daily> = EntriesDailyUiMapper(mapper)
 
     @Provides
     fun habitsMapper(
-        mapperDaily: HabitWithHistoryUiMapper<HistoryUi, HabitsView.Daily>,
-        mapperCalendar: HabitWithHistoryUiMapper<HistoryUi, HabitsView.Calendar>,
+        mapperDaily: HabitWithHistoryUiMapper<HistoryUi, ViewType.Daily>,
+        mapperCalendar: HabitWithHistoryUiMapper<HistoryUi, ViewType.Calendar>,
     ): HabitListUiMapper = HabitListUiMapper.Base(mapperDaily, mapperCalendar)
+
+    @Provides
+    fun habitsViewMapper(mapper: HabitListUiMapper): HabitsViewMapper =
+        HabitsViewMapper.Base(mapper)
 
     @Provides
     fun state(): MutableState<HabitListState> = mutableStateOf(HabitListState())

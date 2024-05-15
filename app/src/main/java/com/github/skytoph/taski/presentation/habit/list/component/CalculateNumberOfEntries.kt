@@ -5,12 +5,12 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.Dp
 import com.github.skytoph.taski.R
-import com.github.skytoph.taski.presentation.habit.list.HabitsView
+import com.github.skytoph.taski.presentation.habit.list.view.ViewType
 
 @Composable
 @ReadOnlyComposable
-fun calculateNumberOfEntries(maxWidth: Dp, view: HabitsView): Int =
-    if (view is HabitsView.Daily) calculateNumberOfDailyEntries(maxWidth)
+fun calculateNumberOfEntries(maxWidth: Dp, view: ViewType): Int =
+    if (view is ViewType.Daily) calculateNumberOfDailyEntries(maxWidth)
     else calculateNumberOfCalendarEntries(maxWidth)
 
 @Composable

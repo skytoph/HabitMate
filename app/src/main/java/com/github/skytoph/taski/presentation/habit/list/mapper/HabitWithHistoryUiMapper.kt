@@ -4,12 +4,12 @@ import com.github.skytoph.taski.domain.habit.EntryList
 import com.github.skytoph.taski.domain.habit.Habit
 import com.github.skytoph.taski.presentation.habit.HabitHistoryUi
 import com.github.skytoph.taski.presentation.habit.HabitWithHistoryUi
-import com.github.skytoph.taski.presentation.habit.list.HabitsView
+import com.github.skytoph.taski.presentation.habit.list.view.ViewType
 
-interface HabitWithHistoryUiMapper<T : HabitHistoryUi, V : HabitsView> {
+interface HabitWithHistoryUiMapper<T : HabitHistoryUi, V : ViewType> {
     fun map(habit: Habit, history: EntryList, entries: Int): HabitWithHistoryUi<T>
 
-    abstract class Abstract<T : HabitHistoryUi, V : HabitsView>(
+    abstract class Abstract<T : HabitHistoryUi, V : ViewType>(
         private val habitMapper: HabitUiMapper,
         private val historyMapper: HabitHistoryUiMapper<T, V>
     ) : HabitWithHistoryUiMapper<T, V> {

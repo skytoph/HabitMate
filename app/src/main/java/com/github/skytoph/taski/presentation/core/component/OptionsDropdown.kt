@@ -25,26 +25,29 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.skytoph.taski.core.Matches
+import com.github.skytoph.taski.presentation.habit.list.component.ViewBottomSheet
 import com.github.skytoph.taski.presentation.habit.list.view.OptionItem
+import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
-fun <T : Matches<T>> OptionsDropdown(
+fun <M : Matches<M>, T : OptionItem<M>> OptionsDropdown(
     title: String = "title",
-    options: List<OptionItem<T>> = emptyList(),
-    selected: OptionItem<T> = options.first(),
-    selectOption: (OptionItem<T>) -> Unit = {},
+    options: List<T> = emptyList(),
+    selected: T = options.first(),
+    selectOption: (T) -> Unit = {},
 ) {
     var expanded by remember { mutableStateOf(false) }
 
     Column(
-        verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier.fillMaxWidth()
     ) {
         Text(
             text = title,
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.padding(start = 16.dp, top = 12.dp),
+            style = MaterialTheme.typography.titleMedium
         )
         Box {
             Row(
@@ -71,12 +74,10 @@ fun <T : Matches<T>> OptionsDropdown(
                     if (!selected.item.matches(option.item))
                         DropdownMenuItem(
                             text = {
-                                Column {
-                                    Text(
-                                        text = option.option.title.getString(LocalContext.current),
-                                        style = MaterialTheme.typography.titleSmall
-                                    )
-                                }
+                                Text(
+                                    text = option.option.title.getString(LocalContext.current),
+                                    style = MaterialTheme.typography.titleSmall
+                                )
                             },
                             leadingIcon = {
                                 Icon(
@@ -94,5 +95,13 @@ fun <T : Matches<T>> OptionsDropdown(
                 }
             }
         }
+    }
+}
+
+@Composable
+@Preview(showSystemUi = true, showBackground = true)
+private fun BottomSheetPreview() {
+    HabitMateTheme(darkTheme = true) {
+        ViewBottomSheet()
     }
 }

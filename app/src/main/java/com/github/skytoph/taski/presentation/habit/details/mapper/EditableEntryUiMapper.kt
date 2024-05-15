@@ -5,7 +5,7 @@ import com.github.skytoph.taski.domain.habit.Entry
 import com.github.skytoph.taski.domain.habit.EntryList
 import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
 import com.github.skytoph.taski.presentation.habit.edit.MonthUi
-import com.github.skytoph.taski.presentation.habit.list.HabitsView
+import com.github.skytoph.taski.presentation.habit.list.view.ViewType
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitHistoryUiMapper
 import kotlin.math.ceil
 
@@ -13,7 +13,7 @@ class EditableEntryUiMapper(
     private val now: Now,
     private val cache: WeeksCache,
     private val entryMapper: EditableEntryDomainToUiMapper
-) : HabitHistoryUiMapper<EditableHistoryUi, HabitsView> {
+) : HabitHistoryUiMapper<EditableHistoryUi, ViewType> {
 
     override fun map(page: Int, goal: Int, history: EntryList): EditableHistoryUi {
         val weeksAgoStart = cache.get()

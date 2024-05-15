@@ -3,7 +3,7 @@ package com.github.skytoph.taski.presentation.habit.list.mapper
 import com.github.skytoph.taski.domain.habit.EntryList
 import com.github.skytoph.taski.domain.habit.HabitWithEntries
 import com.github.skytoph.taski.presentation.habit.HabitWithHistoryUi
-import com.github.skytoph.taski.presentation.habit.list.HabitsView
+import com.github.skytoph.taski.presentation.habit.list.view.ViewType
 import com.github.skytoph.taski.presentation.habit.list.HistoryUi
 
 interface HabitListUiMapper {
@@ -14,8 +14,8 @@ interface HabitListUiMapper {
             : List<HabitWithHistoryUi<HistoryUi>>
 
     class Base(
-        private val mapperDaily: HabitWithHistoryUiMapper<HistoryUi, HabitsView.Daily>,
-        private val mapperCalendar: HabitWithHistoryUiMapper<HistoryUi, HabitsView.Calendar>
+        private val mapperDaily: HabitWithHistoryUiMapper<HistoryUi, ViewType.Daily>,
+        private val mapperCalendar: HabitWithHistoryUiMapper<HistoryUi, ViewType.Calendar>
     ) : HabitListUiMapper {
 
         override fun mapCalendar(habits: List<HabitWithEntries>, columnsNumber: Int) =

@@ -8,7 +8,7 @@ import androidx.paging.PagingState
 import com.github.skytoph.taski.domain.habit.HabitRepository
 import com.github.skytoph.taski.domain.habit.HabitWithEntries
 import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
-import com.github.skytoph.taski.presentation.habit.list.HabitsView
+import com.github.skytoph.taski.presentation.habit.list.view.ViewType
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitHistoryUiMapper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -16,7 +16,7 @@ import kotlinx.coroutines.withContext
 
 class EntryPagingSource(
     private val repository: HabitRepository,
-    private val uiMapper: HabitHistoryUiMapper<EditableHistoryUi, HabitsView>,
+    private val uiMapper: HabitHistoryUiMapper<EditableHistoryUi, ViewType>,
     private val entryCache: HabitCache,
     private val id: Long,
 ) : PagingSource<Int, EditableHistoryUi>() {
@@ -58,7 +58,7 @@ class HabitCache(private val data: MutableList<HabitWithEntries> = ArrayList()) 
 
 class EntityPagerProvider(
     private val repository: HabitRepository,
-    private val uiMapper: HabitHistoryUiMapper<EditableHistoryUi, HabitsView>,
+    private val uiMapper: HabitHistoryUiMapper<EditableHistoryUi, ViewType>,
     private val entryCache: HabitCache
 ) {
     fun getEntries(id: Long): Flow<PagingData<EditableHistoryUi>> = Pager(

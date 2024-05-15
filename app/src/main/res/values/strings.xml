@@ -70,4 +70,13 @@
     <string name="action_view">view</string>
     <string name="option_calendar">calendar</string>
     <string name="option_daily">daily</string>
+    <string name="view_label">view</string>
+    <string name="view_layout">layout</string>
+    <string name="view_sort">sort by</string>
+    <string name="view_filter">filter by</string>
+    <string name="sort_by_color">color</string>
+    <string name="sort_by_title">title</string>
+    <string name="sort_manually">manually</string>
+    <string name="filter_by_state">state</string>
+    <string name="filter_none">none</string>
 </resources>
