@@ -3,6 +3,7 @@ package com.github.skytoph.taski.presentation.habit.list.view
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.github.skytoph.taski.core.Matches
+import com.github.skytoph.taski.presentation.core.state.IconResource
 import com.github.skytoph.taski.presentation.core.state.StringResource
 
 @Stable
@@ -13,7 +14,7 @@ abstract class OptionItem<T : Matches<T>>(
 
 @Stable
 data class Option(
-    val icon: ImageVector,
+    val icon: IconResource,
     val title: StringResource,
 )
 

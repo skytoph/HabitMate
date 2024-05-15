@@ -106,7 +106,7 @@ fun HabitDetails(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    imageVector = ImageVector.vectorResource(habit.icon.id(context)),
+                    imageVector = habit.icon.vector(context),
                     contentDescription = habit.icon.name(context.resources),
                     modifier = Modifier.size(32.dp),
                     tint = Color.White

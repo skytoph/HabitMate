@@ -6,9 +6,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.component.AppBarAction
 import com.github.skytoph.taski.presentation.core.component.LoadingCirclesFullscreen
 import com.github.skytoph.taski.presentation.core.preview.HabitsProvider

@@ -55,7 +55,7 @@ fun HabitAppBar(
             if (state.navigateUp.canNavigateUp)
                 IconButton(onClick = navigateUp) {
                     Icon(
-                        imageVector = state.navigateUp.action.icon,
+                        imageVector = state.navigateUp.action.icon.vector(context),
                         contentDescription = state.navigateUp.action.title.getString(context),
                         modifier = Modifier.size(24.dp),
                         tint = MaterialTheme.colorScheme.onSurface
@@ -71,7 +71,7 @@ fun HabitAppBar(
                     IconButton(onClick = button.onClick) {
                         val description = button.title.getString(context)
                         Icon(
-                            imageVector = button.icon,
+                            imageVector = button.icon.vector(context),
                             contentDescription = description,
                             modifier = Modifier
                                 .size(24.dp)

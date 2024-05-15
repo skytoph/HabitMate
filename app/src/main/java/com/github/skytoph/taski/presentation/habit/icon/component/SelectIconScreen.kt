@@ -106,7 +106,7 @@ fun IconItem(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Icon(
-            ImageVector.vectorResource(icon.id(context)),
+            icon.vector(context),
             contentDescription = icon.name(context.resources),
             modifier = Modifier
                 .clip(MaterialTheme.shapes.small)

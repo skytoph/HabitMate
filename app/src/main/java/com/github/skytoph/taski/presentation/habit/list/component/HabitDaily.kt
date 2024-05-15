@@ -70,7 +70,7 @@ fun HabitDaily(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Box(Modifier.padding(dimensionResource(id = R.dimen.habit_icon_padding))) {
                         Icon(
-                            imageVector = ImageVector.vectorResource(habit.icon.id(LocalContext.current)),
+                            imageVector = habit.icon.vector(LocalContext.current),
                             contentDescription = "habit icon",
                             modifier = Modifier
                                 .size(dimensionResource(id = R.dimen.habit_icon_size))

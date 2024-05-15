@@ -1,7 +1,6 @@
 package com.github.skytoph.taski.presentation.core.component
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -41,6 +40,7 @@ fun <M : Matches<M>, T : OptionItem<M>> OptionsDropdown(
 ) {
     var expanded by remember { mutableStateOf(false) }
 
+    val context = LocalContext.current
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -57,10 +57,14 @@ fun <M : Matches<M>, T : OptionItem<M>> OptionsDropdown(
                     .padding(horizontal = 16.dp, vertical = 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Icon(selected.option.icon, "menu", Modifier.size(24.dp))
+                Icon(
+                    selected.option.icon.vector(context),
+                    "menu",
+                    Modifier.size(24.dp)
+                )
                 Spacer(modifier = Modifier.width(12.dp))
                 Text(
-                    text = selected.option.title.getString(LocalContext.current),
+                    text = selected.option.title.getString(context),
                     style = MaterialTheme.typography.titleSmall
                 )
             }
@@ -75,13 +79,13 @@ fun <M : Matches<M>, T : OptionItem<M>> OptionsDropdown(
                         DropdownMenuItem(
                             text = {
                                 Text(
-                                    text = option.option.title.getString(LocalContext.current),
+                                    text = option.option.title.getString(context),
                                     style = MaterialTheme.typography.titleSmall
                                 )
                             },
                             leadingIcon = {
                                 Icon(
-                                    imageVector = Icons.Default.Segment,
+                                    imageVector = option.option.icon.vector(context),
                                     contentDescription = null,
                                     modifier = Modifier
                                         .padding(start = 4.dp)

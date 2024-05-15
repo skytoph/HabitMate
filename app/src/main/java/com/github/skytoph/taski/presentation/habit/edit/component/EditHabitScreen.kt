@@ -214,7 +214,7 @@ fun IconSelector(
                 .background(color = color, shape = RoundedCornerShape(10))
         ) {
             Icon(
-                imageVector = ImageVector.vectorResource(icon.id(context)),
+                imageVector = icon.vector(context),
                 contentDescription = icon.name(context.resources),
                 modifier = Modifier.size(32.dp),
                 tint = Color.White

@@ -64,7 +64,7 @@ fun HabitCalendar(
                 ) {
                     Box(Modifier.padding(8.dp)) {
                         Icon(
-                            imageVector = ImageVector.vectorResource(habit.icon.id(LocalContext.current)),
+                            imageVector = habit.icon.vector(LocalContext.current),
                             contentDescription = "habit icon",
                             modifier = Modifier
                                 .size(32.dp)

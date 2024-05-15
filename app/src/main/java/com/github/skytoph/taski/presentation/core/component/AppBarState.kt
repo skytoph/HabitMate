@@ -10,6 +10,7 @@ import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.github.skytoph.taski.R
+import com.github.skytoph.taski.presentation.core.state.IconResource
 import com.github.skytoph.taski.presentation.core.state.StringResource
 
 data class AppBarState(
@@ -26,28 +27,28 @@ data class NavigateUp(
 
 data class AppBarAction(
     val title: StringResource = StringResource.Value(""),
-    val icon: ImageVector,
+    val icon: IconResource,
     val color: Color = Color.Black,
     val onClick: () -> Unit = {},
 ) {
     companion object {
         val navigateUp = AppBarAction(
-            StringResource.ResId(R.string.action_navigate_up), Icons.Filled.ArrowBackIos,
+            StringResource.ResId(R.string.action_navigate_up), IconResource.Vector(Icons.Filled.ArrowBackIos),
         )
 
         val save = AppBarAction(
-            StringResource.ResId(R.string.action_save_habit), Icons.Filled.Check
+            StringResource.ResId(R.string.action_save_habit), IconResource.Vector(Icons.Filled.Check)
         )
 
-        val edit = AppBarAction(StringResource.ResId(R.string.edit_habit), Icons.Filled.Edit)
+        val edit = AppBarAction(StringResource.ResId(R.string.edit_habit), IconResource.Vector(Icons.Filled.Edit))
 
         val delete =
-            AppBarAction(StringResource.ResId(R.string.action_delete), Icons.Filled.Close)
+            AppBarAction(StringResource.ResId(R.string.action_delete), IconResource.Vector(Icons.Filled.Close))
 
         val add =
-            AppBarAction(StringResource.ResId(R.string.action_add), Icons.Filled.Add)
+            AppBarAction(StringResource.ResId(R.string.action_add), IconResource.Vector(Icons.Filled.Add))
 
         val view =
-            AppBarAction(StringResource.ResId(R.string.action_view), Icons.Filled.FilterList)
+            AppBarAction(StringResource.ResId(R.string.action_view), IconResource.Id(R.drawable.sliders_horizontal))
     }
 }
