@@ -1,24 +1,28 @@
 package com.github.skytoph.taski.presentation.habit.list.view
 
 import com.github.skytoph.taski.core.Matches
-import com.github.skytoph.taski.domain.habit.HabitWithEntries
+import com.github.skytoph.taski.domain.habit.Habit
 
 interface SortHabits : Matches<SortHabits> {
-    fun sort(habits: List<HabitWithEntries>): List<HabitWithEntries>
+    fun comparator(): Comparator<Habit>
+
+    fun sort(habits: List<Habit>): List<Habit> =
+        habits.sortedWith(comparator())
+
+    fun <T> sort(habits: List<T>, selector: (T) -> Habit): List<T> =
+        habits.sortedWith(compareBy(comparator(), selector))
+
     override fun matches(item: SortHabits): Boolean = this == item
 
     object ByTitle : SortHabits {
-        override fun sort(habits: List<HabitWithEntries>): List<HabitWithEntries> =
-            habits.sortedBy { it.habit.title }
+        override fun comparator(): Comparator<Habit> = compareBy { it.title }
     }
 
     object ByColor : SortHabits {
-        override fun sort(habits: List<HabitWithEntries>): List<HabitWithEntries> =
-            habits.sortedBy { it.habit.color }
+        override fun comparator(): Comparator<Habit> = compareBy { it.color }
     }
 
     object Manually : SortHabits {
-        override fun sort(habits: List<HabitWithEntries>): List<HabitWithEntries> =
-            habits.sortedBy { it.habit.priority }
+        override fun comparator(): Comparator<Habit> = compareBy { it.priority }
     }
 }
