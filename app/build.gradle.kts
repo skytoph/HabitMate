@@ -112,4 +112,5 @@ dependencies {
     implementation("androidx.room:room-paging:2.6.1")
 
     implementation("androidx.profileinstaller:profileinstaller:1.3.1")
+    implementation("org.burnoutcrew.composereorderable:reorderable:0.9.6")
 }
