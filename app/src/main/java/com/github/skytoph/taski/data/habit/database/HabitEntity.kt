@@ -22,4 +22,7 @@ data class HabitEntity(
 
     @ColumnInfo(name = "color")
     val color: Int,
+
+    @ColumnInfo(name = "priority")
+    val priority: Int,
 )

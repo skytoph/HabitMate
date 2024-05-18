@@ -6,4 +6,5 @@ data class Habit(
     val goal: Int,
     val iconName: String,
     val color: Int,
+    val priority: Int = 0
 )

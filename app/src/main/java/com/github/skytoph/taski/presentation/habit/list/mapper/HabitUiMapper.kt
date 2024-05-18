@@ -16,6 +16,7 @@ interface HabitUiMapper {
             goal = habit.goal,
             icon = IconResource.Name(habit.iconName),
             color = Color(habit.color),
+            priority = habit.priority
         )
     }
 }

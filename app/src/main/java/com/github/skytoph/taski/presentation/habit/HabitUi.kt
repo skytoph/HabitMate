@@ -15,10 +15,11 @@ data class HabitUi(
     val goal: Int = 1,
     val color: Color = IconsColors.Default,
     val icon: IconResource = IconResource.Default,
+    val priority: Int = 0
 ) {
 
     fun map(mapper: HabitDomainMapper, context: Context) =
-        mapper.map(id, title, goal, color, icon.name(context.resources))
+        mapper.map(id, title, goal, color, icon.name(context.resources), priority)
 
     companion object {
         const val MIN_GOAL: Int = 1

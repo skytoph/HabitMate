@@ -26,8 +26,11 @@ class BaseHabitRepository(
     override fun entriesFlow(id: Long): Flow<EntryList> =
         entryDao.entriesPagingSource(id).map { entryMapper.map(it) }
 
-    override fun habits(): Flow<List<HabitWithEntries>> =
+    override fun habitsWithEntries(): Flow<List<HabitWithEntries>> =
         entryDao.habitsWithEntries().map { list -> list.map { it.map(habitMapper) } }
+
+    override suspend fun habits(): List<Habit> =
+        habitDao.habits().map { habit -> habit.toHabit() }
 
     override suspend fun entries(id: Long): EntryList = entryMapper.map(entryDao.entriesList(id))
 
