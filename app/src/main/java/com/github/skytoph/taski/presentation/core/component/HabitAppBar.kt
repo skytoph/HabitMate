@@ -5,9 +5,11 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -61,6 +63,8 @@ fun HabitAppBar(
                         tint = MaterialTheme.colorScheme.onSurface
                     )
                 }
+            else
+                Spacer(modifier = Modifier.width(16.dp))
             Text(
                 text = state.title.getString(context),
                 style = MaterialTheme.typography.titleMedium,

@@ -27,4 +27,6 @@ abstract class HabitScreens(val route: String) {
     }
 
     object SelectIcon : HabitScreens("select_icon")
+
+    object ReorderHabits : HabitScreens("reorder_habits")
 }

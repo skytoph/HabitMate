@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Segment
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -33,6 +31,7 @@ import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
 fun <M : Matches<M>, T : OptionItem<M>> OptionsDropdown(
+    modifier: Modifier = Modifier,
     title: String = "title",
     options: List<T> = emptyList(),
     selected: T = options.first(),
@@ -42,7 +41,7 @@ fun <M : Matches<M>, T : OptionItem<M>> OptionsDropdown(
 
     val context = LocalContext.current
     Column(
-        modifier = Modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth()
     ) {
         Text(
             text = title,

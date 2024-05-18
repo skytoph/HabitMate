@@ -28,8 +28,7 @@ fun calculateNumberOfDailyEntries(maxWidth: Dp): Int = calculateNumberOfEntries(
     maxWidth = maxWidth,
     entrySize = dimensionResource(R.dimen.entry_daily_size),
     entriesSpacedBy = dimensionResource(R.dimen.entries_daily_spaced_by),
-    contentOffset = dimensionResource(R.dimen.habit_title_width) + (dimensionResource(R.dimen.habit_icon_size) +
-            dimensionResource(R.dimen.habit_icon_padding).times(2)),
+    contentOffset = dimensionResource(R.dimen.habit_title_width)
 )
 
 @Composable

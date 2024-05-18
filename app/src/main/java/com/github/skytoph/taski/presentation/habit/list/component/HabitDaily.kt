@@ -2,18 +2,15 @@ package com.github.skytoph.taski.presentation.habit.list.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material3.Card
@@ -21,19 +18,17 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.github.skytoph.taski.R
+import com.github.skytoph.taski.presentation.core.component.HabitTitleWithIcon
 import com.github.skytoph.taski.presentation.core.preview.HabitProvider
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.HabitWithHistoryUi
@@ -67,26 +62,12 @@ fun HabitDaily(
                     .fillMaxWidth()
                     .height(48.dp)
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Box(Modifier.padding(dimensionResource(id = R.dimen.habit_icon_padding))) {
-                        Icon(
-                            imageVector = habit.icon.vector(LocalContext.current),
-                            contentDescription = "habit icon",
-                            modifier = Modifier
-                                .size(dimensionResource(id = R.dimen.habit_icon_size))
-                                .background(
-                                    color = habit.color,
-                                    shape = RoundedCornerShape(30)
-                                )
-                                .padding(4.dp),
-                            tint = Color.White
-                        )
-                    }
-                    Text(
-                        text = habit.title,
-                        modifier = Modifier.width(dimensionResource(id = R.dimen.habit_title_width))
-                    )
-                }
+                HabitTitleWithIcon(
+                    modifier = Modifier.weight(1f),
+                    icon = habit.icon.vector(LocalContext.current),
+                    color = habit.color,
+                    title = habit.title
+                )
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.entries_daily_spaced_by))) {
                     if (entries == history.entries.size)
                         items(history.entries) { entry ->

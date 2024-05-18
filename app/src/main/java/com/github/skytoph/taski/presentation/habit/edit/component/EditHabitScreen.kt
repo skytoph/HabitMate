@@ -20,7 +20,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
@@ -29,10 +28,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
@@ -83,7 +80,6 @@ fun EditHabitScreen(
 
     EditHabit(
         state = viewModel.state(),
-        minHeight = TextFieldDefaults.MinHeight,
         navigateUp = navigateUp,
         onSelectIconClick = onSelectIconClick,
         onTypeTitle = { viewModel.onEvent(EditHabitEvent.EditTitle(it)) },
@@ -95,7 +91,6 @@ fun EditHabitScreen(
 @Composable
 private fun EditHabit(
     state: State<EditHabitState>,
-    minHeight: Dp = 56.dp,
     navigateUp: () -> Unit = {},
     onSelectIconClick: () -> Unit = {},
     onDeleteHabit: () -> Unit = {},
@@ -116,7 +111,6 @@ private fun EditHabit(
             icon = state.value.icon,
             color = state.value.color,
             onTypeTitle = onTypeTitle,
-            minHeight = minHeight,
             onSelectIconClick = onSelectIconClick,
             onDecreaseGoal = onDecreaseGoal,
             onIncreaseGoal = onIncreaseGoal,
@@ -141,10 +135,10 @@ fun EditBaseHabit(
     icon: IconResource,
     color: Color,
     onTypeTitle: (String) -> Unit,
-    minHeight: Dp,
     onSelectIconClick: () -> Unit,
     onDecreaseGoal: () -> Unit,
-    onIncreaseGoal: () -> Unit
+    onIncreaseGoal: () -> Unit,
+    minHeight: Dp = 48.dp
 ) {
     Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
         TitleTextField(
@@ -152,6 +146,7 @@ fun EditBaseHabit(
             value = title.field,
             onValueChange = onTypeTitle,
             error = title.error?.getString(LocalContext.current),
+            height = minHeight
         )
         IconSelector(
             icon = icon,
@@ -160,8 +155,8 @@ fun EditBaseHabit(
             onClick = onSelectIconClick
         )
     }
-    Spacer(modifier = Modifier.height(8.dp))
-    Text(text = stringResource(R.string.goal_label), style = MaterialTheme.typography.bodyMedium)
+    Spacer(modifier = Modifier.height(4.dp))
+    Text(text = stringResource(R.string.goal_label), style = MaterialTheme.typography.titleSmall)
     Spacer(modifier = Modifier.height(4.dp))
     Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
         Text(
@@ -172,20 +167,21 @@ fun EditBaseHabit(
                     shape = RoundedCornerShape(10)
                 )
                 .padding(horizontal = 16.dp)
-                .height(48.dp)
+                .height(minHeight)
                 .wrapContentHeight()
                 .weight(1f),
+            style = MaterialTheme.typography.bodySmall
         )
         SquareButton(
             onClick = onDecreaseGoal,
             icon = Icons.Default.Remove,
-            size = 48.dp,
+            size = minHeight,
             isEnabled = goal.canBeDecreased
         )
         SquareButton(
             onClick = onIncreaseGoal,
             icon = Icons.Default.Add,
-            size = 48.dp,
+            size = minHeight,
             isEnabled = goal.canBeIncreased
         )
     }
@@ -204,7 +200,7 @@ fun IconSelector(
         Text(
             modifier = modifier,
             text = stringResource(R.string.icon_label),
-            style = MaterialTheme.typography.bodyMedium
+            style = MaterialTheme.typography.titleSmall
         )
         Spacer(modifier = Modifier.height(4.dp))
         IconButton(

@@ -1,5 +1,6 @@
 package com.github.skytoph.taski.presentation.habit.list.component
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.padding
@@ -17,23 +18,27 @@ import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.preview.HabitsProvider
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.HabitWithHistoryUi
-import com.github.skytoph.taski.presentation.habit.list.view.ViewType
 import com.github.skytoph.taski.presentation.habit.list.HistoryUi
+import com.github.skytoph.taski.presentation.habit.list.view.ViewType
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HabitList(
     modifier: Modifier = Modifier,
-    view: ViewType = ViewType.Calendar(),
+    view: ViewType = ViewType.Daily(5),
     habits: List<HabitWithHistoryUi<HistoryUi>>,
     onDoneHabit: (HabitUi, Int) -> Unit = { _, _ -> },
     onHabitClick: (HabitUi) -> Unit = {},
     updateViewState: (Int) -> Unit = {},
 ) {
     LazyColumn(
-        modifier = modifier.padding(dimensionResource(id = R.dimen.main_padding)),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        modifier = modifier.padding(horizontal = dimensionResource(id = R.dimen.main_padding)),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
+        if (view.matches(ViewType.Daily())) stickyHeader {
+            WeekDayLabelsCard(entries = view.entries)
+        }
         items(items = habits, key = { it.habit.id }) { habitWithHistory ->
             HabitCard(view, habitWithHistory, updateViewState, onHabitClick, onDoneHabit)
         }

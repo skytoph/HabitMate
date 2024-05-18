@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.github.skytoph.taski.R
 
 @Composable
-fun BasicTextField(
+fun BasicAuthTextField(
     value: String,
     error: String?,
     onValueChange: (String) -> Unit
@@ -51,13 +51,13 @@ fun BasicTextField(
 
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
-fun TextFieldPreview() {
+private fun TextFieldPreview() {
     Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp), contentAlignment = Alignment.Center
     ) {
-        BasicTextField(
+        BasicAuthTextField(
             value = "value",
             error = stringResource(R.string.error_password_should_contain_numeric_character),
             onValueChange = {}

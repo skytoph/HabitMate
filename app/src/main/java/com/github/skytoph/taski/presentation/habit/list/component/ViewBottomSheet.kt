@@ -1,11 +1,14 @@
 package com.github.skytoph.taski.presentation.habit.list.component
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -17,6 +20,7 @@ import com.github.skytoph.taski.presentation.core.component.OptionsDropdown
 import com.github.skytoph.taski.presentation.habit.list.view.FilterOption
 import com.github.skytoph.taski.presentation.habit.list.view.HabitsView
 import com.github.skytoph.taski.presentation.habit.list.view.HabitsViewOptionsProvider
+import com.github.skytoph.taski.presentation.habit.list.view.SortHabits
 import com.github.skytoph.taski.presentation.habit.list.view.SortOption
 import com.github.skytoph.taski.presentation.habit.list.view.ViewOption
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
@@ -28,7 +32,8 @@ fun ViewBottomSheet(
     hideBottomSheet: () -> Unit = {},
     selectViewType: (ViewOption) -> Unit = {},
     selectSorting: (SortOption) -> Unit = {},
-    selectFilter: (FilterOption) -> Unit = {}
+    selectFilter: (FilterOption) -> Unit = {},
+    reorder: () -> Unit = {}
 ) {
     val state = rememberModalBottomSheetState()
     ModalBottomSheet(
@@ -50,12 +55,19 @@ fun ViewBottomSheet(
                 selectOption = selectSorting
             )
             Divider()
-            OptionsDropdown(
-                title = stringResource(R.string.view_filter),
-                options = HabitsViewOptionsProvider.filterOptions,
-                selected = view.filterBy,
-                selectOption = selectFilter
-            )
+            Row {
+                OptionsDropdown(
+                    modifier = Modifier.weight(1f),
+                    title = stringResource(R.string.view_filter),
+                    options = HabitsViewOptionsProvider.filterOptions,
+                    selected = view.filterBy,
+                    selectOption = selectFilter
+                )
+                if (view.sortBy.item == SortHabits.Manually)
+                    Button(onClick = reorder) {
+                        Text(text = "reorder")
+                    }
+            }
             Spacer(modifier = Modifier.height(300.dp))
         }
     }

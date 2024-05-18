@@ -2,7 +2,6 @@ package com.github.skytoph.taski.presentation.habit.list.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,20 +17,18 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.color.habitColor
+import com.github.skytoph.taski.presentation.core.component.HabitTitleWithIcon
 import com.github.skytoph.taski.presentation.core.preview.HabitProvider
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.HabitWithHistoryUi
@@ -62,21 +59,12 @@ fun HabitCalendar(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Box(Modifier.padding(8.dp)) {
-                        Icon(
-                            imageVector = habit.icon.vector(LocalContext.current),
-                            contentDescription = "habit icon",
-                            modifier = Modifier
-                                .size(32.dp)
-                                .background(
-                                    color = habit.color,
-                                    shape = RoundedCornerShape(30)
-                                )
-                                .padding(4.dp),
-                            tint = Color.White
-                        )
-                    }
-                    Text(text = habit.title, Modifier.weight(1f))
+                    HabitTitleWithIcon(
+                        modifier = Modifier.weight(1f),
+                        icon = habit.icon.vector(LocalContext.current),
+                        color = habit.color,
+                        title = habit.title
+                    )
                     IconButton(onClick = onDone) {
                         val defaultColor = MaterialTheme.colorScheme.secondaryContainer
                         val color = habitColor(history.todayDonePercent, defaultColor, habit.color)

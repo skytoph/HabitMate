@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
@@ -13,7 +12,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.skytoph.taski.R
@@ -51,7 +49,6 @@ fun CreateHabitScreen(
 
     CreateHabit(
         state = viewModel.state(),
-        minHeight = TextFieldDefaults.MinHeight,
         onSelectIconClick = onSelectIconClick,
         onTypeTitle = { viewModel.onEvent(CreateHabitEvent.EditTitle(it)) },
         onDecreaseGoal = { viewModel.onEvent(CreateHabitEvent.DecreaseGoal) },
@@ -61,7 +58,6 @@ fun CreateHabitScreen(
 @Composable
 private fun CreateHabit(
     state: State<CreateHabitState>,
-    minHeight: Dp = 56.dp,
     onSelectIconClick: () -> Unit = {},
     onTypeTitle: (String) -> Unit = {},
     onDecreaseGoal: () -> Unit = {},
@@ -78,7 +74,6 @@ private fun CreateHabit(
             icon = state.value.icon,
             color = state.value.color,
             onTypeTitle = onTypeTitle,
-            minHeight = minHeight,
             onSelectIconClick = onSelectIconClick,
             onDecreaseGoal = onDecreaseGoal,
             onIncreaseGoal = onIncreaseGoal,

@@ -33,7 +33,7 @@ import com.github.skytoph.taski.presentation.auth.signin.SignInEvent
 import com.github.skytoph.taski.presentation.auth.signin.SignInState
 import com.github.skytoph.taski.presentation.auth.signin.SignInViewModel
 import com.github.skytoph.taski.presentation.auth.signin.mapper.map
-import com.github.skytoph.taski.presentation.core.component.BasicTextField
+import com.github.skytoph.taski.presentation.core.component.BasicAuthTextField
 import com.github.skytoph.taski.presentation.core.component.ErrorText
 import com.github.skytoph.taski.presentation.core.component.PasswordField
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
@@ -101,7 +101,7 @@ private fun SignIn(
         ) {
             ErrorText(error = state.value.error?.let { it.getString(LocalContext.current) })
             Spacer(modifier = Modifier.height(8.dp))
-            BasicTextField(
+            BasicAuthTextField(
                 value = state.value.email.field,
                 error = state.value.email.error?.getString(LocalContext.current),
                 onValueChange = onEditEmail

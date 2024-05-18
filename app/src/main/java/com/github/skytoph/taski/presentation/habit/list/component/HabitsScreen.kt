@@ -1,13 +1,15 @@
 package com.github.skytoph.taski.presentation.habit.list.component
 
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -28,6 +30,7 @@ import com.github.skytoph.taski.ui.theme.HabitMateTheme
 fun HabitsScreen(
     viewModel: HabitsViewModel = hiltViewModel(),
     onCreateHabit: () -> Unit,
+    onReorderHabits: () -> Unit,
     onHabitClick: (HabitUi) -> Unit,
 ) {
     val onSurface = MaterialTheme.colorScheme.onSurface
@@ -35,20 +38,27 @@ fun HabitsScreen(
         val actionAdd = AppBarAction.add.copy(color = onSurface, onClick = onCreateHabit)
         val actionView = AppBarAction.view.copy(color = onSurface,
             onClick = { viewModel.onEvent(HabitListEvent.ShowViewType(true)) })
-        viewModel.initAppBar(canNavigateUp = false, menuItems = listOf(actionAdd, actionView))
+        viewModel.initAppBar(
+            canNavigateUp = false,
+            title = R.string.habit_list_title,
+            menuItems = listOf(actionAdd, actionView)
+        )
     }
 
     val view = viewModel.view.collectAsState()
     val state = viewModel.state()
 
-    Column {
+    Box {
+        if (state.value.isLoading) LoadingCirclesFullscreen()
+        else if (state.value.habits.isEmpty()) EmptyHabitsList()
         if (state.value.isViewTypeVisible)
             ViewBottomSheet(
                 view = view.value,
                 hideBottomSheet = { viewModel.onEvent(HabitListEvent.ShowViewType(false)) },
                 selectViewType = { viewModel.onEvent(HabitListEvent.UpdateView(viewType = it)) },
                 selectSorting = { viewModel.onEvent(HabitListEvent.UpdateView(sortBy = it)) },
-                selectFilter = { viewModel.onEvent(HabitListEvent.UpdateView(filterBy = it)) }
+                selectFilter = { viewModel.onEvent(HabitListEvent.UpdateView(filterBy = it)) },
+                reorder = onReorderHabits
             )
         Habits(
             state = state,
@@ -61,6 +71,13 @@ fun HabitsScreen(
 }
 
 @Composable
+fun EmptyHabitsList() {
+    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Text(text = "list of habits is empty")
+    }
+}
+
+@Composable
 private fun Habits(
     state: State<HabitListState>,
     view: ViewType,
@@ -68,8 +85,7 @@ private fun Habits(
     onHabitClick: (HabitUi) -> Unit = {},
     onHabitDone: (HabitUi, Int) -> Unit = { _, _ -> }
 ) {
-    if (state.value.isLoading) LoadingCirclesFullscreen()
-    else HabitList(
+    HabitList(
         habits = state.value.habits,
         view = view,
         onDoneHabit = onHabitDone,

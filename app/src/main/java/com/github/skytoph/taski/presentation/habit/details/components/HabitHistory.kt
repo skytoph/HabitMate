@@ -63,9 +63,9 @@ import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.color.contrastColor
+import com.github.skytoph.taski.presentation.core.component.WeekDayLabel
 import com.github.skytoph.taski.presentation.core.component.getLocale
 import com.github.skytoph.taski.presentation.core.fadingEdge
-import com.github.skytoph.taski.presentation.core.format.getWeekDisplayName
 import com.github.skytoph.taski.presentation.core.leftFadingEdge
 import com.github.skytoph.taski.presentation.core.preview.HabitsEditableProvider
 import com.github.skytoph.taski.presentation.habit.applyColor
@@ -188,7 +188,11 @@ fun HabitHistoryGrid(
                 ) {
                     Box(modifier = Modifier.size(squareDp))
                     for (index in 0 until 7)
-                        WeekDayLabel(squareDp, index)
+                        WeekDayLabel(
+                            modifier = Modifier.size(squareDp).padding(start = 4.dp),
+                            index = index,
+                            alignment = Alignment.CenterStart
+                        )
                 }
             }
             items(
@@ -242,24 +246,6 @@ private fun MonthWithEntries(
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun WeekDayLabel(
-    squareDp: Dp,
-    index: Int
-) {
-    Box(
-        modifier = Modifier.size(squareDp),
-        contentAlignment = Alignment.CenterStart,
-    ) {
-        Text(
-            text = getWeekDisplayName(getLocale(), index),
-            modifier = Modifier.padding(start = 4.dp),
-            style = MaterialTheme.typography.labelSmall,
-            textAlign = TextAlign.Center
-        )
     }
 }
 
