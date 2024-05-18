@@ -3,9 +3,10 @@ package com.github.skytoph.taski.domain.habit
 import kotlinx.coroutines.flow.Flow
 
 interface HabitRepository {
-    fun habits(): Flow<List<HabitWithEntries>>
+    fun habitsWithEntries(): Flow<List<HabitWithEntries>>
     fun entriesFlow(id: Long): Flow<EntryList>
     fun habitFlow(id: Long): Flow<Habit?>
+    suspend fun habits(): List<Habit>
     suspend fun habitWithEntries(id: Long): HabitWithEntries
     suspend fun entries(id: Long): EntryList
     suspend fun habit(id: Long): Habit

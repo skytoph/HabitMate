@@ -13,7 +13,7 @@ interface HabitListInteractor : HabitDoneInteractor {
     class Base(repository: HabitRepository, now: Now) :
         HabitListInteractor, HabitDoneInteractor.Abstract(repository, now) {
 
-        override fun habits(): Flow<List<HabitWithEntries>> = repository.habits()
+        override fun habits(): Flow<List<HabitWithEntries>> = repository.habitsWithEntries()
     }
 }
 
