@@ -25,9 +25,10 @@ fun HabitList(
     modifier: Modifier = Modifier,
     view: ViewType = ViewType.Daily(5),
     habits: List<HabitWithHistoryUi<HistoryUi>>,
-    onDoneHabit: (HabitUi, Int) -> Unit = { _, _ -> },
-    onHabitClick: (HabitUi) -> Unit = {},
-    updateViewState: (Int) -> Unit = {},
+    onDone: (HabitUi, Int) -> Unit = { _, _ -> },
+    onClick: (HabitUi) -> Unit = {},
+    onLongClick: (HabitUi) -> Unit = {},
+    updateView: (Int) -> Unit = {},
 ) {
     LazyColumn(
         modifier = modifier.padding(horizontal = dimensionResource(id = R.dimen.main_padding)),
@@ -37,7 +38,7 @@ fun HabitList(
             WeekDayLabelsCard(entries = view.entries)
         }
         items(items = habits, key = { it.habit.id }) { habitWithHistory ->
-            HabitCard(view, habitWithHistory, updateViewState, onHabitClick, onDoneHabit)
+            HabitCard(view, habitWithHistory, updateView, onClick, onLongClick, onDone)
         }
     }
 }
@@ -48,6 +49,7 @@ private fun HabitCard(
     habitWithHistory: HabitWithHistoryUi<HistoryUi>,
     updateViewState: (Int) -> Unit,
     onHabitClick: (HabitUi) -> Unit,
+    onHabitLongClick: (HabitUi) -> Unit = {},
     onDoneHabit: (HabitUi, Int) -> Unit
 ) {
     if (view is ViewType.Daily)
@@ -56,7 +58,8 @@ private fun HabitCard(
             habit = habitWithHistory.habit,
             history = habitWithHistory.history,
             updateEntries = updateViewState,
-            onClick = { onHabitClick(habitWithHistory.habit) }
+            onClick = { onHabitClick(habitWithHistory.habit) },
+            onLongClick = { onHabitLongClick(habitWithHistory.habit) }
         )
     else
         HabitCalendar(
@@ -64,7 +67,8 @@ private fun HabitCard(
             habit = habitWithHistory.habit,
             history = habitWithHistory.history,
             updateEntries = updateViewState,
-            onClick = { onHabitClick(habitWithHistory.habit) }
+            onClick = { onHabitClick(habitWithHistory.habit) },
+            onLongClick = { onHabitLongClick(habitWithHistory.habit) }
         )
 }
 

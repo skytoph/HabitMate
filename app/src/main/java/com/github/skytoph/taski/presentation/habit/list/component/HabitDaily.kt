@@ -2,7 +2,9 @@
 
 package com.github.skytoph.taski.presentation.habit.list.component
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
@@ -43,13 +45,15 @@ import com.github.skytoph.taski.presentation.habit.list.HistoryUi
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HabitDaily(
     habit: HabitUi,
     history: HistoryUi,
     updateEntries: (Int) -> Unit = {},
     onDone: (HabitUi, Int) -> Unit = { _, _ -> },
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
+    onLongClick: () -> Unit = {}
 ) {
     val defaultColor = MaterialTheme.colorScheme.secondaryContainer
     BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
@@ -57,11 +61,11 @@ fun HabitDaily(
         updateEntries(entries)
         Card(
             modifier = Modifier
-                .clip(CardDefaults.shape)
                 .fillMaxWidth()
                 .wrapContentHeight()
+                .clip(CardDefaults.shape)
+                .combinedClickable(onClick = onClick, onLongClick = onLongClick)
                 .semantics { contentDescription = "habit" },
-            onClick = onClick,
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
         ) {
             Row(

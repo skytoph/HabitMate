@@ -1,8 +1,10 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 
 package com.github.skytoph.taski.presentation.habit.list.component
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -23,6 +25,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
@@ -43,11 +46,12 @@ import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
 fun HabitCalendar(
-    onDone: () -> Unit,
+    onDone: () -> Unit = {},
     habit: HabitUi,
     history: HistoryUi,
     updateEntries: (Int) -> Unit = {},
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
+    onLongClick: () -> Unit = {}
 ) {
     BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
         val entries = calculateNumberOfCalendarEntries(maxWidth = maxWidth)
@@ -56,8 +60,9 @@ fun HabitCalendar(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
+                .clip(CardDefaults.shape)
+                .combinedClickable(onClick = onClick, onLongClick = onLongClick)
                 .semantics { contentDescription = "habit" },
-            onClick = onClick,
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
         ) {
             Column {
@@ -106,11 +111,7 @@ fun HabitCardPreview(
     @PreviewParameter(HabitProvider::class, limit = 1) habit: HabitWithHistoryUi<HistoryUi>
 ) {
     HabitMateTheme {
-        HabitCalendar(
-            onDone = {},
-            habit = habit.habit,
-            history = habit.history,
-        )
+        HabitCalendar(habit = habit.habit, history = habit.history)
     }
 }
 
@@ -120,10 +121,6 @@ fun DarkHabitCardPreview(
     @PreviewParameter(HabitProvider::class, limit = 1) habit: HabitWithHistoryUi<HistoryUi>
 ) {
     HabitMateTheme(darkTheme = true) {
-        HabitCalendar(
-            onDone = {},
-            habit = habit.habit,
-            history = habit.history,
-        )
+        HabitCalendar(habit = habit.habit, history = habit.history)
     }
 }

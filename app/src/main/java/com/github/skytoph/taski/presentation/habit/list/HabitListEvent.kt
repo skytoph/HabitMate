@@ -58,4 +58,20 @@ interface HabitListEvent {
             state.value = state.value.copy(isViewTypeVisible = show)
         }
     }
+
+    class UpdateContextMenu(private val id: Long? = null) : HabitListEvent {
+        override fun handle(
+            state: MutableState<HabitListState>, view: MutableStateFlow<HabitsView>
+        ) {
+            state.value = state.value.copy(contextMenuHabitId = id)
+        }
+    }
+
+    class ShowDeleteDialog(private val id: Long? = null) : HabitListEvent {
+        override fun handle(
+            state: MutableState<HabitListState>, view: MutableStateFlow<HabitsView>
+        ) {
+            state.value = state.value.copy(deleteDialogHabitId = id)
+        }
+    }
 }

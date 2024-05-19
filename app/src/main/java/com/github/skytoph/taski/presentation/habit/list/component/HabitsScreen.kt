@@ -19,6 +19,7 @@ import com.github.skytoph.taski.presentation.core.component.LoadingCirclesFullsc
 import com.github.skytoph.taski.presentation.core.preview.HabitsProvider
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.HabitWithHistoryUi
+import com.github.skytoph.taski.presentation.habit.details.components.DeleteAlertDialog
 import com.github.skytoph.taski.presentation.habit.list.HabitListEvent
 import com.github.skytoph.taski.presentation.habit.list.HabitListState
 import com.github.skytoph.taski.presentation.habit.list.HabitsViewModel
@@ -31,7 +32,8 @@ fun HabitsScreen(
     viewModel: HabitsViewModel = hiltViewModel(),
     onCreateHabit: () -> Unit,
     onReorderHabits: () -> Unit,
-    onHabitClick: (HabitUi) -> Unit,
+    onEditHabit: (Long) -> Unit,
+    onHabitClick: (Long) -> Unit,
 ) {
     val onSurface = MaterialTheme.colorScheme.onSurface
     LaunchedEffect(Unit) {
@@ -60,13 +62,32 @@ fun HabitsScreen(
                 selectFilter = { viewModel.onEvent(HabitListEvent.UpdateView(filterBy = it)) },
                 reorder = onReorderHabits
             )
+        state.value.contextMenuHabitId?.let { id ->
+            HabitBottomSheet(
+                hideBottomSheet = { viewModel.onEvent(HabitListEvent.UpdateContextMenu(null)) },
+                editHabit = { onEditHabit(id) },
+                deleteHabit = { viewModel.onEvent(HabitListEvent.ShowDeleteDialog(id)) },
+                reorder = onReorderHabits
+            )
+        }
         Habits(
             state = state,
             view = view.value.viewType.item,
-            onHabitClick = onHabitClick,
+            onHabitClick = { onHabitClick(it.id) },
+            onHabitLongClick = { habit -> viewModel.onEvent(HabitListEvent.UpdateContextMenu(habit.id)) },
             onHabitDone = { habit, daysAgo -> viewModel.habitDone(habit, daysAgo) },
             updateState = { entries -> viewModel.onEvent(HabitListEvent.UpdateEntries(entries)) }
         )
+    }
+
+    state.value.deleteDialogHabitId?.let { id ->
+        DeleteAlertDialog(
+            onDismissRequest = { viewModel.onEvent(HabitListEvent.ShowDeleteDialog(null)) },
+            onConfirm = {
+                viewModel.deleteHabit(id)
+                viewModel.onEvent(HabitListEvent.ShowDeleteDialog(null))
+                viewModel.onEvent(HabitListEvent.UpdateContextMenu(null))
+            })
     }
 }
 
@@ -83,14 +104,16 @@ private fun Habits(
     view: ViewType,
     updateState: (Int) -> Unit,
     onHabitClick: (HabitUi) -> Unit = {},
+    onHabitLongClick: (HabitUi) -> Unit = {},
     onHabitDone: (HabitUi, Int) -> Unit = { _, _ -> }
 ) {
     HabitList(
         habits = state.value.habits,
         view = view,
-        onDoneHabit = onHabitDone,
-        onHabitClick = onHabitClick,
-        updateViewState = updateState
+        onDone = onHabitDone,
+        onClick = onHabitClick,
+        onLongClick = onHabitLongClick,
+        updateView = updateState
     )
 }
 

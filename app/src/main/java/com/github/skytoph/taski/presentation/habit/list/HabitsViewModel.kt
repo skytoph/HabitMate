@@ -51,4 +51,8 @@ class HabitsViewModel @Inject constructor(
     fun onEvent(event: HabitListEvent) = event.handle(state, view)
 
     fun state(): State<HabitListState> = state
+
+    fun deleteHabit(id: Long) = viewModelScope.launch(Dispatchers.IO) {
+        interactor.delete(id)
+    }
 }
