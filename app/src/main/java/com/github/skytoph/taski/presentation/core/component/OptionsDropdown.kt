@@ -56,10 +56,11 @@ fun <M : Matches<M>, T : OptionItem<M>> OptionsDropdown(
                     .padding(horizontal = 16.dp, vertical = 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
+                val title = selected.option.icon.name(context.resources)
                 Icon(
-                    selected.option.icon.vector(context),
-                    "menu",
-                    Modifier.size(24.dp)
+                    imageVector = selected.option.icon.vector(context),
+                    contentDescription = title,
+                    modifier = Modifier.size(24.dp)
                 )
                 Spacer(modifier = Modifier.width(12.dp))
                 Text(

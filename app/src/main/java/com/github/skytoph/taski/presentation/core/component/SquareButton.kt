@@ -28,7 +28,7 @@ fun SquareButton(onClick: () -> Unit, icon: ImageVector, size: Dp, isEnabled: Bo
             containerColor = MaterialTheme.colorScheme.secondary,
             contentColor = MaterialTheme.colorScheme.onTertiary,
             disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-            disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            disabledContentColor = MaterialTheme.colorScheme.onBackground,
         ),
         enabled = isEnabled
     ) {

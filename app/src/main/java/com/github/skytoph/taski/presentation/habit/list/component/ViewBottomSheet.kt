@@ -17,7 +17,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.skytoph.taski.R
@@ -82,8 +81,9 @@ private fun ReorderButton(reorder: () -> Unit) {
             .padding(horizontal = 8.dp, vertical = 8.dp),
     ) {
         Text(
-            text = "reorder",
-            style = MaterialTheme.typography.titleSmall.copy(textDecoration = TextDecoration.Underline)
+            text = "reorder habits",
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }

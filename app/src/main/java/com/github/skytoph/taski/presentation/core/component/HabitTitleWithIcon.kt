@@ -45,6 +45,7 @@ fun HabitTitleWithIcon(
         Text(
             text = title,
             style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.inverseSurface,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.fillMaxWidth()
