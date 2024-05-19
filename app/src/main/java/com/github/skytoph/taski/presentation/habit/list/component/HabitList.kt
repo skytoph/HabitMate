@@ -1,7 +1,6 @@
 package com.github.skytoph.taski.presentation.habit.list.component
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -9,8 +8,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
@@ -55,23 +52,19 @@ private fun HabitCard(
 ) {
     if (view is ViewType.Daily)
         HabitDaily(
-            modifier = Modifier
-                .clickable { onHabitClick(habitWithHistory.habit) }
-                .semantics { contentDescription = "habit" },
             onDone = onDoneHabit,
             habit = habitWithHistory.habit,
             history = habitWithHistory.history,
-            updateEntries = updateViewState
+            updateEntries = updateViewState,
+            onClick = { onHabitClick(habitWithHistory.habit) }
         )
     else
         HabitCalendar(
-            modifier = Modifier
-                .clickable { onHabitClick(habitWithHistory.habit) }
-                .semantics { contentDescription = "habit" },
             onDone = { onDoneHabit(habitWithHistory.habit, 0) },
             habit = habitWithHistory.habit,
             history = habitWithHistory.history,
-            updateEntries = updateViewState
+            updateEntries = updateViewState,
+            onClick = { onHabitClick(habitWithHistory.habit) }
         )
 }
 

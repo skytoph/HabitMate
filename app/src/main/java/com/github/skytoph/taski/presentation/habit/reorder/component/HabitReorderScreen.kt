@@ -1,6 +1,7 @@
 package com.github.skytoph.taski.presentation.habit.reorder.component
 
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -15,6 +16,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.tooling.preview.Preview
@@ -82,8 +84,13 @@ private fun HabitsReorder(
     ) {
         items(habits, key = { it.id }) { habit ->
             ReorderableItem(state, key = habit.id) { isDragging ->
-                val elevation = animateDpAsState(if (isDragging) 16.dp else 0.dp)
-                HabitReorderingItem(habit = habit, elevation.value)
+                val elevation = animateDpAsState(
+                    targetValue = if (isDragging) 16.dp else 0.dp,
+                    label = "anim_reorder_elevation"
+                )
+                val borderColor =
+                    if (isDragging) MaterialTheme.colorScheme.secondaryContainer else Color.Transparent
+                HabitReorderingItem(habit = habit, elevation.value, borderColor)
             }
         }
     }
@@ -93,11 +100,13 @@ private fun HabitsReorder(
 fun HabitReorderingItem(
     habit: HabitUi,
     elevation: Dp,
+    borderColor: Color,
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
+            .border(2.dp, borderColor, CardDefaults.shape)
             .shadow(elevation),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
     ) {

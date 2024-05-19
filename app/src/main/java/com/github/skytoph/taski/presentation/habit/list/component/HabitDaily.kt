@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.github.skytoph.taski.presentation.habit.list.component
 
 import androidx.compose.foundation.background
@@ -15,15 +17,19 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
@@ -39,20 +45,23 @@ import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
 fun HabitDaily(
-    modifier: Modifier = Modifier,
     habit: HabitUi,
     history: HistoryUi,
     updateEntries: (Int) -> Unit = {},
     onDone: (HabitUi, Int) -> Unit = { _, _ -> },
+    onClick: () -> Unit = {}
 ) {
     val defaultColor = MaterialTheme.colorScheme.secondaryContainer
     BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
         val entries = calculateNumberOfDailyEntries(maxWidth = maxWidth)
         updateEntries(entries)
         Card(
-            modifier = modifier
+            modifier = Modifier
+                .clip(CardDefaults.shape)
                 .fillMaxWidth()
-                .wrapContentHeight(),
+                .wrapContentHeight()
+                .semantics { contentDescription = "habit" },
+            onClick = onClick,
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
         ) {
             Row(
