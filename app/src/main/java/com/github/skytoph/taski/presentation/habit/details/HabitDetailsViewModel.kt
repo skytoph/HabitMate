@@ -56,15 +56,6 @@ class HabitDetailsViewModel @Inject constructor(
     private fun applyAction(pagingData: PagingData<EditableHistoryUi>, action: UpdateEntryAction) =
         pagingData.map { data -> interactor.mapData(data, action.entry) }
 
-    fun deleteHabit(navigateUp: () -> Unit) {
-        val id = state.value.habit?.id
-        state.clear()
-        viewModelScope.launch(Dispatchers.IO) {
-            id?.let { id -> interactor.delete(id) }
-            withContext(Dispatchers.Main) { navigateUp() }
-        }
-    }
-
     fun habitDone(daysAgo: Int, defaultColor: Color) = state.value.habit?.let { habit ->
         viewModelScope.launch(Dispatchers.IO) {
             interactor.habitDone(habit, daysAgo)

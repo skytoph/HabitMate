@@ -81,4 +81,6 @@
     <string name="filter_by_state">state</string>
     <string name="filter_none">none</string>
     <string name="reorder_habits">reorder habits</string>
+
+    <string name="message_habit_deleted">habit deleted</string>
 </resources>

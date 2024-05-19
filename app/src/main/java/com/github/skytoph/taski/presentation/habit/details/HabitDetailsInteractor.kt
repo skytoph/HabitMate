@@ -12,7 +12,7 @@ import com.github.skytoph.taski.presentation.habit.edit.EntryEditableUi
 import com.github.skytoph.taski.presentation.habit.list.HabitDoneInteractor
 import kotlinx.coroutines.flow.Flow
 
-interface HabitDetailsInteractor : HabitDoneInteractor, DeleteHabitInteractor {
+interface HabitDetailsInteractor : HabitDoneInteractor {
     fun entries(id: Long): Flow<PagingData<EditableHistoryUi>>
     fun habit(id: Long): Flow<Habit?>
     fun mapData(data: EditableHistoryUi, entry: EntryEditableUi): EditableHistoryUi
@@ -26,8 +26,7 @@ interface HabitDetailsInteractor : HabitDoneInteractor, DeleteHabitInteractor {
         private val repository: HabitRepository,
         now: Now,
     ) : HabitDetailsInteractor,
-        HabitDoneInteractor by HabitDoneInteractor.Base(repository, now),
-        DeleteHabitInteractor by DeleteHabitInteractor.Base(repository) {
+        HabitDoneInteractor by HabitDoneInteractor.Base(repository, now) {
 
         override fun entries(id: Long): Flow<PagingData<EditableHistoryUi>> =
             pagerProvider.getEntries(id)
@@ -40,20 +39,10 @@ interface HabitDetailsInteractor : HabitDoneInteractor, DeleteHabitInteractor {
 
         override fun habit(id: Long) = repository.habitFlow(id)
 
-        override suspend fun delete(id: Long) = repository.delete(id)
-
         override fun mapData(data: EditableHistoryUi, entry: EntryEditableUi): EditableHistoryUi {
             val index = data.entries.indexOfFirst { it.daysAgo == entry.daysAgo }
             return if (index == -1) data
             else data.copy(entries = data.entries.toMutableList().also { it[index] = entry })
         }
-    }
-}
-
-interface DeleteHabitInteractor {
-    suspend fun delete(id: Long)
-
-    class Base(private val repository: HabitRepository) : DeleteHabitInteractor {
-        override suspend fun delete(id: Long) = repository.delete(id)
     }
 }

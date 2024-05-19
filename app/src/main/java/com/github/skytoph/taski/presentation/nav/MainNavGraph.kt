@@ -4,6 +4,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -33,6 +34,8 @@ fun MainNavGraph(navController: NavHostController) {
         composable(route = HabitScreens.HabitList.route,
             exitTransition = { fadeOut(tween(delayMillis = 90)) }) {
             HabitsScreen(
+                deleteState = state,
+                removeHabitFromState = { backStackEntry.savedStateHandle.remove<Long>("delete") },
                 onCreateHabit = { navController.navigate(HabitScreens.CreateHabit.route) },
                 onHabitClick = { habit -> navController.navigate(HabitScreens.HabitDetails(habit.id.toString()).route) })
         }
@@ -58,10 +61,13 @@ fun MainNavGraph(navController: NavHostController) {
             popExitTransition = { scaleOutOfContainer(direction = ScaleTransitionDirection.INWARDS) },
             popEnterTransition = null,
         ) {
-            val habitId = it.arguments?.getLong(HabitScreens.HabitDetails.habitIdArg).toString()
+            val habitId = it.arguments?.getLong(HabitScreens.HabitDetails.habitIdArg)
             HabitDetailsScreen(
-                navigateUp = navController::navigateUp,
-                onEditHabit = { navController.navigate(HabitScreens.EditHabit(habitId).route) }
+                onEditHabit = { navController.navigate(HabitScreens.EditHabit(habitId.toString()).route) },
+                onDeleteHabit = {
+                    navController.previousBackStackEntry?.savedStateHandle?.set("delete", habitId)
+                    navController.navigateUp()
+                }
             )
         }
 

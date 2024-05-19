@@ -2,6 +2,8 @@ package com.github.skytoph.taski.di.habit
 
 import com.github.skytoph.taski.core.Now
 import com.github.skytoph.taski.domain.habit.HabitRepository
+import com.github.skytoph.taski.presentation.appbar.PopupMessage
+import com.github.skytoph.taski.presentation.appbar.SnackbarMessage
 import com.github.skytoph.taski.presentation.habit.list.HabitListInteractor
 import dagger.Module
 import dagger.Provides
@@ -13,6 +15,7 @@ import dagger.hilt.android.components.ViewModelComponent
 object HabitListInteractorModule {
 
     @Provides
-    fun interactor(repository: HabitRepository, now: Now): HabitListInteractor =
-        HabitListInteractor.Base(repository, now)
+    fun interactor(
+        repository: HabitRepository, now: Now, popup: PopupMessage.Show<SnackbarMessage>
+    ): HabitListInteractor = HabitListInteractor.Base(repository, now, popup)
 }

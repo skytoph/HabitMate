@@ -52,7 +52,7 @@ class HabitsViewModel @Inject constructor(
 
     fun state(): State<HabitListState> = state
 
-    fun deleteHabit(id: Long) = viewModelScope.launch(Dispatchers.IO) {
-        interactor.delete(id)
+    fun deleteHabit(id: Long, message: String) = viewModelScope.launch(Dispatchers.IO) {
+        interactor.delete(id, message)
     }
 }

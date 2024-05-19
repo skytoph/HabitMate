@@ -25,7 +25,7 @@ object HabitDetailsViewModelModule {
         now: Now,
         repository: HabitRepository,
         entryMapper: EditableEntryDomainToUiMapper,
-        pagerProvider: EntityPagerProvider
+        pagerProvider: EntityPagerProvider,
     ): HabitDetailsInteractor =
         HabitDetailsInteractor.Base(pagerProvider, entryMapper, repository, now)
 }

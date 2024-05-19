@@ -10,6 +10,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -34,6 +35,8 @@ fun HabitsScreen(
     onReorderHabits: () -> Unit,
     onEditHabit: (Long) -> Unit,
     onHabitClick: (Long) -> Unit,
+    removeHabitFromState: (Long) -> Unit,
+    deleteState: State<Long?>,
 ) {
     val onSurface = MaterialTheme.colorScheme.onSurface
     LaunchedEffect(Unit) {
@@ -45,6 +48,14 @@ fun HabitsScreen(
             title = R.string.habit_list_title,
             menuItems = listOf(actionAdd, actionView)
         )
+    }
+    val message = stringResource(R.string.message_habit_deleted)
+
+    LaunchedEffect(deleteState.value) {
+        deleteState.value?.let { id ->
+            removeHabitFromState(id)
+            viewModel.deleteHabit(id, message)
+        }
     }
 
     val view = viewModel.view.collectAsState()
@@ -81,10 +92,11 @@ fun HabitsScreen(
     }
 
     state.value.deleteDialogHabitId?.let { id ->
+        val message = stringResource(R.string.message_habit_deleted)
         DeleteAlertDialog(
             onDismissRequest = { viewModel.onEvent(HabitListEvent.ShowDeleteDialog(null)) },
             onConfirm = {
-                viewModel.deleteHabit(id)
+                viewModel.deleteHabit(id, message)
                 viewModel.onEvent(HabitListEvent.ShowDeleteDialog(null))
                 viewModel.onEvent(HabitListEvent.UpdateContextMenu(null))
             })

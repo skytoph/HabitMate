@@ -50,8 +50,8 @@ import kotlinx.coroutines.flow.flowOf
 @Composable
 fun HabitDetailsScreen(
     viewModel: HabitDetailsViewModel = hiltViewModel(),
-    navigateUp: () -> Unit,
     onEditHabit: () -> Unit,
+    onDeleteHabit: () -> Unit,
 ) {
     val colorEdit = MaterialTheme.colorScheme.onSurface
     val colorDelete = MaterialTheme.colorScheme.error
@@ -70,7 +70,7 @@ fun HabitDetailsScreen(
         entries = viewModel.entries,
         onDayClick = { viewModel.habitDone(it, defaultColor) },
         onHideDialog = onHideDialog,
-        onDeleteHabit = { viewModel.deleteHabit(navigateUp = { onHideDialog(); navigateUp() }) },
+        onDeleteHabit = { onHideDialog(); onDeleteHabit() },
         onEditHistory = { viewModel.onEvent(HabitDetailsEvent.EditHistory) })
 }
 
