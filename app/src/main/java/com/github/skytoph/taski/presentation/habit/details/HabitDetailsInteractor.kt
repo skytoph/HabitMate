@@ -12,7 +12,7 @@ import com.github.skytoph.taski.presentation.habit.edit.EntryEditableUi
 import com.github.skytoph.taski.presentation.habit.list.HabitDoneInteractor
 import kotlinx.coroutines.flow.Flow
 
-interface HabitDetailsInteractor : HabitDoneInteractor {
+interface HabitDetailsInteractor : HabitDoneInteractor, DeleteHabitInteractor {
     fun entries(id: Long): Flow<PagingData<EditableHistoryUi>>
     fun habit(id: Long): Flow<Habit?>
     fun mapData(data: EditableHistoryUi, entry: EntryEditableUi): EditableHistoryUi
@@ -20,21 +20,21 @@ interface HabitDetailsInteractor : HabitDoneInteractor {
         id: Long, daysAgo: Int, goal: Int, habitColor: Color, defaultColor: Color
     ): EntryEditableUi
 
-    suspend fun delete(id: Long)
-
     class Base(
         private val pagerProvider: EntityPagerProvider,
         private val entryMapper: EditableEntryDomainToUiMapper,
-        repository: HabitRepository,
+        private val repository: HabitRepository,
         now: Now,
-    ) : HabitDetailsInteractor, HabitDoneInteractor.Abstract(repository, now) {
+    ) : HabitDetailsInteractor,
+        HabitDoneInteractor by HabitDoneInteractor.Base(repository, now),
+        DeleteHabitInteractor by DeleteHabitInteractor.Base(repository) {
 
         override fun entries(id: Long): Flow<PagingData<EditableHistoryUi>> =
             pagerProvider.getEntries(id)
 
         override suspend fun entryEditable(
             id: Long, daysAgo: Int, goal: Int, habitColor: Color, defaultColor: Color
-        ): EntryEditableUi = entry(id, daysAgo).let { entry ->
+        ): EntryEditableUi = this.entry(id, daysAgo).let { entry ->
             entryMapper.map(daysAgo, entry.timesDone, goal)
         }
 
@@ -47,5 +47,13 @@ interface HabitDetailsInteractor : HabitDoneInteractor {
             return if (index == -1) data
             else data.copy(entries = data.entries.toMutableList().also { it[index] = entry })
         }
+    }
+}
+
+interface DeleteHabitInteractor {
+    suspend fun delete(id: Long)
+
+    class Base(private val repository: HabitRepository) : DeleteHabitInteractor {
+        override suspend fun delete(id: Long) = repository.delete(id)
     }
 }

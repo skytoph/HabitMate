@@ -5,13 +5,16 @@ import com.github.skytoph.taski.domain.habit.Entry
 import com.github.skytoph.taski.domain.habit.HabitRepository
 import com.github.skytoph.taski.domain.habit.HabitWithEntries
 import com.github.skytoph.taski.presentation.habit.HabitUi
+import com.github.skytoph.taski.presentation.habit.details.DeleteHabitInteractor
 import kotlinx.coroutines.flow.Flow
 
-interface HabitListInteractor : HabitDoneInteractor {
+interface HabitListInteractor : HabitDoneInteractor, DeleteHabitInteractor {
     fun habits(): Flow<List<HabitWithEntries>>
 
-    class Base(repository: HabitRepository, now: Now) :
-        HabitListInteractor, HabitDoneInteractor.Abstract(repository, now) {
+    class Base(private val repository: HabitRepository, now: Now) :
+        HabitListInteractor,
+        DeleteHabitInteractor by DeleteHabitInteractor.Base(repository),
+        HabitDoneInteractor by HabitDoneInteractor.Base(repository, now) {
 
         override fun habits(): Flow<List<HabitWithEntries>> = repository.habitsWithEntries()
     }
@@ -19,11 +22,12 @@ interface HabitListInteractor : HabitDoneInteractor {
 
 interface HabitDoneInteractor {
     suspend fun habitDone(habit: HabitUi, daysAgo: Int = 0)
+    suspend fun entry(id: Long, daysAgo: Int): Entry
 
-    abstract class Abstract(protected val repository: HabitRepository, protected val now: Now) :
+    class Base(private val repository: HabitRepository, private val now: Now) :
         HabitDoneInteractor {
 
-        protected suspend fun entry(id: Long, daysAgo: Int): Entry {
+        override suspend fun entry(id: Long, daysAgo: Int): Entry {
             val timestamp = now.daysAgoInMillis(daysAgo)
             return repository.entry(id, timestamp) ?: Entry(timestamp, 0)
         }

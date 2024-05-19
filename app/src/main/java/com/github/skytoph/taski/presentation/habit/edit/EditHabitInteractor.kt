@@ -15,9 +15,9 @@ interface EditHabitInteractor : HabitDoneInteractor {
 
     class Base(
         private val mapper: HabitDomainMapper,
-        repository: HabitRepository,
+        private val repository: HabitRepository,
         now: Now,
-    ) : EditHabitInteractor, HabitDoneInteractor.Abstract(repository, now) {
+    ) : EditHabitInteractor, HabitDoneInteractor by HabitDoneInteractor.Base(repository, now) {
 
         override suspend fun habit(id: Long) = repository.habit(id)
 
