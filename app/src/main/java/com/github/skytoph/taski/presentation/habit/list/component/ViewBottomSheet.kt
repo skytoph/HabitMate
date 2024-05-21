@@ -83,7 +83,7 @@ private fun ReorderButton(reorder: () -> Unit) {
         Text(
             text = "reorder habits",
             style = MaterialTheme.typography.titleSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = MaterialTheme.colorScheme.primary
         )
     }
 }
