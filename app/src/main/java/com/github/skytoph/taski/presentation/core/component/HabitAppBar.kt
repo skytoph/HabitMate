@@ -96,11 +96,20 @@ fun HabitAppBar(
                         onDismissRequest = { expanded = false },
                     ) {
                         state.dropdownItems.forEach { item ->
+                            val title = item.title.getString(context)
                             DropdownMenuItem(
                                 text = {
                                     Text(
-                                        text = item.title.getString(context),
+                                        text = title,
                                         color = item.color
+                                    )
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = item.icon.vector(context),
+                                        contentDescription = title,
+                                        tint = item.color,
+                                        modifier = Modifier.size(20.dp)
                                     )
                                 },
                                 onClick = {

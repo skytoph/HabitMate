@@ -1,11 +1,16 @@
 package com.github.skytoph.taski.presentation.nav
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
@@ -75,17 +80,23 @@ private fun SnackbarWithTitle(message: SnackbarMessage) {
     ) {
         Column(
             modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Text(
                 text = message.title,
                 style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.primary
             )
             Text(
                 text = message.message,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSecondaryContainer
+            )
+            Icon(
+                imageVector = message.icon,
+                contentDescription = message.title,
+                modifier = Modifier.size(32.dp)
             )
         }
     }
@@ -102,7 +113,11 @@ private fun SnackbarPreview() {
             contentAlignment = Alignment.BottomCenter
         ) {
             SnackbarWithTitle(
-                message = SnackbarMessage(title = "habit", message = "message...")
+                message = SnackbarMessage(
+                    title = "habit",
+                    message = "message...",
+                    icon = Icons.Default.Delete
+                )
             )
         }
     }

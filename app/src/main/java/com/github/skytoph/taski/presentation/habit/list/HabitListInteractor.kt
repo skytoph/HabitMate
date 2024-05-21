@@ -1,5 +1,7 @@
 package com.github.skytoph.taski.presentation.habit.list
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Archive
 import com.github.skytoph.taski.core.Now
 import com.github.skytoph.taski.domain.habit.Entry
 import com.github.skytoph.taski.domain.habit.HabitRepository
@@ -26,7 +28,7 @@ interface HabitListInteractor : HabitDoneInteractor, DeleteHabitInteractor {
         override suspend fun archive(id: Long, archived: String) {
             val habit = repository.habit(id)
             repository.update(habit.copy(isArchived = true))
-            popup.show(SnackbarMessage(archived, habit.title))
+            popup.show(SnackbarMessage(archived, habit.title, Icons.Default.Archive))
         }
     }
 }
