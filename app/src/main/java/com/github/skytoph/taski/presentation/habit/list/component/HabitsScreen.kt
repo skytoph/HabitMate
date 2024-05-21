@@ -114,7 +114,7 @@ fun HabitsScreen(
         ArchiveDialog(
             onDismissRequest = { viewModel.onEvent(HabitListEvent.ShowArchiveDialog(null)) },
             onConfirm = {
-                viewModel.deleteHabit(id, message)
+                viewModel.archiveHabit(id, message)
                 viewModel.onEvent(HabitListEvent.ShowArchiveDialog(null))
                 viewModel.onEvent(HabitListEvent.UpdateContextMenu(null))
             })
