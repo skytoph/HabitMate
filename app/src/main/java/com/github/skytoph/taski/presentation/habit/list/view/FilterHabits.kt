@@ -17,4 +17,9 @@ interface FilterHabits : Matches<FilterHabits> {
             todayDoneTimes < it.habit.goal
         }
     }
+
+    object NotArchived : FilterHabits {
+        override fun filter(habits: List<HabitWithEntries>): List<HabitWithEntries> =
+            habits.filter { !it.habit.isArchived }
+    }
 }

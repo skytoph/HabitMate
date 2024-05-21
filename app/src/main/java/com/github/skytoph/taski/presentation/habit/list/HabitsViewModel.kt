@@ -55,4 +55,8 @@ class HabitsViewModel @Inject constructor(
     fun deleteHabit(id: Long, message: String) = viewModelScope.launch(Dispatchers.IO) {
         interactor.delete(id, message)
     }
+
+    fun archiveHabit(id: Long, archived: String) = viewModelScope.launch(Dispatchers.IO) {
+        interactor.archive(id, archived)
+    }
 }

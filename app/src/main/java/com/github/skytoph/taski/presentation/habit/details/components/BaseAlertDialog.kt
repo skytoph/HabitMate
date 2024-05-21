@@ -7,21 +7,24 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import com.github.skytoph.taski.R
+import com.github.skytoph.taski.presentation.habit.list.component.DeleteDialog
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
-fun DeleteAlertDialog(
+fun BaseAlertDialog(
     onDismissRequest: () -> Unit,
     onConfirm: () -> Unit,
+    dismissLabel: String,
+    confirmLabel: String,
+    text: String,
+    title: String,
 ) {
     AlertDialog(
         text = {
             Text(
-                text = stringResource(R.string.delete_habit_confirmation_dialog_title),
+                text = text,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onBackground
@@ -32,12 +35,18 @@ fun DeleteAlertDialog(
         },
         confirmButton = {
             TextButton(onClick = onConfirm) {
-                Text(stringResource(R.string.action_delete), color = MaterialTheme.colorScheme.error)
+                Text(
+                    text = confirmLabel,
+                    color = MaterialTheme.colorScheme.error
+                )
             }
         },
         dismissButton = {
             TextButton(onClick = onDismissRequest) {
-                Text(stringResource(R.string.action_cancel), color = MaterialTheme.colorScheme.onSecondary)
+                Text(
+                    text = dismissLabel,
+                    color = MaterialTheme.colorScheme.onSecondary
+                )
             }
         }
     )
@@ -47,7 +56,7 @@ fun DeleteAlertDialog(
 @Preview
 fun DeleteDialogPreview() {
     HabitMateTheme {
-        DeleteAlertDialog(onDismissRequest = {}, onConfirm = {})
+        DeleteDialog(onDismissRequest = {}, onConfirm = {})
     }
 }
 
@@ -55,6 +64,6 @@ fun DeleteDialogPreview() {
 @Preview
 fun DarkDeleteDialogPreview() {
     HabitMateTheme(darkTheme = true) {
-        DeleteAlertDialog(onDismissRequest = {}, onConfirm = {})
+        DeleteDialog(onDismissRequest = {}, onConfirm = {})
     }
 }

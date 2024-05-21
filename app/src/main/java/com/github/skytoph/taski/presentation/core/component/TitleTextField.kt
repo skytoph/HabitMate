@@ -49,7 +49,7 @@ fun TitleTextField(
             value = value,
             onValueChange = onValueChange,
             singleLine = true,
-            textStyle = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onBackground),
+            textStyle = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onBackground),
             decorationBox = { innerTextField ->
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Box(

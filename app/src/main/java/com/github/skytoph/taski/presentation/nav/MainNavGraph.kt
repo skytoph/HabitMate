@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -24,9 +25,9 @@ import com.github.skytoph.taski.presentation.habit.icon.component.SelectIconScre
 import com.github.skytoph.taski.presentation.habit.list.component.HabitsScreen
 
 @Composable
-fun MainNavGraph(navController: NavHostController) {
+fun MainNavGraph(controller: NavHostController) {
     NavHost(
-        navController = navController,
+        navController = controller,
         startDestination = HabitScreens.HabitList.route,
         route = Graph.HABITS,
         modifier = Modifier.fillMaxSize()
@@ -34,10 +35,14 @@ fun MainNavGraph(navController: NavHostController) {
         composable(route = HabitScreens.HabitList.route,
             exitTransition = { fadeOut(tween(delayMillis = 90)) }) {
             HabitsScreen(
-                deleteState = state,
-                removeHabitFromState = { backStackEntry.savedStateHandle.remove<Long>("delete") },
-                onCreateHabit = { navController.navigate(HabitScreens.CreateHabit.route) },
-                onHabitClick = { habit -> navController.navigate(HabitScreens.HabitDetails(habit.id.toString()).route) })
+                deleteState = stateDelete,
+                archiveState = stateArchive,
+                removeHabitFromState = { backStackEntry.savedStateHandle.remove<Long>(it) },
+                onCreateHabit = { controller.navigate(HabitScreens.CreateHabit.route) },
+                onHabitClick = { habitId -> controller.navigate(HabitScreens.HabitDetails(habitId.toString()).route) },
+                onReorderHabits = { controller.navigate(HabitScreens.ReorderHabits.route) },
+                onEditHabit = { habitId -> controller.navigate(HabitScreens.EditHabit(habitId.toString()).route) },
+            )
         }
 
         composable(
@@ -47,8 +52,8 @@ fun MainNavGraph(navController: NavHostController) {
             popExitTransition = { scaleOutOfContainer(direction = ScaleTransitionDirection.INWARDS) },
             popEnterTransition = null,
         ) {
-            CreateHabitScreen(navigateUp = navController::navigateUp,
-                onSelectIconClick = { navController.navigate(HabitScreens.SelectIcon.route) })
+            CreateHabitScreen(navigateUp = controller::navigateUp,
+                onSelectIconClick = { controller.navigate(HabitScreens.SelectIcon.route) })
         }
 
         composable(
@@ -63,11 +68,8 @@ fun MainNavGraph(navController: NavHostController) {
         ) {
             val habitId = it.arguments?.getLong(HabitScreens.HabitDetails.habitIdArg)
             HabitDetailsScreen(
-                onEditHabit = { navController.navigate(HabitScreens.EditHabit(habitId.toString()).route) },
-                onDeleteHabit = {
-                    navController.previousBackStackEntry?.savedStateHandle?.set("delete", habitId)
-                    navController.navigateUp()
-                }
+                onEditHabit = { controller.navigate(HabitScreens.EditHabit(habitId.toString()).route) },
+                onDeleteHabit = { controller.setAction(HabitScreens.HabitList.keyDelete, habitId) },
             )
         }
 
@@ -83,8 +85,8 @@ fun MainNavGraph(navController: NavHostController) {
             popEnterTransition = null,
         ) {
             EditHabitScreen(
-                navigateUp = navController::navigateUp,
-                onSelectIconClick = { navController.navigate(HabitScreens.SelectIcon.route) },
+                navigateUp = controller::navigateUp,
+                onSelectIconClick = { controller.navigate(HabitScreens.SelectIcon.route) },
             )
         }
 
@@ -94,7 +96,16 @@ fun MainNavGraph(navController: NavHostController) {
             popExitTransition = { scaleOutOfContainer(direction = ScaleTransitionDirection.INWARDS) },
             popEnterTransition = null,
         ) {
-            SelectIconScreen(navigateUp = navController::navigateUp)
+            SelectIconScreen(navigateUp = controller::navigateUp)
         }
     }
+}
+
+@Composable
+private fun <T> NavBackStackEntry.collectByKey(key: String) =
+    savedStateHandle.getStateFlow<T?>(key, null).collectAsState()
+
+private fun NavHostController.setAction(key: String, habitId: Long?) {
+    previousBackStackEntry?.savedStateHandle?.set(key, habitId)
+    navigateUp()
 }

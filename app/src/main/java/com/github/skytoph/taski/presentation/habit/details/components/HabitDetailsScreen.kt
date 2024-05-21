@@ -43,6 +43,7 @@ import com.github.skytoph.taski.presentation.habit.details.HabitDetailsEvent
 import com.github.skytoph.taski.presentation.habit.details.HabitDetailsState
 import com.github.skytoph.taski.presentation.habit.details.HabitDetailsViewModel
 import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
+import com.github.skytoph.taski.presentation.habit.list.component.DeleteDialog
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -142,7 +143,7 @@ fun HabitDetails(
     }
 
     if (state.value.isDeleteDialogShown)
-        DeleteAlertDialog(onDismissRequest = onHideDialog, onConfirm = onDeleteHabit)
+        DeleteDialog(onDismissRequest = onHideDialog, onConfirm = onDeleteHabit)
 }
 
 @Composable

@@ -18,9 +18,9 @@ import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.component.AppBarAction
 import com.github.skytoph.taski.presentation.core.component.LoadingCirclesFullscreen
 import com.github.skytoph.taski.presentation.core.preview.HabitsProvider
+import com.github.skytoph.taski.presentation.habit.HabitScreens
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.HabitWithHistoryUi
-import com.github.skytoph.taski.presentation.habit.details.components.DeleteAlertDialog
 import com.github.skytoph.taski.presentation.habit.list.HabitListEvent
 import com.github.skytoph.taski.presentation.habit.list.HabitListState
 import com.github.skytoph.taski.presentation.habit.list.HabitsViewModel
@@ -35,8 +35,9 @@ fun HabitsScreen(
     onReorderHabits: () -> Unit,
     onEditHabit: (Long) -> Unit,
     onHabitClick: (Long) -> Unit,
-    removeHabitFromState: (Long) -> Unit,
+    removeHabitFromState: (String) -> Unit,
     deleteState: State<Long?>,
+    archiveState: State<Long?>,
 ) {
     val onSurface = MaterialTheme.colorScheme.onSurface
     LaunchedEffect(Unit) {
@@ -49,12 +50,17 @@ fun HabitsScreen(
             menuItems = listOf(actionAdd, actionView)
         )
     }
-    val message = stringResource(R.string.message_habit_deleted)
+    val messageDelete = stringResource(R.string.message_habit_deleted)
+    val messageArchive = stringResource(R.string.message_habit_archived)
 
-    LaunchedEffect(deleteState.value) {
+    LaunchedEffect(deleteState.value, archiveState.value) {
         deleteState.value?.let { id ->
-            removeHabitFromState(id)
-            viewModel.deleteHabit(id, message)
+            removeHabitFromState(HabitScreens.HabitList.keyDelete)
+            viewModel.deleteHabit(id, messageDelete)
+        }
+        archiveState.value?.let { id ->
+            removeHabitFromState(HabitScreens.HabitList.keyArchive)
+            viewModel.archiveHabit(id, messageArchive)
         }
     }
 
@@ -78,6 +84,7 @@ fun HabitsScreen(
                 hideBottomSheet = { viewModel.onEvent(HabitListEvent.UpdateContextMenu(null)) },
                 editHabit = { onEditHabit(id) },
                 deleteHabit = { viewModel.onEvent(HabitListEvent.ShowDeleteDialog(id)) },
+                archiveHabit = { viewModel.onEvent(HabitListEvent.ShowArchiveDialog(id)) },
                 reorder = onReorderHabits
             )
         }
@@ -93,11 +100,22 @@ fun HabitsScreen(
 
     state.value.deleteDialogHabitId?.let { id ->
         val message = stringResource(R.string.message_habit_deleted)
-        DeleteAlertDialog(
+        DeleteDialog(
             onDismissRequest = { viewModel.onEvent(HabitListEvent.ShowDeleteDialog(null)) },
             onConfirm = {
                 viewModel.deleteHabit(id, message)
                 viewModel.onEvent(HabitListEvent.ShowDeleteDialog(null))
+                viewModel.onEvent(HabitListEvent.UpdateContextMenu(null))
+            })
+    }
+
+    state.value.archiveDialogHabitId?.let { id ->
+        val message = stringResource(R.string.message_habit_archived)
+        ArchiveDialog(
+            onDismissRequest = { viewModel.onEvent(HabitListEvent.ShowArchiveDialog(null)) },
+            onConfirm = {
+                viewModel.deleteHabit(id, message)
+                viewModel.onEvent(HabitListEvent.ShowArchiveDialog(null))
                 viewModel.onEvent(HabitListEvent.UpdateContextMenu(null))
             })
     }

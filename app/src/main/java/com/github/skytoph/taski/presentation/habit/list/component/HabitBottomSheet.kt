@@ -13,11 +13,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Archive
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -33,6 +35,7 @@ import com.github.skytoph.taski.R
 fun HabitBottomSheet(
     hideBottomSheet: () -> Unit = {},
     deleteHabit: () -> Unit = {},
+    archiveHabit: () -> Unit,
     editHabit: () -> Unit = {},
     reorder: () -> Unit = {},
 ) {
@@ -51,6 +54,11 @@ fun HabitBottomSheet(
                 title = "edit",
                 icon = Icons.Default.Edit,
                 onClick = { hideBottomSheet(); editHabit() })
+            Divider()
+            ContextMenuItem(
+                title = "archive",
+                icon = Icons.Default.Archive,
+                onClick = { archiveHabit() })
             Divider()
             ContextMenuItem(
                 title = "delete",
@@ -80,7 +88,11 @@ private fun ContextMenuItem(
             .clickable { onClick() }
             .padding(vertical = 8.dp, horizontal = 16.dp)
     ) {
-        Icon(imageVector = icon, contentDescription = title)
+        Icon(
+            imageVector = icon,
+            contentDescription = title,
+            tint = MaterialTheme.colorScheme.onBackground
+        )
         Spacer(modifier = Modifier.width(16.dp))
         Text(text = title)
     }

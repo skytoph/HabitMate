@@ -2,9 +2,10 @@ package com.github.skytoph.taski.presentation.habit
 
 abstract class HabitScreens(val route: String) {
 
-    object Profile : HabitScreens("profile")
-
-    object HabitList : HabitScreens("habits")
+    object HabitList : HabitScreens("habits") {
+        const val keyDelete = "delete"
+        const val keyArchive = "archive"
+    }
 
     object CreateHabit : HabitScreens("create_habit")
 

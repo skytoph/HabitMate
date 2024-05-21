@@ -11,16 +11,23 @@ import kotlinx.coroutines.flow.Flow
 
 interface HabitListInteractor : HabitDoneInteractor, DeleteHabitInteractor {
     fun habits(): Flow<List<HabitWithEntries>>
+    suspend fun archive(id: Long, archived: String)
 
     class Base(
         private val repository: HabitRepository,
-        now: Now,
-        popup: PopupMessage.Show<SnackbarMessage>
+        private val popup: PopupMessage.Show<SnackbarMessage>,
+        now: Now
     ) : HabitListInteractor,
         DeleteHabitInteractor by DeleteHabitInteractor.Base(repository, popup),
         HabitDoneInteractor by HabitDoneInteractor.Base(repository, now) {
 
         override fun habits(): Flow<List<HabitWithEntries>> = repository.habitsWithEntries()
+
+        override suspend fun archive(id: Long, archived: String) {
+            val habit = repository.habit(id)
+            repository.update(habit.copy(isArchived = true))
+            popup.show(SnackbarMessage(archived, habit.title))
+        }
     }
 }
 

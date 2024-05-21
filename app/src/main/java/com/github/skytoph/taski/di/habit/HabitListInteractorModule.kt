@@ -17,5 +17,5 @@ object HabitListInteractorModule {
     @Provides
     fun interactor(
         repository: HabitRepository, now: Now, popup: PopupMessage.Show<SnackbarMessage>
-    ): HabitListInteractor = HabitListInteractor.Base(repository, now, popup)
+    ): HabitListInteractor = HabitListInteractor.Base(repository, popup, now)
 }

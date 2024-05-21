@@ -25,4 +25,7 @@ data class HabitEntity(
 
     @ColumnInfo(name = "priority")
     val priority: Int,
+
+    @ColumnInfo(name = "archived")
+    val isArchived: Boolean,
 )

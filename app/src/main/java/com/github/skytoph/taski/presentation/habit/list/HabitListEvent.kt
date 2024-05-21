@@ -74,4 +74,12 @@ interface HabitListEvent {
             state.value = state.value.copy(deleteDialogHabitId = id)
         }
     }
+
+    class ShowArchiveDialog(private val id: Long? = null) : HabitListEvent {
+        override fun handle(
+            state: MutableState<HabitListState>, view: MutableStateFlow<HabitsView>
+        ) {
+            state.value = state.value.copy(archiveDialogHabitId = id)
+        }
+    }
 }

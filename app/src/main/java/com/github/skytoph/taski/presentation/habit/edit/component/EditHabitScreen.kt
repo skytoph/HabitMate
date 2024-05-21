@@ -43,7 +43,7 @@ import com.github.skytoph.taski.presentation.core.preview.HabitsEditableProvider
 import com.github.skytoph.taski.presentation.core.state.FieldState
 import com.github.skytoph.taski.presentation.core.state.IconResource
 import com.github.skytoph.taski.presentation.habit.create.GoalState
-import com.github.skytoph.taski.presentation.habit.details.components.DeleteAlertDialog
+import com.github.skytoph.taski.presentation.habit.list.component.DeleteDialog
 import com.github.skytoph.taski.presentation.habit.edit.EditHabitEvent
 import com.github.skytoph.taski.presentation.habit.edit.EditHabitState
 import com.github.skytoph.taski.presentation.habit.edit.EditHabitViewModel
@@ -119,7 +119,7 @@ private fun EditHabit(
     }
 
     if (state.value.isDialogShown)
-        DeleteAlertDialog(
+        DeleteDialog(
             onDismissRequest = onHideDialog,
             onConfirm = {
                 onDeleteHabit()
@@ -170,7 +170,7 @@ fun EditBaseHabit(
                 .height(minHeight)
                 .wrapContentHeight()
                 .weight(1f),
-            style = MaterialTheme.typography.bodySmall
+            style = MaterialTheme.typography.bodyMedium
         )
         SquareButton(
             onClick = onDecreaseGoal,

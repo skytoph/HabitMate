@@ -7,5 +7,6 @@ data class HabitListState(
     val isLoading: Boolean = true,
     val isViewTypeVisible: Boolean = false,
     val deleteDialogHabitId: Long? = null,
+    val archiveDialogHabitId: Long? = null,
     val contextMenuHabitId: Long? = null,
 )
