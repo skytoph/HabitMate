@@ -63,7 +63,6 @@ abstract class IconsGroup(@StringRes val title: Int) {
                 R.drawable.file_music,
                 R.drawable.file_video_2,
                 R.drawable.file_pen,
-                R.drawable.file_type_2,
                 R.drawable.file_pie_chart,
             )
         }

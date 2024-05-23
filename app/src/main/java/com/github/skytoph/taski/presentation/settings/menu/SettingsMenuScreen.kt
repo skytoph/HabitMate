@@ -1,17 +1,154 @@
 package com.github.skytoph.taski.presentation.settings.menu
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.Button
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.github.skytoph.taski.R
+import com.github.skytoph.taski.presentation.core.component.TitleWithIconMenuItem
+import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
-fun SettingsMenuScreen(archiveClick: () -> Unit) {
-    Column {
-        Button(onClick = archiveClick) {
-            Text(text = "archive")
+fun SettingsMenuScreen(
+    viewModel: SettingsViewModel = hiltViewModel(),
+    archiveClick: () -> Unit,
+    reorderClick: () -> Unit,
+) {
+    LaunchedEffect(Unit) {
+        viewModel.initAppBar(title = R.string.settings_title)
+    }
+
+    SettingsMenu(reorderClick, archiveClick)
+}
+
+@Composable
+private fun SettingsMenu(
+    archiveClick: () -> Unit = {},
+    reorderClick: () -> Unit = {},
+) {
+    Column(modifier = Modifier.padding(24.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Text(
+            text = "App",
+            modifier = Modifier.padding(start = 16.dp),
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+        Column(modifier = Modifier.clip(MaterialTheme.shapes.small)) {
+            SettingsMenuItem(
+                title = "General",
+                icon = ImageVector.vectorResource(id = R.drawable.wrench),
+                onClick = {}
+            )
+            Divider()
+            SettingsMenuItem(
+                title = "Theme",
+                icon = ImageVector.vectorResource(id = R.drawable.palette),
+                onClick = {}
+            )
+            Divider()
+            SettingsMenuItem(
+                title = "Reorder habits",
+                icon = ImageVector.vectorResource(id = R.drawable.list),
+                onClick = reorderClick
+            )
+            Divider()
+            SettingsMenuItem(
+                title = "Archived habits",
+                icon = ImageVector.vectorResource(id = R.drawable.archive),
+                onClick = archiveClick
+            )
+            Divider()
+            SettingsMenuItem(
+                title = "Backup",
+                icon = ImageVector.vectorResource(id = R.drawable.folder_input),
+                onClick = {}
+            )
         }
-        Divider()
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = "Info",
+            modifier = Modifier.padding(start = 16.dp),
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+        Column(modifier = Modifier.clip(MaterialTheme.shapes.small)) {
+            SettingsMenuItem(
+                title = "Privacy policy",
+                icon = ImageVector.vectorResource(id = R.drawable.file_lock),
+                onClick = {}
+            )
+            Divider()
+            SettingsMenuItem(
+                title = "Terms of use",
+                icon = ImageVector.vectorResource(id = R.drawable.file_type),
+                onClick = {}
+            )
+            Divider()
+            SettingsMenuItem(
+                title = "Credits",
+                icon = ImageVector.vectorResource(id = R.drawable.file_heart),
+                onClick = {}
+            )
+        }
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = "HabitMate 1.0.0",
+            style = MaterialTheme.typography.bodySmall,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth(),
+            color = MaterialTheme.colorScheme.onBackground
+        )
+    }
+}
+
+@Composable
+private fun SettingsMenuItem(
+    title: String,
+    icon: ImageVector,
+    onClick: () -> Unit,
+) {
+    TitleWithIconMenuItem(
+        modifier = Modifier.background(MaterialTheme.colorScheme.primaryContainer),
+        title = title,
+        icon = icon,
+        onClick = onClick,
+        tint = MaterialTheme.colorScheme.primary,
+        style = MaterialTheme.typography.bodyMedium,
+        iconSize = 20.dp,
+    )
+}
+
+@Composable
+@Preview(showBackground = true)
+private fun SettingsPreview() {
+    HabitMateTheme(darkTheme = true) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(16.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            SettingsMenu()
+        }
     }
 }

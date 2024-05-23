@@ -2,26 +2,15 @@
 
 package com.github.skytoph.taski.presentation.habit.list.component
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Archive
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -30,6 +19,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.github.skytoph.taski.R
+import com.github.skytoph.taski.presentation.core.component.TitleWithIconMenuItem
 
 @Composable
 fun HabitBottomSheet(
@@ -47,53 +37,30 @@ fun HabitBottomSheet(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+                .clip(MaterialTheme.shapes.medium)
+                .padding(16.dp)
         ) {
-            ContextMenuItem(
+            TitleWithIconMenuItem(
                 title = "edit",
-                icon = Icons.Default.Edit,
+                icon = ImageVector.vectorResource(id = R.drawable.pencil),
                 onClick = { hideBottomSheet(); editHabit() })
             Divider()
-            ContextMenuItem(
+            TitleWithIconMenuItem(
                 title = "archive",
-                icon = Icons.Default.Archive,
+                icon = ImageVector.vectorResource(id = R.drawable.archive_down),
                 onClick = { archiveHabit() })
             Divider()
-            ContextMenuItem(
+            TitleWithIconMenuItem(
                 title = "delete",
-                icon = Icons.Default.Delete,
+                icon = ImageVector.vectorResource(id = R.drawable.trash),
                 onClick = { deleteHabit() })
             Divider()
-            ContextMenuItem(
+            TitleWithIconMenuItem(
                 title = "reorder habits",
-                icon = ImageVector.vectorResource(id = R.drawable.arrow_up_down),
+                icon = ImageVector.vectorResource(id = R.drawable.list),
                 onClick = { hideBottomSheet(); reorder() })
 
             Spacer(modifier = Modifier.height(80.dp))
         }
-    }
-}
-
-@Composable
-private fun ContextMenuItem(
-    title: String,
-    icon: ImageVector,
-    onClick: () -> Unit,
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(CircleShape)
-            .clickable { onClick() }
-            .padding(vertical = 8.dp, horizontal = 16.dp)
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = title,
-            tint = MaterialTheme.colorScheme.onBackground
-        )
-        Spacer(modifier = Modifier.width(16.dp))
-        Text(text = title)
     }
 }

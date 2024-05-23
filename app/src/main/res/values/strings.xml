@@ -71,6 +71,7 @@
     <string name="color">color</string>
 
     <string name="habit_list_title">habits</string>
+    <string name="settings_title">settings</string>
     <string name="action_view">view</string>
     <string name="action_settings">settings</string>
     <string name="option_calendar">calendar</string>

@@ -33,7 +33,7 @@ fun MainScreen(
     Scaffold(
         topBar = {
             HabitAppBar(
-                modifier = Modifier.padding(horizontal = 16.dp),
+                modifier = Modifier.padding(horizontal = 8.dp),
                 state = viewModel.state(),
                 navigateUp = navController::navigateUp
             )
