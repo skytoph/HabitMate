@@ -6,6 +6,7 @@ import androidx.compose.material.icons.filled.ArrowBackIos
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.Color
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.state.IconResource
@@ -48,5 +49,8 @@ data class AppBarAction(
 
         val view =
             AppBarAction(StringResource.ResId(R.string.action_view), IconResource.Id(R.drawable.sliders_horizontal))
+
+        val settings =
+            AppBarAction(StringResource.ResId(R.string.action_settings), IconResource.Vector(Icons.Default.Settings))
     }
 }

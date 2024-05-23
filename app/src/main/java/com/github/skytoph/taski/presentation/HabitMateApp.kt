@@ -14,6 +14,7 @@ object Graph {
     const val ROOT = "root_graph"
     const val AUTH = "auth_graph"
     const val HABITS = "habits_graph"
+    const val SETTINGS = "settings_graph"
 }
 
 @Composable

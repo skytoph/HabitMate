@@ -72,6 +72,7 @@
 
     <string name="habit_list_title">habits</string>
     <string name="action_view">view</string>
+    <string name="action_settings">settings</string>
     <string name="option_calendar">calendar</string>
     <string name="option_daily">daily</string>
     <string name="view_label">view</string>

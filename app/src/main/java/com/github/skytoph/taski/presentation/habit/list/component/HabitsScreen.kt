@@ -32,6 +32,7 @@ import com.github.skytoph.taski.ui.theme.HabitMateTheme
 fun HabitsScreen(
     viewModel: HabitsViewModel = hiltViewModel(),
     onCreateHabit: () -> Unit,
+    onSettingsClick: () -> Unit,
     onReorderHabits: () -> Unit,
     onEditHabit: (Long) -> Unit,
     onHabitClick: (Long) -> Unit,
@@ -39,15 +40,18 @@ fun HabitsScreen(
     deleteState: State<Long?>,
     archiveState: State<Long?>,
 ) {
-    val onSurface = MaterialTheme.colorScheme.onSurface
+    val onSurface = MaterialTheme.colorScheme.onBackground
     LaunchedEffect(Unit) {
         val actionAdd = AppBarAction.add.copy(color = onSurface, onClick = onCreateHabit)
         val actionView = AppBarAction.view.copy(color = onSurface,
             onClick = { viewModel.onEvent(HabitListEvent.ShowViewType(true)) })
+        val actionSettings =
+            AppBarAction.settings.copy(color = onSurface, onClick = onSettingsClick)
         viewModel.initAppBar(
             canNavigateUp = false,
             title = R.string.habit_list_title,
-            menuItems = listOf(actionAdd, actionView)
+            menuItems = listOf(actionAdd),
+            dropDownItems = listOf(actionView, actionSettings)
         )
     }
     val messageDelete = stringResource(R.string.message_habit_deleted)
