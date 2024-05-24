@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.github.skytoph.taski.presentation.Graph
+import com.github.skytoph.taski.presentation.habit.HabitScreens
 import com.github.skytoph.taski.presentation.settings.archive.ArchiveScreen
 import com.github.skytoph.taski.presentation.settings.menu.SettingsMenuScreen
 
@@ -22,7 +23,8 @@ fun NavGraphBuilder.settingsNavigation(
     ) {
         composable(route = SettingsScreens.SettingsList.route) {
             SettingsMenuScreen(
-                archiveClick = { controller.navigate(SettingsScreens.ArchiveList.route) }
+                archiveClick = { controller.navigate(SettingsScreens.ArchiveList.route) },
+                reorderClick = { controller.navigate(HabitScreens.ReorderHabits.route) }
             )
         }
         composable(route = SettingsScreens.ArchiveList.route) {

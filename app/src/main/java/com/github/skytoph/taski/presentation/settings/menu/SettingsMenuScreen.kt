@@ -9,7 +9,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.component.TitleWithIconMenuItem
+import com.github.skytoph.taski.presentation.settings.SettingsViewModel
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
@@ -110,13 +113,24 @@ private fun SettingsMenu(
             )
         }
         Spacer(modifier = Modifier.height(4.dp))
-        Text(
-            text = "HabitMate 1.0.0",
-            style = MaterialTheme.typography.bodySmall,
-            textAlign = TextAlign.Center,
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxWidth(),
-            color = MaterialTheme.colorScheme.onBackground
-        )
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Text(
+                text = "HabitMate 1.0.0",
+                style = MaterialTheme.typography.bodySmall,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth(),
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            Icon(
+                imageVector = ImageVector.vectorResource(R.drawable.heart),
+                contentDescription = null,
+                modifier = Modifier.size(16.dp)
+            )
+        }
     }
 }
 

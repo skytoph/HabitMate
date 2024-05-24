@@ -39,10 +39,10 @@ data class AppBarAction(
             StringResource.ResId(R.string.action_save_habit), IconResource.Vector(Icons.Filled.Check)
         )
 
-        val edit = AppBarAction(StringResource.ResId(R.string.edit_habit), IconResource.Vector(Icons.Filled.Edit))
+        val edit = AppBarAction(StringResource.ResId(R.string.edit_habit), IconResource.Id(R.drawable.pencil))
 
         val delete =
-            AppBarAction(StringResource.ResId(R.string.action_delete), IconResource.Vector(Icons.Filled.Close))
+            AppBarAction(StringResource.ResId(R.string.action_delete), IconResource.Id(R.drawable.trash))
 
         val add =
             AppBarAction(StringResource.ResId(R.string.action_add), IconResource.Vector(Icons.Filled.Add))
@@ -51,6 +51,6 @@ data class AppBarAction(
             AppBarAction(StringResource.ResId(R.string.action_view), IconResource.Id(R.drawable.sliders_horizontal))
 
         val settings =
-            AppBarAction(StringResource.ResId(R.string.action_settings), IconResource.Vector(Icons.Default.Settings))
+            AppBarAction(StringResource.ResId(R.string.action_settings), IconResource.Id(R.drawable.settings))
     }
 }

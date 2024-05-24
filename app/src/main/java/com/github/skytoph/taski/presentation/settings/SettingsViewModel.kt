@@ -1,4 +1,4 @@
-package com.github.skytoph.taski.presentation.settings.menu
+package com.github.skytoph.taski.presentation.settings
 
 import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
