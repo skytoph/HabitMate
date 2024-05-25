@@ -16,7 +16,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.github.skytoph.taski.presentation.appbar.MainViewModel
 import com.github.skytoph.taski.presentation.appbar.SnackbarMessage
-import com.github.skytoph.taski.presentation.core.component.HabitAppBar
 
 @Composable
 fun MainScreen(
@@ -35,7 +34,8 @@ fun MainScreen(
             HabitAppBar(
                 modifier = Modifier.padding(horizontal = 8.dp),
                 state = viewModel.state(),
-                navigateUp = navController::navigateUp
+                navigateUp = navController::navigateUp,
+                expandList = viewModel::expandList
             )
         },
         snackbarHost = {

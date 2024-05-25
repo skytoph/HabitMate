@@ -34,4 +34,10 @@ sealed class AppBarEvent {
             )
         }
     }
+
+    class ExpandList(private val expand: Boolean = true) : AppBarEvent() {
+        override fun handle(state: MutableState<AppBarState>) {
+            state.value = state.value.copy(isListExpanded = expand)
+        }
+    }
 }

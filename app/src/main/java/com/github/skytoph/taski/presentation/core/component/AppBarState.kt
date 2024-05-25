@@ -4,9 +4,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBackIos
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.Color
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.state.IconResource
@@ -17,6 +14,7 @@ data class AppBarState(
     val navigateUp: NavigateUp = NavigateUp(),
     val menuItems: List<AppBarAction> = emptyList(),
     val dropdownItems: List<AppBarAction> = emptyList(),
+    val isListExpanded: Boolean = false
 )
 
 data class NavigateUp(

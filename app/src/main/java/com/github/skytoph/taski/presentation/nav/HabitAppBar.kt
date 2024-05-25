@@ -1,4 +1,4 @@
-package com.github.skytoph.taski.presentation.core.component
+package com.github.skytoph.taski.presentation.nav
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
@@ -22,25 +22,21 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import com.github.skytoph.taski.presentation.core.component.AppBarState
 
 @Composable
 fun HabitAppBar(
     modifier: Modifier = Modifier,
     state: State<AppBarState>,
-    navigateUp: () -> Unit
+    navigateUp: () -> Unit,
+    expandList: (Boolean) -> Unit
 ) {
-    var expanded by remember { mutableStateOf(false) }
-
     val context = LocalContext.current
     Crossfade(
         targetState = state.value,
@@ -87,13 +83,13 @@ fun HabitAppBar(
             }
             if (state.dropdownItems.isNotEmpty())
                 Box {
-                    IconButton(onClick = { expanded = !expanded }) {
+                    IconButton(onClick = { expandList(true) }) {
                         Icon(Icons.Default.MoreVert, "menu")
                     }
 
                     DropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false },
+                        expanded = state.isListExpanded,
+                        onDismissRequest = { expandList(false) },
                     ) {
                         state.dropdownItems.forEach { item ->
                             val title = item.title.getString(context)
@@ -101,7 +97,8 @@ fun HabitAppBar(
                                 text = {
                                     Text(
                                         text = title,
-                                        color = item.color
+                                        color = item.color,
+                                        style = MaterialTheme.typography.bodyMedium
                                     )
                                 },
                                 leadingIcon = {
@@ -113,7 +110,7 @@ fun HabitAppBar(
                                     )
                                 },
                                 onClick = {
-                                    expanded = false
+                                    expandList(false)
                                     item.onClick()
                                 })
                         }

@@ -19,5 +19,7 @@ class MainViewModel @Inject constructor(
 
     fun state(): State<AppBarState> = state
 
+    fun expandList(expand: Boolean) = AppBarEvent.ExpandList(expand).handle(state)
+
     fun snackbarState(): SnackbarHostState = popup.provide()
 }
