@@ -89,5 +89,6 @@
 
     <string name="message_habit_deleted">habit deleted</string>
     <string name="message_habit_archived">habit archived</string>
-    <string name="message_habit_unarchived">habit unarchived</string>
+    <string name="message_habit_unarchived">habit restored</string>
+    <string name="title_archive">Archive</string>
 </resources>

@@ -3,10 +3,11 @@ package com.github.skytoph.taski.presentation.core.component
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -17,8 +18,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.skytoph.taski.R
+import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
 fun HabitTitleWithIcon(
@@ -27,7 +30,10 @@ fun HabitTitleWithIcon(
     color: Color,
     title: String
 ) {
-    Row(verticalAlignment = Alignment.CenterVertically, modifier = modifier.padding(end = 8.dp)) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
+    ) {
         Box(Modifier.padding(dimensionResource(id = R.dimen.habit_icon_padding))) {
             Icon(
                 imageVector = icon,
@@ -48,7 +54,15 @@ fun HabitTitleWithIcon(
             color = MaterialTheme.colorScheme.inverseSurface,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.weight(1f)
         )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun HabitTitleWithIconPreview() {
+    HabitMateTheme {
+        HabitTitleWithIcon(icon = Icons.Default.Check, color = Color.Blue, title = "title")
     }
 }

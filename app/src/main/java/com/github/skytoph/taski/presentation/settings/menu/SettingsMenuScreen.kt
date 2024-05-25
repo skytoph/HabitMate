@@ -40,7 +40,7 @@ fun SettingsMenuScreen(
         viewModel.initAppBar(title = R.string.settings_title)
     }
 
-    SettingsMenu(reorderClick, archiveClick)
+    SettingsMenu(reorderClick = reorderClick, archiveClick = archiveClick)
 }
 
 @Composable

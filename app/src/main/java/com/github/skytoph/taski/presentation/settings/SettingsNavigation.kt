@@ -6,7 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.github.skytoph.taski.presentation.Graph
 import com.github.skytoph.taski.presentation.habit.HabitScreens
-import com.github.skytoph.taski.presentation.settings.archive.ArchiveScreen
+import com.github.skytoph.taski.presentation.settings.archive.component.ArchiveScreen
 import com.github.skytoph.taski.presentation.settings.menu.SettingsMenuScreen
 
 abstract class SettingsScreens(val route: String) {
