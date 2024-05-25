@@ -22,6 +22,10 @@ interface HabitDao {
     @Query("SELECT * FROM habit")
     suspend fun habits(): List<HabitEntity>
 
+
+    @Query("SELECT * FROM habit")
+    fun habitsFlow(): Flow<List<HabitEntity>>
+
     @Query("SELECT * FROM habit WHERE id = :id")
     fun habitFlow(id: Long): Flow<HabitEntity?>
 

@@ -5,11 +5,11 @@ import androidx.paging.PagingData
 import com.github.skytoph.taski.core.Now
 import com.github.skytoph.taski.domain.habit.Habit
 import com.github.skytoph.taski.domain.habit.HabitRepository
+import com.github.skytoph.taski.presentation.core.interactor.HabitDoneInteractor
 import com.github.skytoph.taski.presentation.habit.EntityPagerProvider
 import com.github.skytoph.taski.presentation.habit.details.mapper.EditableEntryDomainToUiMapper
 import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
 import com.github.skytoph.taski.presentation.habit.edit.EntryEditableUi
-import com.github.skytoph.taski.presentation.habit.list.HabitDoneInteractor
 import kotlinx.coroutines.flow.Flow
 
 interface HabitDetailsInteractor : HabitDoneInteractor {

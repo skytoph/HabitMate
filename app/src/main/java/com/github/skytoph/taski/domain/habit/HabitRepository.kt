@@ -6,6 +6,7 @@ interface HabitRepository {
     fun habitsWithEntries(): Flow<List<HabitWithEntries>>
     fun entriesFlow(id: Long): Flow<EntryList>
     fun habitFlow(id: Long): Flow<Habit?>
+    fun habitsFlow(): Flow<List<Habit>>
     suspend fun habits(): List<Habit>
     suspend fun habitWithEntries(id: Long): HabitWithEntries
     suspend fun entries(id: Long): EntryList

@@ -2,7 +2,6 @@ package com.github.skytoph.taski.presentation.habit.list.view
 
 import com.github.skytoph.taski.core.Matches
 import com.github.skytoph.taski.domain.habit.Habit
-import com.github.skytoph.taski.domain.habit.HabitWithEntries
 
 interface FilterHabits : Matches<FilterHabits> {
     fun predicate(todayDone: Int = 0): (Habit) -> Boolean
@@ -27,7 +26,7 @@ interface FilterHabits : Matches<FilterHabits> {
         override fun predicate(todayDone: Int): (Habit) -> Boolean = { todayDone < it.goal }
     }
 
-    object NotArchived : FilterHabits {
-        override fun predicate(todayDone: Int): (Habit) -> Boolean = { !it.isArchived }
+    class Archived(private val archived: Boolean = false) : FilterHabits {
+        override fun predicate(todayDone: Int): (Habit) -> Boolean = { it.isArchived == archived }
     }
 }

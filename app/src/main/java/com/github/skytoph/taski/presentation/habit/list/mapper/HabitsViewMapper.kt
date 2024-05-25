@@ -15,7 +15,7 @@ interface HabitsViewMapper {
                 : List<HabitWithHistoryUi<HistoryUi>> {
             val selector: (HabitWithEntries) -> Habit = { it.habit }
             val today: (HabitWithEntries) -> Int = { it.entries.entries[0]?.timesDone ?: 0 }
-            val notArchived = FilterHabits.NotArchived.filter(habits = habits, selector = selector)
+            val notArchived = FilterHabits.Archived().filter(habits = habits, selector = selector)
             val filtered = view.filterBy.item
                 .filter(habits = notArchived, selector = selector, today = today)
             val sorted = view.sortBy.item.sort(habits = filtered, selector = selector)
