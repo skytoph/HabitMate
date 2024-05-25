@@ -37,6 +37,7 @@ import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.component.HabitTitleWithIcon
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.list.component.DeleteDialog
+import com.github.skytoph.taski.presentation.habit.list.component.RestoreDialog
 import com.github.skytoph.taski.presentation.settings.archive.HabitArchiveEvent
 import com.github.skytoph.taski.presentation.settings.archive.HabitsArchiveViewModel
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
@@ -51,7 +52,7 @@ fun ArchiveScreen(
 
     val state = viewModel.state()
     val habits = state.value.habits
-    val messageArchive = stringResource(R.string.message_habit_unarchived)
+    val messageRestore = stringResource(R.string.message_habit_unarchived)
     val messageDelete = stringResource(R.string.message_habit_deleted)
     if (habits.isEmpty())
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -64,7 +65,7 @@ fun ArchiveScreen(
         items(habits) { habit ->
             ArchivedHabitItem(
                 habit = habit,
-                unarchive = { viewModel.unarchive(it, messageArchive) },
+                unarchive = { viewModel.onEvent(HabitArchiveEvent.UpdateRestoreDialog(it)) },
                 delete = { viewModel.onEvent(HabitArchiveEvent.UpdateDeleteDialog(it)) })
         }
     }
@@ -72,6 +73,11 @@ fun ArchiveScreen(
         DeleteDialog(
             onConfirm = { viewModel.delete(id, messageDelete) },
             onDismissRequest = { viewModel.onEvent(HabitArchiveEvent.UpdateDeleteDialog(null)) })
+    }
+    state.value.restoreHabitById?.let { id ->
+        RestoreDialog(
+            onConfirm = { viewModel.restore(id, messageRestore) },
+            onDismissRequest = { viewModel.onEvent(HabitArchiveEvent.UpdateRestoreDialog(null)) })
     }
 }
 

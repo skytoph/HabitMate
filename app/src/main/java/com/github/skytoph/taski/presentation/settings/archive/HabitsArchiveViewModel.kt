@@ -34,7 +34,7 @@ class HabitsArchiveViewModel @Inject constructor(
 
     fun onEvent(event: HabitArchiveEvent) = event.handle(state)
 
-    fun unarchive(id: Long, message: String) = viewModelScope.launch(Dispatchers.IO) {
+    fun restore(id: Long, message: String) = viewModelScope.launch(Dispatchers.IO) {
         interactor.archive(id, message, false)
     }
 

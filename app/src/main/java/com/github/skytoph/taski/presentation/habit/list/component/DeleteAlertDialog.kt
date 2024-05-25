@@ -34,3 +34,18 @@ fun ArchiveDialog(
         title = stringResource(R.string.archive_habit_confirmation_dialog_title), // todo replace
     )
 }
+
+@Composable
+fun RestoreDialog(
+    onDismissRequest: () -> Unit,
+    onConfirm: () -> Unit,
+) {
+    BaseAlertDialog(
+        onDismissRequest = onDismissRequest,
+        onConfirm = onConfirm,
+        dismissLabel = stringResource(R.string.action_cancel),
+        confirmLabel = stringResource(R.string.action_restore),
+        text = stringResource(R.string.restore_habit_confirmation_dialog_title),
+        title = stringResource(R.string.restore_habit_confirmation_dialog_title), // todo replace
+    )
+}

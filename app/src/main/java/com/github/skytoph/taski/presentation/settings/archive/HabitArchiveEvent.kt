@@ -17,4 +17,10 @@ sealed interface HabitArchiveEvent {
             state.value = state.value.copy(deleteHabitById = id)
         }
     }
+
+    class UpdateRestoreDialog(private val id: Long? = null) : HabitArchiveEvent {
+        override fun handle(state: MutableState<ArchiveState>) {
+            state.value = state.value.copy(restoreHabitById = id)
+        }
+    }
 }
