@@ -1,6 +1,7 @@
 package com.github.skytoph.taski.presentation.nav
 
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -35,7 +36,11 @@ fun MainNavGraph(controller: NavHostController) {
         modifier = Modifier.fillMaxSize()
     ) {
         composable(route = HabitScreens.HabitList.route,
-            exitTransition = { fadeOut(tween(delayMillis = 90)) }) {
+            exitTransition = { fadeOut(tween(delayMillis = 60)) },
+            popEnterTransition = { fadeIn(tween(delayMillis = 60)) }) { backStackEntry ->
+            val stateDelete = backStackEntry.collectByKey<Long>(HabitScreens.HabitList.keyDelete)
+            val stateArchive = backStackEntry.collectByKey<Long>(HabitScreens.HabitList.keyDelete)
+
             HabitsScreen(
                 deleteState = stateDelete,
                 archiveState = stateArchive,
@@ -51,7 +56,7 @@ fun MainNavGraph(controller: NavHostController) {
         composable(
             route = HabitScreens.CreateHabit.route,
             enterTransition = { scaleIntoContainer(direction = ScaleTransitionDirection.OUTWARDS) },
-            exitTransition = { fadeOut(tween(delayMillis = 90)) },
+            exitTransition = { fadeOut(tween(delayMillis = 60)) },
             popExitTransition = { scaleOutOfContainer(direction = ScaleTransitionDirection.INWARDS) },
             popEnterTransition = null,
         ) {
@@ -65,7 +70,7 @@ fun MainNavGraph(controller: NavHostController) {
                 type = NavType.LongType
             }),
             enterTransition = { scaleIntoContainer(direction = ScaleTransitionDirection.OUTWARDS) },
-            exitTransition = { fadeOut(tween(delayMillis = 90)) },
+            exitTransition = { fadeOut(tween(delayMillis = 60)) },
             popExitTransition = { scaleOutOfContainer(direction = ScaleTransitionDirection.INWARDS) },
             popEnterTransition = null,
         ) {
@@ -83,7 +88,7 @@ fun MainNavGraph(controller: NavHostController) {
                 defaultValue = HabitUi.ID_DEFAULT
             }),
             enterTransition = { scaleIntoContainer(direction = ScaleTransitionDirection.OUTWARDS) },
-            exitTransition = { fadeOut(tween(delayMillis = 90)) },
+            exitTransition = { fadeOut(tween(delayMillis = 60)) },
             popExitTransition = { scaleOutOfContainer(direction = ScaleTransitionDirection.INWARDS) },
             popEnterTransition = null,
         ) {
@@ -101,6 +106,8 @@ fun MainNavGraph(controller: NavHostController) {
         ) {
             SelectIconScreen(navigateUp = controller::navigateUp)
         }
+
+        settingsNavigation(controller)
     }
 }
 
