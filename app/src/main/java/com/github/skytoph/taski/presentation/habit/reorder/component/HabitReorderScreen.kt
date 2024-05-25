@@ -3,13 +3,19 @@ package com.github.skytoph.taski.presentation.habit.reorder.component
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -17,8 +23,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
@@ -110,12 +120,28 @@ fun HabitReorderingItem(
             .shadow(elevation),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
     ) {
-        HabitTitleWithIcon(
-            modifier = Modifier.fillMaxWidth(),
-            icon = habit.icon.vector(LocalContext.current),
-            color = habit.color,
-            title = habit.title
-        )
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            HabitTitleWithIcon(
+                modifier = Modifier.weight(1f),
+                icon = habit.icon.vector(LocalContext.current),
+                color = habit.color,
+                title = habit.title,
+            )
+            Box(Modifier.padding(dimensionResource(id = R.dimen.habit_icon_padding))) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.align_justify),
+                    contentDescription = stringResource(id = R.string.reorder_habits),
+                    modifier = Modifier
+                        .size(dimensionResource(id = R.dimen.habit_icon_size))
+                        .padding(4.dp),
+                    tint = MaterialTheme.colorScheme.onSecondaryContainer
+                )
+            }
+            Spacer(modifier = Modifier.width(8.dp))
+        }
     }
 }
 
