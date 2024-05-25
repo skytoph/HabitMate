@@ -17,9 +17,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.skytoph.taski.presentation.appbar.SnackbarMessage
+import com.github.skytoph.taski.presentation.core.state.IconResource
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
@@ -46,7 +48,7 @@ fun SnackbarWithTitle(message: SnackbarMessage) {
                 color = MaterialTheme.colorScheme.onSecondaryContainer
             )
             Icon(
-                imageVector = message.icon,
+                imageVector = message.icon.vector(context = LocalContext.current),
                 contentDescription = message.title,
                 modifier = Modifier.size(32.dp)
             )
@@ -68,7 +70,7 @@ private fun SnackbarPreview() {
                 message = SnackbarMessage(
                     title = "habit",
                     message = "message...",
-                    icon = Icons.Default.Delete
+                    icon = IconResource.Vector(Icons.Default.Delete)
                 )
             )
         }
