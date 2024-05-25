@@ -8,19 +8,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import com.github.skytoph.taski.presentation.core.format.getWeekDisplayName
+import java.util.Locale
 
 @Composable
 fun WeekDayLabel(
     modifier: Modifier,
     index: Int,
-    alignment: Alignment
+    alignment: Alignment,
+    locale: Locale = getLocale()
 ) {
     Box(
         modifier = modifier,
         contentAlignment = alignment,
     ) {
         Text(
-            text = getWeekDisplayName(getLocale(), index),
+            text = getWeekDisplayName(locale, index),
             style = MaterialTheme.typography.labelSmall,
             textAlign = TextAlign.Center
         )

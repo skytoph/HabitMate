@@ -11,3 +11,15 @@ fun getWeekDisplayName(locale: Locale, dayOfWeek: Int): String {
     }
     return SimpleDateFormat("EE", locale).format(calendar.timeInMillis)
 }
+
+fun getTodayDayOfWeek(locale: Locale): Int {
+    val calendar = Calendar.getInstance(locale)
+    calendar.add(Calendar.DAY_OF_WEEK, -calendar.firstDayOfWeek)
+    return calendar.get(Calendar.DAY_OF_WEEK)
+}
+
+fun getTodayDayOfMonth(locale: Locale, days: Int): Int {
+    val calendar = Calendar.getInstance(locale)
+    calendar.add(Calendar.DAY_OF_WEEK, days)
+    return calendar.get(Calendar.DAY_OF_MONTH)
+}

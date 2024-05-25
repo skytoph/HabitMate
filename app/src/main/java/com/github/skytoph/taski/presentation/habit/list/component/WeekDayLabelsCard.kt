@@ -1,6 +1,7 @@
 package com.github.skytoph.taski.presentation.habit.list.component
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,12 +14,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.github.skytoph.taski.R
+import com.github.skytoph.taski.presentation.core.component.MonthDayLabel
 import com.github.skytoph.taski.presentation.core.component.WeekDayLabel
+import com.github.skytoph.taski.presentation.core.component.getLocale
+import com.github.skytoph.taski.presentation.core.format.getTodayDayOfWeek
+import java.util.Locale
 
 @Composable
-fun WeekDayLabelsCard(modifier: Modifier = Modifier, entries: Int = 5) {
+fun WeekDayLabelsCard(
+    modifier: Modifier = Modifier,
+    entries: Int = 5,
+    locale: Locale = getLocale()
+) {
+    val today = getTodayDayOfWeek(locale)
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -30,11 +41,14 @@ fun WeekDayLabelsCard(modifier: Modifier = Modifier, entries: Int = 5) {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 8.dp)
+                .padding(vertical = 2.dp)
         ) {
             Row(horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.entries_daily_spaced_by))) {
                 for (index in 0 until entries) {
-                    WeekDayLabel(Modifier.width(48.dp), index, Alignment.Center)
+                    Column {
+                        WeekDayLabel(Modifier.width(48.dp), today - index, Alignment.Center)
+                        MonthDayLabel(Modifier.width(48.dp), -index, TextAlign.Center)
+                    }
                 }
             }
         }
