@@ -1,4 +1,4 @@
-package com.github.skytoph.taski.presentation.habit.reorder.component
+package com.github.skytoph.taski.presentation.settings.reorder.component
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.border
@@ -43,7 +43,7 @@ import com.github.skytoph.taski.presentation.core.preview.HabitsProvider
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.HabitWithHistoryUi
 import com.github.skytoph.taski.presentation.habit.list.HistoryUi
-import com.github.skytoph.taski.presentation.habit.reorder.ReorderHabitsViewModel
+import com.github.skytoph.taski.presentation.settings.reorder.ReorderHabitsViewModel
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 import org.burnoutcrew.reorderable.ReorderableItem
 import org.burnoutcrew.reorderable.detectReorderAfterLongPress

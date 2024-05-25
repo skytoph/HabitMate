@@ -23,7 +23,7 @@ import com.github.skytoph.taski.presentation.habit.details.components.HabitDetai
 import com.github.skytoph.taski.presentation.habit.edit.component.EditHabitScreen
 import com.github.skytoph.taski.presentation.habit.icon.component.SelectIconScreen
 import com.github.skytoph.taski.presentation.habit.list.component.HabitsScreen
-import com.github.skytoph.taski.presentation.habit.reorder.component.HabitReorderScreen
+import com.github.skytoph.taski.presentation.settings.SettingsScreens
 import com.github.skytoph.taski.presentation.settings.settingsNavigation
 
 @Composable
@@ -42,13 +42,9 @@ fun MainNavGraph(controller: NavHostController) {
                 removeHabitFromState = { backStackEntry.savedStateHandle.remove<Long>(it) },
                 onCreateHabit = { controller.navigate(HabitScreens.CreateHabit.route) },
                 onHabitClick = { habitId -> controller.navigate(HabitScreens.HabitDetails(habitId.toString()).route) },
-                onReorderHabits = { controller.navigate(HabitScreens.ReorderHabits.route) },
+                onReorderHabits = { controller.navigate(SettingsScreens.ReorderList.route) },
                 onEditHabit = { habitId -> controller.navigate(HabitScreens.EditHabit(habitId.toString()).route) },
-                onSettingsClick = {
-//                    controller.popBackStack(Graph.ROOT, inclusive = true)
-                    controller.navigate(Graph.SETTINGS)
-//                    controller.navigate(SettingsScreens.SettingsList.route)
-                }
+                onSettingsClick = { controller.navigate(Graph.SETTINGS) }
             )
         }
 

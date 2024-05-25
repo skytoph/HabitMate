@@ -1,4 +1,4 @@
-package com.github.skytoph.taski.presentation.habit.reorder
+package com.github.skytoph.taski.presentation.settings.reorder
 
 import android.content.Context
 import androidx.compose.runtime.MutableState
