@@ -27,7 +27,9 @@ interface GetHabitsInteractor {
 
         override suspend fun habits(): List<Habit> = repository.habits().filterAndSort()
 
-        private fun List<Habit>.filterAndSort(): List<Habit> =
-            sort?.sort(filter?.filter(this) ?: this) ?: this
+        private fun List<Habit>.filterAndSort(): List<Habit> {
+            val filtered = filter?.filter(this) ?: this
+            return sort?.sort(filtered) ?: filtered
+        }
     }
 }
