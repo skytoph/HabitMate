@@ -1,11 +1,16 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.github.skytoph.taski.presentation.nav
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SwipeToDismiss
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -29,6 +34,14 @@ fun MainScreen(
         viewModel.initState(color)
     }
 
+    LaunchedEffect(navController) {
+        navController.currentBackStackEntryFlow.collect { backStackEntry ->
+            snackbarHostState.currentSnackbarData?.dismiss()
+        }
+    }
+
+    val dismissSnackbarState = rememberDismissState(snackbarHostState)
+
     Scaffold(
         topBar = {
             HabitAppBar(
@@ -39,11 +52,17 @@ fun MainScreen(
             )
         },
         snackbarHost = {
-            SnackbarHost(hostState = snackbarHostState) { snackbarData ->
-                val visuals = snackbarData.visuals
-                if (visuals is SnackbarMessage)
-                    SnackbarWithTitle(visuals)
-            }
+            SwipeToDismiss(
+                state = dismissSnackbarState,
+                background = {},
+                dismissContent = {
+                    SnackbarHost(hostState = snackbarHostState) { snackbarData ->
+                        val visuals = snackbarData.visuals
+                        if (visuals is SnackbarMessage) SnackbarWithTitle(visuals)
+                        else Snackbar(snackbarData)
+                    }
+                },
+            )
         },
         modifier = Modifier.fillMaxSize()
     ) { paddingValue ->

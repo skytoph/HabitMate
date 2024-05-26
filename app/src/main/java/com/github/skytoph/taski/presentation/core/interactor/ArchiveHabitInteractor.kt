@@ -1,5 +1,6 @@
 package com.github.skytoph.taski.presentation.core.interactor
 
+import androidx.compose.material3.SnackbarDuration
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.domain.habit.HabitRepository
 import com.github.skytoph.taski.presentation.appbar.PopupMessage
@@ -19,7 +20,9 @@ interface ArchiveHabitInteractor {
             repository.update(habit.copy(isArchived = archive))
             val icon =
                 IconResource.Id(if (archive) R.drawable.archive_down else R.drawable.archive_up)
-            popup.show(SnackbarMessage(archived, habit.title, icon))
+            val message =
+                SnackbarMessage(archived, habit.title, icon, duration = SnackbarDuration.Short)
+            popup.show(message)
         }
     }
 }

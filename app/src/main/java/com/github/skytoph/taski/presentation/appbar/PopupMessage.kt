@@ -17,6 +17,7 @@ interface PopupMessage {
         Mutable<SnackbarMessage, SnackbarHostState> {
 
         override suspend fun show(message: SnackbarMessage) {
+            state.currentSnackbarData?.dismiss()
             state.showSnackbar(message)
         }
 

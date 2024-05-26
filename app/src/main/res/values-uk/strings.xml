@@ -22,7 +22,7 @@
     <string name="icons_art">мистецтво</string>
 
     <string name="create_new_habit">нова звичка</string>
-    <string name="edit_habit">редагувати</string>
+    <string name="edit_habit">Редагувати</string>
 
     <string name="history_label">історія</string>
     <string name="icon_label">іконка</string>
@@ -37,7 +37,7 @@
     <string name="color">колір</string>
 
     <!--    Dialog-->
-    <string name="action_cancel">відмінити</string>
+    <string name="action_cancel">Відмінити</string>
 
     <!--    Delete dialog-->
     <string name="delete_habit_confirmation_dialog_title">Видалити звичку</string>
@@ -52,6 +52,6 @@
     <!--    Restore dialog-->
     <string name="restore_habit_confirmation_dialog_title">Відновити звичку</string>
     <string name="restore_habit_confirmation_dialog_description">Ви хочете відновити звичку?</string>
-    <string name="action_restore">Відновити</string>
+    <string name="action_restore">Підтвердити</string>
 
 </resources>

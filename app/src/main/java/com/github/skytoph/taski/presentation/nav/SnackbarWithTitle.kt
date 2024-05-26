@@ -25,15 +25,17 @@ import com.github.skytoph.taski.presentation.core.state.IconResource
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
-fun SnackbarWithTitle(message: SnackbarMessage) {
+fun SnackbarWithTitle(message: SnackbarMessage, modifier: Modifier = Modifier) {
     Snackbar(
         shape = MaterialTheme.shapes.medium,
         containerColor = MaterialTheme.colorScheme.primaryContainer,
         contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
-        modifier = Modifier.padding(16.dp)
+        modifier = modifier.padding(16.dp)
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 4.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
@@ -57,7 +59,7 @@ fun SnackbarWithTitle(message: SnackbarMessage) {
 }
 
 @Composable
-@Preview(showBackground = true, showSystemUi = true)
+@Preview
 private fun SnackbarPreview() {
     HabitMateTheme(darkTheme = true) {
         Box(
