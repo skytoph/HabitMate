@@ -61,7 +61,7 @@ fun HabitDetailsScreen(
         val delete = AppBarAction.delete.copy(
             color = colorDelete,
             onClick = { viewModel.onEvent(HabitDetailsEvent.ShowDialog(true)) })
-        viewModel.initAppBar(title = R.string.habit_details, dropDownItems = listOf(edit, delete))
+        viewModel.initAppBar(title = R.string.habit_details_label, dropDownItems = listOf(edit, delete))
     }
 
     val onHideDialog = { viewModel.onEvent(HabitDetailsEvent.ShowDialog(false)) }

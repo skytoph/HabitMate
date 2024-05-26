@@ -1,13 +1,19 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.github.skytoph.taski.presentation.habit.details.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LocalMinimumInteractiveComponentEnforcement
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.github.skytoph.taski.presentation.habit.list.component.DeleteDialog
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
@@ -20,13 +26,21 @@ fun BaseAlertDialog(
     confirmLabel: String,
     text: String,
     title: String,
+    confirmColor: Color = MaterialTheme.colorScheme.error,
+    confirmContainerColor: Color = MaterialTheme.colorScheme.errorContainer,
 ) {
     AlertDialog(
         text = {
             Text(
                 text = text,
                 modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+        },
+        title = {
+            Text(
+                text = title,
+                modifier = Modifier.fillMaxWidth(),
                 color = MaterialTheme.colorScheme.onBackground
             )
         },
@@ -34,36 +48,50 @@ fun BaseAlertDialog(
             onDismissRequest()
         },
         confirmButton = {
-            TextButton(onClick = onConfirm) {
-                Text(
-                    text = confirmLabel,
-                    color = MaterialTheme.colorScheme.error
-                )
+            CompositionLocalProvider(
+                LocalMinimumInteractiveComponentEnforcement provides false,
+            ) {
+                TextButton(
+                    onClick = onConfirm,
+                    modifier = Modifier.background(
+                        color = confirmContainerColor, shape = MaterialTheme.shapes.medium
+                    )
+                ) {
+                    Text(
+                        text = confirmLabel,
+                        color = confirmColor
+                    )
+                }
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismissRequest) {
-                Text(
-                    text = dismissLabel,
-                    color = MaterialTheme.colorScheme.onSecondary
-                )
+            CompositionLocalProvider(
+                LocalMinimumInteractiveComponentEnforcement provides false,
+            ) {
+                TextButton(onClick = onDismissRequest) {
+                    Text(
+                        text = dismissLabel,
+                        color = MaterialTheme.colorScheme.onSecondary
+                    )
+                }
             }
-        }
+        },
+        shape = MaterialTheme.shapes.medium,
     )
 }
 
 @Composable
 @Preview
-fun DeleteDialogPreview() {
+private fun DeleteDialogPreview() {
     HabitMateTheme {
-        DeleteDialog(onDismissRequest = {}, onConfirm = {})
+        DeleteDialog()
     }
 }
 
 @Composable
 @Preview
-fun DarkDeleteDialogPreview() {
+private fun DarkDeleteDialogPreview() {
     HabitMateTheme(darkTheme = true) {
-        DeleteDialog(onDismissRequest = {}, onConfirm = {})
+        DeleteDialog()
     }
 }
