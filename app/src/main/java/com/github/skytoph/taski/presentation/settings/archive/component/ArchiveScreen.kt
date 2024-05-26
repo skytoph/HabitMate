@@ -3,11 +3,9 @@ package com.github.skytoph.taski.presentation.settings.archive.component
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -34,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.skytoph.taski.R
+import com.github.skytoph.taski.presentation.core.component.EmptyScreen
 import com.github.skytoph.taski.presentation.core.component.HabitTitleWithIcon
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.list.component.DeleteDialog
@@ -54,10 +53,10 @@ fun ArchiveScreen(
     val habits = state.value.habits
     val messageRestore = stringResource(R.string.message_habit_unarchived)
     val messageDelete = stringResource(R.string.message_habit_deleted)
-    if (habits.isEmpty())
-        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text(text = "archive is empty")
-        }
+    if (habits.isEmpty()) EmptyScreen(
+        title = stringResource(R.string.archive_is_empty_label),
+        icon = ImageVector.vectorResource(R.drawable.archive)
+    )
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier.padding(horizontal = 16.dp)
@@ -71,12 +70,18 @@ fun ArchiveScreen(
     }
     state.value.deleteHabitById?.let { id ->
         DeleteDialog(
-            onConfirm = { viewModel.delete(id, messageDelete) },
+            onConfirm = {
+                viewModel.delete(id, messageDelete)
+                viewModel.onEvent(HabitArchiveEvent.UpdateDeleteDialog(null))
+            },
             onDismissRequest = { viewModel.onEvent(HabitArchiveEvent.UpdateDeleteDialog(null)) })
     }
     state.value.restoreHabitById?.let { id ->
         RestoreDialog(
-            onConfirm = { viewModel.restore(id, messageRestore) },
+            onConfirm = {
+                viewModel.restore(id, messageRestore)
+                viewModel.onEvent(HabitArchiveEvent.UpdateRestoreDialog(null))
+            },
             onDismissRequest = { viewModel.onEvent(HabitArchiveEvent.UpdateRestoreDialog(null)) })
     }
 }

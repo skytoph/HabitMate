@@ -38,6 +38,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import com.github.skytoph.taski.R
+import com.github.skytoph.taski.presentation.core.component.EmptyScreen
 import com.github.skytoph.taski.presentation.core.component.HabitTitleWithIcon
 import com.github.skytoph.taski.presentation.core.preview.HabitsProvider
 import com.github.skytoph.taski.presentation.habit.HabitUi
@@ -83,6 +84,11 @@ private fun HabitsReorder(
 ) {
     val state =
         rememberReorderableLazyListState(onMove = { from, to -> onSwap(from.index, to.index) })
+
+    if (habits.isEmpty()) EmptyScreen(
+        title = stringResource(R.string.list_of_habits_is_empty_label),
+        icon = ImageVector.vectorResource(R.drawable.sparkles)
+    )
 
     LazyColumn(
         state = state.listState,

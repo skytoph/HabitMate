@@ -1,21 +1,20 @@
 package com.github.skytoph.taski.presentation.habit.list.component
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.component.AppBarAction
+import com.github.skytoph.taski.presentation.core.component.EmptyScreen
 import com.github.skytoph.taski.presentation.core.component.LoadingCirclesFullscreen
 import com.github.skytoph.taski.presentation.core.preview.HabitsProvider
 import com.github.skytoph.taski.presentation.habit.HabitScreens
@@ -73,7 +72,10 @@ fun HabitsScreen(
 
     Box {
         if (state.value.isLoading) LoadingCirclesFullscreen()
-        else if (state.value.habits.isEmpty()) EmptyHabitsList()
+        else if (state.value.habits.isEmpty()) EmptyScreen(
+            title = stringResource(R.string.list_of_habits_is_empty_label),
+            icon = ImageVector.vectorResource(R.drawable.sparkles)
+        )
         if (state.value.isViewTypeVisible)
             ViewBottomSheet(
                 view = view.value,
@@ -122,13 +124,6 @@ fun HabitsScreen(
                 viewModel.onEvent(HabitListEvent.ShowArchiveDialog(null))
                 viewModel.onEvent(HabitListEvent.UpdateContextMenu(null))
             })
-    }
-}
-
-@Composable
-fun EmptyHabitsList() {
-    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text(text = "list of habits is empty")
     }
 }
 

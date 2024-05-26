@@ -93,4 +93,6 @@
     <string name="message_habit_archived">habit archived</string>
     <string name="message_habit_unarchived">habit restored</string>
     <string name="title_archive">Archive</string>
+    <string name="list_of_habits_is_empty_label">List of habits is empty</string>
+    <string name="archive_is_empty_label">Archive is empty</string>
 </resources>
