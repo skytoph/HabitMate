@@ -2,7 +2,6 @@
 
 package com.github.skytoph.taski.presentation.habit.list.component
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -41,8 +40,7 @@ fun HabitsScreen(
     removeHabitFromState: (String) -> Unit,
     deleteState: State<Long?>,
     archiveState: State<Long?>,
-) {
-    val onSurface = MaterialTheme.colorScheme.onBackground
+) {val onSurface = MaterialTheme.colorScheme.onBackground
     LaunchedEffect(Unit) {
         val actionAdd = AppBarAction.add.copy(color = onSurface, onClick = onCreateHabit)
         val actionView = AppBarAction.view.copy(color = onSurface,
@@ -73,30 +71,14 @@ fun HabitsScreen(
     val view = viewModel.view.collectAsState()
     val state = viewModel.state()
 
-    Box {
-        if (state.value.isLoading) LoadingCirclesFullscreen()
-        else if (state.value.habits.isEmpty()) EmptyScreen(
+    if (state.value.isLoading)
+        LoadingCirclesFullscreen()
+    else if (state.value.habits.isEmpty())
+        EmptyScreen(
             title = stringResource(R.string.list_of_habits_is_empty_label),
             icon = ImageVector.vectorResource(R.drawable.sparkles)
         )
-        if (state.value.isViewTypeVisible)
-            ViewBottomSheet(
-                view = view.value,
-                hideBottomSheet = { viewModel.onEvent(HabitListEvent.ShowViewType(false)) },
-                selectViewType = { viewModel.onEvent(HabitListEvent.UpdateView(viewType = it)) },
-                selectSorting = { viewModel.onEvent(HabitListEvent.UpdateView(sortBy = it)) },
-                selectFilter = { viewModel.onEvent(HabitListEvent.UpdateView(filterBy = it)) },
-                reorder = onReorderHabits
-            )
-        state.value.contextMenuHabitId?.let { id ->
-            HabitBottomSheet(
-                hideBottomSheet = { viewModel.onEvent(HabitListEvent.UpdateContextMenu(null)) },
-                editHabit = { onEditHabit(id) },
-                deleteHabit = { viewModel.onEvent(HabitListEvent.ShowDeleteDialog(id)) },
-                archiveHabit = { viewModel.onEvent(HabitListEvent.ShowArchiveDialog(id)) },
-                reorder = onReorderHabits
-            )
-        }
+    else
         Habits(
             state = state,
             view = view.value.viewType.item,
@@ -104,6 +86,25 @@ fun HabitsScreen(
             onHabitLongClick = { habit -> viewModel.onEvent(HabitListEvent.UpdateContextMenu(habit.id)) },
             onHabitDone = { habit, daysAgo -> viewModel.habitDone(habit, daysAgo) },
             updateState = { entries -> viewModel.onEvent(HabitListEvent.UpdateEntries(entries)) }
+        )
+
+    if (state.value.isViewTypeVisible)
+        ViewBottomSheet(
+            view = view.value,
+            hideBottomSheet = { viewModel.onEvent(HabitListEvent.ShowViewType(false)) },
+            selectViewType = { viewModel.onEvent(HabitListEvent.UpdateView(viewType = it)) },
+            selectSorting = { viewModel.onEvent(HabitListEvent.UpdateView(sortBy = it)) },
+            selectFilter = { viewModel.onEvent(HabitListEvent.UpdateView(filterBy = it)) },
+            reorder = onReorderHabits
+        )
+
+    state.value.contextMenuHabitId?.let { id ->
+        HabitBottomSheet(
+            hideBottomSheet = { viewModel.onEvent(HabitListEvent.UpdateContextMenu(null)) },
+            editHabit = { onEditHabit(id) },
+            deleteHabit = { viewModel.onEvent(HabitListEvent.ShowDeleteDialog(id)) },
+            archiveHabit = { viewModel.onEvent(HabitListEvent.ShowArchiveDialog(id)) },
+            reorder = onReorderHabits
         )
     }
 
