@@ -1,6 +1,9 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.github.skytoph.taski.presentation.habit.list.component
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect

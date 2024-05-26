@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.github.skytoph.taski.presentation.core.component
 
 import androidx.compose.foundation.clickable
@@ -11,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -65,7 +68,7 @@ fun <M : Matches<M>, T : OptionItem<M>> OptionsDropdown(
                 Spacer(modifier = Modifier.width(12.dp))
                 Text(
                     text = selected.option.title.getString(context),
-                    style = MaterialTheme.typography.titleSmall
+                    style = MaterialTheme.typography.bodyMedium
                 )
             }
 
@@ -80,7 +83,7 @@ fun <M : Matches<M>, T : OptionItem<M>> OptionsDropdown(
                             text = {
                                 Text(
                                     text = option.option.title.getString(context),
-                                    style = MaterialTheme.typography.titleSmall
+                                    style = MaterialTheme.typography.bodyMedium
                                 )
                             },
                             leadingIcon = {

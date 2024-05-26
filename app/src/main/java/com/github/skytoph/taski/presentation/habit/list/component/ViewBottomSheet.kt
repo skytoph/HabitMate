@@ -1,22 +1,35 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.github.skytoph.taski.presentation.habit.list.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.skytoph.taski.R
@@ -29,8 +42,8 @@ import com.github.skytoph.taski.presentation.habit.list.view.ViewOption
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 fun ViewBottomSheet(
+    state: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
     view: HabitsView = HabitsView(),
     hideBottomSheet: () -> Unit = {},
     selectViewType: (ViewOption) -> Unit = {},
@@ -38,12 +51,13 @@ fun ViewBottomSheet(
     selectFilter: (FilterOption) -> Unit = {},
     reorder: () -> Unit = {}
 ) {
-    val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     ModalBottomSheet(
         onDismissRequest = hideBottomSheet,
         sheetState = state
     ) {
-        Column {
+        Column(
+            modifier = Modifier.fillMaxWidth()
+        ) {
             OptionsDropdown(
                 title = stringResource(R.string.view_layout),
                 options = HabitsViewOptionsProvider.viewOptions,
@@ -72,26 +86,37 @@ fun ViewBottomSheet(
 }
 
 @Composable
-private fun ReorderButton(reorder: () -> Unit) {
-    Box(
+private fun ReorderButton(reorder: () -> Unit = {}) {
+    Row(
         modifier = Modifier
-            .padding(horizontal = 8.dp, vertical = 8.dp)
-            .clip(CircleShape)
+            .padding(horizontal = 16.dp, vertical = 16.dp)
+            .clip(MaterialTheme.shapes.large)
             .clickable { reorder() }
-            .padding(horizontal = 8.dp, vertical = 8.dp),
+            .background(MaterialTheme.colorScheme.secondaryContainer)
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
     ) {
+        Icon(
+            imageVector = ImageVector.vectorResource(R.drawable.arrow_up_down),
+            contentDescription = stringResource(R.string.reorder_habits),
+            modifier = Modifier.size(20.dp),
+            tint = MaterialTheme.colorScheme.onBackground
+        )
+        Spacer(modifier = Modifier.width(4.dp))
         Text(
-            text = "reorder habits",
-            style = MaterialTheme.typography.titleSmall,
-            color = MaterialTheme.colorScheme.primary
+            text = stringResource(R.string.reorder_habits),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onBackground,
+            fontWeight = FontWeight.Normal
         )
     }
 }
 
 @Composable
-@Preview(showSystemUi = true, showBackground = true)
+@Preview
 private fun BottomSheetPreview() {
     HabitMateTheme(darkTheme = true) {
-        ViewBottomSheet()
+        ViewBottomSheet(state = rememberStandardBottomSheetState())
     }
 }

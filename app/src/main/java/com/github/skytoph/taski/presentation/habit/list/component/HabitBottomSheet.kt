@@ -11,25 +11,29 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.component.TitleWithIconMenuItem
+import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
 fun HabitBottomSheet(
+    state: SheetState = rememberModalBottomSheetState(),
     hideBottomSheet: () -> Unit = {},
     deleteHabit: () -> Unit = {},
-    archiveHabit: () -> Unit,
+    archiveHabit: () -> Unit = {},
     editHabit: () -> Unit = {},
     reorder: () -> Unit = {},
 ) {
-    val state = rememberModalBottomSheetState()
     ModalBottomSheet(
         onDismissRequest = hideBottomSheet,
         sheetState = state
@@ -62,5 +66,13 @@ fun HabitBottomSheet(
 
             Spacer(modifier = Modifier.height(80.dp))
         }
+    }
+}
+
+@Composable
+@Preview
+private fun HabitBottomSheetPreview() {
+    HabitMateTheme(darkTheme = true) {
+        HabitBottomSheet(state = rememberStandardBottomSheetState())
     }
 }
