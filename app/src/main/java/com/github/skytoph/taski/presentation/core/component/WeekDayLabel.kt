@@ -6,6 +6,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import com.github.skytoph.taski.presentation.core.format.getWeekDisplayName
 import java.util.Locale
@@ -14,8 +15,9 @@ import java.util.Locale
 fun WeekDayLabel(
     modifier: Modifier,
     index: Int,
-    alignment: Alignment,
-    locale: Locale = getLocale()
+    alignment: Alignment = Alignment.CenterStart,
+    locale: Locale = getLocale(),
+    color: Color = MaterialTheme.colorScheme.onBackground
 ) {
     Box(
         modifier = modifier,
@@ -24,6 +26,7 @@ fun WeekDayLabel(
         Text(
             text = getWeekDisplayName(locale, index),
             style = MaterialTheme.typography.labelSmall,
+            color = color,
             textAlign = TextAlign.Center
         )
     }

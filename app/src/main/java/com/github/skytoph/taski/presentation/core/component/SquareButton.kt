@@ -2,7 +2,6 @@ package com.github.skytoph.taski.presentation.core.component
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
@@ -19,10 +18,15 @@ import androidx.compose.ui.unit.dp
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
-fun SquareButton(onClick: () -> Unit, icon: ImageVector, size: Dp, isEnabled: Boolean) {
+fun SquareButton(
+    onClick: () -> Unit,
+    icon: ImageVector,
+    size: Dp = 48.dp,
+    isEnabled: Boolean = true
+) {
     TextButton(
         onClick = onClick,
-        shape = RoundedCornerShape(10),
+        shape = MaterialTheme.shapes.extraSmall,
         modifier = Modifier.size(size),
         colors = ButtonDefaults.textButtonColors(
             containerColor = MaterialTheme.colorScheme.secondary,

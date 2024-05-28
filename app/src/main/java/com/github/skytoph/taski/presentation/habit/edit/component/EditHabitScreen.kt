@@ -2,17 +2,14 @@ package com.github.skytoph.taski.presentation.habit.edit.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
@@ -31,7 +28,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -39,15 +35,12 @@ import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.component.AppBarAction
 import com.github.skytoph.taski.presentation.core.component.SquareButton
 import com.github.skytoph.taski.presentation.core.component.TitleTextField
-import com.github.skytoph.taski.presentation.core.preview.HabitsEditableProvider
 import com.github.skytoph.taski.presentation.core.state.FieldState
 import com.github.skytoph.taski.presentation.core.state.IconResource
 import com.github.skytoph.taski.presentation.habit.create.GoalState
-import com.github.skytoph.taski.presentation.habit.list.component.DeleteDialog
 import com.github.skytoph.taski.presentation.habit.edit.EditHabitEvent
 import com.github.skytoph.taski.presentation.habit.edit.EditHabitState
 import com.github.skytoph.taski.presentation.habit.edit.EditHabitViewModel
-import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
@@ -80,7 +73,6 @@ fun EditHabitScreen(
 
     EditHabit(
         state = viewModel.state(),
-        navigateUp = navigateUp,
         onSelectIconClick = onSelectIconClick,
         onTypeTitle = { viewModel.onEvent(EditHabitEvent.EditTitle(it)) },
         onDecreaseGoal = { viewModel.onEvent(EditHabitEvent.DecreaseGoal) },
@@ -91,41 +83,21 @@ fun EditHabitScreen(
 @Composable
 private fun EditHabit(
     state: State<EditHabitState>,
-    navigateUp: () -> Unit = {},
     onSelectIconClick: () -> Unit = {},
-    onDeleteHabit: () -> Unit = {},
-    onHideDialog: () -> Unit = {},
     onTypeTitle: (String) -> Unit = {},
     onDecreaseGoal: () -> Unit = {},
     onIncreaseGoal: () -> Unit = {},
 ) {
-    Column(
-        modifier = Modifier
-            .padding(horizontal = 16.dp)
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
-    ) {
-        EditBaseHabit(
-            title = state.value.title,
-            goal = state.value.goal,
-            icon = state.value.icon,
-            color = state.value.color,
-            onTypeTitle = onTypeTitle,
-            onSelectIconClick = onSelectIconClick,
-            onDecreaseGoal = onDecreaseGoal,
-            onIncreaseGoal = onIncreaseGoal,
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-    }
-
-    if (state.value.isDialogShown)
-        DeleteDialog(
-            onDismissRequest = onHideDialog,
-            onConfirm = {
-                onDeleteHabit()
-                onHideDialog()
-                navigateUp()
-            })
+    EditBaseHabit(
+        title = state.value.title,
+        goal = state.value.goal,
+        icon = state.value.icon,
+        color = state.value.color,
+        onTypeTitle = onTypeTitle,
+        onSelectIconClick = onSelectIconClick,
+        onDecreaseGoal = onDecreaseGoal,
+        onIncreaseGoal = onIncreaseGoal,
+    )
 }
 
 @Composable
@@ -140,50 +112,61 @@ fun EditBaseHabit(
     onIncreaseGoal: () -> Unit,
     minHeight: Dp = 48.dp
 ) {
-    Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-        TitleTextField(
-            modifier = Modifier.weight(1f),
-            value = title.field,
-            onValueChange = onTypeTitle,
-            error = title.error?.getString(LocalContext.current),
-            height = minHeight
-        )
-        IconSelector(
-            icon = icon,
-            color = color,
-            size = minHeight,
-            onClick = onSelectIconClick
-        )
-    }
-    Spacer(modifier = Modifier.height(4.dp))
-    Text(text = stringResource(R.string.goal_label), style = MaterialTheme.typography.titleSmall)
-    Spacer(modifier = Modifier.height(4.dp))
-    Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+    Column(
+        modifier = Modifier.padding(horizontal = 16.dp)
+    ) {
+        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+            TitleTextField(
+                modifier = Modifier.weight(1f),
+                value = title.field,
+                onValueChange = onTypeTitle,
+                error = title.error?.getString(LocalContext.current),
+                height = minHeight
+            )
+            IconSelector(
+                icon = icon,
+                color = color,
+                size = minHeight,
+                onClick = onSelectIconClick
+            )
+        }
+        Spacer(modifier = Modifier.height(4.dp))
         Text(
-            text = stringResource(R.string.goal_value, goal.value),
-            modifier = Modifier
-                .background(
-                    color = MaterialTheme.colorScheme.surfaceVariant,
-                    shape = RoundedCornerShape(10)
-                )
-                .padding(horizontal = 16.dp)
-                .height(minHeight)
-                .wrapContentHeight()
-                .weight(1f),
-            style = MaterialTheme.typography.bodyMedium
+            text = stringResource(R.string.goal_label),
+            style = MaterialTheme.typography.titleSmall
         )
-        SquareButton(
-            onClick = onDecreaseGoal,
-            icon = Icons.Default.Remove,
-            size = minHeight,
-            isEnabled = goal.canBeDecreased
-        )
-        SquareButton(
-            onClick = onIncreaseGoal,
-            icon = Icons.Default.Add,
-            size = minHeight,
-            isEnabled = goal.canBeIncreased
-        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+            Text(
+                text = stringResource(R.string.goal_value, goal.value),
+                modifier = Modifier
+                    .background(
+                        color = MaterialTheme.colorScheme.surfaceVariant,
+                        shape = MaterialTheme.shapes.extraSmall
+                    )
+                    .padding(horizontal = 16.dp)
+                    .height(minHeight)
+                    .wrapContentHeight()
+                    .weight(1f),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            SquareButton(
+                onClick = onDecreaseGoal,
+                icon = Icons.Default.Remove,
+                size = minHeight,
+                isEnabled = goal.canBeDecreased
+            )
+            SquareButton(
+                onClick = onIncreaseGoal,
+                icon = Icons.Default.Add,
+                size = minHeight,
+                isEnabled = goal.canBeIncreased
+            )
+        }
+        Spacer(modifier = Modifier.height(18.dp))
+        EditFrequency(minHeight = minHeight)
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }
 
@@ -207,7 +190,7 @@ fun IconSelector(
             onClick = onClick,
             modifier = Modifier
                 .size(size)
-                .background(color = color, shape = RoundedCornerShape(10))
+                .background(color = color, shape = MaterialTheme.shapes.extraSmall)
         ) {
             Icon(
                 imageVector = icon.vector(context),
@@ -221,7 +204,7 @@ fun IconSelector(
 
 @Composable
 @Preview(showSystemUi = true, showBackground = true)
-fun HabitScreenPreview(@PreviewParameter(HabitsEditableProvider::class) entries: List<EditableHistoryUi>) {
+private fun HabitScreenPreview() {
     HabitMateTheme(darkTheme = false) {
         EditHabit(
             state = remember { mutableStateOf(EditHabitState()) }
@@ -230,11 +213,13 @@ fun HabitScreenPreview(@PreviewParameter(HabitsEditableProvider::class) entries:
 }
 
 @Composable
-@Preview(showSystemUi = true, showBackground = true)
-fun DarkHabitScreenPreview(@PreviewParameter(HabitsEditableProvider::class) entries: List<EditableHistoryUi>) {
+@Preview
+private fun DarkHabitScreenPreview() {
     HabitMateTheme(darkTheme = true) {
-        EditHabit(
-            state = remember { mutableStateOf(EditHabitState()) }
-        )
+        Box(modifier = Modifier.background(Color.White)) {
+            EditHabit(
+                state = remember { mutableStateOf(EditHabitState()) }
+            )
+        }
     }
 }

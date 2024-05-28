@@ -108,4 +108,20 @@
     <string name="title_archive">Archive</string>
     <string name="list_of_habits_is_empty_label">List of habits is empty</string>
     <string name="archive_is_empty_label">Archive is empty</string>
+    <plurals name="times_label">
+        <item quantity="one">time</item>
+        <item quantity="other">times</item>
+    </plurals>
+    <plurals name="week_label">
+        <item quantity="one">week</item>
+        <item quantity="other">weeks</item>
+    </plurals>
+    <plurals name="month_label">
+        <item quantity="one">month</item>
+        <item quantity="other">months</item>
+    </plurals>
+    <plurals name="day_label">
+        <item quantity="one">day</item>
+        <item quantity="other">days</item>
+    </plurals>
 </resources>
