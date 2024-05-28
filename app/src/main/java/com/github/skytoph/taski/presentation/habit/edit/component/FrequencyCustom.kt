@@ -1,5 +1,6 @@
 package com.github.skytoph.taski.presentation.habit.edit.component
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,12 +29,13 @@ import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyState
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
-fun FrequencyCustom(minHeight: Dp = 48.dp, counterSize: Dp = 40.dp) {
+fun FrequencyCustom(counterSize: Dp = 40.dp) {
     val state = remember { mutableStateOf(FrequencyState()) }
     Column(
         modifier = Modifier
             .padding(horizontal = 8.dp, vertical = 4.dp)
             .fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -54,7 +56,7 @@ fun FrequencyCustom(minHeight: Dp = 48.dp, counterSize: Dp = 40.dp) {
                     state.value = state.value.copy(timesCount = state.value.timesCount - 1)
                 },
                 icon = Icons.Default.Remove,
-                isEnabled = true,
+                isEnabled = false,
                 size = 40.dp
             )
             Spacer(modifier = Modifier.width(4.dp))
@@ -65,17 +67,6 @@ fun FrequencyCustom(minHeight: Dp = 48.dp, counterSize: Dp = 40.dp) {
                 icon = Icons.Default.Add,
                 isEnabled = true,
                 size = 40.dp
-            )
-        }
-        Box(
-            modifier = Modifier
-                .padding(horizontal = counterSize, vertical = 4.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = "in",
-                color = MaterialTheme.colorScheme.onBackground,
-                style = MaterialTheme.typography.bodySmall,
             )
         }
         Row(
@@ -96,7 +87,7 @@ fun FrequencyCustom(minHeight: Dp = 48.dp, counterSize: Dp = 40.dp) {
             SquareButton(
                 onClick = { state.value = state.value.copy(inCount = state.value.inCount - 1) },
                 icon = Icons.Default.Remove,
-                isEnabled = true,
+                isEnabled = false,
                 size = counterSize
             )
             Spacer(modifier = Modifier.width(4.dp))

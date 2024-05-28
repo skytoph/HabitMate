@@ -113,7 +113,7 @@ fun EditBaseHabit(
     minHeight: Dp = 48.dp
 ) {
     Column(
-        modifier = Modifier.padding(horizontal = 16.dp)
+        modifier = Modifier.padding(horizontal = 8.dp)
     ) {
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             TitleTextField(
@@ -165,6 +165,11 @@ fun EditBaseHabit(
             )
         }
         Spacer(modifier = Modifier.height(18.dp))
+        Text(
+            text = "frequency",
+            style = MaterialTheme.typography.titleSmall
+        )
+        Spacer(modifier = Modifier.height(4.dp))
         EditFrequency(minHeight = minHeight)
         Spacer(modifier = Modifier.height(16.dp))
     }
@@ -203,20 +208,10 @@ fun IconSelector(
 }
 
 @Composable
-@Preview(showSystemUi = true, showBackground = true)
-private fun HabitScreenPreview() {
-    HabitMateTheme(darkTheme = false) {
-        EditHabit(
-            state = remember { mutableStateOf(EditHabitState()) }
-        )
-    }
-}
-
-@Composable
 @Preview
 private fun DarkHabitScreenPreview() {
     HabitMateTheme(darkTheme = true) {
-        Box(modifier = Modifier.background(Color.White)) {
+        Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
             EditHabit(
                 state = remember { mutableStateOf(EditHabitState()) }
             )

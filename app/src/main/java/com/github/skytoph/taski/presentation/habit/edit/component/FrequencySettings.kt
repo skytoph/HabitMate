@@ -2,13 +2,15 @@ package com.github.skytoph.taski.presentation.habit.edit.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Divider
+import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,29 +31,40 @@ fun FrequencySettings(
 ) {
     Column(
         modifier = Modifier
-            .padding(4.dp)
             .background(
-                color = MaterialTheme.colorScheme.secondaryContainer,
-                shape = MaterialTheme.shapes.small
+                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                shape = MaterialTheme.shapes.extraSmall
             )
+            .clip(MaterialTheme.shapes.extraSmall)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(4.dp),
+                .padding(horizontal = 8.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             FrequencyOption(
                 modifier = Modifier.weight(1f),
                 title = "daily",
                 selected = frequency == FrequencySettingType.Daily,
                 select = { selectType(FrequencySettingType.Daily) })
+            Divider(
+                modifier = Modifier
+                    .width(1.dp)
+                    .height(16.dp),
+                color = if (frequency == FrequencySettingType.Custom) DividerDefaults.color else Color.Transparent
+            )
             FrequencyOption(
                 modifier = Modifier.weight(1f),
                 title = "monthly",
                 selected = frequency == FrequencySettingType.Monthly,
                 select = { selectType(FrequencySettingType.Monthly) })
+            Divider(
+                modifier = Modifier
+                    .width(1.dp)
+                    .height(16.dp),
+                color = if (frequency == FrequencySettingType.Daily) DividerDefaults.color else Color.Transparent
+            )
             FrequencyOption(
                 modifier = Modifier.weight(1f),
                 title = "custom",
@@ -78,7 +91,7 @@ private fun FrequencyOption(
         textAlign = TextAlign.Center,
         modifier = modifier
             .background(
-                if (selected) MaterialTheme.colorScheme.primary.copy(alpha = 0.35f) else Color.Transparent,
+                if (selected) MaterialTheme.colorScheme.secondaryContainer else Color.Transparent,
                 MaterialTheme.shapes.small
             )
             .clip(MaterialTheme.shapes.small)

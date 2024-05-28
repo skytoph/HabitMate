@@ -63,7 +63,7 @@ private fun MonthlyItem(
                 )
                 .aspectRatio(1f)
         )
-        Text(text = index.toString(), color = MaterialTheme.colorScheme.onBackground)
+        Text(text = index.toString(), color = MaterialTheme.colorScheme.onTertiary)
     }
 }
 

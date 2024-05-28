@@ -17,7 +17,7 @@ import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
 fun FrequencyDaily() {
-    Column {
+    Column(modifier = Modifier.padding(horizontal = 8.dp)) {
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             for (index in 0 until 7)
                 WeekDayLabel(
@@ -29,7 +29,8 @@ fun FrequencyDaily() {
                         )
                         .padding(vertical = 6.dp),
                     index = index,
-                    alignment = Alignment.Center
+                    alignment = Alignment.Center,
+                    color = MaterialTheme.colorScheme.onTertiary
                 )
         }
     }

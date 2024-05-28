@@ -18,13 +18,13 @@ fun FrequencyCounter(
 ) {
     Box(
         modifier = Modifier
-            .background(MaterialTheme.colorScheme.background, MaterialTheme.shapes.extraSmall)
+            .background(MaterialTheme.colorScheme.primary, MaterialTheme.shapes.extraSmall)
             .size(size),
         contentAlignment = Alignment.Center
     ) {
         Text(
             text = text,
-            color = MaterialTheme.colorScheme.onBackground,
+            color = MaterialTheme.colorScheme.onTertiary,
             style = MaterialTheme.typography.bodySmall
         )
     }

@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -24,7 +23,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -40,22 +38,18 @@ fun EditFrequency(
     val frequency: MutableState<FrequencySettingType> =
         remember { mutableStateOf(FrequencySettingType.Custom) }
     val expanded = remember { mutableStateOf(true) }
-    Text(
-        text = "frequency",
-        style = MaterialTheme.typography.titleSmall
-    )
-    Spacer(modifier = Modifier.height(4.dp))
     Column(
         modifier = Modifier
-            .background(
-                color = MaterialTheme.colorScheme.surfaceVariant,
-                shape = MaterialTheme.shapes.extraSmall
-            )
             .also { if (!expanded.value) it.height(minHeight) }
             .fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         Row(
             modifier = Modifier
+                .background(
+                    color = MaterialTheme.colorScheme.surfaceVariant,
+                    shape = MaterialTheme.shapes.extraSmall
+                )
                 .fillMaxWidth()
                 .height(minHeight)
                 .clip(MaterialTheme.shapes.extraSmall)
@@ -86,7 +80,7 @@ fun EditFrequency(
 @Preview
 private fun FrequencyPreview() {
     HabitMateTheme(darkTheme = true) {
-        Box(modifier = Modifier.background(Color.White)) {
+        Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
             EditFrequency()
         }
     }

@@ -11,6 +11,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -27,7 +28,7 @@ fun SquareButton(
     TextButton(
         onClick = onClick,
         shape = MaterialTheme.shapes.extraSmall,
-        modifier = Modifier.size(size),
+        modifier = Modifier.shadow(1.dp, MaterialTheme.shapes.extraSmall).size(size),
         colors = ButtonDefaults.textButtonColors(
             containerColor = MaterialTheme.colorScheme.secondary,
             contentColor = MaterialTheme.colorScheme.onTertiary,
