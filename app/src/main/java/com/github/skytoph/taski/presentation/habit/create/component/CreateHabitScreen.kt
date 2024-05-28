@@ -59,7 +59,8 @@ fun CreateHabitScreen(
         decreaseTimes = { viewModel.onEvent(CreateHabitEvent.DecreaseFrequencyTimes) },
         increaseType = { viewModel.onEvent(CreateHabitEvent.IncreaseFrequencyType) },
         decreaseType = { viewModel.onEvent(CreateHabitEvent.DecreaseFrequencyType) },
-        selectType = { viewModel.onEvent(CreateHabitEvent.SelectFrequency(it)) })
+        selectType = { viewModel.onEvent(CreateHabitEvent.SelectFrequency(it)) },
+        selectDay = { viewModel.onEvent(CreateHabitEvent.SelectDay(it)) })
 }
 
 @Composable
@@ -74,7 +75,8 @@ private fun CreateHabit(
     decreaseTimes: () -> Unit = {},
     increaseType: () -> Unit = {},
     decreaseType: () -> Unit = {},
-    selectType: (FrequencyState) -> Unit = {}
+    selectType: (FrequencyState) -> Unit = {},
+    selectDay: (Int) -> Unit = {},
 ) {
     Column(
         modifier = Modifier
@@ -97,7 +99,8 @@ private fun CreateHabit(
             decreaseTimes = decreaseTimes,
             increaseType = increaseType,
             decreaseType = decreaseType,
-            selectType = selectType
+            selectType = selectType,
+            selectDay = selectDay
         )
     }
 }

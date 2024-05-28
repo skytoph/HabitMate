@@ -33,6 +33,7 @@ fun EditFrequency(
     expand: () -> Unit = {},
     minHeight: Dp = 48.dp,
     selectType: (FrequencyState) -> Unit = {},
+    selectDay: (Int) -> Unit = {},
     increaseTimes: () -> Unit = {},
     decreaseTimes: () -> Unit = {},
     increaseType: () -> Unit = {},
@@ -78,7 +79,8 @@ fun EditFrequency(
                 increaseTimes = increaseTimes,
                 decreaseTimes = decreaseTimes,
                 increaseType = increaseType,
-                decreaseType = decreaseType
+                decreaseType = decreaseType,
+                selectDay = selectDay,
             )
     }
 }

@@ -4,7 +4,6 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.graphics.Color
 import com.github.skytoph.taski.presentation.core.state.IconResource
 import com.github.skytoph.taski.presentation.core.state.StringResource
-import com.github.skytoph.taski.presentation.habit.edit.UpdateFrequency
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyState
 
 interface CreateHabitEvent {
@@ -69,10 +68,9 @@ interface CreateHabitEvent {
         }
     }
 
-    abstract class UpdateFrequencyTimes(add: Int) : CreateHabitEvent,
-        UpdateFrequency.UpdateTimes(add) {
+    abstract class UpdateFrequencyTimes(private val add: Int) : CreateHabitEvent {
         override fun handle(state: MutableState<CreateHabitState>) {
-            update(state.value.frequency).let { state.value = state.value.copy(frequency = it) }
+            state.value = state.value.copy(frequency = state.value.frequency.update(add))
         }
     }
 
@@ -80,14 +78,19 @@ interface CreateHabitEvent {
 
     object DecreaseFrequencyTimes : UpdateFrequencyTimes(-1)
 
-    abstract class UpdateFrequencyType(add: Int) : CreateHabitEvent,
-        UpdateFrequency.UpdateType(add) {
+    abstract class UpdateFrequencyType(private val add: Int) : CreateHabitEvent {
         override fun handle(state: MutableState<CreateHabitState>) {
-            update(state.value.frequency).let { state.value = state.value.copy(frequency = it) }
+            state.value = state.value.copy(frequency = state.value.frequency.updateType(add))
         }
     }
 
     object IncreaseFrequencyType : UpdateFrequencyType(1)
 
     object DecreaseFrequencyType : UpdateFrequencyType(-1)
+
+    class SelectDay(private val day: Int) : CreateHabitEvent {
+        override fun handle(state: MutableState<CreateHabitState>) {
+            state.value = state.value.copy(frequency = state.value.frequency.update(day = day))
+        }
+    }
 }

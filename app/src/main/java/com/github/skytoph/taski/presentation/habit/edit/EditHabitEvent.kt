@@ -91,10 +91,9 @@ interface EditHabitEvent {
         }
     }
 
-    abstract class UpdateFrequencyTimes(add: Int) : EditHabitEvent,
-        UpdateFrequency.UpdateTimes(add) {
+    abstract class UpdateFrequencyTimes(private val add: Int) : EditHabitEvent {
         override fun handle(state: MutableState<EditHabitState>, icon: MutableState<IconState>) {
-            update(state.value.frequency).let { state.value = state.value.copy(frequency = it) }
+            state.value = state.value.copy(frequency = state.value.frequency.update(add))
         }
     }
 
@@ -102,38 +101,19 @@ interface EditHabitEvent {
 
     object DecreaseFrequencyTimes : UpdateFrequencyTimes(-1)
 
-    abstract class UpdateFrequencyType(add: Int) : EditHabitEvent, UpdateFrequency.UpdateType(add) {
+    abstract class UpdateFrequencyType(private val add: Int) : EditHabitEvent {
         override fun handle(state: MutableState<EditHabitState>, icon: MutableState<IconState>) {
-            update(state.value.frequency).let { state.value = state.value.copy(frequency = it) }
+            state.value = state.value.copy(frequency = state.value.frequency.updateType(add))
         }
     }
 
     object IncreaseFrequencyType : UpdateFrequencyType(1)
 
     object DecreaseFrequencyType : UpdateFrequencyType(-1)
-}
 
-interface UpdateFrequency {
-    fun update(frequency: FrequencyState): FrequencyState
-
-    abstract class UpdateTimes(private val add: Int) : UpdateFrequency {
-        override fun update(frequency: FrequencyState): FrequencyState {
-            return if (frequency is FrequencyState.Custom) {
-                val value = frequency.timesCount.value + add
-                val times = frequency.frequencyType.times(value, frequency.typeCount.value)
-                frequency.copy(timesCount = times)
-            } else frequency
-        }
-    }
-
-    abstract class UpdateType(private val add: Int) : UpdateFrequency {
-        override fun update(frequency: FrequencyState): FrequencyState {
-            return if (frequency is FrequencyState.Custom) {
-                val value = frequency.typeCount.value + add
-                val type = frequency.frequencyType.type(frequency.timesCount.value, value)
-                val times = frequency.frequencyType.times(frequency.timesCount.value, value)
-                frequency.copy(typeCount = type, timesCount = times)
-            } else frequency
+    class SelectDay(private val day: Int) : EditHabitEvent {
+        override fun handle(state: MutableState<EditHabitState>, icon: MutableState<IconState>) {
+            state.value = state.value.copy(frequency = state.value.frequency.update(day = day))
         }
     }
 }

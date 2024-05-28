@@ -1,6 +1,7 @@
 package com.github.skytoph.taski.presentation.habit.edit.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,18 +18,20 @@ import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
 fun FrequencyDaily(
-    frequency: FrequencyState.Daily = FrequencyState.Daily()
+    frequency: FrequencyState.Daily = FrequencyState.Daily(),
+    select: (Int) -> Unit
 ) {
     Column(modifier = Modifier.padding(horizontal = 8.dp)) {
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-            for (index in 0 until 7)
+            for (index in 1..7)
                 WeekDayLabel(
                     modifier = Modifier
                         .weight(1f)
                         .background(
-                            MaterialTheme.colorScheme.primary,
+                            if (frequency.days.contains(index)) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant,
                             MaterialTheme.shapes.extraSmall
                         )
+                        .clickable { select(index) }
                         .padding(vertical = 6.dp),
                     index = index,
                     alignment = Alignment.Center,
@@ -42,6 +45,6 @@ fun FrequencyDaily(
 @Composable
 private fun Preview() {
     HabitMateTheme(darkTheme = true) {
-        FrequencySettings()
+        FrequencySettings(frequency = FrequencyState.Daily())
     }
 }

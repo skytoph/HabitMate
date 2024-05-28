@@ -28,6 +28,7 @@ import com.github.skytoph.taski.ui.theme.HabitMateTheme
 fun FrequencySettings(
     frequency: FrequencyState = FrequencyState.Custom(),
     selectType: (FrequencyState) -> Unit = {},
+    selectDay: (Int) -> Unit = {},
     increaseTimes: () -> Unit = {},
     decreaseTimes: () -> Unit = {},
     increaseType: () -> Unit = {},
@@ -67,7 +68,7 @@ fun FrequencySettings(
                 modifier = Modifier
                     .width(1.dp)
                     .height(16.dp),
-                color = if (frequency == FrequencyState.Daily()) DividerDefaults.color else Color.Transparent
+                color = if (frequency is FrequencyState.Daily) DividerDefaults.color else Color.Transparent
             )
             FrequencyOption(
                 modifier = Modifier.weight(1f),
@@ -81,7 +82,8 @@ fun FrequencySettings(
             increaseTimes = increaseTimes,
             decreaseTimes = decreaseTimes,
             increaseType = increaseType,
-            decreaseType = decreaseType
+            decreaseType = decreaseType,
+            selectDay = selectDay,
         )
         Spacer(modifier = Modifier.height(8.dp))
     }
@@ -113,14 +115,15 @@ private fun FrequencyOption(
 @Composable
 private fun FrequencySettingsContent(
     frequency: FrequencyState,
+    selectDay: (Int) -> Unit,
     increaseTimes: () -> Unit,
     decreaseTimes: () -> Unit,
     increaseType: () -> Unit,
     decreaseType: () -> Unit
 ) {
     when (frequency) {
-        is FrequencyState.Daily -> FrequencyDaily(frequency = frequency)
-        is FrequencyState.Monthly -> FrequencyMonthly(frequency = frequency)
+        is FrequencyState.Daily -> FrequencyDaily(frequency = frequency, select = selectDay)
+        is FrequencyState.Monthly -> FrequencyMonthly(frequency = frequency, select = selectDay)
         is FrequencyState.Custom -> FrequencyCustom(
             frequency = frequency,
             increaseTimes = increaseTimes,

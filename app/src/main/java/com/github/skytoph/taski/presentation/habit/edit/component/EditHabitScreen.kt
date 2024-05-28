@@ -83,7 +83,8 @@ fun EditHabitScreen(
         decreaseTimes = { viewModel.onEvent(EditHabitEvent.DecreaseFrequencyTimes) },
         increaseType = { viewModel.onEvent(EditHabitEvent.IncreaseFrequencyType) },
         decreaseType = { viewModel.onEvent(EditHabitEvent.DecreaseFrequencyType) },
-        selectType = { viewModel.onEvent(EditHabitEvent.SelectFrequency(it)) }
+        selectType = { viewModel.onEvent(EditHabitEvent.SelectFrequency(it)) },
+        selectDay = { viewModel.onEvent(EditHabitEvent.SelectDay(it)) },
     )
 }
 
@@ -99,7 +100,8 @@ private fun EditHabit(
     decreaseTimes: () -> Unit = {},
     increaseType: () -> Unit = {},
     decreaseType: () -> Unit = {},
-    selectType: (FrequencyState) -> Unit = {}
+    selectType: (FrequencyState) -> Unit = {},
+    selectDay: (Int) -> Unit = {},
 ) {
     EditBaseHabit(
         title = state.value.title,
@@ -117,7 +119,8 @@ private fun EditHabit(
         decreaseTimes = decreaseTimes,
         increaseType = increaseType,
         decreaseType = decreaseType,
-        selectType = selectType
+        selectType = selectType,
+        selectDay = selectDay,
     )
 }
 
@@ -139,7 +142,8 @@ fun EditBaseHabit(
     decreaseTimes: () -> Unit,
     increaseType: () -> Unit,
     decreaseType: () -> Unit,
-    selectType: (FrequencyState) -> Unit
+    selectType: (FrequencyState) -> Unit,
+    selectDay: (Int) -> Unit = {},
 ) {
     Column(
         modifier = Modifier.padding(horizontal = 8.dp)
@@ -208,7 +212,8 @@ fun EditBaseHabit(
             increaseTimes = increaseTimes,
             decreaseTimes = decreaseTimes,
             increaseType = increaseType,
-            decreaseType = decreaseType
+            decreaseType = decreaseType,
+            selectDay = selectDay,
         )
         Spacer(modifier = Modifier.height(16.dp))
     }

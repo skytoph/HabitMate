@@ -1,6 +1,7 @@
 package com.github.skytoph.taski.presentation.habit.edit.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -16,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -26,6 +28,7 @@ import com.github.skytoph.taski.ui.theme.HabitMateTheme
 @Composable
 fun FrequencyMonthly(
     frequency: FrequencyState.Monthly = FrequencyState.Monthly(),
+    select: (Int) -> Unit = {},
     squareDp: Dp = 48.dp
 ) {
     LazyVerticalGrid(
@@ -43,7 +46,12 @@ fun FrequencyMonthly(
             )
         }
         items(items = (1..31).toList(), key = { it }) { index ->
-            MonthlyItem(squareDp = squareDp, index = index, selected = true)
+            MonthlyItem(
+                squareDp = squareDp,
+                index = index,
+                selected = frequency.days.contains(index),
+                select = select
+            )
         }
     }
 }
@@ -52,17 +60,20 @@ fun FrequencyMonthly(
 private fun MonthlyItem(
     squareDp: Dp,
     index: Int,
-    selected: Boolean = false
+    selected: Boolean = false,
+    select: (Int) -> Unit
 ) {
     Box(contentAlignment = Alignment.Center) {
         Box(
             modifier = Modifier
                 .size(squareDp)
                 .background(
-                    color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondaryContainer,
+                    color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant,
                     shape = CircleShape
                 )
                 .aspectRatio(1f)
+                .clip(CircleShape)
+                .clickable { select(index) }
         )
         Text(text = index.toString(), color = MaterialTheme.colorScheme.onTertiary)
     }
@@ -72,6 +83,6 @@ private fun MonthlyItem(
 @Composable
 private fun MonthlyPreview() {
     HabitMateTheme(darkTheme = true) {
-        FrequencySettings()
+        FrequencySettings(frequency = FrequencyState.Monthly())
     }
 }
