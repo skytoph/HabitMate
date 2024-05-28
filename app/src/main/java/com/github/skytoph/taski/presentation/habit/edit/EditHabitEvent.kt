@@ -7,6 +7,7 @@ import com.github.skytoph.taski.presentation.core.state.IconResource
 import com.github.skytoph.taski.presentation.core.state.StringResource
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.create.GoalState
+import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyState
 import com.github.skytoph.taski.presentation.habit.icon.IconState
 
 interface EditHabitEvent {
@@ -75,6 +76,64 @@ interface EditHabitEvent {
     object Validate : EditHabitEvent {
         override fun handle(state: MutableState<EditHabitState>, icon: MutableState<IconState>) {
             state.value = state.value.copy(isValidated = true)
+        }
+    }
+
+    object ExpandFrequency : EditHabitEvent {
+        override fun handle(state: MutableState<EditHabitState>, icon: MutableState<IconState>) {
+            state.value = state.value.copy(isFrequencyExpanded = !state.value.isFrequencyExpanded)
+        }
+    }
+
+    class SelectFrequency(private val type: FrequencyState) : EditHabitEvent {
+        override fun handle(state: MutableState<EditHabitState>, icon: MutableState<IconState>) {
+            state.value = state.value.copy(frequency = type)
+        }
+    }
+
+    abstract class UpdateFrequencyTimes(add: Int) : EditHabitEvent,
+        UpdateFrequency.UpdateTimes(add) {
+        override fun handle(state: MutableState<EditHabitState>, icon: MutableState<IconState>) {
+            update(state.value.frequency).let { state.value = state.value.copy(frequency = it) }
+        }
+    }
+
+    object IncreaseFrequencyTimes : UpdateFrequencyTimes(1)
+
+    object DecreaseFrequencyTimes : UpdateFrequencyTimes(-1)
+
+    abstract class UpdateFrequencyType(add: Int) : EditHabitEvent, UpdateFrequency.UpdateType(add) {
+        override fun handle(state: MutableState<EditHabitState>, icon: MutableState<IconState>) {
+            update(state.value.frequency).let { state.value = state.value.copy(frequency = it) }
+        }
+    }
+
+    object IncreaseFrequencyType : UpdateFrequencyType(1)
+
+    object DecreaseFrequencyType : UpdateFrequencyType(-1)
+}
+
+interface UpdateFrequency {
+    fun update(frequency: FrequencyState): FrequencyState
+
+    abstract class UpdateTimes(private val add: Int) : UpdateFrequency {
+        override fun update(frequency: FrequencyState): FrequencyState {
+            return if (frequency is FrequencyState.Custom) {
+                val value = frequency.timesCount.value + add
+                val times = frequency.frequencyType.times(value, frequency.typeCount.value)
+                frequency.copy(timesCount = times)
+            } else frequency
+        }
+    }
+
+    abstract class UpdateType(private val add: Int) : UpdateFrequency {
+        override fun update(frequency: FrequencyState): FrequencyState {
+            return if (frequency is FrequencyState.Custom) {
+                val value = frequency.typeCount.value + add
+                val type = frequency.frequencyType.type(frequency.timesCount.value, value)
+                val times = frequency.frequencyType.times(frequency.timesCount.value, value)
+                frequency.copy(typeCount = type, timesCount = times)
+            } else frequency
         }
     }
 }

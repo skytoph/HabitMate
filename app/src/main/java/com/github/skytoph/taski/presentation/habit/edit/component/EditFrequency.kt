@@ -17,30 +17,30 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencySettingType
+import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyState
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
 fun EditFrequency(
+    frequency: FrequencyState = FrequencyState.Custom(),
     expanded: Boolean = true,
     expand: () -> Unit = {},
     minHeight: Dp = 48.dp,
+    selectType: (FrequencyState) -> Unit = {},
+    increaseTimes: () -> Unit = {},
+    decreaseTimes: () -> Unit = {},
+    increaseType: () -> Unit = {},
+    decreaseType: () -> Unit = {}
 ) {
-    val frequency: MutableState<FrequencySettingType> =
-        remember { mutableStateOf(FrequencySettingType.Custom) }
-    val expanded = remember { mutableStateOf(true) }
     Column(
         modifier = Modifier
-            .also { if (!expanded.value) it.height(minHeight) }
+            .also { if (!expanded) it.height(minHeight) }
             .fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
@@ -53,7 +53,7 @@ fun EditFrequency(
                 .fillMaxWidth()
                 .height(minHeight)
                 .clip(MaterialTheme.shapes.extraSmall)
-                .clickable { expanded.value = !expanded.value }
+                .clickable { expand() }
                 .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
@@ -65,14 +65,21 @@ fun EditFrequency(
                 maxLines = 2
             )
             Icon(
-                imageVector = if (expanded.value) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                imageVector = if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                 contentDescription = "select reminder",
                 tint = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.size(24.dp)
             )
         }
-        if (expanded.value)
-            FrequencySettings(frequency = frequency.value, selectType = { frequency.value = it })
+        if (expanded)
+            FrequencySettings(
+                frequency = frequency,
+                selectType = selectType,
+                increaseTimes = increaseTimes,
+                decreaseTimes = decreaseTimes,
+                increaseType = increaseType,
+                decreaseType = decreaseType
+            )
     }
 }
 

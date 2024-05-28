@@ -12,11 +12,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.skytoph.taski.presentation.core.component.WeekDayLabel
-import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencySettingType
+import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyState
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
-fun FrequencyDaily() {
+fun FrequencyDaily(
+    frequency: FrequencyState.Daily = FrequencyState.Daily()
+) {
     Column(modifier = Modifier.padding(horizontal = 8.dp)) {
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             for (index in 0 until 7)
@@ -40,6 +42,6 @@ fun FrequencyDaily() {
 @Composable
 private fun Preview() {
     HabitMateTheme(darkTheme = true) {
-        FrequencySettings(frequency = FrequencySettingType.Daily)
+        FrequencySettings()
     }
 }

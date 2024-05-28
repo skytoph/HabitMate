@@ -14,8 +14,6 @@ import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
@@ -24,13 +22,18 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.component.SquareButton
-import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencySettingType
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyState
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
-fun FrequencyCustom(counterSize: Dp = 40.dp) {
-    val state = remember { mutableStateOf(FrequencyState()) }
+fun FrequencyCustom(
+    frequency: FrequencyState.Custom,
+    increaseTimes: () -> Unit = {},
+    decreaseTimes: () -> Unit = {},
+    increaseType: () -> Unit = {},
+    decreaseType: () -> Unit = {},
+    counterSize: Dp = 40.dp
+) {
     Column(
         modifier = Modifier
             .padding(horizontal = 8.dp, vertical = 4.dp)
@@ -40,11 +43,11 @@ fun FrequencyCustom(counterSize: Dp = 40.dp) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            FrequencyCounter(text = state.value.timesCount.toString())
+            FrequencyCounter(text = frequency.timesCount.value.toString())
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = pluralStringResource(
-                    id = R.plurals.times_label, count = state.value.timesCount
+                    id = R.plurals.times_label, count = frequency.timesCount.value
                 ),
                 color = MaterialTheme.colorScheme.onBackground,
                 style = MaterialTheme.typography.bodySmall,
@@ -52,32 +55,28 @@ fun FrequencyCustom(counterSize: Dp = 40.dp) {
             )
             Spacer(modifier = Modifier.width(8.dp))
             SquareButton(
-                onClick = {
-                    state.value = state.value.copy(timesCount = state.value.timesCount - 1)
-                },
+                onClick = decreaseTimes,
                 icon = Icons.Default.Remove,
-                isEnabled = false,
+                isEnabled = frequency.timesCount.canBeDecreased,
                 size = 40.dp
             )
             Spacer(modifier = Modifier.width(4.dp))
             SquareButton(
-                onClick = {
-                    state.value = state.value.copy(timesCount = state.value.timesCount + 1)
-                },
+                onClick = increaseTimes,
                 icon = Icons.Default.Add,
-                isEnabled = true,
+                isEnabled = frequency.timesCount.canBeIncreased,
                 size = 40.dp
             )
         }
         Row(
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            FrequencyCounter(text = state.value.inCount.toString())
+            FrequencyCounter(text = frequency.typeCount.value.toString())
             Spacer(modifier = Modifier.width(8.dp))
             Box(modifier = Modifier.weight(1f)) {
                 Text(
                     text = pluralStringResource(
-                        id = state.value.frequencyType.title, count = state.value.inCount
+                        id = frequency.frequencyType.title, count = frequency.typeCount.value
                     ),
                     color = MaterialTheme.colorScheme.onBackground,
                     style = MaterialTheme.typography.bodySmall
@@ -85,16 +84,16 @@ fun FrequencyCustom(counterSize: Dp = 40.dp) {
             }
             Spacer(modifier = Modifier.width(8.dp))
             SquareButton(
-                onClick = { state.value = state.value.copy(inCount = state.value.inCount - 1) },
+                onClick = decreaseType,
                 icon = Icons.Default.Remove,
-                isEnabled = false,
+                isEnabled = frequency.typeCount.canBeDecreased,
                 size = counterSize
             )
             Spacer(modifier = Modifier.width(4.dp))
             SquareButton(
-                onClick = { state.value = state.value.copy(inCount = state.value.inCount + 1) },
+                onClick = increaseType,
                 icon = Icons.Default.Add,
-                isEnabled = true,
+                isEnabled = frequency.typeCount.canBeIncreased,
                 size = counterSize
             )
         }
@@ -105,6 +104,6 @@ fun FrequencyCustom(counterSize: Dp = 40.dp) {
 @Composable
 private fun Preview() {
     HabitMateTheme(darkTheme = true) {
-        FrequencySettings(frequency = FrequencySettingType.Custom)
+        FrequencySettings()
     }
 }

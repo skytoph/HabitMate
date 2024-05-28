@@ -20,11 +20,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.skytoph.taski.presentation.core.component.WeekDayLabel
-import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencySettingType
+import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyState
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
 fun FrequencyMonthly(
+    frequency: FrequencyState.Monthly = FrequencyState.Monthly(),
     squareDp: Dp = 48.dp
 ) {
     LazyVerticalGrid(
@@ -71,6 +72,6 @@ private fun MonthlyItem(
 @Composable
 private fun MonthlyPreview() {
     HabitMateTheme(darkTheme = true) {
-        FrequencySettings(frequency = FrequencySettingType.Monthly)
+        FrequencySettings()
     }
 }

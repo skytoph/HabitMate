@@ -5,12 +5,15 @@ import com.github.skytoph.taski.presentation.core.state.FieldState
 import com.github.skytoph.taski.presentation.core.state.IconResource
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.create.GoalState
+import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyState
 import com.github.skytoph.taski.presentation.habit.icon.IconsColors
 
 data class EditHabitState(
     val id: Long = HabitUi.ID_DEFAULT,
     val title: FieldState = FieldState(),
     val goal: GoalState = GoalState(),
+    val frequency: FrequencyState = FrequencyState.Daily(),
+    val isFrequencyExpanded: Boolean = true,
     val icon: IconResource = IconResource.Default,
     val color: Color = IconsColors.Default,
     val isHistoryEditable: Boolean = false,

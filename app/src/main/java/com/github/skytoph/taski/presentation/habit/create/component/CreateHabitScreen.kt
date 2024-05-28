@@ -20,6 +20,7 @@ import com.github.skytoph.taski.presentation.habit.create.CreateHabitEvent
 import com.github.skytoph.taski.presentation.habit.create.CreateHabitState
 import com.github.skytoph.taski.presentation.habit.create.CreateHabitViewModel
 import com.github.skytoph.taski.presentation.habit.edit.component.EditBaseHabit
+import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyState
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
@@ -52,7 +53,13 @@ fun CreateHabitScreen(
         onSelectIconClick = onSelectIconClick,
         onTypeTitle = { viewModel.onEvent(CreateHabitEvent.EditTitle(it)) },
         onDecreaseGoal = { viewModel.onEvent(CreateHabitEvent.DecreaseGoal) },
-        onIncreaseGoal = { viewModel.onEvent(CreateHabitEvent.IncreaseGoal) })
+        onIncreaseGoal = { viewModel.onEvent(CreateHabitEvent.IncreaseGoal) },
+        expandFrequency = { viewModel.onEvent(CreateHabitEvent.ExpandFrequency) },
+        increaseTimes = { viewModel.onEvent(CreateHabitEvent.IncreaseFrequencyTimes) },
+        decreaseTimes = { viewModel.onEvent(CreateHabitEvent.DecreaseFrequencyTimes) },
+        increaseType = { viewModel.onEvent(CreateHabitEvent.IncreaseFrequencyType) },
+        decreaseType = { viewModel.onEvent(CreateHabitEvent.DecreaseFrequencyType) },
+        selectType = { viewModel.onEvent(CreateHabitEvent.SelectFrequency(it)) })
 }
 
 @Composable
@@ -62,6 +69,12 @@ private fun CreateHabit(
     onTypeTitle: (String) -> Unit = {},
     onDecreaseGoal: () -> Unit = {},
     onIncreaseGoal: () -> Unit = {},
+    expandFrequency: () -> Unit = {},
+    increaseTimes: () -> Unit = {},
+    decreaseTimes: () -> Unit = {},
+    increaseType: () -> Unit = {},
+    decreaseType: () -> Unit = {},
+    selectType: (FrequencyState) -> Unit = {}
 ) {
     Column(
         modifier = Modifier
@@ -77,6 +90,14 @@ private fun CreateHabit(
             onSelectIconClick = onSelectIconClick,
             onDecreaseGoal = onDecreaseGoal,
             onIncreaseGoal = onIncreaseGoal,
+            frequency = state.value.frequency,
+            isFrequencyExpanded = state.value.isFrequencyExpanded,
+            expandFrequency = expandFrequency,
+            increaseTimes = increaseTimes,
+            decreaseTimes = decreaseTimes,
+            increaseType = increaseType,
+            decreaseType = decreaseType,
+            selectType = selectType
         )
     }
 }

@@ -41,6 +41,7 @@ import com.github.skytoph.taski.presentation.habit.create.GoalState
 import com.github.skytoph.taski.presentation.habit.edit.EditHabitEvent
 import com.github.skytoph.taski.presentation.habit.edit.EditHabitState
 import com.github.skytoph.taski.presentation.habit.edit.EditHabitViewModel
+import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyState
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
@@ -77,6 +78,12 @@ fun EditHabitScreen(
         onTypeTitle = { viewModel.onEvent(EditHabitEvent.EditTitle(it)) },
         onDecreaseGoal = { viewModel.onEvent(EditHabitEvent.DecreaseGoal) },
         onIncreaseGoal = { viewModel.onEvent(EditHabitEvent.IncreaseGoal) },
+        expandFrequency = { viewModel.onEvent(EditHabitEvent.ExpandFrequency) },
+        increaseTimes = { viewModel.onEvent(EditHabitEvent.IncreaseFrequencyTimes) },
+        decreaseTimes = { viewModel.onEvent(EditHabitEvent.DecreaseFrequencyTimes) },
+        increaseType = { viewModel.onEvent(EditHabitEvent.IncreaseFrequencyType) },
+        decreaseType = { viewModel.onEvent(EditHabitEvent.DecreaseFrequencyType) },
+        selectType = { viewModel.onEvent(EditHabitEvent.SelectFrequency(it)) }
     )
 }
 
@@ -87,6 +94,12 @@ private fun EditHabit(
     onTypeTitle: (String) -> Unit = {},
     onDecreaseGoal: () -> Unit = {},
     onIncreaseGoal: () -> Unit = {},
+    expandFrequency: () -> Unit = {},
+    increaseTimes: () -> Unit = {},
+    decreaseTimes: () -> Unit = {},
+    increaseType: () -> Unit = {},
+    decreaseType: () -> Unit = {},
+    selectType: (FrequencyState) -> Unit = {}
 ) {
     EditBaseHabit(
         title = state.value.title,
@@ -97,6 +110,14 @@ private fun EditHabit(
         onSelectIconClick = onSelectIconClick,
         onDecreaseGoal = onDecreaseGoal,
         onIncreaseGoal = onIncreaseGoal,
+        frequency = state.value.frequency,
+        isFrequencyExpanded = state.value.isFrequencyExpanded,
+        expandFrequency = expandFrequency,
+        increaseTimes = increaseTimes,
+        decreaseTimes = decreaseTimes,
+        increaseType = increaseType,
+        decreaseType = decreaseType,
+        selectType = selectType
     )
 }
 
@@ -110,7 +131,15 @@ fun EditBaseHabit(
     onSelectIconClick: () -> Unit,
     onDecreaseGoal: () -> Unit,
     onIncreaseGoal: () -> Unit,
-    minHeight: Dp = 48.dp
+    minHeight: Dp = 48.dp,
+    frequency: FrequencyState = FrequencyState.Daily(),
+    isFrequencyExpanded: Boolean = true,
+    expandFrequency: () -> Unit = {},
+    increaseTimes: () -> Unit,
+    decreaseTimes: () -> Unit,
+    increaseType: () -> Unit,
+    decreaseType: () -> Unit,
+    selectType: (FrequencyState) -> Unit
 ) {
     Column(
         modifier = Modifier.padding(horizontal = 8.dp)
@@ -170,7 +199,17 @@ fun EditBaseHabit(
             style = MaterialTheme.typography.titleSmall
         )
         Spacer(modifier = Modifier.height(4.dp))
-        EditFrequency(minHeight = minHeight)
+        EditFrequency(
+            frequency = frequency,
+            expanded = isFrequencyExpanded,
+            expand = expandFrequency,
+            minHeight = minHeight,
+            selectType = selectType,
+            increaseTimes = increaseTimes,
+            decreaseTimes = decreaseTimes,
+            increaseType = increaseType,
+            decreaseType = decreaseType
+        )
         Spacer(modifier = Modifier.height(16.dp))
     }
 }

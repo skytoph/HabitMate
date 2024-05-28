@@ -21,13 +21,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencySettingType
+import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyState
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
 fun FrequencySettings(
-    frequency: FrequencySettingType = FrequencySettingType.Custom,
-    selectType: (FrequencySettingType) -> Unit = {}
+    frequency: FrequencyState = FrequencyState.Custom(),
+    selectType: (FrequencyState) -> Unit = {},
+    increaseTimes: () -> Unit = {},
+    decreaseTimes: () -> Unit = {},
+    increaseType: () -> Unit = {},
+    decreaseType: () -> Unit = {}
 ) {
     Column(
         modifier = Modifier
@@ -46,33 +50,39 @@ fun FrequencySettings(
             FrequencyOption(
                 modifier = Modifier.weight(1f),
                 title = "daily",
-                selected = frequency == FrequencySettingType.Daily,
-                select = { selectType(FrequencySettingType.Daily) })
+                selected = frequency is FrequencyState.Daily,
+                select = { selectType(FrequencyState.Daily()) })
             Divider(
                 modifier = Modifier
                     .width(1.dp)
                     .height(16.dp),
-                color = if (frequency == FrequencySettingType.Custom) DividerDefaults.color else Color.Transparent
+                color = if (frequency is FrequencyState.Custom) DividerDefaults.color else Color.Transparent
             )
             FrequencyOption(
                 modifier = Modifier.weight(1f),
                 title = "monthly",
-                selected = frequency == FrequencySettingType.Monthly,
-                select = { selectType(FrequencySettingType.Monthly) })
+                selected = frequency is FrequencyState.Monthly,
+                select = { selectType(FrequencyState.Monthly()) })
             Divider(
                 modifier = Modifier
                     .width(1.dp)
                     .height(16.dp),
-                color = if (frequency == FrequencySettingType.Daily) DividerDefaults.color else Color.Transparent
+                color = if (frequency == FrequencyState.Daily()) DividerDefaults.color else Color.Transparent
             )
             FrequencyOption(
                 modifier = Modifier.weight(1f),
                 title = "custom",
-                selected = frequency == FrequencySettingType.Custom,
-                select = { selectType(FrequencySettingType.Custom) })
+                selected = frequency is FrequencyState.Custom,
+                select = { selectType(FrequencyState.Custom()) })
         }
         Spacer(modifier = Modifier.height(8.dp))
-        FrequencySettingsContent(frequency)
+        FrequencySettingsContent(
+            frequency = frequency,
+            increaseTimes = increaseTimes,
+            decreaseTimes = decreaseTimes,
+            increaseType = increaseType,
+            decreaseType = decreaseType
+        )
         Spacer(modifier = Modifier.height(8.dp))
     }
 }
@@ -101,11 +111,23 @@ private fun FrequencyOption(
 }
 
 @Composable
-private fun FrequencySettingsContent(frequency: FrequencySettingType) {
+private fun FrequencySettingsContent(
+    frequency: FrequencyState,
+    increaseTimes: () -> Unit,
+    decreaseTimes: () -> Unit,
+    increaseType: () -> Unit,
+    decreaseType: () -> Unit
+) {
     when (frequency) {
-        FrequencySettingType.Daily -> FrequencyDaily()
-        FrequencySettingType.Monthly -> FrequencyMonthly()
-        FrequencySettingType.Custom -> FrequencyCustom()
+        is FrequencyState.Daily -> FrequencyDaily(frequency = frequency)
+        is FrequencyState.Monthly -> FrequencyMonthly(frequency = frequency)
+        is FrequencyState.Custom -> FrequencyCustom(
+            frequency = frequency,
+            increaseTimes = increaseTimes,
+            decreaseTimes = decreaseTimes,
+            increaseType = increaseType,
+            decreaseType = decreaseType
+        )
     }
 }
 
