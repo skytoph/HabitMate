@@ -15,7 +15,6 @@ data class EditHabitState(
     val color: Color = IconsColors.Default,
     val isHistoryEditable: Boolean = false,
     val isLoading: Boolean = false,
-    val isDialogShown: Boolean = false,
     val isValidated: Boolean = false
 ) {
 
