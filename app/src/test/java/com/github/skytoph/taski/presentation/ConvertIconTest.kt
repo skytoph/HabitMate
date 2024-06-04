@@ -8,7 +8,7 @@ import org.junit.Test
 
 class ConvertIconTest {
 
-    private val convertIcon = ConvertIcon.Base()
+    private val convertIcon = ConvertIcon.Outlined()
 
     @Test
     fun convert_icon_to_name_and_back(){

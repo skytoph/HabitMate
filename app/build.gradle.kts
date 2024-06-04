@@ -113,4 +113,7 @@ dependencies {
 
     implementation("androidx.profileinstaller:profileinstaller:1.3.1")
     implementation("org.burnoutcrew.composereorderable:reorderable:0.9.6")
+
+    // Gson
+    implementation("com.google.code.gson:gson:2.11.0")
 }

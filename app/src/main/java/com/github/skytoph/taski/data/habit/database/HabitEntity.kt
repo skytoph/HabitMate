@@ -28,4 +28,7 @@ data class HabitEntity(
 
     @ColumnInfo(name = "archived")
     val isArchived: Boolean,
+
+    @ColumnInfo(name = "frequency")
+    val frequency: FrequencyEntity,
 )
