@@ -3,11 +3,13 @@ package com.github.skytoph.taski.presentation.habit.edit.frequency
 import android.content.res.Resources
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.domain.habit.Frequency
+import com.github.skytoph.taski.presentation.core.format.getWeekDisplayName
 import com.github.skytoph.taski.presentation.habit.create.GoalState
 import java.util.Calendar
+import java.util.Locale
 
 sealed interface FrequencyUi {
-    fun summarize(resources: Resources): String
+    fun summarize(resources: Resources, locale: Locale): String
     fun updateType(add: Int): FrequencyUi = this
     fun update(day: Int): FrequencyUi
     fun map(): Frequency
@@ -17,7 +19,8 @@ sealed interface FrequencyUi {
         val typeCount: GoalState = GoalState(1),
         val frequencyType: FrequencyCustomType = FrequencyCustomType.Week,
     ) : FrequencyUi {
-        override fun summarize(resources: Resources): String {
+        override fun summarize(resources: Resources, locale: Locale): String {
+            if (!timesCount.canBeIncreased) return resources.getString(R.string.everyday)
             val type = resources.getQuantityString(frequencyType.title, typeCount.value)
             val resId = R.string.frequency_summary_custom
             return resources.getString(resId, timesCount.value, typeCount.value, type)
@@ -43,8 +46,10 @@ sealed interface FrequencyUi {
     data class Daily(
         val days: Set<Int> = (1..7).toSet()
     ) : FrequencyUi {
-        override fun summarize(resources: Resources): String {
-            val arg = days.joinToString(separator = " ,")
+        override fun summarize(resources: Resources, locale: Locale): String {
+            if (days.size == 7) return resources.getString(R.string.everyday)
+            val arg =
+                days.joinToString(separator = ", ", transform = { getWeekDisplayName(locale, it) })
             return resources.getString(R.string.frequency_summary_daily, arg)
         }
 
@@ -57,7 +62,8 @@ sealed interface FrequencyUi {
     data class Monthly(
         val days: Set<Int> = setOf(Calendar.getInstance().get(Calendar.DAY_OF_MONTH))
     ) : FrequencyUi {
-        override fun summarize(resources: Resources): String {
+        override fun summarize(resources: Resources, locale: Locale): String {
+            if (days.size == 31) return resources.getString(R.string.everyday)
             val arg = days.joinToString(separator = " ,")
             return resources.getString(R.string.frequency_summary_monthly, arg)
         }
