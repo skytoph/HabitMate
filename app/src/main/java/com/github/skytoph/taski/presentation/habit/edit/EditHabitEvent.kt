@@ -7,7 +7,7 @@ import com.github.skytoph.taski.presentation.core.state.IconResource
 import com.github.skytoph.taski.presentation.core.state.StringResource
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.create.GoalState
-import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyState
+import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyUi
 import com.github.skytoph.taski.presentation.habit.icon.IconState
 
 interface EditHabitEvent {
@@ -23,6 +23,7 @@ interface EditHabitEvent {
                 icon = habit.icon,
                 color = habit.color,
                 isLoading = false,
+                frequency = habit.frequency
             )
             icon.value = IconState(habit.icon, habit.color)
         }
@@ -85,7 +86,7 @@ interface EditHabitEvent {
         }
     }
 
-    class SelectFrequency(private val type: FrequencyState) : EditHabitEvent {
+    class SelectFrequency(private val type: FrequencyUi) : EditHabitEvent {
         override fun handle(state: MutableState<EditHabitState>, icon: MutableState<IconState>) {
             state.value = state.value.copy(frequency = type)
         }

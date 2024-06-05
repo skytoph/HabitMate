@@ -21,13 +21,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyState
+import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyUi
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
 fun FrequencySettings(
-    frequency: FrequencyState = FrequencyState.Custom(),
-    selectType: (FrequencyState) -> Unit = {},
+    frequency: FrequencyUi = FrequencyUi.Custom(),
+    selectType: (FrequencyUi) -> Unit = {},
     selectDay: (Int) -> Unit = {},
     increaseTimes: () -> Unit = {},
     decreaseTimes: () -> Unit = {},
@@ -51,30 +51,30 @@ fun FrequencySettings(
             FrequencyOption(
                 modifier = Modifier.weight(1f),
                 title = "daily",
-                selected = frequency is FrequencyState.Daily,
-                select = { selectType(FrequencyState.Daily()) })
+                selected = frequency is FrequencyUi.Daily,
+                select = { selectType(FrequencyUi.Daily()) })
             Divider(
                 modifier = Modifier
                     .width(1.dp)
                     .height(16.dp),
-                color = if (frequency is FrequencyState.Custom) DividerDefaults.color else Color.Transparent
+                color = if (frequency is FrequencyUi.Custom) DividerDefaults.color else Color.Transparent
             )
             FrequencyOption(
                 modifier = Modifier.weight(1f),
                 title = "monthly",
-                selected = frequency is FrequencyState.Monthly,
-                select = { selectType(FrequencyState.Monthly()) })
+                selected = frequency is FrequencyUi.Monthly,
+                select = { selectType(FrequencyUi.Monthly()) })
             Divider(
                 modifier = Modifier
                     .width(1.dp)
                     .height(16.dp),
-                color = if (frequency is FrequencyState.Daily) DividerDefaults.color else Color.Transparent
+                color = if (frequency is FrequencyUi.Daily) DividerDefaults.color else Color.Transparent
             )
             FrequencyOption(
                 modifier = Modifier.weight(1f),
                 title = "custom",
-                selected = frequency is FrequencyState.Custom,
-                select = { selectType(FrequencyState.Custom()) })
+                selected = frequency is FrequencyUi.Custom,
+                select = { selectType(FrequencyUi.Custom()) })
         }
         Spacer(modifier = Modifier.height(8.dp))
         FrequencySettingsContent(
@@ -114,7 +114,7 @@ private fun FrequencyOption(
 
 @Composable
 private fun FrequencySettingsContent(
-    frequency: FrequencyState,
+    frequency: FrequencyUi,
     selectDay: (Int) -> Unit,
     increaseTimes: () -> Unit,
     decreaseTimes: () -> Unit,
@@ -122,9 +122,9 @@ private fun FrequencySettingsContent(
     decreaseType: () -> Unit
 ) {
     when (frequency) {
-        is FrequencyState.Daily -> FrequencyDaily(frequency = frequency, select = selectDay)
-        is FrequencyState.Monthly -> FrequencyMonthly(frequency = frequency, select = selectDay)
-        is FrequencyState.Custom -> FrequencyCustom(
+        is FrequencyUi.Daily -> FrequencyDaily(frequency = frequency, select = selectDay)
+        is FrequencyUi.Monthly -> FrequencyMonthly(frequency = frequency, select = selectDay)
+        is FrequencyUi.Custom -> FrequencyCustom(
             frequency = frequency,
             increaseTimes = increaseTimes,
             decreaseTimes = decreaseTimes,

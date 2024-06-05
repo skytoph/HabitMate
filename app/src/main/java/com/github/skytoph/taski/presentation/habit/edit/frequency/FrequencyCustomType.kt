@@ -2,36 +2,45 @@ package com.github.skytoph.taski.presentation.habit.edit.frequency
 
 import androidx.annotation.PluralsRes
 import com.github.skytoph.taski.R
+import com.github.skytoph.taski.domain.habit.Frequency
 import com.github.skytoph.taski.presentation.habit.create.GoalState
 
-sealed interface FrequencyCustomType {
+sealed class FrequencyCustomType {
     @get:PluralsRes
-    val title: Int
+    abstract val title: Int
 
-    val maxTimes: Int
-    val maxType: Int
+    abstract val maxTimes: Int
+    abstract val maxType: Int
 
     fun times(times: Int, type: Int) =
-        GoalState(times, canBeIncreased = times < maxTimes * type, canBeDecreased = times > 1)
+        GoalState(times, canBeIncreased = (times < maxTimes * type), canBeDecreased = times > 1)
 
-    fun type(times: Int, type: Int) =
-        GoalState(value = type, canBeIncreased = type < 365, canBeDecreased = type > 1)
+    fun type(type: Int) =
+        GoalState(value = type, canBeIncreased = (type < maxType), canBeDecreased = type > 1)
 
-    object Day : FrequencyCustomType {
+    abstract fun map(): Frequency.Custom.Type
+
+    data object Day : FrequencyCustomType() {
         override val title: Int = R.plurals.day_label
         override val maxTimes: Int = 1
         override val maxType: Int = 365
+
+        override fun map(): Frequency.Custom.Type = Frequency.Custom.Type.Day
     }
 
-    object Week : FrequencyCustomType {
+    data object Week : FrequencyCustomType() {
         override val title: Int = R.plurals.week_label
         override val maxTimes: Int = 7
         override val maxType: Int = 100
+
+        override fun map(): Frequency.Custom.Type = Frequency.Custom.Type.Week
     }
 
-    object Month : FrequencyCustomType {
+    data object Month : FrequencyCustomType() {
         override val title: Int = R.plurals.month_label
         override val maxTimes: Int = 31
         override val maxType: Int = 12
+
+        override fun map(): Frequency.Custom.Type = Frequency.Custom.Type.Month
     }
 }

@@ -4,7 +4,7 @@ import androidx.compose.ui.graphics.Color
 import com.github.skytoph.taski.presentation.core.state.FieldState
 import com.github.skytoph.taski.presentation.core.state.IconResource
 import com.github.skytoph.taski.presentation.habit.HabitUi
-import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyState
+import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyUi
 import com.github.skytoph.taski.presentation.habit.icon.IconsColors
 
 data class CreateHabitState(
@@ -13,7 +13,7 @@ data class CreateHabitState(
     val icon: IconResource = IconResource.Default,
     val color: Color = IconsColors.Default,
     val isValidated: Boolean = false,
-    val frequency: FrequencyState = FrequencyState.Daily(),
+    val frequency: FrequencyUi = FrequencyUi.Daily(),
     val isFrequencyExpanded: Boolean = true,
 ) {
 
@@ -22,5 +22,6 @@ data class CreateHabitState(
         goal = goal.value,
         icon = icon,
         color = color,
+        frequency = frequency
     )
 }

@@ -5,6 +5,7 @@ import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
 import com.github.skytoph.taski.presentation.core.state.IconResource
+import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyUi
 import com.github.skytoph.taski.presentation.habit.icon.IconsColors
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitDomainMapper
 
@@ -16,11 +17,12 @@ data class HabitUi(
     val color: Color = IconsColors.Default,
     val icon: IconResource = IconResource.Default,
     val priority: Int = 0,
-    val isArchived: Boolean = false
+    val isArchived: Boolean = false,
+    val frequency: FrequencyUi = FrequencyUi.Daily()
 ) {
 
     fun map(mapper: HabitDomainMapper, context: Context) =
-        mapper.map(id, title, goal, color, icon.name(context.resources), priority, isArchived)
+        mapper.map(id, title, goal, color, icon.name(context.resources), priority, isArchived, frequency)
 
     companion object {
         const val MIN_GOAL: Int = 1

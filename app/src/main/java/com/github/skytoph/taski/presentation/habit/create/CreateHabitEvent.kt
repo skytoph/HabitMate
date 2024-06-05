@@ -4,7 +4,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.graphics.Color
 import com.github.skytoph.taski.presentation.core.state.IconResource
 import com.github.skytoph.taski.presentation.core.state.StringResource
-import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyState
+import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyUi
 
 interface CreateHabitEvent {
     fun handle(state: MutableState<CreateHabitState>)
@@ -62,7 +62,7 @@ interface CreateHabitEvent {
         }
     }
 
-    class SelectFrequency(private val type: FrequencyState) : CreateHabitEvent {
+    class SelectFrequency(private val type: FrequencyUi) : CreateHabitEvent {
         override fun handle(state: MutableState<CreateHabitState>) {
             state.value = state.value.copy(frequency = type)
         }

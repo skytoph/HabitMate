@@ -23,16 +23,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyState
+import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyUi
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
 fun EditFrequency(
-    frequency: FrequencyState = FrequencyState.Custom(),
+    frequency: FrequencyUi = FrequencyUi.Custom(),
     expanded: Boolean = true,
     expand: () -> Unit = {},
     minHeight: Dp = 48.dp,
-    selectType: (FrequencyState) -> Unit = {},
+    selectType: (FrequencyUi) -> Unit = {},
     selectDay: (Int) -> Unit = {},
     increaseTimes: () -> Unit = {},
     decreaseTimes: () -> Unit = {},

@@ -22,12 +22,12 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.component.SquareButton
-import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyState
+import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyUi
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
 fun FrequencyCustom(
-    frequency: FrequencyState.Custom,
+    frequency: FrequencyUi.Custom,
     increaseTimes: () -> Unit = {},
     decreaseTimes: () -> Unit = {},
     increaseType: () -> Unit = {},

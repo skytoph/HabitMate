@@ -20,7 +20,7 @@ import com.github.skytoph.taski.presentation.habit.create.CreateHabitEvent
 import com.github.skytoph.taski.presentation.habit.create.CreateHabitState
 import com.github.skytoph.taski.presentation.habit.create.CreateHabitViewModel
 import com.github.skytoph.taski.presentation.habit.edit.component.EditBaseHabit
-import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyState
+import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyUi
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
@@ -75,7 +75,7 @@ private fun CreateHabit(
     decreaseTimes: () -> Unit = {},
     increaseType: () -> Unit = {},
     decreaseType: () -> Unit = {},
-    selectType: (FrequencyState) -> Unit = {},
+    selectType: (FrequencyUi) -> Unit = {},
     selectDay: (Int) -> Unit = {},
 ) {
     Column(

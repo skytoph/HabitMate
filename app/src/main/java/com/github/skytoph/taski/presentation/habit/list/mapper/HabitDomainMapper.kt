@@ -5,6 +5,7 @@ import androidx.compose.ui.graphics.toArgb
 import com.github.skytoph.taski.core.Now
 import com.github.skytoph.taski.domain.habit.Habit
 import com.github.skytoph.taski.presentation.habit.HabitUi
+import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyUi
 
 interface HabitDomainMapper {
     fun map(
@@ -14,7 +15,8 @@ interface HabitDomainMapper {
         color: Color,
         iconName: String,
         priority: Int,
-        isArchived: Boolean
+        isArchived: Boolean,
+        frequency: FrequencyUi
     ): Habit
 
     class Base(private val now: Now) : HabitDomainMapper {
@@ -26,7 +28,8 @@ interface HabitDomainMapper {
             color: Color,
             iconName: String,
             priority: Int,
-            isArchived: Boolean
+            isArchived: Boolean,
+            frequency: FrequencyUi
         ) = Habit(
             id = if (id == HabitUi.ID_DEFAULT) now.milliseconds() else id,
             title = title,
@@ -34,7 +37,8 @@ interface HabitDomainMapper {
             iconName = iconName,
             color = color.toArgb(),
             priority = priority,
-            isArchived = isArchived
+            isArchived = isArchived,
+            frequency = frequency.map()
         )
     }
 }

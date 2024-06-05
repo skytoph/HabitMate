@@ -17,7 +17,8 @@ interface HabitUiMapper {
             icon = IconResource.Name(habit.iconName),
             color = Color(habit.color),
             priority = habit.priority,
-            isArchived = habit.isArchived
+            isArchived = habit.isArchived,
+            frequency = habit.frequency.mapToUi()
         )
     }
 }

@@ -22,12 +22,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.skytoph.taski.presentation.core.component.WeekDayLabel
-import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyState
+import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyUi
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
 fun FrequencyMonthly(
-    frequency: FrequencyState.Monthly = FrequencyState.Monthly(),
+    frequency: FrequencyUi.Monthly = FrequencyUi.Monthly(),
     select: (Int) -> Unit = {},
     squareDp: Dp = 48.dp
 ) {
@@ -83,6 +83,6 @@ private fun MonthlyItem(
 @Composable
 private fun MonthlyPreview() {
     HabitMateTheme(darkTheme = true) {
-        FrequencySettings(frequency = FrequencyState.Monthly())
+        FrequencySettings(frequency = FrequencyUi.Monthly())
     }
 }
