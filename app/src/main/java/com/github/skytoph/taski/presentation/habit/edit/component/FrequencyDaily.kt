@@ -45,6 +45,6 @@ fun FrequencyDaily(
 @Composable
 private fun Preview() {
     HabitMateTheme(darkTheme = true) {
-        FrequencySettings(frequency = FrequencyUi.Daily())
+        FrequencySettings()
     }
 }

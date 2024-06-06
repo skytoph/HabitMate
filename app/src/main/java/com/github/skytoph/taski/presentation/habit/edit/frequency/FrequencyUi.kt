@@ -13,12 +13,14 @@ sealed interface FrequencyUi {
     fun updateType(add: Int): FrequencyUi = this
     fun update(day: Int): FrequencyUi
     fun map(): Frequency
+    val name: String
 
     data class Custom(
         val timesCount: GoalState = GoalState(3),
         val typeCount: GoalState = GoalState(1),
         val frequencyType: FrequencyCustomType = FrequencyCustomType.Week,
     ) : FrequencyUi {
+        override val name: String = "custom"
         override fun summarize(resources: Resources, locale: Locale): String {
             if (!timesCount.canBeIncreased) return resources.getString(R.string.everyday)
             val type = resources.getQuantityString(frequencyType.title, typeCount.value)
@@ -46,6 +48,7 @@ sealed interface FrequencyUi {
     data class Daily(
         val days: Set<Int> = (1..7).toSet()
     ) : FrequencyUi {
+        override val name: String = "daily"
         override fun summarize(resources: Resources, locale: Locale): String {
             if (days.size == 7) return resources.getString(R.string.everyday)
             val arg =
@@ -53,8 +56,9 @@ sealed interface FrequencyUi {
             return resources.getString(R.string.frequency_summary_daily, arg)
         }
 
-        override fun update(day: Int) = copy(
-            days = days.toMutableSet().apply { if (days.contains(day)) remove(day) else add(day) })
+        override fun update(day: Int) = copy(days = days.toSortedSet().apply {
+            if (days.contains(day) && days.size > 1) remove(day) else add(day)
+        })
 
         override fun map(): Frequency = Frequency.Daily(days)
     }
@@ -62,14 +66,16 @@ sealed interface FrequencyUi {
     data class Monthly(
         val days: Set<Int> = setOf(Calendar.getInstance().get(Calendar.DAY_OF_MONTH))
     ) : FrequencyUi {
+        override val name: String = "monthly"
         override fun summarize(resources: Resources, locale: Locale): String {
             if (days.size == 31) return resources.getString(R.string.everyday)
             val arg = days.joinToString(separator = " ,")
             return resources.getString(R.string.frequency_summary_monthly, arg)
         }
 
-        override fun update(day: Int) = copy(
-            days = days.toMutableSet().apply { if (days.contains(day)) remove(day) else add(day) })
+        override fun update(day: Int) = copy(days = days.toSortedSet().apply {
+            if (days.contains(day) && days.size > 1) remove(day) else add(day)
+        })
 
         override fun map(): Frequency = Frequency.Monthly(days)
     }

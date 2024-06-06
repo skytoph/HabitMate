@@ -58,19 +58,23 @@ interface CreateHabitEvent {
 
     object ExpandFrequency : CreateHabitEvent {
         override fun handle(state: MutableState<CreateHabitState>) {
-            state.value = state.value.copy(isFrequencyExpanded = !state.value.isFrequencyExpanded)
+            state.value =
+                state.value.copy(isFrequencyExpanded = !state.value.isFrequencyExpanded)
         }
     }
 
     class SelectFrequency(private val type: FrequencyUi) : CreateHabitEvent {
         override fun handle(state: MutableState<CreateHabitState>) {
-            state.value = state.value.copy(frequency = type)
+            state.value =
+                state.value.copy(frequencyState = state.value.frequencyState.copy(selectedName = type.name))
         }
     }
 
     abstract class UpdateFrequencyTimes(private val add: Int) : CreateHabitEvent {
         override fun handle(state: MutableState<CreateHabitState>) {
-            state.value = state.value.copy(frequency = state.value.frequency.update(add))
+            val updated = state.value.frequencyState.custom.update(add)
+            state.value =
+                state.value.copy(frequencyState = state.value.frequencyState.copy(custom = updated))
         }
     }
 
@@ -80,7 +84,9 @@ interface CreateHabitEvent {
 
     abstract class UpdateFrequencyType(private val add: Int) : CreateHabitEvent {
         override fun handle(state: MutableState<CreateHabitState>) {
-            state.value = state.value.copy(frequency = state.value.frequency.updateType(add))
+            val updated = state.value.frequencyState.custom.updateType(add)
+            state.value =
+                state.value.copy(frequencyState = state.value.frequencyState.copy(custom = updated))
         }
     }
 
@@ -90,7 +96,9 @@ interface CreateHabitEvent {
 
     class SelectDay(private val day: Int) : CreateHabitEvent {
         override fun handle(state: MutableState<CreateHabitState>) {
-            state.value = state.value.copy(frequency = state.value.frequency.update(day = day))
+            val updated = state.value.frequencyState.selected.update(day)
+            state.value =
+                state.value.copy(frequencyState = state.value.frequencyState.updateSelected(updated))
         }
     }
 }

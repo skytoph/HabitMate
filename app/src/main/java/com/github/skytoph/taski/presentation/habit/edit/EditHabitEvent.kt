@@ -7,6 +7,7 @@ import com.github.skytoph.taski.presentation.core.state.IconResource
 import com.github.skytoph.taski.presentation.core.state.StringResource
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.create.GoalState
+import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyState
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyUi
 import com.github.skytoph.taski.presentation.habit.icon.IconState
 
@@ -23,7 +24,8 @@ interface EditHabitEvent {
                 icon = habit.icon,
                 color = habit.color,
                 isLoading = false,
-                frequency = habit.frequency
+                frequencyState = FrequencyState(selectedName = habit.frequency.name)
+                    .updateSelected(habit.frequency)
             )
             icon.value = IconState(habit.icon, habit.color)
         }
@@ -88,13 +90,16 @@ interface EditHabitEvent {
 
     class SelectFrequency(private val type: FrequencyUi) : EditHabitEvent {
         override fun handle(state: MutableState<EditHabitState>, icon: MutableState<IconState>) {
-            state.value = state.value.copy(frequency = type)
+            state.value =
+                state.value.copy(frequencyState = state.value.frequencyState.copy(selectedName = type.name))
         }
     }
 
     abstract class UpdateFrequencyTimes(private val add: Int) : EditHabitEvent {
         override fun handle(state: MutableState<EditHabitState>, icon: MutableState<IconState>) {
-            state.value = state.value.copy(frequency = state.value.frequency.update(add))
+            val updated = state.value.frequencyState.custom.update(add)
+            state.value =
+                state.value.copy(frequencyState = state.value.frequencyState.copy(custom = updated))
         }
     }
 
@@ -104,7 +109,9 @@ interface EditHabitEvent {
 
     abstract class UpdateFrequencyType(private val add: Int) : EditHabitEvent {
         override fun handle(state: MutableState<EditHabitState>, icon: MutableState<IconState>) {
-            state.value = state.value.copy(frequency = state.value.frequency.updateType(add))
+            val updated = state.value.frequencyState.custom.updateType(add)
+            state.value =
+                state.value.copy(frequencyState = state.value.frequencyState.copy(custom = updated))
         }
     }
 
@@ -114,7 +121,9 @@ interface EditHabitEvent {
 
     class SelectDay(private val day: Int) : EditHabitEvent {
         override fun handle(state: MutableState<EditHabitState>, icon: MutableState<IconState>) {
-            state.value = state.value.copy(frequency = state.value.frequency.update(day = day))
+            val updated = state.value.frequencyState.selected.update(day)
+            state.value =
+                state.value.copy(frequencyState = state.value.frequencyState.updateSelected(updated))
         }
     }
 }

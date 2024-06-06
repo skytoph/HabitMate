@@ -92,7 +92,7 @@ private fun CreateHabit(
             onSelectIconClick = onSelectIconClick,
             onDecreaseGoal = onDecreaseGoal,
             onIncreaseGoal = onIncreaseGoal,
-            frequency = state.value.frequency,
+            frequency = state.value.frequencyState,
             isFrequencyExpanded = state.value.isFrequencyExpanded,
             expandFrequency = expandFrequency,
             increaseTimes = increaseTimes,

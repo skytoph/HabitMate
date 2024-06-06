@@ -41,6 +41,7 @@ import com.github.skytoph.taski.presentation.habit.create.GoalState
 import com.github.skytoph.taski.presentation.habit.edit.EditHabitEvent
 import com.github.skytoph.taski.presentation.habit.edit.EditHabitState
 import com.github.skytoph.taski.presentation.habit.edit.EditHabitViewModel
+import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyState
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyUi
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
@@ -112,7 +113,7 @@ private fun EditHabit(
         onSelectIconClick = onSelectIconClick,
         onDecreaseGoal = onDecreaseGoal,
         onIncreaseGoal = onIncreaseGoal,
-        frequency = state.value.frequency,
+        frequency = state.value.frequencyState,
         isFrequencyExpanded = state.value.isFrequencyExpanded,
         expandFrequency = expandFrequency,
         increaseTimes = increaseTimes,
@@ -135,7 +136,7 @@ fun EditBaseHabit(
     onDecreaseGoal: () -> Unit,
     onIncreaseGoal: () -> Unit,
     minHeight: Dp = 48.dp,
-    frequency: FrequencyUi = FrequencyUi.Daily(),
+    frequency: FrequencyState = FrequencyState(),
     isFrequencyExpanded: Boolean = true,
     expandFrequency: () -> Unit = {},
     increaseTimes: () -> Unit,

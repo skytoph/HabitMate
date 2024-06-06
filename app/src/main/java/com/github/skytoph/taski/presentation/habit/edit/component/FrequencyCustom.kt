@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.component.SquareButton
+import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyState
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyUi
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
@@ -104,6 +105,6 @@ fun FrequencyCustom(
 @Composable
 private fun Preview() {
     HabitMateTheme(darkTheme = true) {
-        FrequencySettings()
+        FrequencySettings(frequency = FrequencyState(selectedName = FrequencyUi.Custom().name))
     }
 }

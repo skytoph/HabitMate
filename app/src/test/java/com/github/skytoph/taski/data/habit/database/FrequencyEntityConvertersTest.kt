@@ -7,7 +7,7 @@ class FrequencyEntityConvertersTest {
 
     @Test
     fun test() {
-        val frequency = FrequencyEntity.Daily(listOf(1))
+        val frequency = FrequencyEntity.Daily(setOf(1))
         val json = FrequencyConverters.fromFrequency(frequency)
         val fromJson = FrequencyConverters.fromString(json)
         val convertedJson = FrequencyConverters.fromFrequency(fromJson)

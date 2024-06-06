@@ -25,12 +25,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.skytoph.taski.presentation.core.component.getLocale
+import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyState
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyUi
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
 fun EditFrequency(
-    frequency: FrequencyUi = FrequencyUi.Custom(),
+    frequency: FrequencyState = FrequencyState(),
     expanded: Boolean = true,
     expand: () -> Unit = {},
     minHeight: Dp = 48.dp,
@@ -62,7 +63,7 @@ fun EditFrequency(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = frequency.summarize(LocalContext.current.resources, getLocale()),
+                text = frequency.selected.summarize(LocalContext.current.resources, getLocale()),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onBackground,
                 maxLines = 2
