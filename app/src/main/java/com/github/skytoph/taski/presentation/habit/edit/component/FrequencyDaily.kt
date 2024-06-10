@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.github.skytoph.taski.presentation.core.color.contrastColor
 import com.github.skytoph.taski.presentation.core.component.WeekDayLabel
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyUi
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
@@ -23,20 +24,20 @@ fun FrequencyDaily(
 ) {
     Column(modifier = Modifier.padding(horizontal = 8.dp)) {
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-            for (index in 1..7)
+            for (index in 1..7) {
+                val background =
+                    if (frequency.days.contains(index)) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant
                 WeekDayLabel(
                     modifier = Modifier
                         .weight(1f)
-                        .background(
-                            if (frequency.days.contains(index)) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant,
-                            MaterialTheme.shapes.extraSmall
-                        )
+                        .background(color = background, shape = MaterialTheme.shapes.extraSmall)
                         .clickable { select(index) }
                         .padding(vertical = 6.dp),
                     index = index,
                     alignment = Alignment.Center,
-                    color = MaterialTheme.colorScheme.onTertiary
+                    color = background.contrastColor()
                 )
+            }
         }
     }
 }

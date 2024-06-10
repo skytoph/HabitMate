@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
@@ -39,7 +40,7 @@ fun FrequencyCounter(
             Text(
                 text = count.toString(),
                 color = MaterialTheme.colorScheme.onTertiary,
-                style = MaterialTheme.typography.bodySmall
+                style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold)
             )
         }
     }

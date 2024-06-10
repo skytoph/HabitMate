@@ -14,7 +14,7 @@ data class CreateHabitState(
     val color: Color = IconsColors.Default,
     val isValidated: Boolean = false,
     val frequencyState: FrequencyState = FrequencyState(),
-    val isFrequencyExpanded: Boolean = true,
+    val isFrequencyExpanded: Boolean = false,
 ) {
 
     fun toHabitUi() = HabitUi(

@@ -21,6 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.github.skytoph.taski.presentation.core.color.contrastColor
 import com.github.skytoph.taski.presentation.core.component.WeekDayLabel
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyState
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyUi
@@ -64,19 +65,18 @@ private fun MonthlyItem(
     selected: Boolean = false,
     select: (Int) -> Unit
 ) {
+    val background =
+        if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant
     Box(contentAlignment = Alignment.Center) {
         Box(
             modifier = Modifier
                 .size(squareDp)
-                .background(
-                    color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant,
-                    shape = CircleShape
-                )
+                .background(color = background, shape = CircleShape)
                 .aspectRatio(1f)
                 .clip(CircleShape)
                 .clickable { select(index) }
         )
-        Text(text = index.toString(), color = MaterialTheme.colorScheme.onTertiary)
+        Text(text = index.toString(), color = background.contrastColor())
     }
 }
 

@@ -13,7 +13,7 @@ data class EditHabitState(
     val title: FieldState = FieldState(),
     val goal: GoalState = GoalState(),
     val frequencyState: FrequencyState = FrequencyState(),
-    val isFrequencyExpanded: Boolean = true,
+    val isFrequencyExpanded: Boolean = false,
     val icon: IconResource = IconResource.Default,
     val color: Color = IconsColors.Default,
     val isHistoryEditable: Boolean = false,
