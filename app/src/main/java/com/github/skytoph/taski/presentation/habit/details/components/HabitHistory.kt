@@ -5,17 +5,10 @@
 
 package com.github.skytoph.taski.presentation.habit.details.components
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.Crossfade
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -32,13 +25,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PlainTooltipBox
 import androidx.compose.material3.Surface
@@ -47,10 +34,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -81,65 +68,40 @@ import kotlinx.coroutines.flow.flowOf
 fun HabitHistory(
     entries: Flow<PagingData<EditableHistoryUi>>,
     goal: Int = 1,
-    isEditable: Boolean = false,
-    isEditButtonVisible: Boolean = true,
     habitColor: Color = IconsColors.Default,
     onEdit: () -> Unit = {},
-    onDayClick: (Int) -> Unit = {},
 ) {
     Column(
         Modifier
             .background(
                 color = MaterialTheme.colorScheme.tertiaryContainer,
-                shape = RoundedCornerShape(10f)
+                shape = MaterialTheme.shapes.extraSmall
             )
             .wrapContentHeight()
             .fillMaxWidth()
+            .animateContentSize()
     ) {
         HabitHistoryGrid(
             entries = entries,
             habitColor = habitColor,
             goal = goal,
-            isEditable = isEditable,
-            onDayClick = onDayClick,
         )
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.End,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            AnimatedVisibility(
-                visible = isEditable,
-                enter = fadeIn() + slideInVertically(),
-                exit = fadeOut(tween(100)) + slideOutVertically(targetOffsetY = { it / 2 })
-            ) {
-                Text(
-                    text = stringResource(R.string.edit_history_hint),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    textAlign = TextAlign.End
-                )
-            }
-            if (isEditButtonVisible)
-                IconButton(onClick = onEdit) {
-                    Crossfade(
-                        targetState = isEditable,
-                        label = "edit_history_crossfade"
-                    ) { isChecked ->
-                        Icon(
-                            imageVector = if (isChecked) Icons.Outlined.Check else Icons.Default.Edit,
-                            contentDescription = null,
-                            modifier = Modifier
-                                .size(32.dp)
-                                .background(
-                                    color = MaterialTheme.colorScheme.secondaryContainer,
-                                    shape = RoundedCornerShape(30)
-                                )
-                                .padding(4.dp),
-                            tint = Color.White
-                        )
-                    }
-                }
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
+            .background(
+                color = MaterialTheme.colorScheme.secondaryContainer,
+                shape = MaterialTheme.shapes.small
+            )
+            .clip(MaterialTheme.shapes.small)
+            .clickable { onEdit() }
+            .padding(horizontal = 16.dp, vertical = 6.dp),
+            contentAlignment = Alignment.Center) {
+            Text(
+                text = stringResource(R.string.button_edit),
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.onBackground
+            )
         }
     }
 }
@@ -149,7 +111,7 @@ fun HabitHistoryGrid(
     entries: Flow<PagingData<EditableHistoryUi>>,
     habitColor: Color = IconsColors.Default,
     goal: Int = 1,
-    isEditable: Boolean,
+    isEditable: Boolean = false,
     onDayClick: (Int) -> Unit = {},
     squareDp: Dp = 32.dp,
     squareOffsetDp: Dp = 1.dp,
@@ -189,7 +151,9 @@ fun HabitHistoryGrid(
                     Box(modifier = Modifier.size(squareDp))
                     for (index in 0 until 7)
                         WeekDayLabel(
-                            modifier = Modifier.size(squareDp).padding(start = 4.dp),
+                            modifier = Modifier
+                                .size(squareDp)
+                                .padding(start = 4.dp),
                             index = index,
                             alignment = Alignment.CenterStart
                         )
@@ -200,7 +164,15 @@ fun HabitHistoryGrid(
                 key = items.itemKey { it.month.timestamp },
                 contentType = { items.itemContentType { it.month.weeks } }) { index ->
                 items[index]?.let { item ->
-                    MonthWithEntries(item, habitColor, squareDp, squareOffsetDp, goal, isEditable, onDayClick)
+                    MonthWithEntries(
+                        item,
+                        habitColor,
+                        squareDp,
+                        squareOffsetDp,
+                        goal,
+                        isEditable,
+                        onDayClick
+                    )
                 }
             }
         }
@@ -259,7 +231,8 @@ private fun DailyEntry(
     size: Dp,
     padding: Dp,
 ) {
-    val color = habitColor.applyColor(MaterialTheme.colorScheme.onSecondaryContainer, entry.percentDone)
+    val color =
+        habitColor.applyColor(MaterialTheme.colorScheme.onSecondaryContainer, entry.percentDone)
     PlainTooltipBox(
         tooltip = {
             Text(stringResource(R.string.entry_tooltip_percent_done, entry.timesDone, goal))

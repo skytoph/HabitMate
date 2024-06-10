@@ -112,6 +112,7 @@
     <string name="frequency_summary_monthly">Every month on %1$s</string>
     <string name="frequency_summary_daily">Every week on %1$s</string>
     <string name="everyday">Everyday</string>
+    <string name="button_edit">Edit</string>
 
     <plurals name="times_label">
         <item quantity="one">time</item>

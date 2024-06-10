@@ -61,7 +61,10 @@ fun HabitDetailsScreen(
         val delete = AppBarAction.delete.copy(
             color = colorDelete,
             onClick = { viewModel.onEvent(HabitDetailsEvent.ShowDialog(true)) })
-        viewModel.initAppBar(title = R.string.habit_details_label, dropDownItems = listOf(edit, delete))
+        viewModel.initAppBar(
+            title = R.string.habit_details_label,
+            dropDownItems = listOf(edit, delete)
+        )
     }
 
     val onHideDialog = { viewModel.onEvent(HabitDetailsEvent.ShowDialog(false)) }
@@ -135,15 +138,21 @@ fun HabitDetails(
             goal = habit.goal,
             habitColor = habit.color,
             onEdit = onEditHistory,
-            isEditButtonVisible = true,
-            isEditable = state.value.isHistoryEditable,
-            onDayClick = onDayClick,
         )
         Spacer(modifier = Modifier.height(16.dp))
     }
 
     if (state.value.isDeleteDialogShown)
         DeleteDialog(onDismissRequest = onHideDialog, onConfirm = onDeleteHabit)
+
+    if (state.value.isHistoryEditable)
+        EditHistoryDialog(
+            entries = entries,
+            onDayClick = onDayClick,
+            onEdit = onEditHistory,
+            habitColor = habit.color,
+            goal = habit.goal
+        )
 }
 
 @Composable

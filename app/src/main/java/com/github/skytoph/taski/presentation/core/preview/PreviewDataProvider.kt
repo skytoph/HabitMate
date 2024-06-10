@@ -36,13 +36,15 @@ class HabitProvider : PreviewParameterProvider<HabitWithHistoryUi<HistoryUi>> {
 }
 
 class HabitsEditableProvider : PreviewParameterProvider<List<EditableHistoryUi>> {
-
-    private val entries =
-        (0..28).map { EntryEditableUi((it).toString(), if (it == 4) 1 else 0, 1F / (it % 20), it) }
-
-    private val months = (1..12).map { MonthUi(timestamp = it.toLong(), weeks = 4) }
-
-    private val history = months.map { EditableHistoryUi(entries, it) }
+    private val history = (1..12).map { month ->
+        EditableHistoryUi((0..28).map { day ->
+            EntryEditableUi(
+                day = day.toString(),
+                percentDone = 1F / (day + 1),
+                daysAgo = day * month
+            )
+        }, MonthUi(timestamp = month.toLong(), weeks = 4))
+    }
 
     override val values: Sequence<List<EditableHistoryUi>> = sequenceOf(history)
 }
