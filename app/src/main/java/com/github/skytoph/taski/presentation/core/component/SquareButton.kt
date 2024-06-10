@@ -11,7 +11,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -23,17 +23,19 @@ fun SquareButton(
     onClick: () -> Unit,
     icon: ImageVector,
     size: Dp = 48.dp,
-    isEnabled: Boolean = true
+    isEnabled: Boolean = true,
+    containerColor: Color = MaterialTheme.colorScheme.surfaceVariant,
+    disabledContainerColor: Color = containerColor,
 ) {
     TextButton(
         onClick = onClick,
         shape = MaterialTheme.shapes.extraSmall,
-        modifier = Modifier.shadow(1.dp, MaterialTheme.shapes.extraSmall).size(size),
+        modifier = Modifier.size(size),
         colors = ButtonDefaults.textButtonColors(
-            containerColor = MaterialTheme.colorScheme.secondary,
-            contentColor = MaterialTheme.colorScheme.onTertiary,
-            disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-            disabledContentColor = MaterialTheme.colorScheme.onBackground,
+            containerColor = containerColor,
+            contentColor = MaterialTheme.colorScheme.onBackground,
+            disabledContainerColor = disabledContainerColor,
+            disabledContentColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f),
         ),
         enabled = isEnabled
     ) {

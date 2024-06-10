@@ -1,8 +1,5 @@
 package com.github.skytoph.taski.presentation.habit.edit.component
 
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.animateIntAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,7 +14,6 @@ import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
@@ -39,16 +35,6 @@ fun FrequencyCustom(
     decreaseType: () -> Unit = {},
     counterSize: Dp = 40.dp
 ) {
-    val timesCount by animateIntAsState(
-        targetValue = frequency.timesCount.value,
-        animationSpec = tween(durationMillis = 1000, easing = FastOutSlowInEasing),
-        label = "times_count_anim"
-    )
-    val typeCount by animateIntAsState(
-        targetValue = frequency.typeCount.value,
-        animationSpec = tween(durationMillis = 1000, easing = FastOutSlowInEasing),
-        label = "type_count_anim"
-    )
     Column(
         modifier = Modifier
             .padding(horizontal = 8.dp, vertical = 4.dp)
@@ -73,14 +59,18 @@ fun FrequencyCustom(
                 onClick = decreaseTimes,
                 icon = Icons.Default.Remove,
                 isEnabled = frequency.timesCount.canBeDecreased,
-                size = 40.dp
+                size = 40.dp,
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.3f)
             )
             Spacer(modifier = Modifier.width(4.dp))
             SquareButton(
                 onClick = increaseTimes,
                 icon = Icons.Default.Add,
                 isEnabled = frequency.timesCount.canBeIncreased,
-                size = 40.dp
+                size = 40.dp,
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.3f)
             )
         }
         Row(
@@ -102,14 +92,18 @@ fun FrequencyCustom(
                 onClick = decreaseType,
                 icon = Icons.Default.Remove,
                 isEnabled = frequency.typeCount.canBeDecreased,
-                size = counterSize
+                size = counterSize,
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.3f)
             )
             Spacer(modifier = Modifier.width(4.dp))
             SquareButton(
                 onClick = increaseType,
                 icon = Icons.Default.Add,
                 isEnabled = frequency.typeCount.canBeIncreased,
-                size = counterSize
+                size = counterSize,
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.3f)
             )
         }
     }
