@@ -1,5 +1,9 @@
 package com.github.skytoph.taski.presentation.habit.edit.component
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
@@ -13,7 +17,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun FrequencyCounter(
-    text: String,
+    count: Int,
     size: Dp = 32.dp
 ) {
     Box(
@@ -22,10 +26,21 @@ fun FrequencyCounter(
             .size(size),
         contentAlignment = Alignment.Center
     ) {
-        Text(
-            text = text,
-            color = MaterialTheme.colorScheme.onTertiary,
-            style = MaterialTheme.typography.bodySmall
-        )
+        AnimatedContent(
+            targetState = count,
+            transitionSpec = {
+                if (targetState > initialState)
+                    slideInVertically { -it } togetherWith slideOutVertically { it }
+                else
+                    slideInVertically { it } togetherWith slideOutVertically { -it }
+            },
+            label = "counter_anim"
+        ) { count ->
+            Text(
+                text = count.toString(),
+                color = MaterialTheme.colorScheme.onTertiary,
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
     }
 }

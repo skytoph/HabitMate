@@ -171,8 +171,7 @@ fun EditBaseHabit(
         )
         Spacer(modifier = Modifier.height(4.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-            Text(
-                text = stringResource(R.string.goal_value, goal.value),
+            Row(
                 modifier = Modifier
                     .background(
                         color = MaterialTheme.colorScheme.surfaceVariant,
@@ -181,10 +180,30 @@ fun EditBaseHabit(
                     .padding(horizontal = 16.dp)
                     .height(minHeight)
                     .wrapContentHeight()
-                    .weight(1f),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onBackground
-            )
+                    .weight(1f)
+            ) {
+                AnimatedContent(
+                    targetState = goal.value,
+                    transitionSpec = {
+                        if (targetState > initialState)
+                            slideInVertically { -it } togetherWith slideOutVertically { it }
+                        else
+                            slideInVertically { it } togetherWith slideOutVertically { -it }
+                    },
+                    label = "goal_counter_anim"
+                ) { count ->
+                    Text(
+                        text = count.toString(),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                }
+                Text(
+                    text = " " + stringResource(R.string.goal_value),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            }
             SquareButton(
                 onClick = onDecreaseGoal,
                 icon = Icons.Default.Remove,

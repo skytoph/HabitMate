@@ -1,5 +1,6 @@
 package com.github.skytoph.taski.presentation.habit.edit.component
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -45,7 +46,8 @@ fun EditFrequency(
     Column(
         modifier = Modifier
             .also { if (!expanded) it.height(minHeight) }
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .animateContentSize(),
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         Row(

@@ -77,7 +77,7 @@ fun FrequencySettings(
                 selected = frequency.isSelected(frequency.custom),
                 select = { selectType(frequency.custom) })
         }
-        Spacer(modifier = Modifier.height(8.dp))
+//        Spacer(modifier = Modifier.height(4.dp))
         FrequencySettingsContent(
             frequency = frequency.selected,
             increaseTimes = increaseTimes,

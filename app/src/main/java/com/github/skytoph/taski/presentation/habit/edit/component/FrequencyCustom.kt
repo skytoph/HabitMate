@@ -1,5 +1,8 @@
 package com.github.skytoph.taski.presentation.habit.edit.component
 
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateIntAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +17,7 @@ import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
@@ -35,6 +39,16 @@ fun FrequencyCustom(
     decreaseType: () -> Unit = {},
     counterSize: Dp = 40.dp
 ) {
+    val timesCount by animateIntAsState(
+        targetValue = frequency.timesCount.value,
+        animationSpec = tween(durationMillis = 1000, easing = FastOutSlowInEasing),
+        label = "times_count_anim"
+    )
+    val typeCount by animateIntAsState(
+        targetValue = frequency.typeCount.value,
+        animationSpec = tween(durationMillis = 1000, easing = FastOutSlowInEasing),
+        label = "type_count_anim"
+    )
     Column(
         modifier = Modifier
             .padding(horizontal = 8.dp, vertical = 4.dp)
@@ -44,7 +58,7 @@ fun FrequencyCustom(
         Row(
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            FrequencyCounter(text = frequency.timesCount.value.toString())
+            FrequencyCounter(count = frequency.timesCount.value)
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = pluralStringResource(
@@ -72,7 +86,7 @@ fun FrequencyCustom(
         Row(
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            FrequencyCounter(text = frequency.typeCount.value.toString())
+            FrequencyCounter(count = frequency.typeCount.value)
             Spacer(modifier = Modifier.width(8.dp))
             Box(modifier = Modifier.weight(1f)) {
                 Text(

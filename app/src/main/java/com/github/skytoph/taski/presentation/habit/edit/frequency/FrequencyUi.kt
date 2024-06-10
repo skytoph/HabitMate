@@ -36,7 +36,7 @@ sealed interface FrequencyUi {
 
         override fun updateType(add: Int): FrequencyUi {
             val value = typeCount.value + add
-            val type = frequencyType.type(timesCount.value)
+            val type = frequencyType.type(value)
             val times = frequencyType.times(timesCount.value, value)
             return copy(typeCount = type, timesCount = times)
         }
@@ -69,7 +69,7 @@ sealed interface FrequencyUi {
         override val name: String = "monthly"
         override fun summarize(resources: Resources, locale: Locale): String {
             if (days.size == 31) return resources.getString(R.string.everyday)
-            val arg = days.joinToString(separator = " ,")
+            val arg = days.joinToString(separator = ", ")
             return resources.getString(R.string.frequency_summary_monthly, arg)
         }
 
