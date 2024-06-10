@@ -61,7 +61,7 @@ fun HabitBottomSheet(
             Divider()
             TitleWithIconMenuItem(
                 title = "reorder habits",
-                icon = ImageVector.vectorResource(id = R.drawable.list),
+                icon = ImageVector.vectorResource(id = R.drawable.arrow_up_down),
                 onClick = { hideBottomSheet(); reorder() })
 
             Spacer(modifier = Modifier.height(80.dp))

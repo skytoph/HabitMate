@@ -70,7 +70,7 @@ private fun SettingsMenu(
             Divider()
             SettingsMenuItem(
                 title = "Reorder habits",
-                icon = ImageVector.vectorResource(id = R.drawable.list),
+                icon = ImageVector.vectorResource(id = R.drawable.arrow_up_down),
                 onClick = reorderClick
             )
             Divider()
