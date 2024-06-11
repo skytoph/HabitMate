@@ -1,15 +1,17 @@
 package com.github.skytoph.taski.presentation.habit.edit.frequency
 
 import android.content.res.Resources
+import androidx.compose.ui.text.AnnotatedString
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.domain.habit.Frequency
+import com.github.skytoph.taski.presentation.core.format.annotate
 import com.github.skytoph.taski.presentation.core.format.getWeekDisplayName
 import com.github.skytoph.taski.presentation.habit.create.GoalState
 import java.util.Calendar
 import java.util.Locale
 
 sealed interface FrequencyUi {
-    fun summarize(resources: Resources, locale: Locale): String
+    fun summarize(resources: Resources, locale: Locale): AnnotatedString
     fun updateType(add: Int): FrequencyUi = this
     fun update(day: Int): FrequencyUi
     fun map(): Frequency
@@ -21,11 +23,15 @@ sealed interface FrequencyUi {
         val frequencyType: FrequencyCustomType = FrequencyCustomType.Week,
     ) : FrequencyUi {
         override val name: String = "custom"
-        override fun summarize(resources: Resources, locale: Locale): String {
-            if (!timesCount.canBeIncreased) return resources.getString(R.string.everyday)
+        override fun summarize(resources: Resources, locale: Locale): AnnotatedString {
+            if (!timesCount.canBeIncreased) return AnnotatedString(resources.getString(R.string.everyday))
             val type = resources.getQuantityString(frequencyType.title, typeCount.value)
             val resId = R.string.frequency_summary_custom
-            return resources.getString(resId, timesCount.value, typeCount.value, type)
+            val string = resources.getString(resId, timesCount.value, typeCount.value, type)
+            return annotate(
+                string = string,
+                arguments = listOf(timesCount.value.toString(), typeCount.value.toString())
+            )
         }
 
         override fun update(add: Int): FrequencyUi {
@@ -49,12 +55,12 @@ sealed interface FrequencyUi {
         val days: Set<Int> = (1..7).toSet()
     ) : FrequencyUi {
         override val name: String = "daily"
-        override fun summarize(resources: Resources, locale: Locale): String {
-            if (days.size == 7) return resources.getString(R.string.everyday)
-            val arg =
-                days.joinToString(separator = ", ", transform = { getWeekDisplayName(locale, it) })
-            return resources.getString(R.string.frequency_summary_daily, arg)
-        }
+        override fun summarize(resources: Resources, locale: Locale): AnnotatedString =
+            if (days.size == 7) AnnotatedString(resources.getString(R.string.everyday))
+            else annotate(
+                initialString = resources.getString(R.string.frequency_summary_daily),
+                arguments = days,
+                transform = { getWeekDisplayName(locale, it) })
 
         override fun update(day: Int) = copy(days = days.toSortedSet().apply {
             if (days.contains(day) && days.size > 1) remove(day) else add(day)
@@ -67,11 +73,12 @@ sealed interface FrequencyUi {
         val days: Set<Int> = setOf(Calendar.getInstance().get(Calendar.DAY_OF_MONTH))
     ) : FrequencyUi {
         override val name: String = "monthly"
-        override fun summarize(resources: Resources, locale: Locale): String {
-            if (days.size == 31) return resources.getString(R.string.everyday)
-            val arg = days.joinToString(separator = ", ")
-            return resources.getString(R.string.frequency_summary_monthly, arg)
-        }
+        override fun summarize(resources: Resources, locale: Locale): AnnotatedString =
+            if (days.size == 31) AnnotatedString(resources.getString(R.string.everyday))
+            else annotate(
+                initialString = resources.getString(R.string.frequency_summary_monthly),
+                arguments = days,
+                transform = { it.toString() })
 
         override fun update(day: Int) = copy(days = days.toSortedSet().apply {
             if (days.contains(day) && days.size > 1) remove(day) else add(day)

@@ -109,8 +109,8 @@
     <string name="list_of_habits_is_empty_label">List of habits is empty</string>
     <string name="archive_is_empty_label">Archive is empty</string>
     <string name="frequency_summary_custom">%1$d times in %2$d %3$s</string>
-    <string name="frequency_summary_monthly">Every month on %1$s</string>
-    <string name="frequency_summary_daily">Every week on %1$s</string>
+    <string name="frequency_summary_monthly">Every month on</string>
+    <string name="frequency_summary_daily">Every week on</string>
     <string name="everyday">Everyday</string>
     <string name="button_edit">Edit</string>
 
