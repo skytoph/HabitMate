@@ -4,6 +4,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.graphics.Color
 import com.github.skytoph.taski.presentation.core.state.IconResource
 import com.github.skytoph.taski.presentation.core.state.StringResource
+import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyCustomType
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyUi
 
 interface CreateHabitEvent {
@@ -63,6 +64,13 @@ interface CreateHabitEvent {
         }
     }
 
+    object ExpandCustomType : CreateHabitEvent {
+        override fun handle(state: MutableState<CreateHabitState>) {
+            state.value =
+                state.value.copy(isCustomTypeExpanded = !state.value.isCustomTypeExpanded)
+        }
+    }
+
     class SelectFrequency(private val type: FrequencyUi) : CreateHabitEvent {
         override fun handle(state: MutableState<CreateHabitState>) {
             state.value =
@@ -99,6 +107,15 @@ interface CreateHabitEvent {
             val updated = state.value.frequencyState.selected.update(day)
             state.value =
                 state.value.copy(frequencyState = state.value.frequencyState.updateSelected(updated))
+        }
+    }
+
+    class SelectCustomType(private val type: FrequencyCustomType) : CreateHabitEvent {
+        override fun handle(state: MutableState<CreateHabitState>) {
+            state.value = state.value.copy(
+                frequencyState = state.value.frequencyState.updateCustom(type),
+                isCustomTypeExpanded = false
+            )
         }
     }
 }

@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyCustomType
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyState
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyUi
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
@@ -33,7 +34,10 @@ fun FrequencySettings(
     increaseTimes: () -> Unit = {},
     decreaseTimes: () -> Unit = {},
     increaseType: () -> Unit = {},
-    decreaseType: () -> Unit = {}
+    decreaseType: () -> Unit = {},
+    selectCustomType: (FrequencyCustomType) -> Unit = {},
+    expandType: () -> Unit = {},
+    typeExpanded: Boolean = false
 ) {
     Column(
         modifier = Modifier
@@ -79,11 +83,14 @@ fun FrequencySettings(
         }
         FrequencySettingsContent(
             frequency = frequency.selected,
+            selectDay = selectDay,
             increaseTimes = increaseTimes,
             decreaseTimes = decreaseTimes,
             increaseType = increaseType,
             decreaseType = decreaseType,
-            selectDay = selectDay,
+            selectType = selectCustomType,
+            expandType = expandType,
+            typeExpanded = typeExpanded
         )
         Spacer(modifier = Modifier.height(8.dp))
     }
@@ -115,11 +122,14 @@ private fun FrequencyOption(
 @Composable
 private fun FrequencySettingsContent(
     frequency: FrequencyUi,
+    typeExpanded: Boolean,
     selectDay: (Int) -> Unit,
     increaseTimes: () -> Unit,
     decreaseTimes: () -> Unit,
     increaseType: () -> Unit,
-    decreaseType: () -> Unit
+    decreaseType: () -> Unit,
+    selectType: (FrequencyCustomType) -> Unit,
+    expandType: () -> Unit
 ) {
     when (frequency) {
         is FrequencyUi.Daily -> FrequencyDaily(frequency = frequency, select = selectDay)
@@ -129,7 +139,10 @@ private fun FrequencySettingsContent(
             increaseTimes = increaseTimes,
             decreaseTimes = decreaseTimes,
             increaseType = increaseType,
-            decreaseType = decreaseType
+            decreaseType = decreaseType,
+            selectType = selectType,
+            expandType = expandType,
+            typeExpanded = typeExpanded
         )
     }
 }

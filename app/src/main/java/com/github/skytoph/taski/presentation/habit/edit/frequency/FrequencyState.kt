@@ -19,4 +19,13 @@ data class FrequencyState(
         monthly.name -> copy(monthly = updated)
         else -> copy(custom = updated)
     }
+
+    fun updateCustom(typeCustom: FrequencyCustomType): FrequencyState =
+        if (custom is FrequencyUi.Custom) {
+            val type = typeCustom.type(custom.typeCount.value)
+            val times = typeCustom.times(times = custom.timesCount.value, type = type.value)
+            val updated =
+                FrequencyUi.Custom(frequencyType = typeCustom, timesCount = times, typeCount = type)
+            copy(custom = updated)
+        } else this
 }

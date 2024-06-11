@@ -27,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.skytoph.taski.presentation.core.component.getLocale
+import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyCustomType
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyState
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyUi
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
@@ -42,7 +43,10 @@ fun EditFrequency(
     increaseTimes: () -> Unit = {},
     decreaseTimes: () -> Unit = {},
     increaseType: () -> Unit = {},
-    decreaseType: () -> Unit = {}
+    decreaseType: () -> Unit = {},
+    selectCustomType: (FrequencyCustomType) -> Unit = {},
+    expandType: () -> Unit = {},
+    typeExpanded: Boolean = true,
 ) {
     Column(
         modifier = Modifier
@@ -82,11 +86,14 @@ fun EditFrequency(
             FrequencySettings(
                 frequency = frequency,
                 selectType = selectType,
+                selectDay = selectDay,
                 increaseTimes = increaseTimes,
                 decreaseTimes = decreaseTimes,
                 increaseType = increaseType,
                 decreaseType = decreaseType,
-                selectDay = selectDay,
+                selectCustomType = selectCustomType,
+                expandType = expandType,
+                typeExpanded = typeExpanded
             )
     }
 }

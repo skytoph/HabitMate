@@ -15,6 +15,7 @@ data class CreateHabitState(
     val isValidated: Boolean = false,
     val frequencyState: FrequencyState = FrequencyState(),
     val isFrequencyExpanded: Boolean = false,
+    val isCustomTypeExpanded: Boolean = false,
 ) {
 
     fun toHabitUi() = HabitUi(

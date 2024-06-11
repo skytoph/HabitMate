@@ -1,27 +1,38 @@
 package com.github.skytoph.taski.presentation.habit.edit.component
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.component.SquareButton
+import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyCustomType
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyState
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyUi
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
@@ -33,7 +44,10 @@ fun FrequencyCustom(
     decreaseTimes: () -> Unit = {},
     increaseType: () -> Unit = {},
     decreaseType: () -> Unit = {},
-    counterSize: Dp = 40.dp
+    selectType: (FrequencyCustomType) -> Unit = {},
+    expandType: () -> Unit = {},
+    typeExpanded: Boolean = true,
+    buttonSize: Dp = 40.dp,
 ) {
     Column(
         modifier = Modifier
@@ -59,7 +73,7 @@ fun FrequencyCustom(
                 onClick = decreaseTimes,
                 icon = Icons.Default.Remove,
                 isEnabled = frequency.timesCount.canBeDecreased,
-                size = 40.dp,
+                size = buttonSize,
                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
                 disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.3f)
             )
@@ -68,7 +82,7 @@ fun FrequencyCustom(
                 onClick = increaseTimes,
                 icon = Icons.Default.Add,
                 isEnabled = frequency.timesCount.canBeIncreased,
-                size = 40.dp,
+                size = buttonSize,
                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
                 disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.3f)
             )
@@ -77,8 +91,17 @@ fun FrequencyCustom(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             FrequencyCounter(count = frequency.typeCount.value)
-            Spacer(modifier = Modifier.width(8.dp))
-            Box(modifier = Modifier.weight(1f)) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .defaultMinSize(minHeight = buttonSize)
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                        onClick = expandType
+                    )
+                    .padding(8.dp)
+            ) {
                 Text(
                     text = pluralStringResource(
                         id = frequency.frequencyType.title, count = frequency.typeCount.value
@@ -86,13 +109,20 @@ fun FrequencyCustom(
                     color = MaterialTheme.colorScheme.onBackground,
                     style = MaterialTheme.typography.bodySmall
                 )
+                Spacer(modifier = Modifier.width(4.dp))
+                Icon(
+                    imageVector = if (typeExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                    contentDescription = "select reminder",
+                    tint = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier.size(16.dp)
+                )
             }
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.weight(1f))
             SquareButton(
                 onClick = decreaseType,
                 icon = Icons.Default.Remove,
                 isEnabled = frequency.typeCount.canBeDecreased,
-                size = counterSize,
+                size = buttonSize,
                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
                 disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.3f)
             )
@@ -101,11 +131,57 @@ fun FrequencyCustom(
                 onClick = increaseType,
                 icon = Icons.Default.Add,
                 isEnabled = frequency.typeCount.canBeIncreased,
-                size = counterSize,
+                size = buttonSize,
                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
                 disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.3f)
             )
         }
+        if (typeExpanded) Column(modifier = Modifier.clip(MaterialTheme.shapes.small)) {
+            FrequencyType(
+                option = FrequencyCustomType.Day,
+                selected = frequency.frequencyType == FrequencyCustomType.Day,
+                selectType = selectType
+            )
+            Divider()
+            FrequencyType(
+                option = FrequencyCustomType.Week,
+                selected = frequency.frequencyType == FrequencyCustomType.Week,
+                selectType = selectType
+            )
+            Divider()
+            FrequencyType(
+                option = FrequencyCustomType.Month,
+                selected = frequency.frequencyType == FrequencyCustomType.Month,
+                selectType = selectType
+            )
+        }
+    }
+}
+
+@Composable
+private fun FrequencyType(
+    option: FrequencyCustomType,
+    selected: Boolean,
+    selectType: (FrequencyCustomType) -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { selectType(option) }
+            .padding(8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = pluralStringResource(id = option.title, count = 1),
+            color = MaterialTheme.colorScheme.onBackground,
+            style = MaterialTheme.typography.bodySmall,
+        )
+        if (selected) Icon(
+            imageVector = Icons.Default.Check,
+            contentDescription = "selected frequency type",
+            tint = MaterialTheme.colorScheme.onBackground,
+            modifier = Modifier.size(16.dp)
+        )
     }
 }
 

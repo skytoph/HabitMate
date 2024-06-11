@@ -20,6 +20,7 @@ import com.github.skytoph.taski.presentation.habit.create.CreateHabitEvent
 import com.github.skytoph.taski.presentation.habit.create.CreateHabitState
 import com.github.skytoph.taski.presentation.habit.create.CreateHabitViewModel
 import com.github.skytoph.taski.presentation.habit.edit.component.EditBaseHabit
+import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyCustomType
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyUi
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
@@ -60,7 +61,9 @@ fun CreateHabitScreen(
         increaseType = { viewModel.onEvent(CreateHabitEvent.IncreaseFrequencyType) },
         decreaseType = { viewModel.onEvent(CreateHabitEvent.DecreaseFrequencyType) },
         selectType = { viewModel.onEvent(CreateHabitEvent.SelectFrequency(it)) },
-        selectDay = { viewModel.onEvent(CreateHabitEvent.SelectDay(it)) })
+        selectDay = { viewModel.onEvent(CreateHabitEvent.SelectDay(it)) },
+        selectCustomType = { viewModel.onEvent(CreateHabitEvent.SelectCustomType(it)) },
+        expandType = { viewModel.onEvent(CreateHabitEvent.ExpandCustomType) })
 }
 
 @Composable
@@ -77,6 +80,8 @@ private fun CreateHabit(
     decreaseType: () -> Unit = {},
     selectType: (FrequencyUi) -> Unit = {},
     selectDay: (Int) -> Unit = {},
+    selectCustomType: (FrequencyCustomType) -> Unit = {},
+    expandType: () -> Unit = {},
 ) {
     Column(
         modifier = Modifier
@@ -100,7 +105,10 @@ private fun CreateHabit(
             increaseType = increaseType,
             decreaseType = decreaseType,
             selectType = selectType,
-            selectDay = selectDay
+            selectDay = selectDay,
+            selectCustomType = selectCustomType,
+            expandType = expandType,
+            typeExpanded = state.value.isCustomTypeExpanded
         )
     }
 }

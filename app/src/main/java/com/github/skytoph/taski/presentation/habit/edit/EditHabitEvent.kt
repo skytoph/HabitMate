@@ -7,6 +7,7 @@ import com.github.skytoph.taski.presentation.core.state.IconResource
 import com.github.skytoph.taski.presentation.core.state.StringResource
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.create.GoalState
+import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyCustomType
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyState
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyUi
 import com.github.skytoph.taski.presentation.habit.icon.IconState
@@ -88,6 +89,12 @@ interface EditHabitEvent {
         }
     }
 
+    object ExpandCustomType : EditHabitEvent {
+        override fun handle(state: MutableState<EditHabitState>, icon: MutableState<IconState>) {
+            state.value = state.value.copy(isCustomTypeExpanded = !state.value.isCustomTypeExpanded)
+        }
+    }
+
     class SelectFrequency(private val type: FrequencyUi) : EditHabitEvent {
         override fun handle(state: MutableState<EditHabitState>, icon: MutableState<IconState>) {
             state.value =
@@ -124,6 +131,15 @@ interface EditHabitEvent {
             val updated = state.value.frequencyState.selected.update(day)
             state.value =
                 state.value.copy(frequencyState = state.value.frequencyState.updateSelected(updated))
+        }
+    }
+
+    class SelectCustomType(private val type: FrequencyCustomType) : EditHabitEvent {
+        override fun handle(state: MutableState<EditHabitState>, icon: MutableState<IconState>) {
+            state.value = state.value.copy(
+                frequencyState = state.value.frequencyState.updateCustom(type),
+                isCustomTypeExpanded = false
+            )
         }
     }
 }

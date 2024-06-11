@@ -84,6 +84,6 @@ private fun MonthlyItem(
 @Composable
 private fun MonthlyPreview() {
     HabitMateTheme(darkTheme = true) {
-        FrequencySettings(frequency = FrequencyState(selectedName = FrequencyUi.Monthly().name))
+        FrequencySettings(frequency = FrequencyState(selectedName = FrequencyUi.Monthly().name),)
     }
 }

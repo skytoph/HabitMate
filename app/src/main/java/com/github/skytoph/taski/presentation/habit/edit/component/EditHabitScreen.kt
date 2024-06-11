@@ -41,6 +41,7 @@ import com.github.skytoph.taski.presentation.habit.create.GoalState
 import com.github.skytoph.taski.presentation.habit.edit.EditHabitEvent
 import com.github.skytoph.taski.presentation.habit.edit.EditHabitState
 import com.github.skytoph.taski.presentation.habit.edit.EditHabitViewModel
+import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyCustomType
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyState
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyUi
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
@@ -86,6 +87,8 @@ fun EditHabitScreen(
         decreaseType = { viewModel.onEvent(EditHabitEvent.DecreaseFrequencyType) },
         selectType = { viewModel.onEvent(EditHabitEvent.SelectFrequency(it)) },
         selectDay = { viewModel.onEvent(EditHabitEvent.SelectDay(it)) },
+        selectCustomType = { viewModel.onEvent(EditHabitEvent.SelectCustomType(it)) },
+        expandType = { viewModel.onEvent(EditHabitEvent.ExpandCustomType) }
     )
 }
 
@@ -103,6 +106,8 @@ private fun EditHabit(
     decreaseType: () -> Unit = {},
     selectType: (FrequencyUi) -> Unit = {},
     selectDay: (Int) -> Unit = {},
+    selectCustomType: (FrequencyCustomType) -> Unit = {},
+    expandType: () -> Unit = {},
 ) {
     EditBaseHabit(
         title = state.value.title,
@@ -122,6 +127,9 @@ private fun EditHabit(
         decreaseType = decreaseType,
         selectType = selectType,
         selectDay = selectDay,
+        selectCustomType = selectCustomType,
+        expandType = expandType,
+        typeExpanded = state.value.isCustomTypeExpanded
     )
 }
 
@@ -145,6 +153,9 @@ fun EditBaseHabit(
     decreaseType: () -> Unit,
     selectType: (FrequencyUi) -> Unit,
     selectDay: (Int) -> Unit = {},
+    selectCustomType: (FrequencyCustomType) -> Unit = {},
+    expandType: () -> Unit = {},
+    typeExpanded: Boolean = true,
 ) {
     Column(
         modifier = Modifier.padding(horizontal = 8.dp)
@@ -234,6 +245,9 @@ fun EditBaseHabit(
             increaseType = increaseType,
             decreaseType = decreaseType,
             selectDay = selectDay,
+            selectCustomType = selectCustomType,
+            expandType = expandType,
+            typeExpanded = typeExpanded
         )
         Spacer(modifier = Modifier.height(16.dp))
     }
