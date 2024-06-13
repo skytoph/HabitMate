@@ -11,11 +11,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -30,6 +29,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
@@ -37,6 +40,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.PagingData
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.component.AppBarAction
+import com.github.skytoph.taski.presentation.core.component.getLocale
 import com.github.skytoph.taski.presentation.core.preview.HabitsEditableProvider
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.details.HabitDetailsEvent
@@ -96,7 +100,6 @@ fun HabitDetails(
             .fillMaxSize()
             .verticalScroll(rememberScrollState()),
     ) {
-
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -115,22 +118,82 @@ fun HabitDetails(
                     tint = Color.White
                 )
             }
-            Text(text = habit.title, style = MaterialTheme.typography.titleLarge)
+            Text(
+                text = habit.title,
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onBackground
+            )
         }
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(4.dp))
         Row(
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    color = MaterialTheme.colorScheme.tertiaryContainer,
+                    shape = MaterialTheme.shapes.extraSmall
+                )
+                .padding(8.dp)
         ) {
             LabelWithIcon(
+                modifier = Modifier.weight(1f),
+                annotatedText = habit.frequency.summarize(context.resources, getLocale()),
+                icon = ImageVector.vectorResource(R.drawable.calendar),
+            )
+            LabelWithIcon(
+                modifier = Modifier.weight(1f),
                 text = stringResource(R.string.goal_value, habit.goal),
-                icon = Icons.Default.CalendarMonth
+                icon = ImageVector.vectorResource(R.drawable.goal),
+            )
+            LabelWithIcon(
+                modifier = Modifier.weight(1f),
+                text = "13:00",
+                icon = ImageVector.vectorResource(R.drawable.bell),
+            )
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = "overview",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    color = MaterialTheme.colorScheme.tertiaryContainer,
+                    shape = MaterialTheme.shapes.extraSmall
+                )
+                .padding(8.dp)
+        ) {
+            LabelWithIconAndValue(
+                modifier = Modifier.weight(1f),
+                text = "total",
+                icon = ImageVector.vectorResource(R.drawable.orbit),
+                value = 3.toString()
+            )
+            LabelWithIconAndValue(
+                modifier = Modifier.weight(1f),
+                text = "best streak",
+                icon = ImageVector.vectorResource(R.drawable.sparkle),
+                value = 3.toString()
+            )
+            LabelWithIconAndValue(
+                modifier = Modifier.weight(1f),
+                text = "streak",
+                icon = ImageVector.vectorResource(R.drawable.flame),
+                value = 3.toString()
             )
         }
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = stringResource(R.string.history_label),
-            style = MaterialTheme.typography.bodyMedium
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onBackground
         )
         Spacer(modifier = Modifier.height(4.dp))
         HabitHistory(
@@ -156,45 +219,81 @@ fun HabitDetails(
 }
 
 @Composable
-fun LabelWithIcon(text: String, icon: ImageVector) {
+fun LabelWithIcon(modifier: Modifier = Modifier, text: String, icon: ImageVector) =
+    LabelWithIcon(modifier = modifier, annotatedText = AnnotatedString(text), icon = icon)
+
+@Composable
+fun LabelWithIcon(
+    modifier: Modifier = Modifier,
+    annotatedText: AnnotatedString,
+    icon: ImageVector
+) {
     Row(
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        modifier = modifier,
+        horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
             imageVector = icon,
             contentDescription = null,
             modifier = Modifier.size(16.dp),
-            tint = MaterialTheme.colorScheme.onSurface
+            tint = MaterialTheme.colorScheme.onBackground
         )
-        Text(text = text, style = MaterialTheme.typography.labelSmall)
+        Spacer(modifier = Modifier.width(4.dp))
+        Text(
+            text = annotatedText,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onBackground,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
+        )
     }
 }
 
 @Composable
-@Preview(showSystemUi = true, showBackground = true)
-fun HabitDetailsScreenPreview(
-    @PreviewParameter(HabitsEditableProvider::class) entries: List<EditableHistoryUi>,
-    habit: HabitUi = HabitUi(title = "Dev")
+fun LabelWithIconAndValue(
+    modifier: Modifier = Modifier,
+    text: String,
+    icon: ImageVector,
+    value: String
 ) {
-    HabitMateTheme(darkTheme = false) {
-        HabitDetails(
-            state = remember { mutableStateOf(HabitDetailsState(habit)) },
-            entries = flowOf(PagingData.from(entries))
+    Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                modifier = Modifier.size(16.dp),
+                tint = MaterialTheme.colorScheme.onBackground
+            )
+            Text(
+                text = text,
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+        }
+        Text(
+            text = value,
+            color = MaterialTheme.colorScheme.primary,
+            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
         )
     }
 }
 
 @Composable
-@Preview(showSystemUi = true, showBackground = true)
+@Preview
 fun DarkHabitDetailsScreenPreview(
     @PreviewParameter(HabitsEditableProvider::class) entries: List<EditableHistoryUi>,
     habit: HabitUi = HabitUi(title = "dev")
 ) {
     HabitMateTheme(darkTheme = true) {
-        HabitDetails(
-            state = remember { mutableStateOf(HabitDetailsState(habit)) },
-            entries = flowOf(PagingData.from(entries))
-        )
+        Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+            HabitDetails(
+                state = remember { mutableStateOf(HabitDetailsState(habit)) },
+                entries = flowOf(PagingData.from(entries))
+            )
+        }
     }
 }

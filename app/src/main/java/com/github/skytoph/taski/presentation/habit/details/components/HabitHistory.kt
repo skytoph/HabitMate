@@ -274,6 +274,7 @@ private fun MonthLabel(
         Text(
             text = month.getDisplayName(getLocale()),
             style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onBackground,
             overflow = TextOverflow.Ellipsis,
             textAlign = month.alignment,
             maxLines = 1,
@@ -282,9 +283,10 @@ private fun MonthLabel(
         if (month.weeks > 1) Text(
             text = month.getDisplayYear(getLocale()),
             style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onBackground,
             overflow = TextOverflow.Ellipsis,
             textAlign = month.alignment,
-            maxLines = 1,
+            maxLines = 1
         )
     }
 }
