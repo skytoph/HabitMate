@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit
 
 interface Now {
     fun dayOfWeek(): Int
+    fun dayOfWeek(todayDayOfWeek: Int, daysAgo: Int): Int
     fun dayOfMonths(daysAgo: Int): Int
     fun milliseconds(): Long
     fun daysAgo(milliseconds: Long): Int
@@ -15,11 +16,15 @@ interface Now {
     fun lastDayOfWeekMillis(weeksAgo: Int = 0): Long
     fun monthMillis(monthsAgo: Int = 0): Long
     fun weeksInMonth(monthsAgo: Int = 0): Int
+    fun daysInMonth(daysAgo: Int): Int
 
     class Base(private val timeZone: TimeZone = TimeZone.getTimeZone("UTC")) : Now {
 
         override fun dayOfWeek(): Int =
             calendar().run { (get(Calendar.DAY_OF_WEEK) - firstDayOfWeek + 7) % 7 }
+
+        override fun dayOfWeek(todayDayOfWeek: Int, daysAgo: Int): Int =
+            (6 + todayDayOfWeek - daysAgo % 7) % 7 + 1
 
         override fun milliseconds(): Long = System.currentTimeMillis()
 
@@ -27,6 +32,9 @@ interface Now {
 
         override fun dayOfMonths(daysAgo: Int): Int =
             startOfTheDay(daysAgo).get(Calendar.DAY_OF_MONTH)
+
+        override fun daysInMonth(daysAgo: Int): Int =
+            startOfTheDay(daysAgo).getActualMaximum(Calendar.DAY_OF_MONTH)
 
         override fun daysAgo(milliseconds: Long): Int =
             TimeUnit.MILLISECONDS.toDays(dayInMillis() - milliseconds).toInt()
@@ -62,11 +70,5 @@ interface Now {
         private fun month(monthsAgo: Int): Calendar = calendar().also { calendar ->
             calendar.add(Calendar.MONTH, -monthsAgo)
         }
-//
-//        private fun lastDayOfFirstWeek(monthsAgo: Int = 0): Calendar = startOfTheDay().also { calendar ->
-//            calendar.set(Calendar.DAY_OF_WEEK, calendar.firstDayOfWeek)
-//            calendar.add(Calendar.MONTH, -monthsAgo)
-//            calendar.add(Calendar.DATE, 6 - weeksAgo * 7)
-//        }
     }
 }
