@@ -149,7 +149,7 @@ fun HabitHistoryGrid(
                         .background(color = MaterialTheme.colorScheme.tertiaryContainer)
                 ) {
                     Box(modifier = Modifier.size(squareDp))
-                    for (index in 0 until 7)
+                    for (index in 1 .. 7)
                         WeekDayLabel(
                             modifier = Modifier
                                 .size(squareDp)

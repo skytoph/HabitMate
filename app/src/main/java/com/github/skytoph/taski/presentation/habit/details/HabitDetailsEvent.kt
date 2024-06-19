@@ -12,6 +12,12 @@ interface HabitDetailsEvent {
         }
     }
 
+    class UpdateStats(private val statistics: HabitStatisticsUi) : HabitDetailsEvent {
+        override fun handle(state: MutableState<HabitDetailsState>) {
+            state.value = state.value.copy(statistics = statistics)
+        }
+    }
+
     object EditHistory : HabitDetailsEvent {
         override fun handle(state: MutableState<HabitDetailsState>) {
             state.value = state.value.copy(isHistoryEditable = !state.value.isHistoryEditable)

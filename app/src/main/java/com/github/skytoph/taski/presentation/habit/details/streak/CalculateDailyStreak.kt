@@ -2,7 +2,7 @@ package com.github.skytoph.taski.presentation.habit.details.streak
 
 import com.github.skytoph.taski.core.Now
 
-class CalculateDailyStreak(private val now: Now) : CalculateStreak.Abstract() {
+class CalculateDailyStreak(private val now: Now, days: Set<Int>) : CalculateStreak.Abstract(days) {
     private val today = now.dayOfWeek() + 1
     override fun dayNumber(daysAgo: Int): Int = now.dayOfWeek(today, daysAgo)
 }

@@ -3,19 +3,22 @@ package com.github.skytoph.taski.presentation.habit.details.streak
 import com.github.skytoph.taski.domain.habit.Entry
 
 interface CalculateStreak {
-    fun currentStreak(data: Map<Int, Entry>, goal: Int, days: Set<Int> = emptySet()): Int
-    fun streaks(data: Map<Int, Entry>, goal: Int, days: Set<Int> = emptySet()): List<Int>
+    fun currentStreak(data: Map<Int, Entry>, goal: Int): Int
+    fun maxStreak(data: Map<Int, Entry>, goal: Int): Int
+    fun streaks(data: Map<Int, Entry>, goal: Int): List<Int>
+    fun total(data: Map<Int, Entry>, goal: Int): Int =
+        data.values.count { entry -> entry.timesDone >= goal }
 
-    abstract class Abstract : CalculateStreak {
+    abstract class Abstract(private val days: Set<Int>) : CalculateStreak {
 
         private fun streaks(
             data: Map<Int, Entry>, goal: Int, days: List<Int>, findCurrentStreak: Boolean = false
         ): List<Int> =
-            if (data.isEmpty() || days.isEmpty()) emptyList()
+            if (data.isEmpty() || days.isEmpty()) listOf(0)
             else {
                 val streaks = mutableListOf(0)
 
-                val dataIterator = data.keys.iterator()
+                val dataIterator = data.keys.reversed().iterator()
                 var daysIterator = days.listIterator()
 
                 val today = dayNumber(0)
@@ -85,12 +88,16 @@ interface CalculateStreak {
             }
         }
 
-        override fun currentStreak(data: Map<Int, Entry>, goal: Int, days: Set<Int>): Int =
+        override fun currentStreak(data: Map<Int, Entry>, goal: Int): Int =
             streaks(data = data, goal = goal, days = days.reversed(), findCurrentStreak = true)
                 .first()
 
-        override fun streaks(data: Map<Int, Entry>, goal: Int, days: Set<Int>): List<Int> =
+        override fun streaks(data: Map<Int, Entry>, goal: Int): List<Int> =
             streaks(data = data, goal = goal, days = days.reversed(), findCurrentStreak = false)
+
+        override fun maxStreak(data: Map<Int, Entry>, goal: Int): Int =
+            streaks(data = data, goal = goal, days = days.reversed(), findCurrentStreak = false)
+                .max()
 
         abstract fun dayNumber(daysAgo: Int): Int
 

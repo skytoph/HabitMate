@@ -13,6 +13,7 @@ import androidx.paging.map
 import com.github.skytoph.taski.presentation.appbar.InitAppBar
 import com.github.skytoph.taski.presentation.core.component.AppBarState
 import com.github.skytoph.taski.presentation.habit.HabitScreens
+import com.github.skytoph.taski.presentation.habit.details.mapper.HabitStatsUiMapper
 import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitUiMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,6 +34,7 @@ class HabitDetailsViewModel @Inject constructor(
     private val state: MutableState<HabitDetailsState> = mutableStateOf(HabitDetailsState()),
     private val interactor: HabitDetailsInteractor,
     private val habitMapper: HabitUiMapper,
+    private val statsMapper: HabitStatsUiMapper,
     savedStateHandle: SavedStateHandle,
     appBarState: MutableState<AppBarState>
 ) : ViewModel(), InitAppBar by InitAppBar.Base(appBarState) {
@@ -40,7 +42,8 @@ class HabitDetailsViewModel @Inject constructor(
     private val actions = MutableStateFlow<List<UpdateEntryAction>>(emptyList())
 
     val entries: Flow<PagingData<EditableHistoryUi>> =
-        interactor.entries(savedStateHandle.id()).cachedIn(viewModelScope)
+        interactor.entries(savedStateHandle.id())
+            .cachedIn(viewModelScope)
             .combine(actions) { pagingData, actions ->
                 actions.fold(pagingData) { paging, event -> applyAction(paging, event) }
             }
@@ -50,6 +53,12 @@ class HabitDetailsViewModel @Inject constructor(
             .map { habit -> habit?.let { habitMapper.map(it) } }
             .flowOn(Dispatchers.IO)
             .onEach { it?.let { habit -> onEvent(HabitDetailsEvent.Init(habit)) } }
+            .launchIn(viewModelScope)
+
+        interactor.statistics(savedStateHandle.id())
+            .map { history -> statsMapper.map(history)}
+            .flowOn(Dispatchers.IO)
+            .onEach { stats -> onEvent(HabitDetailsEvent.UpdateStats(stats)) }
             .launchIn(viewModelScope)
     }
 

@@ -174,19 +174,19 @@ fun HabitDetails(
                 modifier = Modifier.weight(1f),
                 text = "total",
                 icon = ImageVector.vectorResource(R.drawable.orbit),
-                value = 3.toString()
+                value = state.value.statistics.total.toString()
             )
             LabelWithIconAndValue(
                 modifier = Modifier.weight(1f),
                 text = "best streak",
                 icon = ImageVector.vectorResource(R.drawable.sparkle),
-                value = 3.toString()
+                value = state.value.statistics.bestStreak.toString()
             )
             LabelWithIconAndValue(
                 modifier = Modifier.weight(1f),
                 text = "streak",
                 icon = ImageVector.vectorResource(R.drawable.flame),
-                value = 3.toString()
+                value = state.value.statistics.currentStreak.toString()
             )
         }
         Spacer(modifier = Modifier.height(16.dp))

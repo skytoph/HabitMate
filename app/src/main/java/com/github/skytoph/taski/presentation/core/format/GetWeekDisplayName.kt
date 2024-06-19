@@ -7,7 +7,7 @@ import java.util.Locale
 fun getWeekDisplayName(locale: Locale, dayOfWeek: Int): String {
     val calendar = Calendar.getInstance(locale).also {
         it.set(Calendar.DAY_OF_WEEK, it.firstDayOfWeek)
-        it.add(Calendar.DAY_OF_WEEK, dayOfWeek)
+        it.add(Calendar.DAY_OF_WEEK, dayOfWeek - 1)
     }
     return SimpleDateFormat("EE", locale).format(calendar.timeInMillis)
 }

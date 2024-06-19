@@ -53,33 +53,58 @@ class CalculateEntryStreakTest {
     private val now = TestNow()
 
     private val streakEveryday: CalculateStreak = CalculateEverydayStreak()
-    private val streakDaily: CalculateStreak = CalculateDailyStreak(now)
-    private val streakMonthly: CalculateStreak = CalculateMonthlyStreak(now)
 
     @Test
     fun test() {
         assertEquals(5, streakEveryday.streaks(data.entries, goal).max())
         assertEquals(2, streakEveryday.currentStreak(data.entries, goal))
 
-        assertEquals(2, streakDaily.currentStreak(data.entries, goal, setOf(6)))
-        assertEquals(8, streakDaily.currentStreak(data.entries, goal, setOf(4)))
-        assertEquals(13, streakDaily.currentStreak(data.entries, goal, setOf(3, 5)))
-        assertEquals(5, streakDaily.currentStreak(data.entries, goal, setOf(2, 4)))
+        assertEquals(2, CalculateDailyStreak(now, setOf(6)).currentStreak(data.entries, goal))
+        assertEquals(8, CalculateDailyStreak(now, setOf(4)).currentStreak(data.entries, goal))
+        assertEquals(13, CalculateDailyStreak(now, setOf(3, 5)).currentStreak(data.entries, goal))
+        assertEquals(5, CalculateDailyStreak(now, setOf(2, 4)).currentStreak(data.entries, goal))
 
-        assertEquals(listOf(2, 5, 6, 3, 2), streakDaily.streaks(data.entries, goal, setOf(1, 6)))
-        assertEquals(listOf(2, 3, 2, 6, 3, 2), streakDaily.streaks(data.entries, goal, setOf(2, 6)))
-        assertEquals(listOf(8, 5, 3, 2), streakDaily.streaks(data.entries, goal, setOf(4)))
-        assertEquals(listOf(2, 5, 6, 3, 2), streakDaily.streaks(data.entries, goal, setOf(6)))
+        assertEquals(
+            listOf(2, 5, 6, 3, 2),
+            CalculateDailyStreak(now, setOf(1, 6)).streaks(data.entries, goal)
+        )
+        assertEquals(
+            listOf(2, 3, 2, 6, 3, 2),
+            CalculateDailyStreak(now, setOf(2, 6)).streaks(data.entries, goal)
+        )
+        assertEquals(
+            listOf(8, 5, 3, 2),
+            CalculateDailyStreak(now, setOf(4)).streaks(data.entries, goal)
+        )
+        assertEquals(
+            listOf(2, 5, 6, 3, 2),
+            CalculateDailyStreak(now, setOf(6)).streaks(data.entries, goal)
+        )
 
-        assertEquals(16, streakMonthly.currentStreak(data.entries, goal, setOf(28, 27)))
-        assertEquals(2, streakMonthly.currentStreak(data.entries, goal, setOf(29)))
-        assertEquals(listOf(7, 1, 8, 2), streakMonthly.streaks(data.entries, goal, setOf(20, 22)))
+        assertEquals(
+            16,
+            CalculateMonthlyStreak(now, setOf(28, 27)).currentStreak(data.entries, goal)
+        )
+        assertEquals(2, CalculateMonthlyStreak(now, setOf(29)).currentStreak(data.entries, goal))
+        assertEquals(
+            listOf(7, 1, 8, 2),
+            CalculateMonthlyStreak(now, setOf(20, 22)).streaks(data.entries, goal)
+        )
 
         val dataWithout31 = data.entries.toMutableMap().apply { remove(31) }
-        assertEquals(listOf(15, 2), streakMonthly.streaks(dataWithout31, goal, setOf(31)))
-        assertEquals(listOf(6), streakMonthly.streaks(dataSecond.entries, goal, setOf(31)))
+        assertEquals(
+            listOf(15, 2),
+            CalculateMonthlyStreak(now, setOf(31)).streaks(dataWithout31, goal)
+        )
+        assertEquals(
+            listOf(6),
+            CalculateMonthlyStreak(now, setOf(31)).streaks(dataSecond.entries, goal)
+        )
         val dataWithout121 = dataSecond.entries.toMutableMap().apply { remove(121) }
-        assertEquals(listOf(3, 2), streakMonthly.streaks(dataWithout121, goal, setOf(31)))
+        assertEquals(
+            listOf(3, 2),
+            CalculateMonthlyStreak(now, setOf(31)).streaks(dataWithout121, goal)
+        )
     }
 }
 
