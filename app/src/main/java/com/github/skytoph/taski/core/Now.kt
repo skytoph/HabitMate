@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit
 
 interface Now {
     fun dayOfWeek(): Int
-    fun dayOfWeek(todayDayOfWeek: Int, daysAgo: Int): Int
+    fun dayOfWeek(daysAgo: Int): Int
     fun dayOfMonths(daysAgo: Int): Int
     fun milliseconds(): Long
     fun daysAgo(milliseconds: Long): Int
@@ -17,14 +17,22 @@ interface Now {
     fun monthMillis(monthsAgo: Int = 0): Long
     fun weeksInMonth(monthsAgo: Int = 0): Int
     fun daysInMonth(daysAgo: Int): Int
+    fun monthsAgo(daysAgo: Int): Int
 
     class Base(private val timeZone: TimeZone = TimeZone.getTimeZone("UTC")) : Now {
 
-        override fun dayOfWeek(): Int =
-            calendar().run { (get(Calendar.DAY_OF_WEEK) - firstDayOfWeek + 7) % 7 }
+        override fun monthsAgo(daysAgo: Int): Int {
+            val compareWith = calendar().apply { add(Calendar.DAY_OF_YEAR, -daysAgo) }
+            val today = calendar()
+            return 12 * (today.get(Calendar.YEAR) - compareWith.get(Calendar.YEAR)) +
+                    today.get(Calendar.MONTH) - compareWith.get(Calendar.MONTH)
+        }
 
-        override fun dayOfWeek(todayDayOfWeek: Int, daysAgo: Int): Int =
-            (6 + todayDayOfWeek - daysAgo % 7) % 7 + 1
+        override fun dayOfWeek(): Int =
+            calendar().run { (get(Calendar.DAY_OF_WEEK) - firstDayOfWeek + 7) % 7 } + 1
+
+        override fun dayOfWeek(daysAgo: Int): Int =
+            (6 + dayOfWeek() - daysAgo % 7) % 7 + 1
 
         override fun milliseconds(): Long = System.currentTimeMillis()
 

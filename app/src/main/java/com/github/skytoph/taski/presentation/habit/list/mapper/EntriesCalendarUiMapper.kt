@@ -2,8 +2,8 @@ package com.github.skytoph.taski.presentation.habit.list.mapper
 
 import com.github.skytoph.taski.core.Now
 import com.github.skytoph.taski.domain.habit.EntryList
-import com.github.skytoph.taski.presentation.habit.list.view.ViewType
 import com.github.skytoph.taski.presentation.habit.list.HistoryUi
+import com.github.skytoph.taski.presentation.habit.list.view.ViewType
 import kotlin.math.max
 
 class EntriesCalendarUiMapper(
@@ -18,7 +18,7 @@ class EntriesCalendarUiMapper(
 
         val numberOfCells: Int = max(COLUMNS, numberOfColumns) * ROWS
 
-        val todayPosition = 6 - now.dayOfWeek()
+        val todayPosition = 7 - now.dayOfWeek()
         val entries = (numberOfCells - todayPosition - 1 downTo -todayPosition).map { index ->
             mapper.map(history = history, daysAgo = index, goal = goal)
         }

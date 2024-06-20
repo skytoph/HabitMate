@@ -5,8 +5,8 @@ import com.github.skytoph.taski.domain.habit.Entry
 import com.github.skytoph.taski.domain.habit.EntryList
 import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
 import com.github.skytoph.taski.presentation.habit.edit.MonthUi
-import com.github.skytoph.taski.presentation.habit.list.view.ViewType
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitHistoryUiMapper
+import com.github.skytoph.taski.presentation.habit.list.view.ViewType
 import kotlin.math.ceil
 
 class EditableEntryUiMapper(
@@ -32,7 +32,7 @@ class EditableEntryUiMapper(
     private fun entries(weeksAgo: Int, weeks: Int, history: Map<Int, Entry>, goal: Int) =
         (weeksAgo * ROWS until weeksAgo * ROWS + weeks * ROWS).map { index ->
             val daysAgo =
-                now.dayOfWeek() - index % ROWS + index / ROWS * ROWS
+                now.dayOfWeek() - index % ROWS + index / ROWS * ROWS - 1
             val timesDone = history[daysAgo]?.timesDone ?: 0
             entryMapper.map(daysAgo, timesDone, goal)
         }
