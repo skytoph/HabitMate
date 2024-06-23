@@ -55,6 +55,14 @@ class CalculateEntryStreakTest {
     private val streakEveryday: CalculateStreak = CalculateEverydayStreak()
 
     @Test
+    fun test_custom() {
+        val calcWeek = CalculateCustomStreak.Week(6, 1, now)
+        assertEquals(listOf(6, 5, 2, 3, 2), calcWeek.streaks(data.entries, 1))
+        val calcDay = CalculateCustomStreak.Day(1, 3)
+        assertEquals(listOf(13, 3, 2), calcDay.streaks(data.entries, 1))
+    }
+
+    @Test
     fun test() {
         assertEquals(5, streakEveryday.streaks(data.entries, goal).max())
         assertEquals(2, streakEveryday.currentStreak(data.entries, goal))
@@ -113,7 +121,10 @@ private class TestNow(
     private val today: Calendar = Calendar.getInstance().apply { set(2024, 6, 1) }
 ) : Now by Now.Base() {
 
-    override fun dayOfWeek(): Int = 0
+    override fun dayOfWeek(): Int = 1
+
+    override fun dayOfWeek(daysAgo: Int): Int = (6 + dayOfWeek() - daysAgo % 7) % 7 + 1
+
     override fun dayOfMonths(daysAgo: Int): Int = calendar(daysAgo)
         .get(Calendar.DAY_OF_MONTH)
 

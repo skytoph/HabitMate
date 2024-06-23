@@ -3,7 +3,7 @@ package com.github.skytoph.taski.presentation.habit.details.streak
 import com.github.skytoph.taski.core.Now
 
 class CalculateMonthlyStreak(private val now: Now, days: Set<Int>) :
-    CalculateStreak.Abstract(days) {
+    CalculateStreak.Base(days) {
 
     override fun dayNumber(daysAgo: Int): Int = now.dayOfMonths(daysAgo)
 

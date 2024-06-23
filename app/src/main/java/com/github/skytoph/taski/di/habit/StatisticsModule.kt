@@ -4,6 +4,7 @@ import com.github.skytoph.taski.core.Now
 import com.github.skytoph.taski.domain.habit.Frequency
 import com.github.skytoph.taski.presentation.habit.details.mapper.CalculatorProvider
 import com.github.skytoph.taski.presentation.habit.details.mapper.HabitStatsUiMapper
+import com.github.skytoph.taski.presentation.habit.details.streak.CalculateCustomStreak
 import com.github.skytoph.taski.presentation.habit.details.streak.CalculateDailyStreak
 import com.github.skytoph.taski.presentation.habit.details.streak.CalculateEverydayStreak
 import com.github.skytoph.taski.presentation.habit.details.streak.CalculateMonthlyStreak
@@ -29,7 +30,18 @@ object StatisticsModule {
             frequency.isEveryday() -> CalculateEverydayStreak()
             frequency is Frequency.Daily -> CalculateDailyStreak(now, frequency.days)
             frequency is Frequency.Monthly -> CalculateMonthlyStreak(now, frequency.days)
-            else -> CalculateEverydayStreak() // todo replace with custom
+            frequency is Frequency.Custom -> when (frequency.type) {
+                Frequency.Custom.Type.Day ->
+                    CalculateCustomStreak.Day(frequency.timesCount, frequency.typeCount)
+
+                Frequency.Custom.Type.Week ->
+                    CalculateCustomStreak.Week(frequency.timesCount, frequency.typeCount, now)
+
+                Frequency.Custom.Type.Month ->
+                    CalculateCustomStreak.Month(frequency.timesCount, frequency.typeCount, now)
+            }
+
+            else -> CalculateEverydayStreak()
         }
     }
 }

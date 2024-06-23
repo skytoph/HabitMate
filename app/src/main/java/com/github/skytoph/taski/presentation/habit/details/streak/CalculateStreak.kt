@@ -9,16 +9,33 @@ interface CalculateStreak {
     fun total(data: Map<Int, Entry>, goal: Int): Int =
         data.values.count { entry -> entry.timesDone >= goal }
 
-    abstract class Abstract(private val days: Set<Int>) : CalculateStreak {
+    abstract class Abstract(private val days: Set<Int> = emptySet()) : CalculateStreak {
+        override fun currentStreak(data: Map<Int, Entry>, goal: Int): Int =
+            streaks(data = data, goal = goal, days = days.reversed(), findCurrentStreak = true)
+                .first()
 
-        private fun streaks(
+        override fun streaks(data: Map<Int, Entry>, goal: Int): List<Int> =
+            streaks(data = data, goal = goal, days = days.reversed(), findCurrentStreak = false)
+
+        override fun maxStreak(data: Map<Int, Entry>, goal: Int): Int =
+            streaks(data = data, goal = goal, days = days.reversed(), findCurrentStreak = false)
+                .max()
+
+        protected abstract fun streaks(
             data: Map<Int, Entry>, goal: Int, days: List<Int>, findCurrentStreak: Boolean = false
+        ): List<Int>
+    }
+
+    abstract class Base(days: Set<Int> = emptySet()) : Abstract(days) {
+
+        override fun streaks(
+            data: Map<Int, Entry>, goal: Int, days: List<Int>, findCurrentStreak: Boolean
         ): List<Int> =
             if (data.isEmpty() || days.isEmpty()) listOf(0)
             else {
                 val streaks = mutableListOf(0)
 
-                val dataIterator = data.keys.reversed().iterator()
+                val dataIterator = data.keys.iterator()
                 var daysIterator = days.listIterator()
 
                 val today = dayNumber(0)
@@ -35,7 +52,7 @@ interface CalculateStreak {
                 var dayNextPosition = findNextPosition(-1, dayNextValue)
                 var dataNextPosition = dataIterator.next()
 
-                var daysAgo = 0
+                var daysAgo: Int
                 while (dataNextPosition > BREAK_VALUE) {
                     daysAgo = when {
                         dayNextPosition > dataNextPosition -> dataNextPosition.also {
@@ -63,7 +80,7 @@ interface CalculateStreak {
                             if (findCurrentStreak) break
                             else if (streaks[streaks.lastIndex] > 0) streaks.add(0)
 
-                        entry.timesDone >= goal ->
+                        else ->
                             streaks[streaks.lastIndex] += 1
                     }
                 }
@@ -87,17 +104,6 @@ interface CalculateStreak {
                 else -> nextValue
             }
         }
-
-        override fun currentStreak(data: Map<Int, Entry>, goal: Int): Int =
-            streaks(data = data, goal = goal, days = days.reversed(), findCurrentStreak = true)
-                .first()
-
-        override fun streaks(data: Map<Int, Entry>, goal: Int): List<Int> =
-            streaks(data = data, goal = goal, days = days.reversed(), findCurrentStreak = false)
-
-        override fun maxStreak(data: Map<Int, Entry>, goal: Int): Int =
-            streaks(data = data, goal = goal, days = days.reversed(), findCurrentStreak = false)
-                .max()
 
         abstract fun dayNumber(daysAgo: Int): Int
 

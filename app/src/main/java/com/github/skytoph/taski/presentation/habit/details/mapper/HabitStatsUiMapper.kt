@@ -13,16 +13,12 @@ interface HabitStatsUiMapper {
             data.habit.frequency.map(object : FrequencyMapper {
                 override fun map(days: Set<Int>) =
                     provider.provide(data.habit.frequency).let { calculator ->
+                        val entries = data.entries.entries.toSortedMap()
+                        val goal = data.habit.goal
                         HabitStatisticsUi(
-                            currentStreak = calculator.currentStreak(
-                                data = data.entries.entries, goal = data.habit.goal,
-                            ),
-                            bestStreak = calculator.maxStreak(
-                                data = data.entries.entries, goal = data.habit.goal,
-                            ),
-                            total = calculator.total(
-                                data = data.entries.entries, goal = data.habit.goal,
-                            )
+                            currentStreak = calculator.currentStreak(data = entries, goal = goal),
+                            bestStreak = calculator.maxStreak(data = entries, goal = goal),
+                            total = calculator.total(data = entries, goal = goal)
                         )
                     }
             })
