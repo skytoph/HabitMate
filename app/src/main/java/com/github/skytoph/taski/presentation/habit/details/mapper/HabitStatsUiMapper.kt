@@ -18,12 +18,15 @@ interface HabitStatsUiMapper {
                         HabitStatisticsUi(
                             currentStreak = calculator.currentStreak(data = entries, goal = goal),
                             bestStreak = calculator.maxStreak(data = entries, goal = goal),
-                            total = calculator.total(data = entries, goal = goal)
+                            total = calculator.total(data = entries, goal = goal),
+                            streaks = calculator.streaks(data = entries, goal = goal)
                         )
                     }
             })
     }
 }
+
+data class Streak(val start: Int, val end: Int)
 
 interface CalculatorProvider {
     fun provide(frequency: Frequency): CalculateStreak

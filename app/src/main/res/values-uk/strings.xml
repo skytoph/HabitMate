@@ -27,7 +27,8 @@
     <string name="history_label">історія</string>
     <string name="icon_label">іконка</string>
     <string name="goal_label">ціль</string>
-    <string name="goal_value">/ день</string>
+    <string name="goal_value">%1$d / день</string>
+    <string name="goal_in_day">/ день</string>
     <string name="edit_history_hint">натисніть на день для оновлення прогресу\nзміни будуть збережені автоматично</string>
     <string name="entry_tooltip_percent_done">%1$s / %2$s виконано</string>
     <string name="color_and_icon_label">колір та іконка</string>

@@ -124,7 +124,7 @@ fun HabitDetails(
                 color = MaterialTheme.colorScheme.onBackground
             )
         }
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(8.dp))
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -170,22 +170,19 @@ fun HabitDetails(
                 )
                 .padding(8.dp)
         ) {
-            LabelWithIconAndValue(
+            LabelWithValue(
                 modifier = Modifier.weight(1f),
-                text = "total",
-                icon = ImageVector.vectorResource(R.drawable.orbit),
+                label = "total",
                 value = state.value.statistics.total.toString()
             )
-            LabelWithIconAndValue(
+            LabelWithValue(
                 modifier = Modifier.weight(1f),
-                text = "best streak",
-                icon = ImageVector.vectorResource(R.drawable.sparkle),
+                label = "best streak",
                 value = state.value.statistics.bestStreak.toString()
             )
-            LabelWithIconAndValue(
+            LabelWithValue(
                 modifier = Modifier.weight(1f),
-                text = "streak",
-                icon = ImageVector.vectorResource(R.drawable.flame),
+                label = "streak",
                 value = state.value.statistics.currentStreak.toString()
             )
         }
@@ -196,12 +193,19 @@ fun HabitDetails(
             color = MaterialTheme.colorScheme.onBackground
         )
         Spacer(modifier = Modifier.height(4.dp))
-        HabitHistory(
+//        HabitHistory(
+//            entries = entries,
+//            goal = habit.goal,
+//            habitColor = habit.color,
+//            onEdit = onEditHistory,
+//        )
+        HabitHistoryGridEditable(
             entries = entries,
-            goal = habit.goal,
             habitColor = habit.color,
-            onEdit = onEditHistory,
+            goal = habit.goal,
+            onDayClick = onDayClick
         )
+        Text(text = "streaks: " + state.value.statistics.streaks.joinToString(", "))
         Spacer(modifier = Modifier.height(16.dp))
     }
 
@@ -246,6 +250,31 @@ fun LabelWithIcon(
             color = MaterialTheme.colorScheme.onBackground,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis
+        )
+    }
+}
+
+@Composable
+fun LabelWithValue(
+    modifier: Modifier = Modifier,
+    label: String,
+    value: String
+) {
+    Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+        }
+        Text(
+            text = value,
+            color = MaterialTheme.colorScheme.primary,
+            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
         )
     }
 }

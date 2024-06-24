@@ -158,7 +158,7 @@ fun EditBaseHabit(
     typeExpanded: Boolean = true,
 ) {
     Column(
-        modifier = Modifier.padding(horizontal = 8.dp)
+        modifier = Modifier.padding(horizontal = 16.dp)
     ) {
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             TitleTextField(
@@ -210,7 +210,7 @@ fun EditBaseHabit(
                     )
                 }
                 Text(
-                    text = " " + stringResource(R.string.goal_value),
+                    text = " " + stringResource(R.string.goal_in_day),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onBackground
                 )

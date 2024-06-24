@@ -29,30 +29,40 @@ fun EditHistoryDialog(
     goal: Int
 ) {
     Dialog(onDismissRequest = onEdit) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .background(
-                    color = MaterialTheme.colorScheme.tertiaryContainer,
-                    shape = MaterialTheme.shapes.extraSmall
-                )
-                .wrapContentHeight()
-                .fillMaxWidth()
-                .padding(bottom = 8.dp)
-        ) {
-            HabitHistoryGrid(
-                entries = entries,
-                habitColor = habitColor,
-                goal = goal,
-                isEditable = true,
-                onDayClick = onDayClick,
+        HabitHistoryGridEditable(entries, habitColor, goal, onDayClick)
+    }
+}
+
+@Composable
+fun HabitHistoryGridEditable(
+    entries: Flow<PagingData<EditableHistoryUi>>,
+    habitColor: Color,
+    goal: Int,
+    onDayClick: (Int) -> Unit
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .background(
+                color = MaterialTheme.colorScheme.tertiaryContainer,
+                shape = MaterialTheme.shapes.extraSmall
             )
-            Text(
-                text = stringResource(R.string.edit_history_hint),
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onBackground,
-                textAlign = TextAlign.Center
-            )
-        }
+            .wrapContentHeight()
+            .fillMaxWidth()
+            .padding(bottom = 8.dp)
+    ) {
+        HabitHistoryGrid(
+            entries = entries,
+            habitColor = habitColor,
+            goal = goal,
+            isEditable = true,
+            onDayClick = onDayClick,
+        )
+        Text(
+            text = stringResource(R.string.edit_history_hint),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onBackground,
+            textAlign = TextAlign.Center
+        )
     }
 }

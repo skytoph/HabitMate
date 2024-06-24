@@ -7,7 +7,7 @@ interface CalculateStreak {
     fun maxStreak(data: Map<Int, Entry>, goal: Int): Int
     fun streaks(data: Map<Int, Entry>, goal: Int): List<Int>
     fun total(data: Map<Int, Entry>, goal: Int): Int =
-        data.values.count { entry -> entry.timesDone >= goal }
+        data.values.count { entry -> entry.isCompleted(goal) }
 
     abstract class Abstract(private val days: Set<Int> = emptySet()) : CalculateStreak {
         override fun currentStreak(data: Map<Int, Entry>, goal: Int): Int =
@@ -76,7 +76,7 @@ interface CalculateStreak {
                     val entry = data[daysAgo]
 
                     when {
-                        entry == null || entry.timesDone < goal ->
+                        entry == null || !entry.isCompleted(goal) ->
                             if (findCurrentStreak) break
                             else if (streaks[streaks.lastIndex] > 0) streaks.add(0)
 

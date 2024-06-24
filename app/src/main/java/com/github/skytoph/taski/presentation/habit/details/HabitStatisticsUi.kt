@@ -4,4 +4,5 @@ data class HabitStatisticsUi(
     val currentStreak: Int = 0,
     val bestStreak: Int = 0,
     val total: Int = 0,
+    val streaks: List<Int> = emptyList(),
 )

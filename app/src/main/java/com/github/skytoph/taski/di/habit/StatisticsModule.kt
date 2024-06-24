@@ -30,6 +30,9 @@ object StatisticsModule {
             frequency.isEveryday() -> CalculateEverydayStreak()
             frequency is Frequency.Daily -> CalculateDailyStreak(now, frequency.days)
             frequency is Frequency.Monthly -> CalculateMonthlyStreak(now, frequency.days)
+            frequency is Frequency.Custom && frequency.type == Frequency.Custom.Type.Day && frequency.typeCount % 7 == 0 ->
+                CalculateCustomStreak.Week(frequency.timesCount, frequency.typeCount / 7, now)
+
             frequency is Frequency.Custom -> when (frequency.type) {
                 Frequency.Custom.Type.Day ->
                     CalculateCustomStreak.Day(frequency.timesCount, frequency.typeCount)
