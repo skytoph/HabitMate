@@ -52,6 +52,22 @@ interface Now {
         override fun lastDayOfWeekDate(weeksAgo: Int): Int =
             endOfTheWeek(weeksAgo).get(Calendar.DAY_OF_MONTH)
 
+        override fun lastDayOfMonthDaysAgo(monthsAgo: Int): Int =
+            TimeUnit.MILLISECONDS.toDays(dayInMillis() - endOfTheMonth(monthsAgo).timeInMillis)
+                .toInt()
+
+        override fun lastDayOfWeekDaysAgo(weeksAgo: Int): Int =
+            TimeUnit.MILLISECONDS.toDays(dayInMillis() - endOfTheWeek(weeksAgo).timeInMillis)
+                .toInt()
+
+        override fun firstDayOfMonthDaysAgo(monthsAgo: Int): Int =
+            TimeUnit.MILLISECONDS.toDays(dayInMillis() - startOfTheMonth(monthsAgo).timeInMillis)
+                .toInt()
+
+        override fun firstDayOfWeekDaysAgo(weeksAgo: Int): Int =
+            TimeUnit.MILLISECONDS.toDays(dayInMillis() - startOfTheWeek(weeksAgo).timeInMillis)
+                .toInt()
+
         override fun lastDayOfWeekMillis(weeksAgo: Int): Long =
             endOfTheWeek(weeksAgo).timeInMillis
 
@@ -75,8 +91,29 @@ interface Now {
             calendar.add(Calendar.DATE, 6 - weeksAgo * 7)
         }
 
+        private fun endOfTheMonth(monthsAgo: Int = 0): Calendar = startOfTheDay().also { calendar ->
+            calendar.add(Calendar.MONTH, -monthsAgo)
+            calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH))
+        }
+
+        private fun startOfTheWeek(weeksAgo: Int = 0): Calendar = startOfTheDay().also { calendar ->
+            calendar.set(Calendar.DAY_OF_WEEK, calendar.firstDayOfWeek)
+            calendar.add(Calendar.DATE, -weeksAgo * 7)
+        }
+
+        private fun startOfTheMonth(monthsAgo: Int = 0): Calendar =
+            startOfTheDay().also { calendar ->
+                calendar.add(Calendar.MONTH, -monthsAgo)
+                calendar.set(Calendar.DAY_OF_MONTH, 1)
+            }
+
         private fun month(monthsAgo: Int): Calendar = calendar().also { calendar ->
             calendar.add(Calendar.MONTH, -monthsAgo)
         }
     }
+
+    fun lastDayOfWeekDaysAgo(weeksAgo: Int): Int
+    fun lastDayOfMonthDaysAgo(monthsAgo: Int): Int
+    fun firstDayOfMonthDaysAgo(monthsAgo: Int): Int
+    fun firstDayOfWeekDaysAgo(weeksAgo: Int): Int
 }

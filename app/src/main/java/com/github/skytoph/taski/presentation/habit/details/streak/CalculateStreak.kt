@@ -1,39 +1,60 @@
 package com.github.skytoph.taski.presentation.habit.details.streak
 
 import com.github.skytoph.taski.domain.habit.Entry
+import com.github.skytoph.taski.presentation.habit.details.mapper.HabitStatistics
+import com.github.skytoph.taski.presentation.habit.details.mapper.Streak
 
 interface CalculateStreak {
-    fun currentStreak(data: Map<Int, Entry>, goal: Int): Int
-    fun maxStreak(data: Map<Int, Entry>, goal: Int): Int
-    fun streaks(data: Map<Int, Entry>, goal: Int): List<Int>
-    fun total(data: Map<Int, Entry>, goal: Int): Int =
-        data.values.count { entry -> entry.isCompleted(goal) }
+    fun streaks(data: Map<Int, Entry>, goal: Int): HabitStatistics
 
-    abstract class Abstract(private val days: Set<Int> = emptySet()) : CalculateStreak {
-        override fun currentStreak(data: Map<Int, Entry>, goal: Int): Int =
-            streaks(data = data, goal = goal, days = days.reversed(), findCurrentStreak = true)
-                .first()
+    abstract class Base : CalculateStreak {
 
-        override fun streaks(data: Map<Int, Entry>, goal: Int): List<Int> =
-            streaks(data = data, goal = goal, days = days.reversed(), findCurrentStreak = false)
+        override fun streaks(data: Map<Int, Entry>, goal: Int): HabitStatistics =
+            streaksList(data = data, goal = goal).let { list ->
+                if (list.isEmpty()) HabitStatistics()
+                else HabitStatistics(
+                    currentStreak = if (isStreakCurrently(data, goal)) list.first().streak else 0,
+                    bestStreak = list.maxBy { it.streak }.streak,
+                    total = data.count { it.value.isCompleted(goal) },
+                    streaks = list
+                )
+            }
 
-        override fun maxStreak(data: Map<Int, Entry>, goal: Int): Int =
-            streaks(data = data, goal = goal, days = days.reversed(), findCurrentStreak = false)
-                .max()
+        abstract fun streaksList(data: Map<Int, Entry>, goal: Int): List<Streak>
 
-        protected abstract fun streaks(
-            data: Map<Int, Entry>, goal: Int, days: List<Int>, findCurrentStreak: Boolean = false
-        ): List<Int>
+        abstract fun isStreakCurrently(data: Map<Int, Entry>, goal: Int): Boolean
     }
 
-    abstract class Base(days: Set<Int> = emptySet()) : Abstract(days) {
+    abstract class Abstract(private val days: Set<Int> = emptySet()) : Base() {
 
-        override fun streaks(
-            data: Map<Int, Entry>, goal: Int, days: List<Int>, findCurrentStreak: Boolean
-        ): List<Int> =
-            if (data.isEmpty() || days.isEmpty()) listOf(0)
+        protected abstract val skipMax: Int
+
+        override fun streaksList(data: Map<Int, Entry>, goal: Int): List<Streak> =
+            streaks(data = data, goal = goal, days = days.reversed())
+
+        protected abstract fun streaks(data: Map<Int, Entry>, goal: Int, days: List<Int>)
+                : List<Streak>
+
+        override fun isStreakCurrently(data: Map<Int, Entry>, goal: Int): Boolean {
+            val iterator = data.iterator()
+            while (iterator.hasNext()) {
+                val item = iterator.next()
+                if (item.key > skipMax) return false
+                if (item.value.isCompleted(goal)) return true
+            }
+            return false
+        }
+    }
+
+    abstract class Iterable(
+        private val days: Set<Int> = emptySet(),
+        private val counter: StreakCounterCache = StreakCounterCache(),
+    ) : Abstract(days) {
+
+        override fun streaks(data: Map<Int, Entry>, goal: Int, days: List<Int>): List<Streak> =
+            if (data.isEmpty() || days.isEmpty()) emptyList()
             else {
-                val streaks = mutableListOf(0)
+                val streaks: MutableList<Streak> = mutableListOf()
 
                 val dataIterator = data.keys.iterator()
                 var daysIterator = days.listIterator()
@@ -76,15 +97,11 @@ interface CalculateStreak {
                     val entry = data[daysAgo]
 
                     when {
-                        entry == null || !entry.isCompleted(goal) ->
-                            if (findCurrentStreak) break
-                            else if (streaks[streaks.lastIndex] > 0) streaks.add(0)
-
-                        else ->
-                            streaks[streaks.lastIndex] += 1
+                        entry == null || !entry.isCompleted(goal) -> counter.save(streaks)
+                        else -> counter.add(count = 1, start = daysAgo)
                     }
                 }
-                streaks
+                streaks.apply { counter.save(this) }
             }
 
         open fun findNextPosition(currentPosition: Int, nextValue: Int): Int {
@@ -106,6 +123,22 @@ interface CalculateStreak {
         }
 
         abstract fun dayNumber(daysAgo: Int): Int
+
+        abstract val maxDays: Int
+
+        override val skipMax: Int
+            get() {
+                val iterator = days.reversed().iterator()
+                val today = dayNumber(0)
+                var day = iterator.next()
+                while (iterator.hasNext() && day > today)
+                    day = iterator.next()
+                return when {
+                    day == today -> 0
+                    day < today -> today - day
+                    else -> maxDays + today - days.reversed().iterator().next()
+                }
+            }
 
         companion object {
             private const val BREAK_VALUE = -1

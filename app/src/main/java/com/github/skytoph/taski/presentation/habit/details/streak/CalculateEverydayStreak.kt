@@ -1,24 +1,27 @@
 package com.github.skytoph.taski.presentation.habit.details.streak
 
 import com.github.skytoph.taski.domain.habit.Entry
+import com.github.skytoph.taski.presentation.habit.details.mapper.Streak
 
-class CalculateEverydayStreak : CalculateStreak {
+class CalculateEverydayStreak(private val counter: StreakCounterCache = StreakCounterCache()) :
+    CalculateStreak.Base() {
 
-    override fun currentStreak(data: Map<Int, Entry>, goal: Int): Int =
-        if (data.isEmpty()) 0
-        else data.toList().zipWithNext().fold(1) { streak, (prev, current) ->
-            if (current.first == prev.first + 1 && current.second.isCompleted(goal)) streak + 1
-            else return streak
-        }
-
-    override fun streaks(data: Map<Int, Entry>, goal: Int): List<Int> =
-        if (data.isEmpty()) listOf(0)
-        else data.toList().zipWithNext().fold(mutableListOf(1)) { streaks, (prev, current) ->
+    override fun streaksList(data: Map<Int, Entry>, goal: Int): List<Streak> =
+        if (data.isEmpty()) emptyList()
+        else data.toList().zipWithNext().fold(mutableListOf<Streak>()) { streaks, (prev, current) ->
             streaks.apply {
-                if (current.first == prev.first + 1 && current.second.isCompleted(goal)) streaks[lastIndex] += 1
-                else streaks.add(1)
-            }
-        }
+                when {
+                    prev.first == 0 && prev.second.isCompleted(goal) ->
+                        counter.add(count = 1, start = 0)
 
-    override fun maxStreak(data: Map<Int, Entry>, goal: Int): Int = streaks(data, goal).max()
+                    current.first == prev.first + 1 && current.second.isCompleted(goal) ->
+                        counter.add(count = 1, start = current.first)
+
+                    else -> counter.save(streaks)
+                }
+            }
+        }.apply { counter.save(this) }
+
+    override fun isStreakCurrently(data: Map<Int, Entry>, goal: Int): Boolean =
+        data.iterator().next().let { it.key == 0 && it.value.isCompleted(goal) }
 }

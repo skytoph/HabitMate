@@ -15,18 +15,21 @@ interface HabitStatsUiMapper {
                     provider.provide(data.habit.frequency).let { calculator ->
                         val entries = data.entries.entries.toSortedMap()
                         val goal = data.habit.goal
-                        HabitStatisticsUi(
-                            currentStreak = calculator.currentStreak(data = entries, goal = goal),
-                            bestStreak = calculator.maxStreak(data = entries, goal = goal),
-                            total = calculator.total(data = entries, goal = goal),
-                            streaks = calculator.streaks(data = entries, goal = goal)
-                        )
+                        val statistics = calculator.streaks(data = entries, goal = goal)
+                        statistics.map()
                     }
             })
     }
 }
 
-data class Streak(val start: Int, val end: Int)
+data class HabitStatistics(
+    val currentStreak: Int = 0,
+    val bestStreak: Int = 0,
+    val total: Int = 0,
+    val streaks: List<Streak> = emptyList(),
+)
+
+data class Streak(val start: Int, val end: Int, val streak: Int)
 
 interface CalculatorProvider {
     fun provide(frequency: Frequency): CalculateStreak
