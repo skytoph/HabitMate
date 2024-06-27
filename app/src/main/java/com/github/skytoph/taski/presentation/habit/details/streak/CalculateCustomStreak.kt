@@ -8,14 +8,9 @@ abstract class CalculateCustomStreak(
     timesCount: Int,
     typeCount: Int,
     private val counter: StreakCounterCache = StreakCounterCache(),
-) : CalculateStreak.Abstract() {
+) : CalculateStreak.Abstract(), StartAndEnd, Divide {
 
     private val frequencyGoal = timesCount * typeCount
-
-    abstract fun divide(daysAgo: Int): Int
-
-    abstract fun end(index: Int): Int
-    abstract fun start(index: Int): Int
 
     override fun streaks(data: Map<Int, Entry>, goal: Int, days: List<Int>): List<Streak> =
         if (data.isEmpty()) emptyList()
@@ -36,9 +31,10 @@ abstract class CalculateCustomStreak(
                     val position = current.first
                     val timesDone = current.second.count { it.value.isCompleted(goal) }
 
-                    if (position != prev.first + 1 || timesDone < frequencyGoal)
+                    if (position != prev.first + 1)
                         counter.save(list = list)
                     addCounter(timesDone, goal, position, current.second)
+                    if (timesDone < frequencyGoal) counter.save(list = list)
 
                     list
                 }.apply { counter.save(this) }
@@ -55,29 +51,20 @@ abstract class CalculateCustomStreak(
     else counter.add(count = timesDone, start = end(position), end = start(position))
 
     class Week(timesCount: Int, private val typeCount: Int, private val now: Now) :
-        CalculateCustomStreak(timesCount = timesCount, typeCount = typeCount) {
+        CalculateCustomStreak(timesCount = timesCount, typeCount = typeCount),
+        StartAndEnd by StartAndEnd.Week(now),
+        Divide by Divide.Week(now, typeCount) {
 
         override val skipMax: Int = now.dayOfWeek() + 7 * (typeCount - 1)
-
-        override fun divide(daysAgo: Int): Int =
-            (daysAgo + now.dayOfWeek(daysAgo) - 1) / (7 * typeCount)
-
-        override fun start(index: Int): Int = now.firstDayOfWeekDaysAgo(index)
-
-        override fun end(index: Int): Int = now.lastDayOfWeekDaysAgo(index)
     }
 
     class Month(timesCount: Int, private val typeCount: Int, private val now: Now) :
-        CalculateCustomStreak(timesCount = timesCount, typeCount = typeCount) {
+        CalculateCustomStreak(timesCount = timesCount, typeCount = typeCount),
+        StartAndEnd by StartAndEnd.Month(now),
+        Divide by Divide.Month(now, typeCount) {
 
         override val skipMax: Int = now.dayOfMonths(0) +
                 if (typeCount > 1) (1..<typeCount).sumOf { now.daysInMonth(it) } else 0
-
-        override fun divide(daysAgo: Int): Int = now.monthsAgo(daysAgo) / typeCount
-
-        override fun start(index: Int): Int = now.firstDayOfMonthDaysAgo(index)
-
-        override fun end(index: Int): Int = now.lastDayOfMonthDaysAgo(index)
     }
 
     class Day(

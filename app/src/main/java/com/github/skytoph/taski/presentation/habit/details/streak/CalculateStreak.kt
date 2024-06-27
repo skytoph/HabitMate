@@ -15,7 +15,6 @@ interface CalculateStreak {
                 if (list.isEmpty()) HabitStatistics()
                 else HabitStatistics(
                     currentStreak = if (isStreakCurrently(data, goal)) currentStreak(list) else 0,
-//                    currentStreakPosition = if (isStreakCurrently(data, goal)) max,
                     bestStreak = list.maxBy { it.streak }.streak,
                     total = data.count { it.value.isCompleted(goal) },
                     streaks = list
@@ -30,8 +29,6 @@ interface CalculateStreak {
     }
 
     abstract class Abstract(private val days: Set<Int> = emptySet()) : Base() {
-
-
         override fun streaksList(data: Map<Int, Entry>, goal: Int): List<Streak> =
             streaks(data = data, goal = goal, days = days.reversed())
 
@@ -52,7 +49,7 @@ interface CalculateStreak {
     abstract class Iterable(
         private val days: Set<Int> = emptySet(),
         private val counter: StreakCounterCache = StreakCounterCache(),
-    ) : Abstract(days) {
+    ) : Abstract(days), StartAndEnd {
 
         override fun streaks(data: Map<Int, Entry>, goal: Int, days: List<Int>): List<Streak> =
             if (data.isEmpty() || days.isEmpty()) emptyList()
@@ -65,6 +62,7 @@ interface CalculateStreak {
                 val today = dayNumber(0)
                 var dayNextValue = daysIterator.next()
                     .also { if (!daysIterator.hasNext()) daysIterator = days.listIterator() }
+                var dayPreviousValue = dayNextValue
                 while (dayNextValue > today && daysIterator.hasNext()) {
                     dayNextValue = daysIterator.next()
                 }
@@ -72,6 +70,7 @@ interface CalculateStreak {
                     daysIterator = days.listIterator()
                     dayNextValue = daysIterator.next()
                 }
+                var currentStreak = days.indexOf(dayNextValue)
 
                 var dayNextPosition = findNextPosition(-1, dayNextValue)
                 var dataNextPosition = dataIterator.next()
@@ -85,13 +84,21 @@ interface CalculateStreak {
                         }
 
                         dayNextPosition < dataNextPosition -> dayNextPosition.also {
-                            if (!daysIterator.hasNext()) daysIterator = days.listIterator()
-                            dayNextPosition = findNextPosition(dayNextPosition, daysIterator.next())
+                            if (!daysIterator.hasNext()) {
+                                daysIterator = days.listIterator()
+                            }
+                            dayPreviousValue = dayNextValue
+                            dayNextValue = daysIterator.next()
+                            dayNextPosition = findNextPosition(dayNextPosition, dayNextValue)
                         }
 
                         else -> dayNextPosition.also {
-                            if (!daysIterator.hasNext()) daysIterator = days.listIterator()
-                            dayNextPosition = findNextPosition(dayNextPosition, daysIterator.next())
+                            if (!daysIterator.hasNext()) {
+                                daysIterator = days.listIterator()
+                            }
+                            dayPreviousValue = dayNextValue
+                            dayNextValue = daysIterator.next()
+                            dayNextPosition = findNextPosition(dayNextPosition, dayNextValue)
                             dataNextPosition =
                                 if (dataIterator.hasNext()) dataIterator.next() else BREAK_VALUE
                         }
@@ -100,11 +107,26 @@ interface CalculateStreak {
                     val entry = data[daysAgo]
 
                     when {
-                        entry == null || !entry.isCompleted(goal) -> counter.save(streaks)
-                        else -> counter.add(count = 1, start = daysAgo)
+                        entry == null || !entry.isCompleted(goal) -> {
+                            counter.save(list = streaks)
+                            currentStreak = 0
+                        }
+
+                        else -> {
+                            val isPointedToGoal = dayNumber(daysAgo) == dayPreviousValue
+                            if (isPointedToGoal) currentStreak++
+                            if (isPointedToGoal && currentStreak == days.size) {
+                                val start = end(daysAgo)
+                                val end = start(daysAgo)
+                                counter.add(count = 1, start = end)
+                                counter.setStart(start = start)
+                                currentStreak = 0
+                            } else
+                                counter.add(count = 1, start = daysAgo)
+                        }
                     }
                 }
-                streaks.apply { counter.save(this) }
+                streaks.apply { counter.save(list = this) }
             }
 
         open fun findNextPosition(currentPosition: Int, nextValue: Int): Int {

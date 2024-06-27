@@ -11,6 +11,10 @@ class StreakCounterCache(
         clear()
     }
 
+    fun setStart(start: Int) {
+        if (start < this.start) this.start = start
+    }
+
     fun add(count: Int, start: Int? = null, end: Int? = start) {
         if (count == 0) return
         if (start != null && this.start == DEFAULT) this.start = start

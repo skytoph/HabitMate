@@ -11,7 +11,7 @@ interface EditableEntryDomainToUiMapper {
 
         override fun map(daysAgo: Int, timesDone: Int, goal: Int, hasBorder: Boolean) =
             EntryEditableUi(
-//                day = daysAgo.toString(),
+//                day = now.dayOfMonths(daysAgo).toString() + "\n" + daysAgo.toString(),
                 day = now.dayOfMonths(daysAgo).toString(),
                 timesDone = timesDone,
                 percentDone = ColorPercentMapper.toColorPercent(timesDone, goal),

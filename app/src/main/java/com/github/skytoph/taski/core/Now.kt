@@ -18,6 +18,10 @@ interface Now {
     fun weeksInMonth(monthsAgo: Int = 0): Int
     fun daysInMonth(daysAgo: Int): Int
     fun monthsAgo(daysAgo: Int): Int
+    fun lastDayOfWeekDaysAgo(weeksAgo: Int): Int
+    fun lastDayOfMonthDaysAgo(monthsAgo: Int): Int
+    fun firstDayOfMonthDaysAgo(monthsAgo: Int): Int
+    fun firstDayOfWeekDaysAgo(weeksAgo: Int): Int
 
     class Base(private val timeZone: TimeZone = TimeZone.getTimeZone("UTC")) : Now {
 
@@ -111,9 +115,4 @@ interface Now {
             calendar.add(Calendar.MONTH, -monthsAgo)
         }
     }
-
-    fun lastDayOfWeekDaysAgo(weeksAgo: Int): Int
-    fun lastDayOfMonthDaysAgo(monthsAgo: Int): Int
-    fun firstDayOfMonthDaysAgo(monthsAgo: Int): Int
-    fun firstDayOfWeekDaysAgo(weeksAgo: Int): Int
 }
