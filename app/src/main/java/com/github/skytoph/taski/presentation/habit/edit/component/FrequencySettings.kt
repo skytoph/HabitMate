@@ -42,7 +42,7 @@ fun FrequencySettings(
     Column(
         modifier = Modifier
             .background(
-                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                color = MaterialTheme.colorScheme.surfaceVariant,
                 shape = MaterialTheme.shapes.extraSmall
             )
             .clip(MaterialTheme.shapes.extraSmall)
@@ -62,7 +62,7 @@ fun FrequencySettings(
                 modifier = Modifier
                     .width(1.dp)
                     .height(16.dp),
-                color = if (frequency.isSelected(frequency.daily)) DividerDefaults.color else Color.Transparent
+                color = if (frequency.isSelected(frequency.custom)) DividerDefaults.color else Color.Transparent
             )
             FrequencyOption(
                 modifier = Modifier.weight(1f),

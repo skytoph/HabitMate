@@ -137,7 +137,7 @@ private fun ArchiveActionButton(
     icon: ImageVector,
     id: Long,
     onClick: (Long) -> Unit,
-    contentColor: Color = MaterialTheme.colorScheme.onSecondaryContainer,
+    contentColor: Color = MaterialTheme.colorScheme.onBackground,
     containerColor: Color = MaterialTheme.colorScheme.secondaryContainer,
 ) {
     Row(

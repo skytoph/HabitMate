@@ -1,11 +1,20 @@
 package com.github.skytoph.taski.presentation.habit.edit.component
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -16,20 +25,27 @@ import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.component.AppBarAction
@@ -157,6 +173,8 @@ fun EditBaseHabit(
     expandType: () -> Unit = {},
     typeExpanded: Boolean = true,
 ) {
+    var isReminderOn by remember { mutableStateOf(false) }
+    var isReminderDialogShown by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier.padding(horizontal = 16.dp)
     ) {
@@ -178,7 +196,8 @@ fun EditBaseHabit(
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = stringResource(R.string.goal_label),
-            style = MaterialTheme.typography.titleSmall
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.onBackground
         )
         Spacer(modifier = Modifier.height(4.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -205,7 +224,7 @@ fun EditBaseHabit(
                 ) { count ->
                     Text(
                         text = count.toString(),
-                        style = MaterialTheme.typography.bodyMedium,
+                        style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
                         color = MaterialTheme.colorScheme.onBackground
                     )
                 }
@@ -231,7 +250,8 @@ fun EditBaseHabit(
         Spacer(modifier = Modifier.height(18.dp))
         Text(
             text = "frequency",
-            style = MaterialTheme.typography.titleSmall
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.onBackground
         )
         Spacer(modifier = Modifier.height(4.dp))
         EditFrequency(
@@ -250,7 +270,63 @@ fun EditBaseHabit(
             typeExpanded = typeExpanded
         )
         Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = "reminder",
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Row(
+            modifier = Modifier
+                .background(
+                    color = MaterialTheme.colorScheme.surfaceVariant,
+                    shape = MaterialTheme.shapes.extraSmall
+                )
+                .padding(end = 16.dp)
+                .height(minHeight)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Crossfade(
+                targetState = isReminderOn,
+                label = "reminder_crossfade",
+            ) { isReminderOn ->
+                Box(
+                    modifier = Modifier
+                        .clip(MaterialTheme.shapes.extraSmall)
+                        .clickable(
+                            enabled = isReminderOn,
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                            onClick = { isReminderDialogShown = true })
+                        .fillMaxHeight(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = if (isReminderOn) "13:00" else "None",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = if (isReminderOn) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                    )
+                }
+            }
+            Switch(
+                checked = isReminderOn,
+                onCheckedChange = { isReminderOn = !isReminderOn },
+                colors = SwitchDefaults.colors(
+                    uncheckedBorderColor = Color.Transparent,
+                    uncheckedTrackColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f),
+                    uncheckedThumbColor = MaterialTheme.colorScheme.primaryContainer
+                )
+            )
+        }
+        Spacer(modifier = Modifier.height(16.dp))
     }
+    if (isReminderDialogShown)
+        Dialog(onDismissRequest = { isReminderDialogShown = false }) {
+            Text(text = "13:00")
+        }
 }
 
 @Composable

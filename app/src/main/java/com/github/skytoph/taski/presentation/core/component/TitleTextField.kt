@@ -38,7 +38,8 @@ fun TitleTextField(
     Column(modifier = modifier) {
         Text(
             text = stringResource(R.string.habit_label),
-            style = MaterialTheme.typography.titleSmall
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.onBackground
         )
         Spacer(modifier = Modifier.height(4.dp))
         BasicTextField(
