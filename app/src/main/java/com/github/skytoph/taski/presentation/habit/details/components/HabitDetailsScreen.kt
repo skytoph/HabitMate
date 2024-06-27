@@ -38,6 +38,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.PagingData
+import com.github.skytoph.taski.BuildConfig
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.component.AppBarAction
 import com.github.skytoph.taski.presentation.core.component.getLocale
@@ -196,19 +197,14 @@ fun HabitDetails(
             color = MaterialTheme.colorScheme.onBackground
         )
         Spacer(modifier = Modifier.height(4.dp))
-//        HabitHistory(
-//            entries = entries,
-//            goal = habit.goal,
-//            habitColor = habit.color,
-//            onEdit = onEditHistory,
-//        )
-        HabitHistoryGridEditable(
+        HabitHistory(
             entries = entries,
-            habitColor = habit.color,
             goal = habit.goal,
-            onDayClick = onDayClick
+            habitColor = habit.color,
+            onEdit = onEditHistory,
         )
-        Text(text = "streaks: " + state.value.statistics.streaksLength.joinToString(", "))
+        if (BuildConfig.DEBUG)
+            Text(text = "streaks: " + state.value.statistics.streaksLength.joinToString(", "))
         Spacer(modifier = Modifier.height(16.dp))
     }
 
