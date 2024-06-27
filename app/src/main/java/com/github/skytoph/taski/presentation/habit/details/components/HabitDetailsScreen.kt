@@ -173,17 +173,20 @@ fun HabitDetails(
             LabelWithValue(
                 modifier = Modifier.weight(1f),
                 label = "total",
-                value = state.value.statistics.total.toString()
+                value = state.value.statistics.total.toString(),
+                color = state.value.habit?.color
             )
             LabelWithValue(
                 modifier = Modifier.weight(1f),
                 label = "best streak",
-                value = state.value.statistics.bestStreak.toString()
+                value = state.value.statistics.bestStreak.toString(),
+                color = state.value.habit?.color
             )
             LabelWithValue(
                 modifier = Modifier.weight(1f),
                 label = "streak",
-                value = state.value.statistics.currentStreak.toString()
+                value = state.value.statistics.currentStreak.toString(),
+                color = state.value.habit?.color
             )
         }
         Spacer(modifier = Modifier.height(16.dp))
@@ -205,7 +208,7 @@ fun HabitDetails(
             goal = habit.goal,
             onDayClick = onDayClick
         )
-        Text(text = "streaks: " + state.value.statistics.streaks.joinToString(", "))
+        Text(text = "streaks: " + state.value.statistics.streaksLength.joinToString(", "))
         Spacer(modifier = Modifier.height(16.dp))
     }
 
@@ -257,6 +260,7 @@ fun LabelWithIcon(
 @Composable
 fun LabelWithValue(
     modifier: Modifier = Modifier,
+    color: Color? = null,
     label: String,
     value: String
 ) {
@@ -273,7 +277,7 @@ fun LabelWithValue(
         }
         Text(
             text = value,
-            color = MaterialTheme.colorScheme.primary,
+            color = color ?: MaterialTheme.colorScheme.primary,
             style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
         )
     }

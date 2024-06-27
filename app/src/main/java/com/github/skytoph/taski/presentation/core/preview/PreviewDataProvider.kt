@@ -37,11 +37,12 @@ class HabitProvider : PreviewParameterProvider<HabitWithHistoryUi<HistoryUi>> {
 
 class HabitsEditableProvider : PreviewParameterProvider<List<EditableHistoryUi>> {
     private val history = (1..12).map { month ->
-        EditableHistoryUi((0..28).map { day ->
-            EntryEditableUi(
+        EditableHistoryUi((0..28).associate { day ->
+            day * month to EntryEditableUi(
                 day = day.toString(),
                 percentDone = 1F / (day + 1),
-                daysAgo = day * month
+                daysAgo = day * month,
+                hasBorder = false
             )
         }, MonthUi(timestamp = month.toLong(), weeks = 4))
     }

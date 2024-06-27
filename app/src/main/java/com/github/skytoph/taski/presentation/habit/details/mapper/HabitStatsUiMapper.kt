@@ -22,15 +22,6 @@ interface HabitStatsUiMapper {
     }
 }
 
-data class HabitStatistics(
-    val currentStreak: Int = 0,
-    val bestStreak: Int = 0,
-    val total: Int = 0,
-    val streaks: List<Streak> = emptyList(),
-)
-
-data class Streak(val start: Int, val end: Int, val streak: Int)
-
 interface CalculatorProvider {
     fun provide(frequency: Frequency): CalculateStreak
 }

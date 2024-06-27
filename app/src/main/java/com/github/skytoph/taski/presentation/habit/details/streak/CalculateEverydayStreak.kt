@@ -1,27 +1,31 @@
 package com.github.skytoph.taski.presentation.habit.details.streak
 
 import com.github.skytoph.taski.domain.habit.Entry
-import com.github.skytoph.taski.presentation.habit.details.mapper.Streak
+import com.github.skytoph.taski.presentation.habit.details.Streak
 
 class CalculateEverydayStreak(private val counter: StreakCounterCache = StreakCounterCache()) :
     CalculateStreak.Base() {
 
     override fun streaksList(data: Map<Int, Entry>, goal: Int): List<Streak> =
         if (data.isEmpty()) emptyList()
-        else data.toList().zipWithNext().fold(mutableListOf<Streak>()) { streaks, (prev, current) ->
-            streaks.apply {
-                when {
-                    prev.first == 0 && prev.second.isCompleted(goal) ->
-                        counter.add(count = 1, start = 0)
-
-                    current.first == prev.first + 1 && current.second.isCompleted(goal) ->
-                        counter.add(count = 1, start = current.first)
-
-                    else -> counter.save(streaks)
-                }
+        else data.toList()
+            .also { items ->
+                val firstItem = items.first()
+                if (firstItem.second.isCompleted(goal))
+                    counter.add(count = 1, start = firstItem.first)
             }
-        }.apply { counter.save(this) }
+            .zipWithNext()
+            .fold(mutableListOf<Streak>()) { streaks, (prev, current) ->
+                streaks.apply {
+                    if (current.first != prev.first + 1)
+                        counter.save(streaks)
+                    if (current.second.isCompleted(goal))
+                        counter.add(count = 1, start = current.first)
+                }
+            }.apply { counter.save(this) }
+
+    override val skipMax: Int = 0
 
     override fun isStreakCurrently(data: Map<Int, Entry>, goal: Int): Boolean =
-        data.iterator().next().let { it.key == 0 && it.value.isCompleted(goal) }
+        data.iterator().next().let { it.key == skipMax && it.value.isCompleted(goal) }
 }

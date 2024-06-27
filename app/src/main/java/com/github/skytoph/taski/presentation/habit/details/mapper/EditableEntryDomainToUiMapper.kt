@@ -5,16 +5,18 @@ import com.github.skytoph.taski.presentation.habit.edit.EntryEditableUi
 import com.github.skytoph.taski.presentation.habit.list.mapper.ColorPercentMapper
 
 interface EditableEntryDomainToUiMapper {
-    fun map(daysAgo: Int, timesDone: Int, goal: Int): EntryEditableUi
+    fun map(daysAgo: Int, timesDone: Int, goal: Int, hasBorder: Boolean): EntryEditableUi
 
     class Base(private val now: Now) : EditableEntryDomainToUiMapper {
 
-        override fun map(daysAgo: Int, timesDone: Int, goal: Int) =
+        override fun map(daysAgo: Int, timesDone: Int, goal: Int, hasBorder: Boolean) =
             EntryEditableUi(
+//                day = daysAgo.toString(),
                 day = now.dayOfMonths(daysAgo).toString(),
                 timesDone = timesDone,
                 percentDone = ColorPercentMapper.toColorPercent(timesDone, goal),
-                daysAgo = daysAgo
+                daysAgo = daysAgo,
+                hasBorder = hasBorder
             )
     }
 }

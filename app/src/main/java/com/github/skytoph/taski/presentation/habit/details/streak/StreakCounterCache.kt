@@ -1,6 +1,6 @@
 package com.github.skytoph.taski.presentation.habit.details.streak
 
-import com.github.skytoph.taski.presentation.habit.details.mapper.Streak
+import com.github.skytoph.taski.presentation.habit.details.Streak
 
 class StreakCounterCache(
     private var start: Int = DEFAULT,
@@ -18,9 +18,12 @@ class StreakCounterCache(
         counter += count
     }
 
-    fun save(list: MutableList<Streak>) {
+    fun save(list: MutableList<Streak>, addCount: Int = 0) {
         if (start == DEFAULT) return
-        list.add(Streak(start, end, counter))
+        val item =
+            if (start < end) Streak(start, end + addCount, counter)
+            else Streak(end - addCount, start, counter)
+        list.add(item)
         clear()
     }
 

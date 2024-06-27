@@ -2,6 +2,7 @@ package com.github.skytoph.taski.presentation.habit.list.mapper
 
 import com.github.skytoph.taski.core.Now
 import com.github.skytoph.taski.domain.habit.EntryList
+import com.github.skytoph.taski.presentation.habit.details.HabitStatisticsUi
 import com.github.skytoph.taski.presentation.habit.list.HistoryUi
 import com.github.skytoph.taski.presentation.habit.list.view.ViewType
 import kotlin.math.max
@@ -11,7 +12,7 @@ class EntriesCalendarUiMapper(
     private val mapper: EntryUiMapper,
 ) : HabitHistoryUiMapper<HistoryUi, ViewType.Calendar> {
 
-    override fun map(numberOfColumns: Int, goal: Int, history: EntryList): HistoryUi {
+    override fun map(numberOfColumns: Int, goal: Int, history: EntryList, stats: HabitStatisticsUi): HistoryUi {
         val todayDonePercent =
             ColorPercentMapper.toColorPercent(history.entries[0]?.timesDone ?: 0, goal)
         if (numberOfColumns == 0) return HistoryUi(entries = emptyList(), todayDonePercent)
@@ -35,7 +36,7 @@ class EntriesDailyUiMapper(
     private val mapper: EntryUiMapper,
 ) : HabitHistoryUiMapper<HistoryUi, ViewType.Daily> {
 
-    override fun map(numberOfEntries: Int, goal: Int, history: EntryList): HistoryUi {
+    override fun map(numberOfEntries: Int, goal: Int, history: EntryList, stats: HabitStatisticsUi): HistoryUi {
         val entries = (0 until numberOfEntries).map { index ->
             mapper.map(history = history, daysAgo = index, goal = goal)
         }

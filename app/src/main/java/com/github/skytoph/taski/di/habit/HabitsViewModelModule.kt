@@ -3,10 +3,9 @@ package com.github.skytoph.taski.di.habit
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import com.github.skytoph.taski.core.Now
+import com.github.skytoph.taski.presentation.habit.details.mapper.HabitStatsUiMapper
 import com.github.skytoph.taski.presentation.habit.list.HabitListState
-import com.github.skytoph.taski.presentation.habit.list.mapper.HabitsViewMapper
 import com.github.skytoph.taski.presentation.habit.list.HistoryUi
-import com.github.skytoph.taski.presentation.habit.list.view.ViewType
 import com.github.skytoph.taski.presentation.habit.list.mapper.EntriesCalendarUiMapper
 import com.github.skytoph.taski.presentation.habit.list.mapper.EntriesDailyUiMapper
 import com.github.skytoph.taski.presentation.habit.list.mapper.EntryUiMapper
@@ -16,6 +15,8 @@ import com.github.skytoph.taski.presentation.habit.list.mapper.HabitUiMapper
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitWithEntriesCalendarUiMapper
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitWithEntriesDailyUiMapper
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitWithHistoryUiMapper
+import com.github.skytoph.taski.presentation.habit.list.mapper.HabitsViewMapper
+import com.github.skytoph.taski.presentation.habit.list.view.ViewType
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,15 +28,19 @@ object HabitsViewModelModule {
 
     @Provides
     fun habitWithEntriesDailyMapper(
-        habitMapper: HabitUiMapper, mapper: HabitHistoryUiMapper<HistoryUi, ViewType.Daily>,
+        habitMapper: HabitUiMapper,
+        mapper: HabitHistoryUiMapper<HistoryUi, ViewType.Daily>,
+        statsMapper: HabitStatsUiMapper,
     ): HabitWithHistoryUiMapper<HistoryUi, ViewType.Daily> =
-        HabitWithEntriesDailyUiMapper(habitMapper, mapper)
+        HabitWithEntriesDailyUiMapper(habitMapper, mapper, statsMapper)
 
     @Provides
     fun habitWithEntriesCalendarMapper(
-        habitMapper: HabitUiMapper, mapper: HabitHistoryUiMapper<HistoryUi, ViewType.Calendar>,
+        habitMapper: HabitUiMapper,
+        mapper: HabitHistoryUiMapper<HistoryUi, ViewType.Calendar>,
+        statsMapper: HabitStatsUiMapper,
     ): HabitWithHistoryUiMapper<HistoryUi, ViewType.Calendar> =
-        HabitWithEntriesCalendarUiMapper(habitMapper, mapper)
+        HabitWithEntriesCalendarUiMapper(habitMapper, mapper, statsMapper)
 
     @Provides
     fun entryMapper(): EntryUiMapper = EntryUiMapper.Base()

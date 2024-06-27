@@ -2,7 +2,7 @@ package com.github.skytoph.taski.presentation.habit.details.streak
 
 import com.github.skytoph.taski.core.Now
 
-class CalculateMonthlyStreak(private val now: Now, private val days: Set<Int>) :
+class CalculateMonthlyStreak(private val now: Now, days: Set<Int>) :
     CalculateStreak.Iterable(days) {
 
     override val maxDays: Int = now.daysInMonth(dayNumber(0))

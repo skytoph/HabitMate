@@ -2,7 +2,7 @@ package com.github.skytoph.taski.presentation.habit.details.streak
 
 import com.github.skytoph.taski.core.Now
 import com.github.skytoph.taski.domain.habit.Entry
-import com.github.skytoph.taski.presentation.habit.details.mapper.Streak
+import com.github.skytoph.taski.presentation.habit.details.Streak
 
 abstract class CalculateCustomStreak(
     timesCount: Int,
@@ -19,25 +19,40 @@ abstract class CalculateCustomStreak(
 
     override fun streaks(data: Map<Int, Entry>, goal: Int, days: List<Int>): List<Streak> =
         if (data.isEmpty()) emptyList()
-        else data.asSequence()
-            .toList()
-            .groupBy { divide(it.key) }.toList().zipWithNext()
-            .fold(mutableListOf<Streak>()) { streaks, (prev, current) ->
-                val daysAgo = current.first
-                val timesDone = current.second.count { it.value.isCompleted(goal) }
+        else {
+            val streaks = mutableListOf<Streak>()
+            data.asSequence()
+                .toList()
+                .groupBy { divide(it.key) }
+                .toList()
+                .also { items ->
+                    val firstItem = items.firstOrNull() ?: return@also
+                    val timesDone = firstItem.second.count { it.value.isCompleted(goal) }
+                    addCounter(timesDone, goal, firstItem.first, firstItem.second)
+                    if (timesDone < frequencyGoal) counter.save(streaks)
+                }
+                .zipWithNext()
+                .fold(streaks) { list, (prev, current) ->
+                    val position = current.first
+                    val timesDone = current.second.count { it.value.isCompleted(goal) }
 
-                if (prev.first == 0) {
-                    val count = prev.second.count { it.value.isCompleted(goal) }
-                    counter.add(count = count, start = start(0), end = end(0))
-                    if (daysAgo != 1 || timesDone < frequencyGoal)
-                        counter.save(list = streaks)
-                } else if (daysAgo != prev.first + 1 || timesDone < frequencyGoal)
-                    counter.save(list = streaks)
+                    if (position != prev.first + 1 || timesDone < frequencyGoal)
+                        counter.save(list = list)
+                    addCounter(timesDone, goal, position, current.second)
 
-                counter.add(count = timesDone, start = start(daysAgo), end = end(daysAgo))
+                    list
+                }.apply { counter.save(this) }
+        }
 
-                streaks
-            }.apply { counter.save(this) }
+    private fun addCounter(
+        timesDone: Int, goal: Int, position: Int, entries: List<Map.Entry<Int, Entry>>
+    ) = if (timesDone < frequencyGoal)
+        counter.add(
+            count = timesDone,
+            start = entries.firstOrNull { it.value.isCompleted(goal) }?.key,
+            end = entries.lastOrNull { it.value.isCompleted(goal) }?.key
+        )
+    else counter.add(count = timesDone, start = end(position), end = start(position))
 
     class Week(timesCount: Int, private val typeCount: Int, private val now: Now) :
         CalculateCustomStreak(timesCount = timesCount, typeCount = typeCount) {
@@ -91,7 +106,7 @@ abstract class CalculateCustomStreak(
                             val beforeReset = skip + prev.first - nextSkipReset - 1
                             val afterReset = nextSkipReset - daysAgo
                             if (beforeReset > skipMax || afterReset > skipMax) {
-                                counter.save(list = streaks)
+                                counter.save(list = streaks, addCount = 0)
                                 skip = 0
                                 nextSkipReset = daysAgo - typeCount
                             } else {
@@ -107,14 +122,14 @@ abstract class CalculateCustomStreak(
                                 else skip++
 
                             current.second.isCompleted(goal) -> {
-                                counter.save(list = streaks)
+                                counter.save(list = streaks, addCount = skipMax - skip)
                                 counter.add(count = 1, start = daysAgo)
                             }
 
-                            else -> counter.save(list = streaks)
+                            else -> counter.save(list = streaks, addCount = skipMax - skip)
                         }
                         streaks
-                    }.apply { counter.save(list = this) }.reversed()
+                    }.apply { counter.save(list = this, addCount = skipMax - skip) }.reversed()
             }
     }
 }

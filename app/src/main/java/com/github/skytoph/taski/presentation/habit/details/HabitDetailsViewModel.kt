@@ -39,7 +39,7 @@ class HabitDetailsViewModel @Inject constructor(
     appBarState: MutableState<AppBarState>
 ) : ViewModel(), InitAppBar by InitAppBar.Base(appBarState) {
 
-    private val actions = MutableStateFlow<List<UpdateEntryAction>>(emptyList())
+    private val actions = MutableStateFlow<List<HabitEntriesAction>>(emptyList())
 
     val entries: Flow<PagingData<EditableHistoryUi>> =
         interactor.entries(savedStateHandle.id())
@@ -56,21 +56,24 @@ class HabitDetailsViewModel @Inject constructor(
             .launchIn(viewModelScope)
 
         interactor.statistics(savedStateHandle.id())
-            .map { history -> statsMapper.map(history)}
+            .map { history -> statsMapper.map(history) }
             .flowOn(Dispatchers.IO)
-            .onEach { stats -> onEvent(HabitDetailsEvent.UpdateStats(stats)) }
-            .launchIn(viewModelScope)
+            .onEach { stats ->
+                onEvent(HabitDetailsEvent.UpdateStats(stats))
+                HabitEntriesAction.ApplyStatistics(stats).handle(actions)
+            }.launchIn(viewModelScope)
     }
 
-    private fun applyAction(pagingData: PagingData<EditableHistoryUi>, action: UpdateEntryAction) =
-        pagingData.map { data -> interactor.mapData(data, action.entry) }
+    private fun applyAction(pagingData: PagingData<EditableHistoryUi>, action: HabitEntriesAction) =
+        pagingData.map { data -> action.apply(data) }
 
     fun habitDone(daysAgo: Int, defaultColor: Color) = state.value.habit?.let { habit ->
         viewModelScope.launch(Dispatchers.IO) {
             interactor.habitDone(habit, daysAgo)
-            val entry =
-                interactor.entryEditable(habit.id, daysAgo, habit.goal, habit.color, defaultColor)
-            withContext(Dispatchers.Main) { UpdateEntryAction(entry).handle(actions) }
+            val entry = interactor.entryEditable(
+                habit.id, daysAgo, habit.goal, habit.color, defaultColor, state.value.statistics
+            )
+            withContext(Dispatchers.Main) { HabitEntriesAction.UpdateEntry(entry).handle(actions) }
         }
     }
 

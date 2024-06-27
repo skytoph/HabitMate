@@ -1,19 +1,21 @@
 package com.github.skytoph.taski.presentation.habit.details.streak
 
 import com.github.skytoph.taski.domain.habit.Entry
-import com.github.skytoph.taski.presentation.habit.details.mapper.HabitStatistics
-import com.github.skytoph.taski.presentation.habit.details.mapper.Streak
+import com.github.skytoph.taski.presentation.habit.details.HabitStatistics
+import com.github.skytoph.taski.presentation.habit.details.Streak
 
 interface CalculateStreak {
     fun streaks(data: Map<Int, Entry>, goal: Int): HabitStatistics
 
     abstract class Base : CalculateStreak {
 
+        protected abstract val skipMax: Int
         override fun streaks(data: Map<Int, Entry>, goal: Int): HabitStatistics =
             streaksList(data = data, goal = goal).let { list ->
                 if (list.isEmpty()) HabitStatistics()
                 else HabitStatistics(
-                    currentStreak = if (isStreakCurrently(data, goal)) list.first().streak else 0,
+                    currentStreak = if (isStreakCurrently(data, goal)) currentStreak(list) else 0,
+//                    currentStreakPosition = if (isStreakCurrently(data, goal)) max,
                     bestStreak = list.maxBy { it.streak }.streak,
                     total = data.count { it.value.isCompleted(goal) },
                     streaks = list
@@ -23,11 +25,12 @@ interface CalculateStreak {
         abstract fun streaksList(data: Map<Int, Entry>, goal: Int): List<Streak>
 
         abstract fun isStreakCurrently(data: Map<Int, Entry>, goal: Int): Boolean
+
+        open fun currentStreak(list: List<Streak>): Int = list.first().streak
     }
 
     abstract class Abstract(private val days: Set<Int> = emptySet()) : Base() {
 
-        protected abstract val skipMax: Int
 
         override fun streaksList(data: Map<Int, Entry>, goal: Int): List<Streak> =
             streaks(data = data, goal = goal, days = days.reversed())

@@ -16,10 +16,14 @@ import kotlinx.coroutines.flow.Flow
 interface HabitDetailsInteractor : HabitDoneInteractor {
     fun entries(id: Long): Flow<PagingData<EditableHistoryUi>>
     fun habit(id: Long): Flow<Habit?>
-    fun mapData(data: EditableHistoryUi, entry: EntryEditableUi): EditableHistoryUi
     fun statistics(id: Long): Flow<HabitWithEntries>
     suspend fun entryEditable(
-        id: Long, daysAgo: Int, goal: Int, habitColor: Color, defaultColor: Color
+        id: Long,
+        daysAgo: Int,
+        goal: Int,
+        habitColor: Color,
+        defaultColor: Color,
+        statistics: HabitStatisticsUi
     ): EntryEditableUi
 
     class Base(
@@ -34,20 +38,19 @@ interface HabitDetailsInteractor : HabitDoneInteractor {
             pagerProvider.getEntries(id)
 
         override suspend fun entryEditable(
-            id: Long, daysAgo: Int, goal: Int, habitColor: Color, defaultColor: Color
+            id: Long,
+            daysAgo: Int,
+            goal: Int,
+            habitColor: Color,
+            defaultColor: Color,
+            statistics: HabitStatisticsUi
         ): EntryEditableUi = this.entry(id, daysAgo).let { entry ->
-            entryMapper.map(daysAgo, entry.timesDone, goal)
+            entryMapper.map(daysAgo, entry.timesDone, goal, statistics.isInRange(daysAgo))
         }
 
         override fun habit(id: Long) = repository.habitFlow(id)
 
         override fun statistics(id: Long): Flow<HabitWithEntries> =
             repository.habitWithEntriesFlow(id)
-
-        override fun mapData(data: EditableHistoryUi, entry: EntryEditableUi): EditableHistoryUi {
-            val index = data.entries.indexOfFirst { it.daysAgo == entry.daysAgo }
-            return if (index == -1) data
-            else data.copy(entries = data.entries.toMutableList().also { it[index] = entry })
-        }
     }
 }

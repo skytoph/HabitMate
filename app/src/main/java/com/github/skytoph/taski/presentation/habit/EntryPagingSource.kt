@@ -7,9 +7,10 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.github.skytoph.taski.domain.habit.HabitRepository
 import com.github.skytoph.taski.domain.habit.HabitWithEntries
+import com.github.skytoph.taski.presentation.habit.details.mapper.HabitStatsUiMapper
 import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
-import com.github.skytoph.taski.presentation.habit.list.view.ViewType
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitHistoryUiMapper
+import com.github.skytoph.taski.presentation.habit.list.view.ViewType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -19,7 +20,8 @@ class EntryPagingSource(
     private val uiMapper: HabitHistoryUiMapper<EditableHistoryUi, ViewType>,
     private val entryCache: HabitCache,
     private val id: Long,
-) : PagingSource<Int, EditableHistoryUi>() {
+    private val statsMapper: HabitStatsUiMapper,
+    ) : PagingSource<Int, EditableHistoryUi>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, EditableHistoryUi> {
         val page = params.key ?: 0
@@ -28,7 +30,8 @@ class EntryPagingSource(
             withContext(Dispatchers.IO) {
                 entryCache.cacheIfEmpty { repository.habitWithEntries(id) }
                 val habit = entryCache.get()
-                val history = uiMapper.map(page = page, history = habit.entries)
+                val stats = statsMapper.map(habit)
+                val history = uiMapper.map(page = page, history = habit.entries, stats = stats)
 
                 LoadResult.Page(
                     data = listOf(history),
@@ -59,6 +62,7 @@ class HabitCache(private val data: MutableList<HabitWithEntries> = ArrayList()) 
 class EntityPagerProvider(
     private val repository: HabitRepository,
     private val uiMapper: HabitHistoryUiMapper<EditableHistoryUi, ViewType>,
+    private val statsMapper: HabitStatsUiMapper,
     private val entryCache: HabitCache
 ) {
     fun getEntries(id: Long): Flow<PagingData<EditableHistoryUi>> = Pager(
@@ -69,7 +73,7 @@ class EntityPagerProvider(
             enablePlaceholders = false
         ),
         pagingSourceFactory = {
-            EntryPagingSource(repository, uiMapper, entryCache, id)
+            EntryPagingSource(repository, uiMapper, entryCache, id, statsMapper)
         }
     ).flow
 }

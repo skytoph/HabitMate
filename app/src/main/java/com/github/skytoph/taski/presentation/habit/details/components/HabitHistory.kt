@@ -8,6 +8,7 @@ package com.github.skytoph.taski.presentation.habit.details.components
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -149,7 +150,7 @@ fun HabitHistoryGrid(
                         .background(color = MaterialTheme.colorScheme.tertiaryContainer)
                 ) {
                     Box(modifier = Modifier.size(squareDp))
-                    for (index in 1 .. 7)
+                    for (index in 1..7)
                         WeekDayLabel(
                             modifier = Modifier
                                 .size(squareDp)
@@ -204,7 +205,7 @@ private fun MonthWithEntries(
             userScrollEnabled = false
         ) {
             items(
-                items = item.entries,
+                items = item.entriesList,
                 key = { it.daysAgo },
                 contentType = { "entry" }) { entry ->
                 DailyEntry(
@@ -244,6 +245,11 @@ private fun DailyEntry(
                 .size(size)
                 .padding(padding)
                 .background(color, shape = MaterialTheme.shapes.extraSmall)
+                .border(
+                    width = 2.dp,
+                    color = if (entry.hasBorder) habitColor else Color.Transparent,
+                    shape = MaterialTheme.shapes.extraSmall
+                )
                 .clickable(enabled = isEditable && entry.daysAgo >= 0) {
                     onDayClick(entry.daysAgo)
                 },
