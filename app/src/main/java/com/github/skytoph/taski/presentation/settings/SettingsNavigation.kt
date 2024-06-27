@@ -13,11 +13,13 @@ import com.github.skytoph.taski.presentation.core.nav.ScaleTransitionDirection
 import com.github.skytoph.taski.presentation.core.nav.scaleIntoContainer
 import com.github.skytoph.taski.presentation.core.nav.scaleOutOfContainer
 import com.github.skytoph.taski.presentation.settings.archive.component.ArchiveScreen
+import com.github.skytoph.taski.presentation.settings.general.GeneralSettingsScreen
 import com.github.skytoph.taski.presentation.settings.menu.SettingsMenuScreen
 import com.github.skytoph.taski.presentation.settings.reorder.component.HabitReorderScreen
 
 abstract class SettingsScreens(val route: String) {
     object SettingsList : SettingsScreens("settings")
+    object General : SettingsScreens("general")
     object ArchiveList : SettingsScreens("archive")
     object ReorderList : SettingsScreens("reorder")
 }
@@ -45,9 +47,18 @@ fun NavGraphBuilder.settingsNavigation(
             popEnterTransition = { fadeIn(tween(delayMillis = 50)) }
         ) {
             SettingsMenuScreen(
+                generalClick = { controller.navigate(SettingsScreens.ArchiveList.route) },
                 archiveClick = { controller.navigate(SettingsScreens.ArchiveList.route) },
-                reorderClick = { controller.navigate(SettingsScreens.ReorderList.route) }
+                reorderClick = { controller.navigate(SettingsScreens.ReorderList.route) },
             )
+        }
+        composable(
+            route = SettingsScreens.General.route,
+            enterTransition = { scaleIntoContainer(direction = ScaleTransitionDirection.OUTWARDS) },
+            popExitTransition = { scaleOutOfContainer(direction = ScaleTransitionDirection.INWARDS) },
+            popEnterTransition = null,
+        ) {
+            GeneralSettingsScreen()
         }
         composable(
             route = SettingsScreens.ArchiveList.route,

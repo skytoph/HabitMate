@@ -35,18 +35,24 @@ fun SettingsMenuScreen(
     viewModel: SettingsViewModel = hiltViewModel(),
     archiveClick: () -> Unit,
     reorderClick: () -> Unit,
+    generalClick: () -> Unit,
 ) {
     LaunchedEffect(Unit) {
         viewModel.initAppBar(title = R.string.settings_title)
     }
 
-    SettingsMenu(reorderClick = reorderClick, archiveClick = archiveClick)
+    SettingsMenu(
+        generalClick = generalClick,
+        reorderClick = reorderClick,
+        archiveClick = archiveClick
+    )
 }
 
 @Composable
 private fun SettingsMenu(
-    archiveClick: () -> Unit = {},
+    generalClick: () -> Unit = {},
     reorderClick: () -> Unit = {},
+    archiveClick: () -> Unit = {},
 ) {
     Column(modifier = Modifier.padding(24.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(
@@ -59,7 +65,7 @@ private fun SettingsMenu(
             SettingsMenuItem(
                 title = "General",
                 icon = ImageVector.vectorResource(id = R.drawable.wrench),
-                onClick = {}
+                onClick = generalClick
             )
             Divider()
             SettingsMenuItem(
