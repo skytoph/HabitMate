@@ -114,6 +114,10 @@
     <string name="frequency_summary_daily">Every week on</string>
     <string name="everyday">Everyday</string>
     <string name="button_edit">Edit</string>
+    <string name="reminder_none">None</string>
+    <string name="confirm">Confirm</string>
+    <string name="select_time">Select time</string>
+    <string name="ok">OK</string>
 
     <plurals name="times_label">
         <item quantity="one">time</item>

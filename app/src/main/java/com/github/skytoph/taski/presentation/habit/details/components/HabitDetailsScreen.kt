@@ -145,7 +145,7 @@ fun HabitDetails(
             LabelWithIcon(
                 modifier = Modifier.weight(1f),
                 text = stringResource(R.string.goal_value, habit.goal),
-                icon = ImageVector.vectorResource(R.drawable.goal),
+                icon = ImageVector.vectorResource(R.drawable.flame),
             )
             LabelWithIcon(
                 modifier = Modifier.weight(1f),

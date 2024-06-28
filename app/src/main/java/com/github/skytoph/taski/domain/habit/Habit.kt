@@ -8,5 +8,6 @@ data class Habit(
     val color: Int,
     val priority: Int = 0,
     val isArchived: Boolean = false,
-    val frequency: Frequency = Frequency.Daily()
+    val frequency: Frequency = Frequency.Daily(),
+    val reminder: Reminder = Reminder.None
 )

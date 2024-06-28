@@ -8,7 +8,6 @@ import com.github.skytoph.taski.presentation.core.state.IconResource
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyUi
 import com.github.skytoph.taski.presentation.habit.icon.IconsColors
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitDomainMapper
-import java.util.Locale
 
 @Stable
 data class HabitUi(
@@ -23,17 +22,7 @@ data class HabitUi(
     val reminder: ReminderUi = ReminderUi(),
 ) {
 
-    fun map(mapper: HabitDomainMapper, context: Context) =
-        mapper.map(
-            id,
-            title,
-            goal,
-            color,
-            icon.name(context.resources),
-            priority,
-            isArchived,
-            frequency
-        )
+    fun map(mapper: HabitDomainMapper, context: Context) = mapper.map(this, context)
 
     companion object {
         const val MIN_GOAL: Int = 1
@@ -54,14 +43,3 @@ data class HabitWithHistoryUi<T : HabitHistoryUi>(
     val habit: HabitUi,
     val history: T
 )
-
-data class ReminderUi(
-    val switchedOn: Boolean = false,
-    val hour: Int = 12,
-    val minute: Int = 0,
-    val isDialogShown: Boolean = false
-) {
-    fun formatted(locale: Locale): String {
-        return String.format(locale, "%02d:%02d", hour, minute)
-    }
-}

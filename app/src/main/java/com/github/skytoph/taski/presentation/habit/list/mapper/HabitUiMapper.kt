@@ -18,7 +18,8 @@ interface HabitUiMapper {
             color = Color(habit.color),
             priority = habit.priority,
             isArchived = habit.isArchived,
-            frequency = habit.frequency.mapToUi()
+            frequency = habit.frequency.mapToUi(),
+            reminder = habit.reminder.mapToUi()
         )
     }
 }

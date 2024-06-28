@@ -26,7 +26,8 @@ interface EditHabitEvent {
                 color = habit.color,
                 isLoading = false,
                 frequencyState = FrequencyState(selectedName = habit.frequency.name)
-                    .updateSelected(habit.frequency)
+                    .updateSelected(habit.frequency),
+                reminder = habit.reminder
             )
             icon.value = IconState(habit.icon, habit.color)
         }
