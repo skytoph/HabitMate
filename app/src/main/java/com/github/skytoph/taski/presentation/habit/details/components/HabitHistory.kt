@@ -28,9 +28,11 @@ import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.PlainTooltipBox
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TooltipBox
+import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -234,14 +236,15 @@ private fun DailyEntry(
 ) {
     val color =
         habitColor.applyColor(MaterialTheme.colorScheme.onSecondaryContainer, entry.percentDone)
-    PlainTooltipBox(
+    TooltipBox(
+        state = rememberTooltipState(),
+        positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
         tooltip = {
             Text(stringResource(R.string.entry_tooltip_percent_done, entry.timesDone, goal))
         }
     ) {
         Box(
             modifier = Modifier
-                .tooltipAnchor()
                 .size(size)
                 .padding(padding)
                 .background(color, shape = MaterialTheme.shapes.extraSmall)

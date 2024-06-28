@@ -28,6 +28,7 @@ fun MainScreen(
     viewModel: MainViewModel = hiltViewModel()
 ) {
     val snackbarHostState = remember { viewModel.snackbarState() }
+    val dismissSnackbarState = rememberDismissState(snackbarHostState)
 
     val color = MaterialTheme.colorScheme.onSurface
     LaunchedEffect(Unit) {
@@ -39,8 +40,6 @@ fun MainScreen(
             snackbarHostState.currentSnackbarData?.dismiss()
         }
     }
-
-    val dismissSnackbarState = rememberDismissState(snackbarHostState)
 
     Scaffold(
         topBar = {
