@@ -4,7 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
-@Database(entities = [HabitEntity::class, EntryEntity::class], version = 6)
+@Database(entities = [HabitEntity::class, EntryEntity::class], version = 8)
 @TypeConverters(FrequencyConverters::class)
 abstract class HabitDatabase : RoomDatabase() {
     abstract fun habitDao(): HabitDao

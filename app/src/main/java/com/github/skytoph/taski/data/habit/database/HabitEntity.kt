@@ -1,6 +1,7 @@
 package com.github.skytoph.taski.data.habit.database
 
 import androidx.room.ColumnInfo
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -31,4 +32,7 @@ data class HabitEntity(
 
     @ColumnInfo(name = "frequency")
     val frequency: FrequencyEntity,
+
+    @Embedded
+    val reminder: ReminderEntity? = null,
 )
