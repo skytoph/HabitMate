@@ -149,7 +149,7 @@ fun HabitDetails(
             )
             LabelWithIcon(
                 modifier = Modifier.weight(1f),
-                text = "13:00",
+                text = habit.reminder.formatted(getLocale()),
                 icon = ImageVector.vectorResource(R.drawable.bell),
             )
         }

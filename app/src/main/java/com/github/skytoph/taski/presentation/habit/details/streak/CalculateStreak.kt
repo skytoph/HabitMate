@@ -62,7 +62,7 @@ interface CalculateStreak {
                 val today = dayNumber(0)
                 var dayNextValue = daysIterator.next()
                     .also { if (!daysIterator.hasNext()) daysIterator = days.listIterator() }
-                var dayPreviousValue = dayNextValue
+                var dayCurrentValue = dayNextValue
                 while (dayNextValue > today && daysIterator.hasNext()) {
                     dayNextValue = daysIterator.next()
                 }
@@ -87,7 +87,7 @@ interface CalculateStreak {
                             if (!daysIterator.hasNext()) {
                                 daysIterator = days.listIterator()
                             }
-                            dayPreviousValue = dayNextValue
+                            dayCurrentValue = dayNextValue
                             dayNextValue = daysIterator.next()
                             dayNextPosition = findNextPosition(dayNextPosition, dayNextValue)
                         }
@@ -96,7 +96,7 @@ interface CalculateStreak {
                             if (!daysIterator.hasNext()) {
                                 daysIterator = days.listIterator()
                             }
-                            dayPreviousValue = dayNextValue
+                            dayCurrentValue = dayNextValue
                             dayNextValue = daysIterator.next()
                             dayNextPosition = findNextPosition(dayNextPosition, dayNextValue)
                             dataNextPosition =
@@ -113,7 +113,7 @@ interface CalculateStreak {
                         }
 
                         else -> {
-                            val isPointedToGoal = dayNumber(daysAgo) == dayPreviousValue
+                            val isPointedToGoal = dayNumber(daysAgo) == dayCurrentValue
                             if (isPointedToGoal) currentStreak++
                             if (isPointedToGoal && currentStreak == days.size) {
                                 val start = end(daysAgo)

@@ -118,4 +118,30 @@ interface CreateHabitEvent {
             )
         }
     }
+
+    class UpdateReminder(
+        private val switchOn: Boolean? = null,
+        private val showDialog: Boolean? = null,
+        private val hour: Int? = null,
+        private val minute: Int? = null
+    ) : CreateHabitEvent {
+        override fun handle(state: MutableState<CreateHabitState>) {
+            switchOn?.let {
+                state.value =
+                    state.value.copy(reminder = state.value.reminder.copy(switchedOn = it))
+            }
+            showDialog?.let {
+                state.value =
+                    state.value.copy(reminder = state.value.reminder.copy(isDialogShown = it))
+            }
+            hour?.let {
+                state.value =
+                    state.value.copy(reminder = state.value.reminder.copy(hour = it))
+            }
+            minute?.let {
+                state.value =
+                    state.value.copy(reminder = state.value.reminder.copy(minute = it))
+            }
+        }
+    }
 }

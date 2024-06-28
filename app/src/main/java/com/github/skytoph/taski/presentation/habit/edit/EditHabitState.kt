@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 import com.github.skytoph.taski.presentation.core.state.FieldState
 import com.github.skytoph.taski.presentation.core.state.IconResource
 import com.github.skytoph.taski.presentation.habit.HabitUi
+import com.github.skytoph.taski.presentation.habit.ReminderUi
 import com.github.skytoph.taski.presentation.habit.create.GoalState
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyState
 import com.github.skytoph.taski.presentation.habit.icon.IconsColors
@@ -13,13 +14,14 @@ data class EditHabitState(
     val title: FieldState = FieldState(),
     val goal: GoalState = GoalState(),
     val frequencyState: FrequencyState = FrequencyState(),
+    val reminder: ReminderUi = ReminderUi(),
     val isFrequencyExpanded: Boolean = false,
     val isCustomTypeExpanded: Boolean = false,
     val icon: IconResource = IconResource.Default,
     val color: Color = IconsColors.Default,
     val isHistoryEditable: Boolean = false,
     val isLoading: Boolean = false,
-    val isValidated: Boolean = false
+    val isValidated: Boolean = false,
 ) {
 
     fun toHabitUi() = HabitUi(
@@ -28,6 +30,7 @@ data class EditHabitState(
         goal = goal.value,
         icon = icon,
         color = color,
-        frequency = frequencyState.selected
+        frequency = frequencyState.selected,
+        reminder = reminder
     )
 }
