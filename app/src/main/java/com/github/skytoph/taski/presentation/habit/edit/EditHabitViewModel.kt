@@ -40,8 +40,12 @@ class EditHabitViewModel @Inject constructor(
 
     fun saveHabit(navigateUp: () -> Unit, context: Context) =
         viewModelScope.launch(Dispatchers.IO) {
-            interactor.insert(state.value.toHabitUi(), context)
-            withContext(Dispatchers.Main) { navigateUp() }
+            val habit = state.value.toHabitUi()
+            interactor.insert(habit, context)
+            withContext(Dispatchers.Main) {
+                interactor.scheduleNotification(habit, context)
+                navigateUp()
+            }
         }
 
     fun validate() = validator.validate(state.value.title, this)

@@ -1,7 +1,7 @@
 package com.github.skytoph.taski.presentation.habit.edit.frequency
 
 data class FrequencyState(
-    val daily: FrequencyUi = FrequencyUi.Daily(),
+    val daily: FrequencyUi = FrequencyUi.Everyday(FrequencyUi.Daily()),
     val monthly: FrequencyUi = FrequencyUi.Monthly(),
     val custom: FrequencyUi = FrequencyUi.Custom(),
     val selectedName: String = daily.name
@@ -20,12 +20,16 @@ data class FrequencyState(
         else -> copy(custom = updated)
     }
 
-    fun updateCustom(typeCustom: FrequencyCustomType): FrequencyState =
-        if (custom is FrequencyUi.Custom) {
+    fun updateCustom(typeCustom: FrequencyCustomType): FrequencyState = when (custom) {
+        is FrequencyUi.Custom -> {
             val type = typeCustom.type(custom.typeCount.value)
             val times = typeCustom.times(times = custom.timesCount.value, type = type.value)
             val updated =
                 FrequencyUi.Custom(frequencyType = typeCustom, timesCount = times, typeCount = type)
             copy(custom = updated)
-        } else this
+        }
+
+        is FrequencyUi.Everyday -> copy(custom = custom.frequency).updateCustom(typeCustom)
+        else -> this
+    }
 }

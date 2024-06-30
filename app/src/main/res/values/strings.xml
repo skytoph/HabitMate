@@ -112,6 +112,7 @@
     <string name="frequency_summary_custom">%1$d times in %2$d %3$s</string>
     <string name="frequency_summary_monthly">Every month on</string>
     <string name="frequency_summary_daily">Every week on</string>
+    <string name="habit_reminder_message">It\'s time to complete the habit</string>
     <string name="everyday">Everyday</string>
     <string name="button_edit">Edit</string>
     <string name="reminder_none">None</string>

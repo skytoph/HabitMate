@@ -9,8 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Divider
 import androidx.compose.material3.DividerDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -58,7 +58,7 @@ fun FrequencySettings(
                 title = "daily",
                 selected = frequency.isSelected(frequency.daily),
                 select = { selectType(frequency.daily) })
-            Divider(
+            HorizontalDivider(
                 modifier = Modifier
                     .width(1.dp)
                     .height(16.dp),
@@ -69,7 +69,7 @@ fun FrequencySettings(
                 title = "monthly",
                 selected = frequency.isSelected(frequency.monthly),
                 select = { selectType(frequency.monthly) })
-            Divider(
+            HorizontalDivider(
                 modifier = Modifier
                     .width(1.dp)
                     .height(16.dp),
@@ -143,6 +143,18 @@ private fun FrequencySettingsContent(
             selectType = selectType,
             expandType = expandType,
             typeExpanded = typeExpanded
+        )
+
+        is FrequencyUi.Everyday -> FrequencySettingsContent(
+            frequency.frequency,
+            typeExpanded,
+            selectDay,
+            increaseTimes,
+            decreaseTimes,
+            increaseType,
+            decreaseType,
+            selectType,
+            expandType
         )
     }
 }
