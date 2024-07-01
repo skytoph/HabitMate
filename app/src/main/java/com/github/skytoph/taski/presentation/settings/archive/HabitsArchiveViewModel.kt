@@ -1,5 +1,6 @@
 package com.github.skytoph.taski.presentation.settings.archive
 
+import android.content.Context
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.lifecycle.ViewModel
@@ -38,9 +39,10 @@ class HabitsArchiveViewModel @Inject constructor(
         interactor.archive(id, message, false)
     }
 
-    fun delete(id: Long, message: String) = viewModelScope.launch(Dispatchers.IO) {
-        interactor.delete(id, message)
-    }
+    fun delete(id: Long, message: String, context: Context) =
+        viewModelScope.launch(Dispatchers.IO) {
+            interactor.delete(id, message, context)
+        }
 
     fun state(): State<ArchiveState> = state
 }

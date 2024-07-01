@@ -1,5 +1,5 @@
 package com.github.skytoph.taski.domain.habit
 
-interface IsHabitDone {
+interface CheckHabitState {
     fun isHabitDone(habitId: Long): Boolean
 }

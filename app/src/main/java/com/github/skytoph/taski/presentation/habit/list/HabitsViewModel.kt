@@ -1,5 +1,6 @@
 package com.github.skytoph.taski.presentation.habit.list
 
+import android.content.Context
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.lifecycle.ViewModel
@@ -52,9 +53,10 @@ class HabitsViewModel @Inject constructor(
 
     fun state(): State<HabitListState> = state
 
-    fun deleteHabit(id: Long, message: String) = viewModelScope.launch(Dispatchers.IO) {
-        interactor.delete(id, message)
-    }
+    fun deleteHabit(id: Long, message: String, context: Context) =
+        viewModelScope.launch(Dispatchers.IO) {
+            interactor.delete(id, message, context)
+        }
 
     fun archiveHabit(id: Long, archived: String) = viewModelScope.launch(Dispatchers.IO) {
         interactor.archive(id, archived)

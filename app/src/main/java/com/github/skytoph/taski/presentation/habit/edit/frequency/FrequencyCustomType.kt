@@ -1,13 +1,17 @@
 package com.github.skytoph.taski.presentation.habit.edit.frequency
 
+import android.content.Context
 import androidx.annotation.PluralsRes
 import com.github.skytoph.taski.R
+import com.github.skytoph.taski.core.alarm.AlarmItem
+import com.github.skytoph.taski.core.alarm.AlarmScheduler
+import com.github.skytoph.taski.core.alarm.ScheduleAlarm
 import com.github.skytoph.taski.domain.habit.Frequency
 import com.github.skytoph.taski.presentation.habit.create.GoalState
 import com.github.skytoph.taski.presentation.habit.edit.mapper.HabitDateMapper
 import com.github.skytoph.taski.presentation.habit.edit.mapper.MapToDatesCustom
 
-sealed class FrequencyCustomType : MapToDatesCustom {
+sealed class FrequencyCustomType : MapToDatesCustom, ScheduleAlarm {
     @get:PluralsRes
     abstract val title: Int
 
@@ -31,6 +35,9 @@ sealed class FrequencyCustomType : MapToDatesCustom {
             value = value, canBeIncreased = value < maxType, canBeDecreased = value > minType
         )
     }
+
+    override fun schedule(scheduler: AlarmScheduler, context: Context, items: List<AlarmItem>) =
+        scheduler.scheduleRepeating(context, items)
 
     abstract fun map(): Frequency.Custom.Type
 
@@ -66,5 +73,8 @@ sealed class FrequencyCustomType : MapToDatesCustom {
 
         override fun dates(mapper: HabitDateMapper, timesCount: Int, typeCount: Int) =
             mapper.mapCustomMonth(timesCount, typeCount)
+
+        override fun schedule(scheduler: AlarmScheduler, context: Context, items: List<AlarmItem>) =
+            scheduler.schedule(context, items)
     }
 }

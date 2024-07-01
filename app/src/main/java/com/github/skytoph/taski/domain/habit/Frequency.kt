@@ -11,12 +11,14 @@ sealed interface Frequency {
     fun mapToDB(): FrequencyEntity
     fun map(mapper: FrequencyMapper): HabitStatisticsUi
     fun isEveryday(): Boolean
+    val times: Int
 
     data class Daily(val days: Set<Int> = (1..7).toSet()) : Frequency {
         override fun mapToUi(): FrequencyUi = FrequencyUi.Daily(days)
         override fun mapToDB(): FrequencyEntity = FrequencyEntity.Daily(days)
         override fun map(mapper: FrequencyMapper): HabitStatisticsUi = mapper.map(days)
         override fun isEveryday(): Boolean = days.size >= 7
+        override val times: Int = days.size.let { if (isEveryday()) 1 else it }
     }
 
     data class Monthly(val days: Set<Int>) : Frequency {
@@ -24,6 +26,7 @@ sealed interface Frequency {
         override fun mapToDB(): FrequencyEntity = FrequencyEntity.Monthly(days)
         override fun map(mapper: FrequencyMapper): HabitStatisticsUi = mapper.map(days)
         override fun isEveryday(): Boolean = days.size >= 31
+        override val times: Int = days.size.let { if (isEveryday()) 1 else it }
     }
 
     data class Custom(
@@ -31,6 +34,8 @@ sealed interface Frequency {
         val typeCount: Int,
         val type: Type
     ) : Frequency {
+
+        override val times: Int = timesCount
 
         override fun mapToUi(): FrequencyUi {
             val typeUi = type.map()

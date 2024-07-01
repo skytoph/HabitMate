@@ -17,46 +17,51 @@ class HabitDateMapperTest {
         assertEquals(1, everyday.size)
         assertEquals(
             Calendar.getInstance().get(Calendar.DAY_OF_YEAR),
-            everyday.first().get(Calendar.DAY_OF_YEAR)
+            everyday.iterator().next().value.get(Calendar.DAY_OF_YEAR)
         )
 
         val daily = FrequencyUi.Daily(setOf(1, 5)).dates(mapper)
+        val iteratorDaily = daily.iterator()
         assertEquals(2, daily.size)
-        assertEquals(Calendar.MONDAY, daily[0].get(Calendar.DAY_OF_WEEK))
-        assertEquals(Calendar.FRIDAY, daily[1].get(Calendar.DAY_OF_WEEK))
+        assertEquals(Calendar.MONDAY, iteratorDaily.next().value.get(Calendar.DAY_OF_WEEK))
+        assertEquals(Calendar.FRIDAY, iteratorDaily.next().value.get(Calendar.DAY_OF_WEEK))
 
         val monthly = FrequencyUi.Monthly(setOf(1, 5)).dates(mapper)
+        val iteratorMonthly = monthly.iterator()
         assertEquals(2, monthly.size)
-        assertEquals(1, monthly[0].get(Calendar.DAY_OF_MONTH))
-        assertEquals(5, monthly[1].get(Calendar.DAY_OF_MONTH))
+        assertEquals(1, iteratorMonthly.next().value.get(Calendar.DAY_OF_MONTH))
+        assertEquals(5, iteratorMonthly.next().value.get(Calendar.DAY_OF_MONTH))
 
         val customDaily = FrequencyUi.Custom(
             timesCount = GoalState(2),
             typeCount = GoalState(5),
             frequencyType = FrequencyCustomType.Day
         ).dates(mapper)
+        val customDailyIterator = customDaily.iterator()
         val today = Calendar.getInstance()
         assertEquals(2, customDaily.size)
-        assertEquals(today.get(Calendar.DAY_OF_MONTH), customDaily[0].get(Calendar.DAY_OF_MONTH))
+        assertEquals(today.get(Calendar.DAY_OF_MONTH), customDailyIterator.next().value.get(Calendar.DAY_OF_MONTH))
         today.add(Calendar.DAY_OF_YEAR, 2)
-        assertEquals(today.get(Calendar.DAY_OF_MONTH), customDaily[1].get(Calendar.DAY_OF_MONTH))
+        assertEquals(today.get(Calendar.DAY_OF_MONTH), customDailyIterator.next().value.get(Calendar.DAY_OF_MONTH))
 
         val customWeekly = FrequencyUi.Custom(
             timesCount = GoalState(2),
             typeCount = GoalState(1),
             frequencyType = FrequencyCustomType.Week
         ).dates(mapper)
+        val customWeeklyIterator = customWeekly.iterator()
         assertEquals(2, customWeekly.size)
-        assertEquals(Calendar.MONDAY, customWeekly[0].get(Calendar.DAY_OF_WEEK))
-        assertEquals(Calendar.THURSDAY, customWeekly[1].get(Calendar.DAY_OF_WEEK))
+        assertEquals(Calendar.MONDAY, customWeeklyIterator.next().value.get(Calendar.DAY_OF_WEEK))
+        assertEquals(Calendar.THURSDAY, customWeeklyIterator.next().value.get(Calendar.DAY_OF_WEEK))
 
         val customMonthly = FrequencyUi.Custom(
             timesCount = GoalState(2),
             typeCount = GoalState(1),
             frequencyType = FrequencyCustomType.Month
         ).dates(mapper)
+        val customMonthlyIterator = customMonthly.iterator()
         assertEquals(2, customMonthly.size)
-        assertEquals(1, customMonthly[0].get(Calendar.DAY_OF_MONTH))
-        assertEquals(16, customMonthly[1].get(Calendar.DAY_OF_MONTH))
+        assertEquals(1, customMonthlyIterator.next().value.get(Calendar.DAY_OF_MONTH))
+        assertEquals(15, customMonthlyIterator.next().value.get(Calendar.DAY_OF_MONTH))
     }
 }

@@ -11,8 +11,8 @@ interface CreateNotificationChannel {
     class Base : CreateNotificationChannel {
         override fun createChannel(context: Context) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val channelId = "alarm_id"
-                val channelName = "notifications"
+                val channelId = HabitAlarmChannel.Base.id
+                val channelName = HabitAlarmChannel.Base.name
                 val notificationManager =
                     context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                 val channel = NotificationChannel(

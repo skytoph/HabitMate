@@ -1,6 +1,7 @@
 package com.github.skytoph.taski.presentation.habit.list
 
 import com.github.skytoph.taski.core.Now
+import com.github.skytoph.taski.core.alarm.AlarmScheduler
 import com.github.skytoph.taski.domain.habit.HabitRepository
 import com.github.skytoph.taski.domain.habit.HabitWithEntries
 import com.github.skytoph.taski.presentation.appbar.PopupMessage
@@ -16,9 +17,10 @@ interface HabitListInteractor : HabitDoneInteractor, DeleteHabitInteractor, Arch
     class Base(
         private val repository: HabitRepository,
         private val popup: PopupMessage.Show<SnackbarMessage>,
-        now: Now
+        now: Now,
+        scheduler: AlarmScheduler
     ) : HabitListInteractor,
-        DeleteHabitInteractor by DeleteHabitInteractor.Base(repository, popup),
+        DeleteHabitInteractor by DeleteHabitInteractor.Base(repository, popup, scheduler),
         ArchiveHabitInteractor by ArchiveHabitInteractor.Base(repository, popup),
         HabitDoneInteractor by HabitDoneInteractor.Base(repository, now) {
 

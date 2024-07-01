@@ -49,6 +49,7 @@ fun ArchiveScreen(
         viewModel.initAppBar(title = R.string.title_archive)
     }
 
+    val context = LocalContext.current
     val state = viewModel.state()
     val habits = state.value.habits
     val messageRestore = stringResource(R.string.message_habit_unarchived)
@@ -71,7 +72,7 @@ fun ArchiveScreen(
     state.value.deleteHabitById?.let { id ->
         DeleteDialog(
             onConfirm = {
-                viewModel.delete(id, messageDelete)
+                viewModel.delete(id, messageDelete, context)
                 viewModel.onEvent(HabitArchiveEvent.UpdateDeleteDialog(null))
             },
             onDismissRequest = { viewModel.onEvent(HabitArchiveEvent.UpdateDeleteDialog(null)) })

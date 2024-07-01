@@ -4,48 +4,53 @@ import java.util.Calendar
 import java.util.TimeZone
 
 interface HabitDateMapper {
-    fun mapEveryday(): List<Calendar>
-    fun mapDaily(days: Set<Int>): List<Calendar>
-    fun mapMonthly(days: Set<Int>): List<Calendar>
-    fun mapCustomDay(timesCount: Int, typeCount: Int): List<Calendar>
-    fun mapCustomWeek(timesCount: Int, typeCount: Int): List<Calendar>
-    fun mapCustomMonth(timesCount: Int, typeCount: Int): List<Calendar>
+    fun mapEveryday(): Map<Int, Calendar>
+    fun mapDaily(days: Set<Int>): Map<Int, Calendar>
+    fun mapMonthly(days: Set<Int>): Map<Int, Calendar>
+    fun mapCustomDay(timesCount: Int, typeCount: Int): Map<Int, Calendar>
+    fun mapCustomWeek(timesCount: Int, typeCount: Int): Map<Int, Calendar>
+    fun mapCustomMonth(timesCount: Int, typeCount: Int): Map<Int, Calendar>
 
     class Base(private val timeZone: TimeZone = TimeZone.getTimeZone("UTC")) : HabitDateMapper {
 
-        override fun mapEveryday(): List<Calendar> = listOf(calendar())
+        override fun mapEveryday(): Map<Int, Calendar> = mapOf(1 to calendar())
 
-        override fun mapDaily(days: Set<Int>): List<Calendar> = days.map { day ->
+        override fun mapDaily(days: Set<Int>): Map<Int, Calendar> = days.associateWith { day ->
             calendar().apply { set(Calendar.DAY_OF_WEEK, dayOfWeekCalendar(day)) }
         }
 
-        override fun mapMonthly(days: Set<Int>): List<Calendar> = days.map { day ->
-            calendar().apply { set(Calendar.DAY_OF_MONTH, day) }
+        override fun mapMonthly(days: Set<Int>): Map<Int, Calendar> = days.associateWith { day ->
+            calendar().apply {
+                set(Calendar.DAY_OF_MONTH, 1)
+                add(Calendar.DAY_OF_YEAR, day - 1)
+            }
         }
 
-        override fun mapCustomDay(timesCount: Int, typeCount: Int): List<Calendar> {
+        override fun mapCustomDay(timesCount: Int, typeCount: Int): Map<Int, Calendar> {
             val step = typeCount / timesCount
-            return (0 until timesCount).map {
+            return (0 until timesCount).associateWith {
                 calendar().apply { add(Calendar.DAY_OF_YEAR, step * it) }
             }
         }
 
-        override fun mapCustomWeek(timesCount: Int, typeCount: Int): List<Calendar> {
+        override fun mapCustomWeek(timesCount: Int, typeCount: Int): Map<Int, Calendar> {
             val step = typeCount * 7 / timesCount
-            return (0 until timesCount).map {
-                calendar().apply {
+            return (0 until timesCount).associate {
+                val day = step * it
+                day to calendar().apply {
                     set(Calendar.DAY_OF_WEEK, firstDayOfWeek)
-                    add(Calendar.DAY_OF_YEAR, step * it)
+                    add(Calendar.DAY_OF_YEAR, day)
                 }
             }
         }
 
-        override fun mapCustomMonth(timesCount: Int, typeCount: Int): List<Calendar> {
-            val step = typeCount * 31 / timesCount
-            return (0 until timesCount).map {
-                calendar().apply {
+        override fun mapCustomMonth(timesCount: Int, typeCount: Int): Map<Int, Calendar> {
+            val step = (typeCount * 28 / timesCount).let { if (it == 0) 1 else it }
+            return (0 until timesCount).associate {
+                val day = step * it
+                day to calendar().apply {
                     set(Calendar.DAY_OF_MONTH, 1)
-                    add(Calendar.DAY_OF_YEAR, step * it)
+                    add(Calendar.DAY_OF_YEAR, day)
                 }
             }
         }
@@ -58,9 +63,9 @@ interface HabitDateMapper {
 }
 
 interface MapToDates {
-    fun dates(mapper: HabitDateMapper): List<Calendar>
+    fun dates(mapper: HabitDateMapper): Map<Int, Calendar>
 }
 
 interface MapToDatesCustom {
-    fun dates(mapper: HabitDateMapper, timesCount: Int, typeCount: Int): List<Calendar>
+    fun dates(mapper: HabitDateMapper, timesCount: Int, typeCount: Int): Map<Int, Calendar>
 }

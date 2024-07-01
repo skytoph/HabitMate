@@ -9,6 +9,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,7 +41,9 @@ fun HabitsScreen(
     removeHabitFromState: (String) -> Unit,
     deleteState: State<Long?>,
     archiveState: State<Long?>,
-) {val onSurface = MaterialTheme.colorScheme.onBackground
+) {
+    val onSurface = MaterialTheme.colorScheme.onBackground
+    val context = LocalContext.current
     LaunchedEffect(Unit) {
         val actionAdd = AppBarAction.add.copy(color = onSurface, onClick = onCreateHabit)
         val actionView = AppBarAction.view.copy(color = onSurface,
@@ -60,7 +63,7 @@ fun HabitsScreen(
     LaunchedEffect(deleteState.value, archiveState.value) {
         deleteState.value?.let { id ->
             removeHabitFromState(HabitScreens.HabitList.keyDelete)
-            viewModel.deleteHabit(id, messageDelete)
+            viewModel.deleteHabit(id, messageDelete, context)
         }
         archiveState.value?.let { id ->
             removeHabitFromState(HabitScreens.HabitList.keyArchive)
@@ -113,7 +116,7 @@ fun HabitsScreen(
         DeleteDialog(
             onDismissRequest = { viewModel.onEvent(HabitListEvent.ShowDeleteDialog(null)) },
             onConfirm = {
-                viewModel.deleteHabit(id, message)
+                viewModel.deleteHabit(id, message, context)
                 viewModel.onEvent(HabitListEvent.ShowDeleteDialog(null))
                 viewModel.onEvent(HabitListEvent.UpdateContextMenu(null))
             })

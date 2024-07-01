@@ -6,13 +6,12 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.skytoph.taski.domain.habit.HabitRepository
 import com.github.skytoph.taski.presentation.appbar.InitAppBar
 import com.github.skytoph.taski.presentation.core.EventHandler
 import com.github.skytoph.taski.presentation.core.component.AppBarState
+import com.github.skytoph.taski.presentation.habit.CreateHabitInteractor
 import com.github.skytoph.taski.presentation.habit.icon.IconState
 import com.github.skytoph.taski.presentation.habit.icon.SelectIconEvent
-import com.github.skytoph.taski.presentation.habit.list.mapper.HabitDomainMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -23,9 +22,8 @@ import javax.inject.Inject
 class CreateHabitViewModel @Inject constructor(
     private val state: MutableState<CreateHabitState> = mutableStateOf(CreateHabitState()),
     private val iconState: MutableState<IconState>,
-    private val repository: HabitRepository,
-    private val mapper: HabitDomainMapper,
     private val validator: HabitValidator<CreateHabitEvent>,
+    private val interactor: CreateHabitInteractor,
     appBarState: MutableState<AppBarState>
 ) : ViewModel(), EventHandler<CreateHabitEvent>, InitAppBar by InitAppBar.Base(appBarState) {
 
@@ -35,8 +33,8 @@ class CreateHabitViewModel @Inject constructor(
 
     fun saveHabit(onNavigate: () -> Unit, context: Context) =
         viewModelScope.launch(Dispatchers.IO) {
-            val habit = state.value.toHabitUi().map(mapper, context)
-            repository.insert(habit)
+            val habit = state.value.toHabitUi()
+            interactor.insert(habit, context)
             withContext(Dispatchers.Main) { onNavigate() }
         }
 

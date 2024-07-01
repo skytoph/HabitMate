@@ -9,9 +9,7 @@ data class ReminderUi(
     val minute: Int = 0,
     val isDialogShown: Boolean = false
 ) {
-    fun formatted(locale: Locale): String {
-        return String.format(locale, "%02d:%02d", hour, minute)
-    }
+    fun formatted(locale: Locale): String = String.format(locale, "%02d:%02d", hour, minute)
 
     fun map(): Reminder =
         if (switchedOn) Reminder.SwitchedOn(hour = hour, minute = minute) else Reminder.None

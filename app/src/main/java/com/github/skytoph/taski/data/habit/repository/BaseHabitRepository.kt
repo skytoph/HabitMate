@@ -60,4 +60,8 @@ class BaseHabitRepository(
         entryDao.delete(id, entry.timestamp)
 
     override suspend fun delete(id: Long) = habitDao.delete(id)
+
+    override fun isHabitDone(habitId: Long): Boolean {
+        TODO("Not yet implemented")
+    }
 }

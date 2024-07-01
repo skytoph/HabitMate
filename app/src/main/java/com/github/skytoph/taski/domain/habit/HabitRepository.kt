@@ -2,7 +2,7 @@ package com.github.skytoph.taski.domain.habit
 
 import kotlinx.coroutines.flow.Flow
 
-interface HabitRepository {
+interface HabitRepository: CheckHabitState {
     fun habitsWithEntries(): Flow<List<HabitWithEntries>>
     fun habitWithEntriesFlow(id: Long): Flow<HabitWithEntries>
     fun entriesFlow(id: Long): Flow<EntryList>

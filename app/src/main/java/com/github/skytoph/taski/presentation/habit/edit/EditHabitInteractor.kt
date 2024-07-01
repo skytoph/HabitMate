@@ -10,10 +10,9 @@ import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.edit.mapper.HabitNotificationMapper
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitDomainMapper
 
-interface EditHabitInteractor : HabitDoneInteractor {
+interface EditHabitInteractor : HabitDoneInteractor, NotificationInteractor {
     suspend fun habit(id: Long): Habit
     suspend fun insert(habit: HabitUi, context: Context)
-    fun scheduleNotification(habit: HabitUi, context: Context)
 
     class Base(
         private val mapper: HabitDomainMapper,
@@ -21,14 +20,18 @@ interface EditHabitInteractor : HabitDoneInteractor {
         private val scheduler: AlarmScheduler,
         private val notificationMapper: HabitNotificationMapper,
         now: Now,
-    ) : EditHabitInteractor, HabitDoneInteractor by HabitDoneInteractor.Base(repository, now) {
+    ) : EditHabitInteractor, HabitDoneInteractor by HabitDoneInteractor.Base(repository, now),
+        NotificationInteractor by
+        NotificationInteractor.Base(repository, scheduler, notificationMapper) {
 
         override suspend fun habit(id: Long) = repository.habit(id)
 
-        override suspend fun insert(habit: HabitUi, context: Context) =
+        override suspend fun insert(habit: HabitUi, context: Context) {
+            scheduler.cancel(context, habit.id, habit.frequency.times)
             repository.update(habit.map(mapper, context))
+        }
 
         override fun scheduleNotification(habit: HabitUi, context: Context) =
-            scheduler.schedule(context, notificationMapper.map(habit))
+            habit.frequency.schedule(scheduler, context, notificationMapper.map(habit, context))
     }
 }

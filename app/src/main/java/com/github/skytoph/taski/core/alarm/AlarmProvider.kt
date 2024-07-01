@@ -7,19 +7,19 @@ import android.content.Intent
 
 interface AlarmProvider {
     fun alarmManager(context: Context): AlarmManager
-    fun alarmIntent(context: Context, intent: Intent): PendingIntent
+    fun alarmIntent(context: Context, intent: Intent, code: Int): PendingIntent
 
     class Base : AlarmProvider {
 
         override fun alarmManager(context: Context) =
             context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-        override fun alarmIntent(context: Context, intent: Intent): PendingIntent =
+        override fun alarmIntent(context: Context, intent: Intent, code: Int): PendingIntent =
             PendingIntent.getBroadcast(
                 /* context = */ context,
-                /* requestCode = */ 0,
+                /* requestCode = */ code,
                 /* intent = */ intent,
-                /* flags = */ PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                /* flags = */ PendingIntent.FLAG_UPDATE_CURRENT
             )
     }
 }

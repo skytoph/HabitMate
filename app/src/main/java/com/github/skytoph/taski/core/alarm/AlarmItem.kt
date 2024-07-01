@@ -1,31 +1,24 @@
 package com.github.skytoph.taski.core.alarm
 
-import android.content.Context
-import android.content.Intent
+import android.app.AlarmManager
+import android.net.Uri
 import androidx.annotation.StringRes
-import com.github.skytoph.taski.presentation.core.state.IconResource
+import java.io.Serializable
 import java.util.Calendar
 
 data class AlarmItem(
-    val habitId: Long,
+    val id: Int,
     val title: String,
     @StringRes val message: Int,
-    val icon: IconResource,
+    val icon: String,
     val calendar: Calendar,
-    val interval: Long,
-    val type: Int
-) {
-    fun putToIntent(context: Context, intent: Intent) = intent.apply {
-        putExtra(KEY_ID, habitId)
-        putExtra(KEY_MESSAGE, message)
-        putExtra(KEY_TITLE, title)
-        putExtra(KEY_ICON, icon.name(context.resources))
-    }
+    val day: Int,
+    @Transient val uri: Uri,
+    @Transient val interval: Long = AlarmManager.INTERVAL_DAY,
+    @Transient val type: Int = AlarmManager.RTC_WAKEUP
+) : Serializable {
 
     companion object {
-        const val KEY_ID = "key_habit_id"
-        const val KEY_TITLE = "key_title"
-        const val KEY_MESSAGE = "key_message"
-        const val KEY_ICON = "key_icon"
+        const val KEY_ITEM = "key_habit_alarm_item"
     }
 }
