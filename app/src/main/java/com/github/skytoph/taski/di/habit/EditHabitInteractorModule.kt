@@ -5,7 +5,7 @@ import com.github.skytoph.taski.core.alarm.AlarmScheduler
 import com.github.skytoph.taski.domain.habit.HabitRepository
 import com.github.skytoph.taski.presentation.habit.EntityPagerProvider
 import com.github.skytoph.taski.presentation.habit.HabitCache
-import com.github.skytoph.taski.presentation.habit.details.mapper.HabitStatsUiMapper
+import com.github.skytoph.taski.presentation.habit.details.mapper.StatisticsUiMapper
 import com.github.skytoph.taski.presentation.habit.edit.EditHabitInteractor
 import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
 import com.github.skytoph.taski.presentation.habit.edit.mapper.HabitNotificationMapper
@@ -35,6 +35,6 @@ object EditHabitInteractorModule {
     fun pagerProvider(
         repository: HabitRepository,
         uiMapper: HabitHistoryUiMapper<EditableHistoryUi, ViewType>,
-        mapper: HabitStatsUiMapper
+        mapper: StatisticsUiMapper
     ): EntityPagerProvider = EntityPagerProvider(repository, uiMapper, mapper, HabitCache())
 }

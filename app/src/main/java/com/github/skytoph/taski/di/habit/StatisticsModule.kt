@@ -1,8 +1,8 @@
 package com.github.skytoph.taski.di.habit
 
-import com.github.skytoph.taski.core.Now
 import com.github.skytoph.taski.presentation.habit.details.mapper.CalculatorProvider
-import com.github.skytoph.taski.presentation.habit.details.mapper.HabitStatsUiMapper
+import com.github.skytoph.taski.presentation.habit.details.mapper.HabitStatisticsMapper
+import com.github.skytoph.taski.presentation.habit.details.mapper.StatisticsUiMapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,9 +15,11 @@ object StatisticsModule {
 
     @Provides
     @ViewModelScoped
-    fun mapper(provider: CalculatorProvider): HabitStatsUiMapper = HabitStatsUiMapper.Base(provider)
+    fun statsMapper(provider: CalculatorProvider): HabitStatisticsMapper =
+        HabitStatisticsMapper(provider)
 
     @Provides
     @ViewModelScoped
-    fun provider(now: Now): CalculatorProvider = CalculatorProvider.Base(now)
+    fun uiMapper(mapper: HabitStatisticsMapper): StatisticsUiMapper =
+        StatisticsUiMapper.Base(mapper)
 }

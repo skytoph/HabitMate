@@ -10,6 +10,8 @@ import com.github.skytoph.taski.data.habit.mapper.EntryListMapper
 import com.github.skytoph.taski.data.habit.mapper.HabitDBToDomainMapper
 import com.github.skytoph.taski.data.habit.repository.BaseHabitRepository
 import com.github.skytoph.taski.domain.habit.HabitRepository
+import com.github.skytoph.taski.presentation.habit.details.mapper.CalculatorProvider
+import com.github.skytoph.taski.presentation.habit.details.mapper.HabitStateMapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,12 +29,14 @@ object HabitRepositoryModule {
         habitsDao: HabitDao,
         entriesDao: EntriesDao,
         mapper: HabitDBToDomainMapper,
-        entryMapper: EntryListMapper
+        entryMapper: EntryListMapper,
+        stateMapper: HabitStateMapper
     ): HabitRepository = BaseHabitRepository(
         habitDao = habitsDao,
         entryDao = entriesDao,
         habitMapper = mapper,
-        entryMapper = entryMapper
+        entryMapper = entryMapper,
+        stateMapper = stateMapper
     )
 
     @Provides
@@ -51,6 +55,14 @@ object HabitRepositoryModule {
     @Singleton
     fun habitDomainMapper(entryMapper: EntryListMapper): HabitDBToDomainMapper =
         HabitDBToDomainMapper.Base(entryMapper)
+
+    @Provides
+    @Singleton
+    fun stateMapper(provider: CalculatorProvider): HabitStateMapper = HabitStateMapper(provider)
+
+    @Provides
+    @Singleton
+    fun provider(now: Now): CalculatorProvider = CalculatorProvider.Base(now)
 
     @Provides
     @Singleton

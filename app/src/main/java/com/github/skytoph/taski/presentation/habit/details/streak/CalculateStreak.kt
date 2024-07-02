@@ -1,11 +1,13 @@
 package com.github.skytoph.taski.presentation.habit.details.streak
 
 import com.github.skytoph.taski.domain.habit.Entry
+import com.github.skytoph.taski.presentation.habit.details.HabitState
 import com.github.skytoph.taski.presentation.habit.details.HabitStatistics
 import com.github.skytoph.taski.presentation.habit.details.Streak
 
 interface CalculateStreak {
     fun streaks(data: Map<Int, Entry>, goal: Int): HabitStatistics
+    fun currentState(data: Map<Int, Entry>, goal: Int): HabitState
 
     abstract class Base : CalculateStreak {
 
@@ -20,6 +22,9 @@ interface CalculateStreak {
                     streaks = list
                 )
             }
+
+        override fun currentState(data: Map<Int, Entry>, goal: Int): HabitState =
+            HabitState(isStreakCurrently = isStreakCurrently(data, goal))
 
         abstract fun streaksList(data: Map<Int, Entry>, goal: Int): List<Streak>
 

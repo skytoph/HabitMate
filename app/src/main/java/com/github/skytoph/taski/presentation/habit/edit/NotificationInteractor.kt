@@ -28,6 +28,6 @@ interface NotificationInteractor : CheckHabitState {
             scheduler.schedule(context, listOf(item.copy(calendar = calendar)))
         }
 
-        override fun isHabitDone(habitId: Long): Boolean = repository.isHabitDone(habitId)
+        override suspend fun isHabitDone(habitId: Long): Boolean = repository.isHabitDone(habitId)
     }
 }

@@ -7,7 +7,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.github.skytoph.taski.domain.habit.HabitRepository
 import com.github.skytoph.taski.domain.habit.HabitWithEntries
-import com.github.skytoph.taski.presentation.habit.details.mapper.HabitStatsUiMapper
+import com.github.skytoph.taski.presentation.habit.details.mapper.StatisticsUiMapper
 import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitHistoryUiMapper
 import com.github.skytoph.taski.presentation.habit.list.view.ViewType
@@ -20,7 +20,7 @@ class EntryPagingSource(
     private val uiMapper: HabitHistoryUiMapper<EditableHistoryUi, ViewType>,
     private val entryCache: HabitCache,
     private val id: Long,
-    private val statsMapper: HabitStatsUiMapper,
+    private val statsMapper: StatisticsUiMapper,
     ) : PagingSource<Int, EditableHistoryUi>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, EditableHistoryUi> {
@@ -62,7 +62,7 @@ class HabitCache(private val data: MutableList<HabitWithEntries> = ArrayList()) 
 class EntityPagerProvider(
     private val repository: HabitRepository,
     private val uiMapper: HabitHistoryUiMapper<EditableHistoryUi, ViewType>,
-    private val statsMapper: HabitStatsUiMapper,
+    private val statsMapper: StatisticsUiMapper,
     private val entryCache: HabitCache
 ) {
     fun getEntries(id: Long): Flow<PagingData<EditableHistoryUi>> = Pager(

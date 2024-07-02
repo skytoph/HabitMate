@@ -13,6 +13,7 @@ import com.github.skytoph.taski.domain.habit.EntryList
 import com.github.skytoph.taski.domain.habit.Habit
 import com.github.skytoph.taski.domain.habit.HabitRepository
 import com.github.skytoph.taski.domain.habit.HabitWithEntries
+import com.github.skytoph.taski.presentation.habit.details.mapper.HabitStateMapper
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -20,7 +21,8 @@ class BaseHabitRepository(
     private val habitDao: HabitDao,
     private val entryDao: EntriesDao,
     private val habitMapper: HabitDBToDomainMapper,
-    private val entryMapper: EntryListMapper
+    private val entryMapper: EntryListMapper,
+    private val stateMapper: HabitStateMapper,
 ) : HabitRepository {
 
     override fun entriesFlow(id: Long): Flow<EntryList> =
@@ -61,7 +63,6 @@ class BaseHabitRepository(
 
     override suspend fun delete(id: Long) = habitDao.delete(id)
 
-    override fun isHabitDone(habitId: Long): Boolean {
-        TODO("Not yet implemented")
-    }
+    override suspend fun isHabitDone(habitId: Long): Boolean =
+        stateMapper.map(habitWithEntries(habitId)).isStreakCurrently
 }

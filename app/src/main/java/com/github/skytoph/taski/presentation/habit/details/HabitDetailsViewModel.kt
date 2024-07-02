@@ -13,7 +13,7 @@ import androidx.paging.map
 import com.github.skytoph.taski.presentation.appbar.InitAppBar
 import com.github.skytoph.taski.presentation.core.component.AppBarState
 import com.github.skytoph.taski.presentation.habit.HabitScreens
-import com.github.skytoph.taski.presentation.habit.details.mapper.HabitStatsUiMapper
+import com.github.skytoph.taski.presentation.habit.details.mapper.StatisticsUiMapper
 import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitUiMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -34,7 +34,7 @@ class HabitDetailsViewModel @Inject constructor(
     private val state: MutableState<HabitDetailsState> = mutableStateOf(HabitDetailsState()),
     private val interactor: HabitDetailsInteractor,
     private val habitMapper: HabitUiMapper,
-    private val statsMapper: HabitStatsUiMapper,
+    private val statsMapper: StatisticsUiMapper,
     savedStateHandle: SavedStateHandle,
     appBarState: MutableState<AppBarState>
 ) : ViewModel(), InitAppBar by InitAppBar.Base(appBarState) {
