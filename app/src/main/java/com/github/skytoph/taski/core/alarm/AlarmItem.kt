@@ -18,6 +18,9 @@ data class AlarmItem(
     @Transient val type: Int = AlarmManager.RTC_WAKEUP
 ) : Serializable {
 
+    fun intervalEquals(interval: Int): Boolean =
+        interval * AlarmManager.INTERVAL_DAY == this.interval
+
     companion object {
         const val KEY_ITEM = "key_habit_alarm_item"
     }

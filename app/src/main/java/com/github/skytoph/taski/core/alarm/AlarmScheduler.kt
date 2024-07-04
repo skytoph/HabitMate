@@ -42,7 +42,7 @@ interface AlarmScheduler {
 
         override fun cancel(context: Context, uri: Uri) {
             val intent = intent(context, uri)
-            val flag = PendingIntent.FLAG_UPDATE_CURRENT
+            val flag = PendingIntent.FLAG_IMMUTABLE
             alarm.alarmManager(context)
                 .cancel(PendingIntent.getBroadcast(context, 0, intent, flag))
         }

@@ -64,8 +64,11 @@ fun CreateHabitScreen(
         switchOn = { viewModel.onEvent(CreateHabitEvent.UpdateReminder(switchOn = it)) },
         showDialog = { viewModel.onEvent(CreateHabitEvent.UpdateReminder(showDialog = it)) },
         updateReminder = { hour, minute ->
-            viewModel.onEvent(CreateHabitEvent.UpdateReminder(hour = hour, minute = minute))
+            viewModel.onEvent(
+                CreateHabitEvent.UpdateReminder(hour = hour, minute = minute, showDialog = false)
+            )
         },
+        showPermissionDialog = { viewModel.onEvent(CreateHabitEvent.ShowPermissionDialog(it)) }
     )
 }
 
@@ -88,6 +91,7 @@ private fun CreateHabit(
     switchOn: (Boolean) -> Unit = {},
     showDialog: (Boolean) -> Unit = {},
     updateReminder: (Int, Int) -> Unit = { _, _ -> },
+    showPermissionDialog: (Boolean) -> Unit = {}
 ) {
     Column(
         modifier = Modifier.fillMaxSize()
@@ -102,6 +106,7 @@ private fun CreateHabit(
             onSelectIconClick = onSelectIconClick,
             onDecreaseGoal = onDecreaseGoal,
             onIncreaseGoal = onIncreaseGoal,
+            isPermissionDialogShown = state.value.isPermissionDialogShown,
             frequency = state.value.frequencyState,
             isFrequencyExpanded = state.value.isFrequencyExpanded,
             expandFrequency = expandFrequency,
@@ -115,8 +120,9 @@ private fun CreateHabit(
             expandType = expandType,
             typeExpanded = state.value.isCustomTypeExpanded,
             switchOn = switchOn,
-            showDialog = showDialog,
-            updateReminder = updateReminder
+            showTimeDialog = showDialog,
+            updateReminder = updateReminder,
+            showPermissionDialog = showPermissionDialog
         )
     }
 }

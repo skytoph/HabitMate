@@ -2,6 +2,10 @@
 
 package com.github.skytoph.taski.presentation.habit.edit.component
 
+import android.Manifest
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.slideInVertically
@@ -26,11 +30,11 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
@@ -41,12 +45,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.lifecycleScope
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.component.AppBarAction
 import com.github.skytoph.taski.presentation.core.component.SquareButton
@@ -63,7 +69,9 @@ import com.github.skytoph.taski.presentation.habit.edit.EditHabitViewModel
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyCustomType
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyState
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyUi
+import com.github.skytoph.taski.presentation.habit.list.component.NotificationPermissionDialog
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
+
 
 @Composable
 fun EditHabitScreen(
@@ -111,8 +119,11 @@ fun EditHabitScreen(
         switchOn = { viewModel.onEvent(EditHabitEvent.UpdateReminder(switchOn = it)) },
         showDialog = { viewModel.onEvent(EditHabitEvent.UpdateReminder(showDialog = it)) },
         updateReminder = { hour, minute ->
-            viewModel.onEvent(EditHabitEvent.UpdateReminder(hour = hour, minute = minute, showDialog = false))
+            viewModel.onEvent(
+                EditHabitEvent.UpdateReminder(hour = hour, minute = minute, showDialog = false)
+            )
         },
+        showPermissionDialog = { viewModel.onEvent(EditHabitEvent.ShowPermissionDialog(it)) }
     )
 }
 
@@ -134,7 +145,8 @@ private fun EditHabit(
     expandType: () -> Unit = {},
     switchOn: (Boolean) -> Unit = {},
     showDialog: (Boolean) -> Unit = {},
-    updateReminder: (Int, Int) -> Unit = { _, _ -> }
+    updateReminder: (Int, Int) -> Unit = { _, _ -> },
+    showPermissionDialog: (Boolean) -> Unit = {}
 ) {
     EditBaseHabit(
         title = state.value.title,
@@ -142,6 +154,7 @@ private fun EditHabit(
         icon = state.value.icon,
         color = state.value.color,
         reminder = state.value.reminder,
+        isPermissionDialogShown = state.value.isPermissionDialogShown,
         onTypeTitle = onTypeTitle,
         onSelectIconClick = onSelectIconClick,
         onDecreaseGoal = onDecreaseGoal,
@@ -159,8 +172,9 @@ private fun EditHabit(
         expandType = expandType,
         typeExpanded = state.value.isCustomTypeExpanded,
         switchOn = switchOn,
-        showDialog = showDialog,
-        updateReminder = updateReminder
+        showTimeDialog = showDialog,
+        updateReminder = updateReminder,
+        showPermissionDialog = showPermissionDialog
     )
 }
 
@@ -171,6 +185,7 @@ fun EditBaseHabit(
     icon: IconResource,
     color: Color,
     reminder: ReminderUi,
+    isPermissionDialogShown: Boolean,
     onTypeTitle: (String) -> Unit,
     onSelectIconClick: () -> Unit,
     onDecreaseGoal: () -> Unit,
@@ -189,9 +204,11 @@ fun EditBaseHabit(
     expandType: () -> Unit = {},
     typeExpanded: Boolean = true,
     switchOn: (Boolean) -> Unit,
-    showDialog: (Boolean) -> Unit,
+    showTimeDialog: (Boolean) -> Unit,
+    showPermissionDialog: (Boolean) -> Unit,
     updateReminder: (Int, Int) -> Unit,
 ) {
+    val context = LocalContext.current
     Column(
         modifier = Modifier.padding(horizontal = 16.dp)
     ) {
@@ -293,25 +310,56 @@ fun EditBaseHabit(
             color = MaterialTheme.colorScheme.onBackground
         )
         Spacer(modifier = Modifier.height(4.dp))
-        EditReminder(minHeight, reminder, showDialog, switchOn)
+        EditReminder(
+            minHeight = minHeight,
+            reminder = reminder,
+            switchOn = switchOn,
+            showTimeDialog = showTimeDialog,
+            requestPermissionDialog = showPermissionDialog
+        )
         Spacer(modifier = Modifier.height(16.dp))
     }
     if (reminder.isDialogShown)
         TimePickerDialog(
-            onDismissRequest = { showDialog(false) },
+            onDismissRequest = { showTimeDialog(false) },
             onConfirm = updateReminder,
             initialHour = reminder.hour,
             initialMinute = reminder.minute,
         )
+    if (isPermissionDialogShown) {
+        val launcher = LaunchNotificationSettingsScreen(
+            handleResult = { permissionGranted ->
+                showPermissionDialog(!permissionGranted)
+                switchOn(permissionGranted)
+            },
+            context = context
+        )
+        val lifecycleScope = LocalLifecycleOwner.current.lifecycleScope
+        NotificationPermissionDialog(
+            onDismissRequest = { showPermissionDialog(false) },
+            onConfirm = {
+                startNotificationSettingsActivity(lifecycleScope, context, launcher)
+            }
+        )
+    }
 }
 
 @Composable
 private fun EditReminder(
     minHeight: Dp,
     reminder: ReminderUi,
-    showDialog: (Boolean) -> Unit,
-    switchOn: (Boolean) -> Unit
+    switchOn: (Boolean) -> Unit,
+    showTimeDialog: (Boolean) -> Unit,
+    requestPermissionDialog: (Boolean) -> Unit,
+    notificationPermission: String = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) Manifest.permission.POST_NOTIFICATIONS else "",
+    alarmPermission: String = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) Manifest.permission.SCHEDULE_EXACT_ALARM else "",
 ) {
+    val context = LocalContext.current
+    val launcher =
+        rememberLauncherForActivityResult(RequestPermission()) { isGranted: Boolean ->
+            if (isGranted) switchOn(true)
+        }
+
     Row(
         modifier = Modifier
             .background(
@@ -335,12 +383,14 @@ private fun EditReminder(
                         enabled = isReminderOn,
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null,
-                        onClick = { showDialog(true) })
+                        onClick = { showTimeDialog(true) })
                     .fillMaxHeight(),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = if (isReminderOn) reminder.formatted(getLocale()) else stringResource(R.string.reminder_none),
+                    text = if (isReminderOn) reminder.formatted(getLocale()) else stringResource(
+                        R.string.reminder_none
+                    ),
                     style = MaterialTheme.typography.bodyMedium,
                     color = if (isReminderOn) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.padding(horizontal = 16.dp),
@@ -348,16 +398,28 @@ private fun EditReminder(
             }
         }
         Switch(
-            checked = reminder.switchedOn,
-            onCheckedChange = { switchOn(!reminder.switchedOn) },
             colors = SwitchDefaults.colors(
                 uncheckedBorderColor = Color.Transparent,
                 uncheckedTrackColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f),
                 uncheckedThumbColor = MaterialTheme.colorScheme.primaryContainer
-            )
+            ),
+            checked = reminder.switchedOn,
+            onCheckedChange = {
+                if (!reminder.switchedOn)
+                    checkPermission(
+                        context = context,
+                        launcher = launcher,
+                        notificationPermission = notificationPermission,
+                        alarmPermission = alarmPermission,
+                        showDialog = { requestPermissionDialog(true) },
+                        onGranted = { switchOn(true) })
+                else
+                    switchOn(false)
+            },
         )
     }
 }
+
 
 @Composable
 fun IconSelector(
@@ -375,11 +437,11 @@ fun IconSelector(
             style = MaterialTheme.typography.titleSmall
         )
         Spacer(modifier = Modifier.height(4.dp))
-        IconButton(
+        TextButton(
             onClick = onClick,
             modifier = Modifier
-                .size(size)
                 .background(color = color, shape = MaterialTheme.shapes.extraSmall)
+                .size(size)
         ) {
             Icon(
                 imageVector = icon.vector(context),

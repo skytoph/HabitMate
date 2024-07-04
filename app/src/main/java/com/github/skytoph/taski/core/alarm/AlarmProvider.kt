@@ -19,7 +19,7 @@ interface AlarmProvider {
                 /* context = */ context,
                 /* requestCode = */ code,
                 /* intent = */ intent,
-                /* flags = */ PendingIntent.FLAG_UPDATE_CURRENT
+                /* flags = */ PendingIntent.FLAG_IMMUTABLE
             )
     }
 }

@@ -16,6 +16,7 @@ data class CreateHabitState(
     val isValidated: Boolean = false,
     val frequencyState: FrequencyState = FrequencyState(),
     val reminder: ReminderUi = ReminderUi(),
+    val isPermissionDialogShown: Boolean = false,
     val isFrequencyExpanded: Boolean = false,
     val isCustomTypeExpanded: Boolean = false,
 ) {

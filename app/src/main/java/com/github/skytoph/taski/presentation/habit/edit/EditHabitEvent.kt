@@ -169,4 +169,10 @@ interface EditHabitEvent {
             }
         }
     }
+
+    class ShowPermissionDialog(private val show: Boolean) : EditHabitEvent {
+        override fun handle(state: MutableState<EditHabitState>, icon: MutableState<IconState>) {
+            state.value = state.value.copy(isPermissionDialogShown = show)
+        }
+    }
 }

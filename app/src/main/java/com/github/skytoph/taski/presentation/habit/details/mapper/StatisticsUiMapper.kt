@@ -12,7 +12,7 @@ interface StatisticsUiMapper {
     }
 }
 
-fun HabitStatistics.map(): HabitStatisticsUi = HabitStatisticsUi(
+fun HabitStatistics.mapToUi(): HabitStatisticsUi = HabitStatisticsUi(
     currentStreak = currentStreak,
     bestStreak = bestStreak,
     total = total,

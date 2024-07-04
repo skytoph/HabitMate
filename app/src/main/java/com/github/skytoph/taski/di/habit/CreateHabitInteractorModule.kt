@@ -3,6 +3,7 @@ package com.github.skytoph.taski.di.habit
 import com.github.skytoph.taski.core.alarm.AlarmScheduler
 import com.github.skytoph.taski.domain.habit.HabitRepository
 import com.github.skytoph.taski.presentation.habit.CreateHabitInteractor
+import com.github.skytoph.taski.presentation.habit.edit.AddMonthMapper
 import com.github.skytoph.taski.presentation.habit.edit.mapper.HabitNotificationMapper
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitDomainMapper
 import dagger.Module
@@ -19,7 +20,8 @@ object CreateHabitInteractorModule {
         repository: HabitRepository,
         mapper: HabitDomainMapper,
         alarm: AlarmScheduler,
-        notificationMapper: HabitNotificationMapper
+        notificationMapper: HabitNotificationMapper,
+        rescheduleMapper: AddMonthMapper,
     ): CreateHabitInteractor =
-        CreateHabitInteractor.Base(repository, mapper, alarm, notificationMapper)
+        CreateHabitInteractor.Base(repository, mapper, alarm, notificationMapper, rescheduleMapper)
 }

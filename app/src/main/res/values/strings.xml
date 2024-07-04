@@ -120,6 +120,10 @@
     <string name="select_time">Select time</string>
     <string name="ok">OK</string>
 
+    <string name="settings">Settings</string>
+    <string name="allow_notifications_title">Enable notifications</string>
+    <string name="allow_notifications_description">To receive reminders, please enable notifications in Settings > Notifications</string>
+
     <plurals name="times_label">
         <item quantity="one">time</item>
         <item quantity="other">times</item>

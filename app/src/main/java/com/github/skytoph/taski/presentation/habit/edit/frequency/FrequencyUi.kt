@@ -33,6 +33,8 @@ sealed interface FrequencyUi : MapToDates, FrequencyInterval, ScheduleAlarm {
     ) : FrequencyUi {
         override val name: String = "custom"
         override val times: Int = timesCount.value
+        override val interval: Int = typeCount.value * frequencyType.interval
+
         override fun summarize(resources: Resources, locale: Locale): AnnotatedString {
             val type = resources.getQuantityString(frequencyType.title, typeCount.value)
             val resId = R.string.frequency_summary_custom
@@ -59,8 +61,6 @@ sealed interface FrequencyUi : MapToDates, FrequencyInterval, ScheduleAlarm {
         override fun dates(mapper: HabitDateMapper): Map<Int, Calendar> =
             frequencyType.dates(mapper, timesCount.value, typeCount.value)
 
-        override fun interval(): Int = typeCount.value * frequencyType.interval
-
         override fun schedule(scheduler: AlarmScheduler, context: Context, items: List<AlarmItem>) =
             frequencyType.schedule(scheduler, context, items)
 
@@ -75,6 +75,8 @@ sealed interface FrequencyUi : MapToDates, FrequencyInterval, ScheduleAlarm {
     ) : FrequencyUi {
         override val name: String = "daily"
         override val times: Int = days.size
+        override val interval: Int = 1
+
         override fun summarize(resources: Resources, locale: Locale): AnnotatedString =
             annotate(
                 initialString = resources.getString(R.string.frequency_summary_daily),
@@ -86,8 +88,6 @@ sealed interface FrequencyUi : MapToDates, FrequencyInterval, ScheduleAlarm {
         }).let { if (it.isEveryday()) Everyday(it) else it }
 
         override fun dates(mapper: HabitDateMapper): Map<Int, Calendar> = mapper.mapDaily(days)
-
-        override fun interval(): Int = 1
 
         override fun schedule(scheduler: AlarmScheduler, context: Context, items: List<AlarmItem>) =
             scheduler.scheduleRepeating(context, items)
@@ -102,6 +102,8 @@ sealed interface FrequencyUi : MapToDates, FrequencyInterval, ScheduleAlarm {
     ) : FrequencyUi {
         override val name: String = "monthly"
         override val times: Int = days.size
+        override val interval: Int = FrequencyInterval.INTERVAL_MONTH
+
         override fun summarize(resources: Resources, locale: Locale): AnnotatedString =
             annotate(
                 initialString = resources.getString(R.string.frequency_summary_monthly),
@@ -114,8 +116,6 @@ sealed interface FrequencyUi : MapToDates, FrequencyInterval, ScheduleAlarm {
 
         override fun dates(mapper: HabitDateMapper): Map<Int, Calendar> = mapper.mapMonthly(days)
 
-        override fun interval(): Int = 1
-
         override fun schedule(scheduler: AlarmScheduler, context: Context, items: List<AlarmItem>) =
             scheduler.schedule(context, items)
 
@@ -127,6 +127,8 @@ sealed interface FrequencyUi : MapToDates, FrequencyInterval, ScheduleAlarm {
     data class Everyday(val frequency: FrequencyUi) : FrequencyUi {
         override val name: String = frequency.name
         override val times: Int = 1
+        override val interval: Int = 1
+
         override fun summarize(resources: Resources, locale: Locale): AnnotatedString =
             AnnotatedString(resources.getString(R.string.everyday))
 
@@ -135,8 +137,6 @@ sealed interface FrequencyUi : MapToDates, FrequencyInterval, ScheduleAlarm {
         override fun updateType(add: Int): FrequencyUi = frequency.updateType(add)
 
         override fun dates(mapper: HabitDateMapper): Map<Int, Calendar> = mapper.mapEveryday()
-
-        override fun interval(): Int = 1
 
         override fun schedule(scheduler: AlarmScheduler, context: Context, items: List<AlarmItem>) =
             scheduler.scheduleRepeating(context, items)

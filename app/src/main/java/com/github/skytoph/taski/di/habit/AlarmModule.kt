@@ -3,6 +3,7 @@ package com.github.skytoph.taski.di.habit
 import com.github.skytoph.taski.core.alarm.AlarmProvider
 import com.github.skytoph.taski.core.alarm.AlarmScheduler
 import com.github.skytoph.taski.core.alarm.HabitUriConverter
+import com.github.skytoph.taski.presentation.habit.edit.AddMonthMapper
 import com.github.skytoph.taski.presentation.habit.edit.mapper.HabitDateMapper
 import com.github.skytoph.taski.presentation.habit.edit.mapper.HabitNotificationMapper
 import dagger.Module
@@ -35,5 +36,9 @@ object AlarmModule {
 
     @Provides
     @ViewModelScoped
-    fun  uriConverter(): HabitUriConverter = HabitUriConverter.Base()
+    fun uriConverter(): HabitUriConverter = HabitUriConverter.Base()
+
+    @Provides
+    @ViewModelScoped
+    fun rescheduleMapper(): AddMonthMapper = AddMonthMapper.Base()
 }

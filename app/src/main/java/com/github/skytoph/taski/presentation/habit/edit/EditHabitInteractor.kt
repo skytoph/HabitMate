@@ -19,10 +19,11 @@ interface EditHabitInteractor : HabitDoneInteractor, NotificationInteractor {
         private val repository: HabitRepository,
         private val scheduler: AlarmScheduler,
         private val notificationMapper: HabitNotificationMapper,
+        rescheduleMapper: AddMonthMapper,
         now: Now,
     ) : EditHabitInteractor, HabitDoneInteractor by HabitDoneInteractor.Base(repository, now),
         NotificationInteractor by
-        NotificationInteractor.Base(repository, scheduler, notificationMapper) {
+        NotificationInteractor.Base(repository, scheduler, notificationMapper, rescheduleMapper) {
 
         override suspend fun habit(id: Long) = repository.habit(id)
 

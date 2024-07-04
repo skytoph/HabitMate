@@ -8,6 +8,7 @@ import com.github.skytoph.taski.core.alarm.AlarmScheduler
 import com.github.skytoph.taski.core.alarm.ScheduleAlarm
 import com.github.skytoph.taski.domain.habit.Frequency
 import com.github.skytoph.taski.presentation.habit.create.GoalState
+import com.github.skytoph.taski.presentation.habit.edit.mapper.FrequencyInterval
 import com.github.skytoph.taski.presentation.habit.edit.mapper.HabitDateMapper
 import com.github.skytoph.taski.presentation.habit.edit.mapper.MapToDatesCustom
 
@@ -68,6 +69,7 @@ sealed class FrequencyCustomType : MapToDatesCustom, ScheduleAlarm {
         override val title: Int = R.plurals.month_label
         override val maxTimes: Int = 31
         override val maxType: Int = 12
+        override val interval: Int = FrequencyInterval.INTERVAL_MONTH
 
         override fun map(): Frequency.Custom.Type = Frequency.Custom.Type.Month
 

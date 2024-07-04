@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.github.skytoph.taski"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -117,4 +117,6 @@ dependencies {
     // Gson
     implementation("com.google.code.gson:gson:2.11.0")
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.0")
+
+    implementation("androidx.work:work-runtime:2.9.0")
 }

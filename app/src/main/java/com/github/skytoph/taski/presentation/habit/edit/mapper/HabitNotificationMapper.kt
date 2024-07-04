@@ -27,7 +27,7 @@ interface HabitNotificationMapper {
                         set(Calendar.MINUTE, habit.reminder.minute)
                     },
                     day = day,
-                    interval = AlarmManager.INTERVAL_DAY * habit.frequency.interval(),
+                    interval = AlarmManager.INTERVAL_DAY * habit.frequency.interval,
                     type = AlarmManager.RTC_WAKEUP,
                     uri = uriConverter.uri(habit.id, index)
                 )
@@ -36,5 +36,10 @@ interface HabitNotificationMapper {
 }
 
 interface FrequencyInterval {
-    fun interval(): Int
+    val interval: Int
+
+    companion object {
+        const val INTERVAL_MONTH = -31
+        const val INTERVAL_NOT_SUPPORTED = -1
+    }
 }

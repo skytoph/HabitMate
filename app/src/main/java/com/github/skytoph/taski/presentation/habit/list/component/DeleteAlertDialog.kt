@@ -2,6 +2,7 @@ package com.github.skytoph.taski.presentation.habit.list.component
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.github.skytoph.taski.R
@@ -35,6 +36,23 @@ fun ArchiveDialog(
         confirmLabel = stringResource(R.string.action_archive),
         text = stringResource(R.string.archive_habit_confirmation_dialog_description),
         title = stringResource(R.string.archive_habit_confirmation_dialog_title),
+    )
+}
+
+@Composable
+fun NotificationPermissionDialog(
+    onDismissRequest: () -> Unit = {},
+    onConfirm: () -> Unit = {},
+) {
+    BaseAlertDialog(
+        onDismissRequest = onDismissRequest,
+        onConfirm = onConfirm,
+        dismissLabel = stringResource(R.string.action_cancel),
+        confirmLabel = stringResource(R.string.ok),
+        text = stringResource(R.string.allow_notifications_description),
+        title = stringResource(R.string.allow_notifications_title),
+        confirmColor = MaterialTheme.colorScheme.primary,
+        confirmContainerColor = Color.Transparent
     )
 }
 

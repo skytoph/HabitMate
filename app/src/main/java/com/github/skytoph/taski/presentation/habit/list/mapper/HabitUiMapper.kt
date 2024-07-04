@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 import com.github.skytoph.taski.domain.habit.Habit
 import com.github.skytoph.taski.presentation.core.state.IconResource
 import com.github.skytoph.taski.presentation.habit.HabitUi
+import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyUi
 
 interface HabitUiMapper {
     fun map(habit: Habit): HabitUi
@@ -18,7 +19,7 @@ interface HabitUiMapper {
             color = Color(habit.color),
             priority = habit.priority,
             isArchived = habit.isArchived,
-            frequency = habit.frequency.mapToUi(),
+            frequency = habit.frequency.let { if (it.isEveryday()) FrequencyUi.Everyday(it.mapToUi()) else it.mapToUi() },
             reminder = habit.reminder.mapToUi()
         )
     }

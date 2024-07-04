@@ -144,4 +144,10 @@ interface CreateHabitEvent {
             }
         }
     }
+
+    class ShowPermissionDialog(private val show: Boolean) : CreateHabitEvent {
+        override fun handle(state: MutableState<CreateHabitState>) {
+            state.value = state.value.copy(isPermissionDialogShown = show)
+        }
+    }
 }
