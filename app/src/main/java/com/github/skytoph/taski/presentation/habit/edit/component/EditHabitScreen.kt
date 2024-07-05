@@ -393,6 +393,10 @@ private fun EditReminder(
             lifecycleState = lifecycleState
         )
     }
+    LaunchedEffect(Unit) {
+        if (!areNotificationsEnabled(context) || !areAlarmsEnabled(context))
+            switchOn(false)
+    }
     LaunchedEffect(notificationEnabled) {
         if (alarmEnabled == false)
             requestPermissionDialog(alarmDialog)
