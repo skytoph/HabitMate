@@ -36,9 +36,13 @@ class AlarmReceiver : BroadcastReceiver() {
                 .setContentText(context.getString(item.message))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setContentIntent(pendingIntent)
-                .setAutoCancel(true)
-            notificationManager.notify(item.id, builder.build())
+                .setAutoCancel(false)
+            notificationManager.notify(item.id.toInt(), builder.build())
             interactor.rescheduleNotification(item, context)
         }
+    }
+
+    companion object {
+        const val ACTION = "com.github.skytoph.habitmate.NOTIFY"
     }
 }

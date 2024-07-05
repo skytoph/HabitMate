@@ -7,6 +7,7 @@ import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.ReminderUi
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyState
 import com.github.skytoph.taski.presentation.habit.icon.IconsColors
+import com.github.skytoph.taski.presentation.habit.list.component.DialogItem
 
 data class CreateHabitState(
     val title: FieldState = FieldState(),
@@ -16,7 +17,7 @@ data class CreateHabitState(
     val isValidated: Boolean = false,
     val frequencyState: FrequencyState = FrequencyState(),
     val reminder: ReminderUi = ReminderUi(),
-    val isPermissionDialogShown: Boolean = false,
+    val dialog: DialogItem? = null,
     val isFrequencyExpanded: Boolean = false,
     val isCustomTypeExpanded: Boolean = false,
 ) {

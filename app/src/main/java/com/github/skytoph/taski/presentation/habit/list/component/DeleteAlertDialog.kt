@@ -41,16 +41,15 @@ fun ArchiveDialog(
 
 @Composable
 fun NotificationPermissionDialog(
-    onDismissRequest: () -> Unit = {},
-    onConfirm: () -> Unit = {},
+    dialog: DialogItem
 ) {
     BaseAlertDialog(
-        onDismissRequest = onDismissRequest,
-        onConfirm = onConfirm,
-        dismissLabel = stringResource(R.string.action_cancel),
-        confirmLabel = stringResource(R.string.ok),
-        text = stringResource(R.string.allow_notifications_description),
-        title = stringResource(R.string.allow_notifications_title),
+        onDismissRequest = dialog.onDismiss,
+        onConfirm = dialog.onConfirm,
+        dismissLabel = stringResource(dialog.dismissLabel),
+        confirmLabel = stringResource(dialog.confirmLabel),
+        text = stringResource(dialog.text),
+        title = stringResource(dialog.title),
         confirmColor = MaterialTheme.colorScheme.primary,
         confirmContainerColor = Color.Transparent
     )

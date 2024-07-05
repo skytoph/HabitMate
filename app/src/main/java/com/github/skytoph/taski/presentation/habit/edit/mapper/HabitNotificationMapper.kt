@@ -18,13 +18,15 @@ interface HabitNotificationMapper {
         override fun map(habit: HabitUi, context: Context): List<AlarmItem> =
             habit.frequency.dates(dateMapper).toList().mapIndexed { index, (day, calendar) ->
                 AlarmItem(
-                    id = habit.id.toInt(),
+                    id = habit.id,
                     title = habit.title,
                     message = R.string.habit_reminder_message,
                     icon = habit.icon.name(context.resources),
                     calendar = calendar.apply {
                         set(Calendar.HOUR_OF_DAY, habit.reminder.hour)
                         set(Calendar.MINUTE, habit.reminder.minute)
+                        set(Calendar.SECOND, 0)
+                        set(Calendar.MILLISECOND, 0)
                     },
                     day = day,
                     interval = AlarmManager.INTERVAL_DAY * habit.frequency.interval,

@@ -11,7 +11,7 @@ interface HabitDateMapper {
     fun mapCustomWeek(timesCount: Int, typeCount: Int): Map<Int, Calendar>
     fun mapCustomMonth(timesCount: Int, typeCount: Int): Map<Int, Calendar>
 
-    class Base(private val timeZone: TimeZone = TimeZone.getTimeZone("UTC")) : HabitDateMapper {
+    class Base(private val timeZone: TimeZone = TimeZone.getDefault()) : HabitDateMapper {
 
         override fun mapEveryday(): Map<Int, Calendar> = mapOf(1 to calendar())
 

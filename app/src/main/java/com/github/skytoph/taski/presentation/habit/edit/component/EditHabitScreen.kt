@@ -2,8 +2,6 @@
 
 package com.github.skytoph.taski.presentation.habit.edit.component
 
-import android.Manifest
-import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.compose.animation.AnimatedContent
@@ -38,8 +36,11 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -52,7 +53,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.currentStateAsState
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.component.AppBarAction
 import com.github.skytoph.taski.presentation.core.component.SquareButton
@@ -69,6 +71,7 @@ import com.github.skytoph.taski.presentation.habit.edit.EditHabitViewModel
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyCustomType
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyState
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyUi
+import com.github.skytoph.taski.presentation.habit.list.component.DialogItem
 import com.github.skytoph.taski.presentation.habit.list.component.NotificationPermissionDialog
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
@@ -146,7 +149,7 @@ private fun EditHabit(
     switchOn: (Boolean) -> Unit = {},
     showDialog: (Boolean) -> Unit = {},
     updateReminder: (Int, Int) -> Unit = { _, _ -> },
-    showPermissionDialog: (Boolean) -> Unit = {}
+    showPermissionDialog: (DialogItem?) -> Unit = {}
 ) {
     EditBaseHabit(
         title = state.value.title,
@@ -154,7 +157,7 @@ private fun EditHabit(
         icon = state.value.icon,
         color = state.value.color,
         reminder = state.value.reminder,
-        isPermissionDialogShown = state.value.isPermissionDialogShown,
+        dialog = state.value.dialog,
         onTypeTitle = onTypeTitle,
         onSelectIconClick = onSelectIconClick,
         onDecreaseGoal = onDecreaseGoal,
@@ -185,7 +188,7 @@ fun EditBaseHabit(
     icon: IconResource,
     color: Color,
     reminder: ReminderUi,
-    isPermissionDialogShown: Boolean,
+    dialog: DialogItem?,
     onTypeTitle: (String) -> Unit,
     onSelectIconClick: () -> Unit,
     onDecreaseGoal: () -> Unit,
@@ -205,7 +208,7 @@ fun EditBaseHabit(
     typeExpanded: Boolean = true,
     switchOn: (Boolean) -> Unit,
     showTimeDialog: (Boolean) -> Unit,
-    showPermissionDialog: (Boolean) -> Unit,
+    showPermissionDialog: (DialogItem?) -> Unit,
     updateReminder: (Int, Int) -> Unit,
 ) {
     val context = LocalContext.current
@@ -326,21 +329,8 @@ fun EditBaseHabit(
             initialHour = reminder.hour,
             initialMinute = reminder.minute,
         )
-    if (isPermissionDialogShown) {
-        val launcher = LaunchNotificationSettingsScreen(
-            handleResult = { permissionGranted ->
-                showPermissionDialog(!permissionGranted)
-                switchOn(permissionGranted)
-            },
-            context = context
-        )
-        val lifecycleScope = LocalLifecycleOwner.current.lifecycleScope
-        NotificationPermissionDialog(
-            onDismissRequest = { showPermissionDialog(false) },
-            onConfirm = {
-                startNotificationSettingsActivity(lifecycleScope, context, launcher)
-            }
-        )
+    dialog?.let {
+        NotificationPermissionDialog(dialog)
     }
 }
 
@@ -350,16 +340,67 @@ private fun EditReminder(
     reminder: ReminderUi,
     switchOn: (Boolean) -> Unit,
     showTimeDialog: (Boolean) -> Unit,
-    requestPermissionDialog: (Boolean) -> Unit,
-    notificationPermission: String = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) Manifest.permission.POST_NOTIFICATIONS else "",
-    alarmPermission: String = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) Manifest.permission.SCHEDULE_EXACT_ALARM else "",
+    requestPermissionDialog: (DialogItem?) -> Unit,
 ) {
     val context = LocalContext.current
-    val launcher =
-        rememberLauncherForActivityResult(RequestPermission()) { isGranted: Boolean ->
-            if (isGranted) switchOn(true)
+    val lifecycleState: State<Lifecycle.State> =
+        LocalLifecycleOwner.current.lifecycle.currentStateAsState()
+    val lifecycleScope = rememberCoroutineScope()
+    var notificationEnabled: Boolean? by remember { mutableStateOf(null) }
+    var alarmEnabled: Boolean? by remember { mutableStateOf(null) }
+    val launcher = rememberLauncherForActivityResult(RequestPermission()) { isEnabled ->
+        if (isEnabled) {
+            notificationEnabled = true
+            alarmEnabled = areAlarmsEnabled(context)
         }
+    }
+    val notificationLauncher = LaunchNotificationSettingsScreen(
+        handleResult = { isEnabled ->
+            if (isEnabled) {
+                notificationEnabled = true
+                alarmEnabled = areAlarmsEnabled(context)
+            }
+        },
+        context = context
+    )
+    val alarmLauncher = LaunchAlarmSettingsScreen(
+        handleResult = { isEnabled ->
+            if (isEnabled) {
+                alarmEnabled = true
+                notificationEnabled = areNotificationsEnabled(context)
+            }
+        },
+        context = context
+    )
 
+    val notificationDialog = remember {
+        DialogItem.notification.copy(
+            onConfirm = {
+                startNotificationSettingsActivity(lifecycleScope, context, notificationLauncher)
+            }, onDismiss = { requestPermissionDialog(null) }
+        )
+    }
+    val alarmDialog = remember {
+        DialogItem.alarm.copy(
+            onConfirm = { startAlarmSettingsActivity(lifecycleScope, context, alarmLauncher) },
+            onDismiss = { requestPermissionDialog(null) }
+        )
+    }
+    val askForNotificationPermission = {
+        askForNotificationPermission(
+            launcher = launcher,
+            showDialog = { requestPermissionDialog(notificationDialog) },
+            lifecycleState = lifecycleState
+        )
+    }
+    LaunchedEffect(notificationEnabled) {
+        if (alarmEnabled == false)
+            requestPermissionDialog(alarmDialog)
+    }
+    LaunchedEffect(alarmEnabled) {
+        if (notificationEnabled == false)
+            askForNotificationPermission()
+    }
     Row(
         modifier = Modifier
             .background(
@@ -408,10 +449,8 @@ private fun EditReminder(
                 if (!reminder.switchedOn)
                     checkPermission(
                         context = context,
-                        launcher = launcher,
-                        notificationPermission = notificationPermission,
-                        alarmPermission = alarmPermission,
-                        showDialog = { requestPermissionDialog(true) },
+                        requestAlarmPermission = { requestPermissionDialog(alarmDialog) },
+                        requestNotificationPermission = { askForNotificationPermission() },
                         onGranted = { switchOn(true) })
                 else
                     switchOn(false)

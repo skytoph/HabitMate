@@ -11,6 +11,7 @@ import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyCusto
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyState
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyUi
 import com.github.skytoph.taski.presentation.habit.icon.IconState
+import com.github.skytoph.taski.presentation.habit.list.component.DialogItem
 
 interface EditHabitEvent {
     fun handle(state: MutableState<EditHabitState>, icon: MutableState<IconState>)
@@ -170,9 +171,9 @@ interface EditHabitEvent {
         }
     }
 
-    class ShowPermissionDialog(private val show: Boolean) : EditHabitEvent {
+    class ShowPermissionDialog(private val dialog: DialogItem? = null) : EditHabitEvent {
         override fun handle(state: MutableState<EditHabitState>, icon: MutableState<IconState>) {
-            state.value = state.value.copy(isPermissionDialogShown = show)
+            state.value = state.value.copy(dialog = dialog)
         }
     }
 }

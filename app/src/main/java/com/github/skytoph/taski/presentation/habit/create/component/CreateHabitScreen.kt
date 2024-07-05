@@ -20,6 +20,7 @@ import com.github.skytoph.taski.presentation.habit.create.CreateHabitViewModel
 import com.github.skytoph.taski.presentation.habit.edit.component.EditBaseHabit
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyCustomType
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyUi
+import com.github.skytoph.taski.presentation.habit.list.component.DialogItem
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
@@ -91,7 +92,7 @@ private fun CreateHabit(
     switchOn: (Boolean) -> Unit = {},
     showDialog: (Boolean) -> Unit = {},
     updateReminder: (Int, Int) -> Unit = { _, _ -> },
-    showPermissionDialog: (Boolean) -> Unit = {}
+    showPermissionDialog: (DialogItem?) -> Unit = {}
 ) {
     Column(
         modifier = Modifier.fillMaxSize()
@@ -106,7 +107,7 @@ private fun CreateHabit(
             onSelectIconClick = onSelectIconClick,
             onDecreaseGoal = onDecreaseGoal,
             onIncreaseGoal = onIncreaseGoal,
-            isPermissionDialogShown = state.value.isPermissionDialogShown,
+            dialog = state.value.dialog,
             frequency = state.value.frequencyState,
             isFrequencyExpanded = state.value.isFrequencyExpanded,
             expandFrequency = expandFrequency,

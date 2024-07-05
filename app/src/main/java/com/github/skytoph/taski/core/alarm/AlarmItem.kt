@@ -7,7 +7,7 @@ import java.io.Serializable
 import java.util.Calendar
 
 data class AlarmItem(
-    val id: Int,
+    val id: Long,
     val title: String,
     @StringRes val message: Int,
     val icon: String,

@@ -124,6 +124,9 @@
     <string name="allow_notifications_title">Enable notifications</string>
     <string name="allow_notifications_description">To receive reminders, please enable notifications in Settings > Notifications</string>
 
+    <string name="allow_alarms_title">Enable alarms</string>
+    <string name="allow_alarm_description">To receive reminders, please enable alerts in Settings > Notifications</string>
+
     <plurals name="times_label">
         <item quantity="one">time</item>
         <item quantity="other">times</item>

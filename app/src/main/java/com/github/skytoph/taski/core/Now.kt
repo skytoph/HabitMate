@@ -23,7 +23,7 @@ interface Now {
     fun firstDayOfMonthDaysAgo(monthsAgo: Int): Int
     fun firstDayOfWeekDaysAgo(weeksAgo: Int): Int
 
-    class Base(private val timeZone: TimeZone = TimeZone.getTimeZone("UTC")) : Now {
+    class Base(private val timeZone: TimeZone = TimeZone.getDefault()) : Now {
 
         override fun monthsAgo(daysAgo: Int): Int {
             val compareWith = calendar().apply { add(Calendar.DAY_OF_YEAR, -daysAgo) }
