@@ -18,11 +18,13 @@ interface HabitListInteractor : HabitDoneInteractor, DeleteHabitInteractor, Arch
         private val repository: HabitRepository,
         private val popup: PopupMessage.Show<SnackbarMessage>,
         now: Now,
-        scheduler: AlarmScheduler
+        scheduler: AlarmScheduler,
+        habitInteractor: HabitDoneInteractor,
+
     ) : HabitListInteractor,
         DeleteHabitInteractor by DeleteHabitInteractor.Base(repository, popup, scheduler),
         ArchiveHabitInteractor by ArchiveHabitInteractor.Base(repository, popup),
-        HabitDoneInteractor by HabitDoneInteractor.Base(repository, now) {
+        HabitDoneInteractor by habitInteractor {
 
         override fun habits(): Flow<List<HabitWithEntries>> = repository.habitsWithEntries()
     }

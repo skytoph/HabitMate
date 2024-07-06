@@ -4,6 +4,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import com.github.skytoph.taski.core.Now
 import com.github.skytoph.taski.domain.habit.HabitRepository
+import com.github.skytoph.taski.presentation.core.interactor.HabitDoneInteractor
 import com.github.skytoph.taski.presentation.habit.EntityPagerProvider
 import com.github.skytoph.taski.presentation.habit.details.HabitDetailsInteractor
 import com.github.skytoph.taski.presentation.habit.details.HabitDetailsState
@@ -26,6 +27,7 @@ object HabitDetailsViewModelModule {
         repository: HabitRepository,
         entryMapper: EditableEntryDomainToUiMapper,
         pagerProvider: EntityPagerProvider,
+        interactor: HabitDoneInteractor
     ): HabitDetailsInteractor =
-        HabitDetailsInteractor.Base(pagerProvider, entryMapper, repository, now)
+        HabitDetailsInteractor.Base(pagerProvider, entryMapper, repository, interactor)
 }

@@ -13,7 +13,7 @@ interface HabitRepository: CheckHabitState {
     suspend fun entries(id: Long): EntryList
     suspend fun habit(id: Long): Habit
     suspend fun entry(id: Long, timestamp: Long): Entry?
-    suspend fun insert(habit: Habit)
+    suspend fun insert(habit: Habit): Long
     suspend fun update(habit: Habit)
     suspend fun insertEntry(id: Long, entry: Entry)
     suspend fun deleteEntry(id: Long, entry: Entry)

@@ -32,6 +32,7 @@ class AlarmReceiver : BroadcastReceiver() {
 
             val builder = NotificationCompat.Builder(context, channelId)
                 .setSmallIcon(IconResource.Name(item.icon).id(context))
+                .setColor(item.color)
                 .setContentTitle(item.title)
                 .setContentText(context.getString(item.message))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)

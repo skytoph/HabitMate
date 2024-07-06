@@ -1,7 +1,6 @@
 package com.github.skytoph.taski.presentation.habit.edit
 
 import android.content.Context
-import com.github.skytoph.taski.core.Now
 import com.github.skytoph.taski.core.alarm.AlarmScheduler
 import com.github.skytoph.taski.domain.habit.Habit
 import com.github.skytoph.taski.domain.habit.HabitRepository
@@ -19,11 +18,10 @@ interface EditHabitInteractor : HabitDoneInteractor, NotificationInteractor {
         private val repository: HabitRepository,
         private val scheduler: AlarmScheduler,
         private val notificationMapper: HabitNotificationMapper,
-        rescheduleMapper: AddMonthMapper,
-        now: Now,
-    ) : EditHabitInteractor, HabitDoneInteractor by HabitDoneInteractor.Base(repository, now),
-        NotificationInteractor by
-        NotificationInteractor.Base(repository, scheduler, notificationMapper, rescheduleMapper) {
+        notificationInteractor: NotificationInteractor,
+        habitInteractor: HabitDoneInteractor,
+    ) : EditHabitInteractor, HabitDoneInteractor by habitInteractor,
+        NotificationInteractor by notificationInteractor {
 
         override suspend fun habit(id: Long) = repository.habit(id)
 

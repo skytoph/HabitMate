@@ -2,7 +2,6 @@ package com.github.skytoph.taski.presentation.habit.details
 
 import androidx.compose.ui.graphics.Color
 import androidx.paging.PagingData
-import com.github.skytoph.taski.core.Now
 import com.github.skytoph.taski.domain.habit.Habit
 import com.github.skytoph.taski.domain.habit.HabitRepository
 import com.github.skytoph.taski.domain.habit.HabitWithEntries
@@ -30,9 +29,8 @@ interface HabitDetailsInteractor : HabitDoneInteractor {
         private val pagerProvider: EntityPagerProvider,
         private val entryMapper: EditableEntryDomainToUiMapper,
         private val repository: HabitRepository,
-        now: Now,
-    ) : HabitDetailsInteractor,
-        HabitDoneInteractor by HabitDoneInteractor.Base(repository, now) {
+        interactor: HabitDoneInteractor,
+    ) : HabitDetailsInteractor, HabitDoneInteractor by interactor {
 
         override fun entries(id: Long): Flow<PagingData<EditableHistoryUi>> =
             pagerProvider.getEntries(id)

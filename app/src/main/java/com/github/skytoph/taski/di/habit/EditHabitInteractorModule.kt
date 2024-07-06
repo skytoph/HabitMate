@@ -1,14 +1,14 @@
 package com.github.skytoph.taski.di.habit
 
-import com.github.skytoph.taski.core.Now
 import com.github.skytoph.taski.core.alarm.AlarmScheduler
 import com.github.skytoph.taski.domain.habit.HabitRepository
+import com.github.skytoph.taski.presentation.core.interactor.HabitDoneInteractor
 import com.github.skytoph.taski.presentation.habit.EntityPagerProvider
 import com.github.skytoph.taski.presentation.habit.HabitCache
 import com.github.skytoph.taski.presentation.habit.details.mapper.StatisticsUiMapper
-import com.github.skytoph.taski.presentation.habit.edit.AddMonthMapper
 import com.github.skytoph.taski.presentation.habit.edit.EditHabitInteractor
 import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
+import com.github.skytoph.taski.presentation.habit.edit.NotificationInteractor
 import com.github.skytoph.taski.presentation.habit.edit.mapper.HabitNotificationMapper
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitDomainMapper
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitHistoryUiMapper
@@ -24,14 +24,14 @@ object EditHabitInteractorModule {
 
     @Provides
     fun interactor(
-        now: Now,
         repository: HabitRepository,
         mapper: HabitDomainMapper,
         alarm: AlarmScheduler,
         notificationMapper: HabitNotificationMapper,
-        rescheduleMapper: AddMonthMapper,
+        habitInteractor: HabitDoneInteractor,
+        notificationInteractor: NotificationInteractor
     ): EditHabitInteractor = EditHabitInteractor.Base(
-        mapper, repository, alarm, notificationMapper, rescheduleMapper, now
+        mapper, repository, alarm, notificationMapper, notificationInteractor, habitInteractor
     )
 
     @Provides

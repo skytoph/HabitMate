@@ -358,6 +358,7 @@ private fun EditReminder(
         handleResult = { isEnabled ->
             if (isEnabled) {
                 notificationEnabled = true
+                requestPermissionDialog(null)
                 alarmEnabled = areAlarmsEnabled(context)
             }
         },
@@ -367,6 +368,7 @@ private fun EditReminder(
         handleResult = { isEnabled ->
             if (isEnabled) {
                 alarmEnabled = true
+                requestPermissionDialog(null)
                 notificationEnabled = areNotificationsEnabled(context)
             }
         },
@@ -397,13 +399,12 @@ private fun EditReminder(
         if (!areNotificationsEnabled(context) || !areAlarmsEnabled(context))
             switchOn(false)
     }
-    LaunchedEffect(notificationEnabled) {
-        if (alarmEnabled == false)
-            requestPermissionDialog(alarmDialog)
-    }
-    LaunchedEffect(alarmEnabled) {
-        if (notificationEnabled == false)
-            askForNotificationPermission()
+    LaunchedEffect(notificationEnabled, alarmEnabled) {
+        when {
+            notificationEnabled == false -> askForNotificationPermission()
+            alarmEnabled == false -> requestPermissionDialog(alarmDialog)
+            alarmEnabled == true && notificationEnabled == true -> switchOn(true)
+        }
     }
     Row(
         modifier = Modifier

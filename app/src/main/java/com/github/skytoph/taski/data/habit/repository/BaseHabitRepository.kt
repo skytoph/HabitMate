@@ -51,7 +51,7 @@ class BaseHabitRepository(
 
     override suspend fun entry(id: Long, timestamp: Long) = entryDao.entry(id, timestamp)?.toEntry()
 
-    override suspend fun insert(habit: Habit) = habitDao.insert(habit.toHabitDB())
+    override suspend fun insert(habit: Habit): Long = habitDao.insert(habit.toHabitDB())
 
     override suspend fun update(habit: Habit) = habitDao.update(habit.toHabitDB())
 

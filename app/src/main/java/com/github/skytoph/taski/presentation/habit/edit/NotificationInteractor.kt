@@ -24,9 +24,9 @@ interface NotificationInteractor : CheckHabitState {
             habit.frequency.schedule(scheduler, context, notificationMapper.map(habit, context))
 
         override fun rescheduleNotification(item: AlarmItem, context: Context) {
-            if (!item.intervalEquals(FrequencyInterval.INTERVAL_MONTH)) return
+            if (item.interval != FrequencyInterval.INTERVAL_MONTH) return
             val calendar = rescheduleMapper.addMonth(item)
-            scheduler.schedule(context, listOf(item.copy(calendar = calendar)))
+            scheduler.schedule(context, listOf(item.copy(timeMillis = calendar.timeInMillis)))
         }
 
         override suspend fun isHabitDone(habitId: Long): Boolean = repository.isHabitDone(habitId)

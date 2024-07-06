@@ -1,5 +1,6 @@
 package com.github.skytoph.taski.core.alarm
 
+import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -18,15 +19,12 @@ interface AlarmScheduler {
     ) : AlarmScheduler {
 
         override fun scheduleRepeating(context: Context, items: List<AlarmItem>) {
-            val alarmManager = alarm.alarmManager(context)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
-                !alarmManager.canScheduleExactAlarms()
-            ) return
+            if (!alarm.canScheduleAlarms(context)) return
             items.forEach { item ->
-                alarmManager.setRepeating(
-                    /* type = */ item.type,
-                    /* triggerAtMillis = */ item.calendar.timeInMillis,
-                    /* intervalMillis = */ item.interval,
+                alarm.alarmManager(context).setRepeating(
+                    /* type = */ AlarmManager.RTC_WAKEUP,
+                    /* triggerAtMillis = */ item.timeMillis,
+                    /* intervalMillis = */ item.interval * AlarmManager.INTERVAL_DAY,
                     /* operation = */ alarmIntent(context, item)
                 )
             }
@@ -39,8 +37,8 @@ interface AlarmScheduler {
             ) return
             items.forEach { item ->
                 alarmManager.setExactAndAllowWhileIdle(
-                    /* type = */ item.type,
-                    /* triggerAtMillis = */ item.calendar.timeInMillis,
+                    /* type = */ AlarmManager.RTC_WAKEUP,
+                    /* triggerAtMillis = */ item.timeMillis,
                     /* operation = */ alarmIntent(context, item)
                 )
             }
@@ -57,7 +55,7 @@ interface AlarmScheduler {
         }
 
         private fun alarmIntent(context: Context, item: AlarmItem): PendingIntent {
-            val intent = intent(context, item.uri)
+            val intent = intent(context, uriConverter.uri(item.uri))
             intent.putExtra(AlarmItem.KEY_ITEM, item)
             return alarm.alarmIntent(context, intent, item.id.toInt())
         }

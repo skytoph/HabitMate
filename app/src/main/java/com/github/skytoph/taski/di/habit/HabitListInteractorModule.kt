@@ -5,6 +5,7 @@ import com.github.skytoph.taski.core.alarm.AlarmScheduler
 import com.github.skytoph.taski.domain.habit.HabitRepository
 import com.github.skytoph.taski.presentation.appbar.PopupMessage
 import com.github.skytoph.taski.presentation.appbar.SnackbarMessage
+import com.github.skytoph.taski.presentation.core.interactor.HabitDoneInteractor
 import com.github.skytoph.taski.presentation.habit.list.HabitListInteractor
 import dagger.Module
 import dagger.Provides
@@ -20,6 +21,7 @@ object HabitListInteractorModule {
         repository: HabitRepository,
         now: Now,
         popup: PopupMessage.Show<SnackbarMessage>,
-        scheduler: AlarmScheduler
-    ): HabitListInteractor = HabitListInteractor.Base(repository, popup, now, scheduler)
+        scheduler: AlarmScheduler,
+        interactor: HabitDoneInteractor
+    ): HabitListInteractor = HabitListInteractor.Base(repository, popup, now, scheduler, interactor)
 }

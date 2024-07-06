@@ -1,7 +1,7 @@
 package com.github.skytoph.taski.presentation.habit.edit.mapper
 
-import android.app.AlarmManager
 import android.content.Context
+import androidx.compose.ui.graphics.toArgb
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.core.alarm.AlarmItem
 import com.github.skytoph.taski.core.alarm.HabitUriConverter
@@ -22,16 +22,16 @@ interface HabitNotificationMapper {
                     title = habit.title,
                     message = R.string.habit_reminder_message,
                     icon = habit.icon.name(context.resources),
-                    calendar = calendar.apply {
+                    timeMillis = calendar.apply {
                         set(Calendar.HOUR_OF_DAY, habit.reminder.hour)
                         set(Calendar.MINUTE, habit.reminder.minute)
                         set(Calendar.SECOND, 0)
                         set(Calendar.MILLISECOND, 0)
-                    },
+                    }.timeInMillis,
                     day = day,
-                    interval = AlarmManager.INTERVAL_DAY * habit.frequency.interval,
-                    type = AlarmManager.RTC_WAKEUP,
-                    uri = uriConverter.uri(habit.id, index)
+                    color = habit.color.toArgb(),
+                    interval = habit.frequency.interval,
+                    uri = uriConverter.uri(habit.id, index).toString()
                 )
             }
     }
