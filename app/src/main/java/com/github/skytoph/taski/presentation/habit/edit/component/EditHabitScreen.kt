@@ -48,6 +48,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -214,6 +215,7 @@ fun EditBaseHabit(
     updateReminder: (Int, Int) -> Unit,
 ) {
     val context = LocalContext.current
+    val focusManager = LocalFocusManager.current
     Column(
         modifier = Modifier
             .padding(horizontal = 16.dp)
@@ -225,13 +227,14 @@ fun EditBaseHabit(
                 value = title.field,
                 onValueChange = onTypeTitle,
                 error = title.error?.getString(context),
-                height = minHeight
+                height = minHeight,
+                clearFocus = { focusManager.clearFocus() }
             )
             IconSelector(
                 icon = icon,
                 color = color,
                 size = minHeight,
-                onClick = onSelectIconClick
+                onClick = { focusManager.clearFocus(); onSelectIconClick() }
             )
         }
         Spacer(modifier = Modifier.height(4.dp))
@@ -276,13 +279,13 @@ fun EditBaseHabit(
                 )
             }
             SquareButton(
-                onClick = onDecreaseGoal,
+                onClick = { focusManager.clearFocus(); onDecreaseGoal() },
                 icon = Icons.Default.Remove,
                 size = minHeight,
                 isEnabled = goal.canBeDecreased
             )
             SquareButton(
-                onClick = onIncreaseGoal,
+                onClick = { focusManager.clearFocus(); onIncreaseGoal() },
                 icon = Icons.Default.Add,
                 size = minHeight,
                 isEnabled = goal.canBeIncreased
@@ -298,7 +301,7 @@ fun EditBaseHabit(
         EditFrequency(
             frequency = frequency,
             expanded = isFrequencyExpanded,
-            expand = expandFrequency,
+            expand = { focusManager.clearFocus(); expandFrequency() },
             minHeight = minHeight,
             selectType = selectType,
             increaseTimes = increaseTimes,
@@ -320,9 +323,9 @@ fun EditBaseHabit(
         EditReminder(
             minHeight = minHeight,
             reminder = reminder,
-            switchOn = switchOn,
-            showTimeDialog = showTimeDialog,
-            requestPermissionDialog = showPermissionDialog
+            switchOn = { focusManager.clearFocus(); switchOn(it) },
+            showTimeDialog = { focusManager.clearFocus(); showTimeDialog(it) },
+            requestPermissionDialog = { focusManager.clearFocus(); showPermissionDialog(it) }
         )
         Spacer(modifier = Modifier.height(80.dp))
     }

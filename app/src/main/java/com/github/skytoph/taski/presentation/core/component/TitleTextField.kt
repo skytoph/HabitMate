@@ -8,11 +8,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,6 +23,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -33,7 +35,8 @@ fun TitleTextField(
     value: String,
     onValueChange: (String) -> Unit,
     error: String? = null,
-    height: Dp = 40.dp
+    height: Dp = 40.dp,
+    clearFocus: () -> Unit = {}
 ) {
     Column(modifier = modifier) {
         Text(
@@ -50,6 +53,9 @@ fun TitleTextField(
             onValueChange = onValueChange,
             singleLine = true,
             textStyle = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onBackground),
+            cursorBrush = SolidColor(MaterialTheme.colorScheme.onSecondary),
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(onDone = { clearFocus() }),
             decorationBox = { innerTextField ->
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Box(
@@ -78,18 +84,16 @@ fun TitleTextField(
                         )
                     }
                 }
-            },
-            cursorBrush = SolidColor(MaterialTheme.colorScheme.onSecondary)
+            }
         )
     }
 }
 
-@Preview(showSystemUi = true, showBackground = true)
+@Preview
 @Composable
 private fun TextFieldPreview() {
     Box(
         modifier = Modifier
-            .fillMaxSize()
             .padding(16.dp), contentAlignment = Alignment.Center
     ) {
         TitleTextField(
