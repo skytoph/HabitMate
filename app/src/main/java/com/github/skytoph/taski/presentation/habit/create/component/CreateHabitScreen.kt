@@ -55,6 +55,7 @@ fun CreateHabitScreen(
         onDecreaseGoal = { viewModel.onEvent(CreateHabitEvent.DecreaseGoal) },
         onIncreaseGoal = { viewModel.onEvent(CreateHabitEvent.IncreaseGoal) },
         expandFrequency = { viewModel.onEvent(CreateHabitEvent.ExpandFrequency) },
+        expandType = { viewModel.onEvent(CreateHabitEvent.ExpandCustomType) },
         increaseTimes = { viewModel.onEvent(CreateHabitEvent.IncreaseFrequencyTimes) },
         decreaseTimes = { viewModel.onEvent(CreateHabitEvent.DecreaseFrequencyTimes) },
         increaseType = { viewModel.onEvent(CreateHabitEvent.IncreaseFrequencyType) },
