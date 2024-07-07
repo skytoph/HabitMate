@@ -93,7 +93,7 @@ private fun HabitsReorder(
     LazyColumn(
         state = state.listState,
         modifier = Modifier
-            .padding(horizontal = 16.dp)
+            .padding(16.dp)
             .reorderable(state)
             .detectReorderAfterLongPress(state),
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -131,7 +131,7 @@ fun HabitReorderingItem(
             modifier = Modifier.fillMaxWidth()
         ) {
             HabitTitleWithIcon(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.weight(1f).padding(start = 8.dp, end = 8.dp, top = 8.dp),
                 icon = habit.icon.vector(LocalContext.current),
                 color = habit.color,
                 title = habit.title,

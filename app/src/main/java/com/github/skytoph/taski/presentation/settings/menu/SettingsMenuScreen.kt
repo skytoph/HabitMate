@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -67,25 +67,25 @@ private fun SettingsMenu(
                 icon = ImageVector.vectorResource(id = R.drawable.wrench),
                 onClick = generalClick
             )
-            Divider()
+            HorizontalDivider()
             SettingsMenuItem(
                 title = "Theme",
                 icon = ImageVector.vectorResource(id = R.drawable.palette),
                 onClick = {}
             )
-            Divider()
+            HorizontalDivider()
             SettingsMenuItem(
                 title = "Reorder habits",
                 icon = ImageVector.vectorResource(id = R.drawable.arrow_up_down),
                 onClick = reorderClick
             )
-            Divider()
+            HorizontalDivider()
             SettingsMenuItem(
                 title = "Archived habits",
                 icon = ImageVector.vectorResource(id = R.drawable.archive),
                 onClick = archiveClick
             )
-            Divider()
+            HorizontalDivider()
             SettingsMenuItem(
                 title = "Backup",
                 icon = ImageVector.vectorResource(id = R.drawable.folder_input),
@@ -105,13 +105,13 @@ private fun SettingsMenu(
                 icon = ImageVector.vectorResource(id = R.drawable.file_lock),
                 onClick = {}
             )
-            Divider()
+            HorizontalDivider()
             SettingsMenuItem(
                 title = "Terms of use",
                 icon = ImageVector.vectorResource(id = R.drawable.file_type),
                 onClick = {}
             )
-            Divider()
+            HorizontalDivider()
             SettingsMenuItem(
                 title = "Credits",
                 icon = ImageVector.vectorResource(id = R.drawable.file_heart),

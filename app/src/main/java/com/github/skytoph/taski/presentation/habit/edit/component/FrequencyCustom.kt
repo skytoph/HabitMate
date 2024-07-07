@@ -17,7 +17,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Remove
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -89,6 +89,7 @@ fun FrequencyCustom(
         }
         Row(
             verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(bottom = 6.dp)
         ) {
             FrequencyCounter(count = frequency.typeCount.value)
             Row(
@@ -142,13 +143,13 @@ fun FrequencyCustom(
                 selected = frequency.frequencyType == FrequencyCustomType.Day,
                 selectType = selectType
             )
-            Divider()
+            HorizontalDivider()
             FrequencyType(
                 option = FrequencyCustomType.Week,
                 selected = frequency.frequencyType == FrequencyCustomType.Week,
                 selectType = selectType
             )
-            Divider()
+            HorizontalDivider()
             FrequencyType(
                 option = FrequencyCustomType.Month,
                 selected = frequency.frequencyType == FrequencyCustomType.Month,

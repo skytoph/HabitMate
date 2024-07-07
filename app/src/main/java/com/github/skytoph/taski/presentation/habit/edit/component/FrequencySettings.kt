@@ -4,15 +4,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.DividerDefaults
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -58,7 +57,7 @@ fun FrequencySettings(
                 title = "daily",
                 selected = frequency.isSelected(frequency.daily),
                 select = { selectType(frequency.daily) })
-            HorizontalDivider(
+            VerticalDivider(
                 modifier = Modifier
                     .width(1.dp)
                     .height(16.dp),
@@ -69,7 +68,7 @@ fun FrequencySettings(
                 title = "monthly",
                 selected = frequency.isSelected(frequency.monthly),
                 select = { selectType(frequency.monthly) })
-            HorizontalDivider(
+            VerticalDivider(
                 modifier = Modifier
                     .width(1.dp)
                     .height(16.dp),
@@ -92,7 +91,6 @@ fun FrequencySettings(
             expandType = expandType,
             typeExpanded = typeExpanded
         )
-        Spacer(modifier = Modifier.height(8.dp))
     }
 }
 

@@ -76,7 +76,7 @@ fun HabitDaily(
                     .height(48.dp)
             ) {
                 HabitTitleWithIcon(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.weight(1f).padding(horizontal = 8.dp),
                     icon = habit.icon.vector(LocalContext.current),
                     color = habit.color,
                     title = habit.title

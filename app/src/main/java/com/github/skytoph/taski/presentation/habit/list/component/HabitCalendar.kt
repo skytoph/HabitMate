@@ -4,8 +4,10 @@ package com.github.skytoph.taski.presentation.habit.list.component
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,7 +22,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -69,7 +70,7 @@ fun HabitCalendar(
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth().padding(start = 8.dp, end = 8.dp, top = 8.dp, bottom = 4.dp)
                 ) {
                     HabitTitleWithIcon(
                         modifier = Modifier.weight(1f),
@@ -77,7 +78,7 @@ fun HabitCalendar(
                         color = habit.color,
                         title = habit.title
                     )
-                    IconButton(onClick = onDone) {
+                    Box(Modifier.clickable { onDone() }) {
                         val defaultColor = MaterialTheme.colorScheme.secondaryContainer
                         val color = habitColor(history.todayDonePercent, defaultColor, habit.color)
                         Icon(
@@ -89,7 +90,7 @@ fun HabitCalendar(
                                     color = color,
                                     shape = RoundedCornerShape(30)
                                 )
-                                .padding(4.dp),
+                                .padding(6.dp),
                             tint = Color.White
                         )
                     }

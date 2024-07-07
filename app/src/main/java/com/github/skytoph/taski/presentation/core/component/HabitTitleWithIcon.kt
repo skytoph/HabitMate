@@ -3,8 +3,10 @@ package com.github.skytoph.taski.presentation.core.component
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -34,7 +36,7 @@ fun HabitTitleWithIcon(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
     ) {
-        Box(Modifier.padding(dimensionResource(id = R.dimen.habit_icon_padding))) {
+        Box {
             Icon(
                 imageVector = icon,
                 contentDescription = "habit icon",
@@ -44,10 +46,11 @@ fun HabitTitleWithIcon(
                         color = color,
                         shape = RoundedCornerShape(30)
                     )
-                    .padding(4.dp),
+                    .padding(6.dp),
                 tint = Color.White
             )
         }
+        Spacer(modifier = Modifier.width(8.dp))
         Text(
             text = title,
             style = MaterialTheme.typography.titleSmall,

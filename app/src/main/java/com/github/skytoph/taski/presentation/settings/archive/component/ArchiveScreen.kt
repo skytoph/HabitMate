@@ -104,6 +104,7 @@ fun ArchivedHabitItem(
                 icon = habit.icon.vector(LocalContext.current),
                 color = habit.color,
                 title = habit.title,
+                modifier = Modifier.padding(8.dp)
             )
             Row(
                 modifier = Modifier

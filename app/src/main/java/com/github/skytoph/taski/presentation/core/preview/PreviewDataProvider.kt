@@ -25,7 +25,7 @@ class HabitsProvider : PreviewParameterProvider<List<HabitWithHistoryUi<HistoryU
 
 class HabitProvider : PreviewParameterProvider<HabitWithHistoryUi<HistoryUi>> {
     private val history =
-        HistoryUi((0..363).map { EntryUi(percentDone = 1F / (it % 20)) }.toList())
+        HistoryUi((1..364).map { EntryUi(percentDone = it % 4 * 0.3f) }.toList())
 
     private val habits = IconsColors.allColors.mapIndexed { i, color ->
         HabitWithHistoryUi(HabitUi(i.toLong(), "habit", 1, color), history)

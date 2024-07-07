@@ -23,6 +23,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
@@ -213,14 +215,16 @@ fun EditBaseHabit(
 ) {
     val context = LocalContext.current
     Column(
-        modifier = Modifier.padding(horizontal = 16.dp)
+        modifier = Modifier
+            .padding(horizontal = 16.dp)
+            .verticalScroll(rememberScrollState())
     ) {
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             TitleTextField(
                 modifier = Modifier.weight(1f),
                 value = title.field,
                 onValueChange = onTypeTitle,
-                error = title.error?.getString(LocalContext.current),
+                error = title.error?.getString(context),
                 height = minHeight
             )
             IconSelector(
@@ -320,7 +324,7 @@ fun EditBaseHabit(
             showTimeDialog = showTimeDialog,
             requestPermissionDialog = showPermissionDialog
         )
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(80.dp))
     }
     if (reminder.isDialogShown)
         TimePickerDialog(
