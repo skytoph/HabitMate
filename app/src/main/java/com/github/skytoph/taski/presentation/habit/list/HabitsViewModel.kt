@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.skytoph.taski.domain.habit.HabitWithEntries
 import com.github.skytoph.taski.presentation.appbar.InitAppBar
-import com.github.skytoph.taski.presentation.core.component.AppBarState
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitsViewMapper
 import com.github.skytoph.taski.presentation.habit.list.view.HabitsView
@@ -26,8 +25,8 @@ class HabitsViewModel @Inject constructor(
     private val state: MutableState<HabitListState>,
     private val mapper: HabitsViewMapper,
     private val interactor: HabitListInteractor,
-    appBarState: MutableState<AppBarState>
-) : ViewModel(), InitAppBar by InitAppBar.Base(appBarState) {
+    initAppBar: InitAppBar
+) : ViewModel(), InitAppBar by initAppBar {
 
     val view = MutableStateFlow(HabitsView())
 

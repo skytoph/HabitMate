@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.skytoph.taski.presentation.appbar.InitAppBar
 import com.github.skytoph.taski.presentation.core.EventHandler
-import com.github.skytoph.taski.presentation.core.component.AppBarState
 import com.github.skytoph.taski.presentation.habit.HabitScreens
 import com.github.skytoph.taski.presentation.habit.icon.IconState
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitUiMapper
@@ -26,9 +25,9 @@ class EditHabitViewModel @Inject constructor(
     private val interactor: EditHabitInteractor,
     private val habitMapper: HabitUiMapper,
     private val validator: EditHabitValidator,
-    appBarState: MutableState<AppBarState>,
+    initAppBar: InitAppBar,
     savedStateHandle: SavedStateHandle,
-) : ViewModel(), EventHandler<EditHabitEvent>, InitAppBar by InitAppBar.Base(appBarState) {
+) : ViewModel(), EventHandler<EditHabitEvent>, InitAppBar by initAppBar {
 
     init {
         onEvent(EditHabitEvent.Progress(true))

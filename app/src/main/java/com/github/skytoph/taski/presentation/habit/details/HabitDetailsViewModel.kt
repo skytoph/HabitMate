@@ -11,7 +11,6 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
 import com.github.skytoph.taski.presentation.appbar.InitAppBar
-import com.github.skytoph.taski.presentation.core.component.AppBarState
 import com.github.skytoph.taski.presentation.habit.HabitScreens
 import com.github.skytoph.taski.presentation.habit.details.mapper.StatisticsUiMapper
 import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
@@ -36,8 +35,8 @@ class HabitDetailsViewModel @Inject constructor(
     private val habitMapper: HabitUiMapper,
     private val statsMapper: StatisticsUiMapper,
     savedStateHandle: SavedStateHandle,
-    appBarState: MutableState<AppBarState>
-) : ViewModel(), InitAppBar by InitAppBar.Base(appBarState) {
+    initAppBar: InitAppBar
+) : ViewModel(), InitAppBar by initAppBar {
 
     private val actions = MutableStateFlow<List<HabitEntriesAction>>(emptyList())
 

@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.skytoph.taski.presentation.appbar.InitAppBar
 import com.github.skytoph.taski.presentation.core.EventHandler
-import com.github.skytoph.taski.presentation.core.component.AppBarState
 import com.github.skytoph.taski.presentation.habit.CreateHabitInteractor
 import com.github.skytoph.taski.presentation.habit.icon.IconState
 import com.github.skytoph.taski.presentation.habit.icon.SelectIconEvent
@@ -24,8 +23,8 @@ class CreateHabitViewModel @Inject constructor(
     private val iconState: MutableState<IconState>,
     private val validator: HabitValidator<CreateHabitEvent>,
     private val interactor: CreateHabitInteractor,
-    appBarState: MutableState<AppBarState>
-) : ViewModel(), EventHandler<CreateHabitEvent>, InitAppBar by InitAppBar.Base(appBarState) {
+    initAppBar: InitAppBar
+) : ViewModel(), EventHandler<CreateHabitEvent>, InitAppBar by initAppBar {
 
     init {
         SelectIconEvent.Clear.handle(iconState)

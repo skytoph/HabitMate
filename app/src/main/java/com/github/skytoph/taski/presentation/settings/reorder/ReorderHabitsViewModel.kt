@@ -7,7 +7,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.skytoph.taski.presentation.appbar.InitAppBar
-import com.github.skytoph.taski.presentation.core.component.AppBarState
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitUiMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,8 +19,8 @@ import javax.inject.Inject
 class ReorderHabitsViewModel @Inject constructor(
     private val interactor: ReorderHabitsInteractor,
     private val mapper: HabitUiMapper,
-    state: MutableState<AppBarState>,
-) : ViewModel(), InitAppBar by InitAppBar.Base(state) {
+    initAppBar: InitAppBar,
+) : ViewModel(), InitAppBar by initAppBar {
 
     private val habits: MutableState<List<HabitUi>> = mutableStateOf(emptyList())
 
