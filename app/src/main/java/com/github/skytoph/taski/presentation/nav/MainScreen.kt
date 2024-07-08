@@ -19,13 +19,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.github.skytoph.taski.presentation.appbar.MainViewModel
+import com.github.skytoph.taski.presentation.appbar.AppBarViewModel
 import com.github.skytoph.taski.presentation.appbar.SnackbarMessage
 
 @Composable
 fun MainScreen(
     navController: NavHostController = rememberNavController(),
-    viewModel: MainViewModel = hiltViewModel()
+    viewModel: AppBarViewModel = hiltViewModel()
 ) {
     val snackbarHostState = remember { viewModel.snackbarState() }
     val dismissSnackbarState = rememberDismissState(snackbarHostState)

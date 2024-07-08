@@ -10,7 +10,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(
+class AppBarViewModel @Inject constructor(
     private val state: MutableState<AppBarState>,
     private val popup: PopupMessage.Provide<SnackbarHostState>
 ) : ViewModel() {

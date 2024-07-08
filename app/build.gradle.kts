@@ -85,16 +85,16 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
     // Compose lifecycle
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
 
     // Compose navigation
     implementation("androidx.navigation:navigation-compose:2.7.7")
 
     // Compose material
-    implementation("androidx.compose.material3:material3:1.2.0-alpha07")
+    implementation("androidx.compose.material3:material3:1.2.0-alpha08")
     implementation("androidx.compose.material:material-icons-extended:1.1.2")
-    implementation("androidx.compose.foundation:foundation:1.3.0")
+    implementation("androidx.compose.foundation:foundation:1.6.0-alpha06")
 
     // Hilt
     implementation("com.google.dagger:hilt-android:2.48")
