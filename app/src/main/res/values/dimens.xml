@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="main_padding">16dp</dimen>
-    <dimen name="habit_icon_size">26dp</dimen>
+    <dimen name="habit_icon_size">32dp</dimen>
     <dimen name="habit_icon_padding">8dp</dimen>
     <dimen name="habit_title_width">152dp</dimen>
     <dimen name="habit_title_padding">4dp</dimen>

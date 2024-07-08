@@ -88,6 +88,7 @@
 
     <string name="habit_list_title">habits</string>
     <string name="settings_title">Settings</string>
+    <string name="settings_general_title">General</string>
     <string name="action_view">view</string>
     <string name="action_settings">settings</string>
     <string name="option_calendar">calendar</string>
@@ -126,6 +127,14 @@
 
     <string name="allow_alarms_title">Enable alarms</string>
     <string name="allow_alarm_description">To receive reminders, please enable alerts in Settings > Notifications</string>
+    <string name="theme_system">System</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="settings_theme_title">Theme</string>
+    <string name="settings_theme_mode">Mode</string>
+    <string name="week_starts_on_sunday">week starts on sunday</string>
+    <string name="highlight_current_day">highlight current day</string>
+    <string name="highlight_streaks">highlight streaks</string>
 
     <plurals name="times_label">
         <item quantity="one">time</item>
