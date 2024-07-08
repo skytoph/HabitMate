@@ -71,8 +71,8 @@ fun HabitsScreen(
         }
     }
 
-    val view = viewModel.view.collectAsState()
-    val state = viewModel.state()
+    val settings = viewModel.view.collectAsState()
+    val state = viewModel.habitsState()
 
     if (state.value.isLoading)
         LoadingCirclesFullscreen()
@@ -84,7 +84,7 @@ fun HabitsScreen(
     else
         Habits(
             state = state,
-            view = view.value.viewType.item,
+            view = settings.value.view.viewType.data,
             onHabitClick = { onHabitClick(it.id) },
             onHabitLongClick = { habit -> viewModel.onEvent(HabitListEvent.UpdateContextMenu(habit.id)) },
             onHabitDone = { habit, daysAgo -> viewModel.habitDone(habit, daysAgo) },
@@ -93,7 +93,7 @@ fun HabitsScreen(
 
     if (state.value.isViewTypeVisible)
         ViewBottomSheet(
-            view = view.value,
+            view = settings.value.view,
             hideBottomSheet = { viewModel.onEvent(HabitListEvent.ShowViewType(false)) },
             selectViewType = { viewModel.onEvent(HabitListEvent.UpdateView(viewType = it)) },
             selectSorting = { viewModel.onEvent(HabitListEvent.UpdateView(sortBy = it)) },

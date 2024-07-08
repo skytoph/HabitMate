@@ -78,7 +78,7 @@ fun <M : Matches<M>, T : OptionItem<M>> OptionsDropdown(
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 options.forEach { option ->
-                    if (!selected.item.matches(option.item))
+                    if (!selected.data.matches(option.data))
                         DropdownMenuItem(
                             text = {
                                 Text(

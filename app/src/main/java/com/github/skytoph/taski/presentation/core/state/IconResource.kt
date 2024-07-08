@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import com.github.skytoph.taski.presentation.habit.icon.IconsGroup
 
-interface IconResource {
+sealed interface IconResource {
     fun id(context: Context): Int
     fun name(resources: Resources): String
     fun matches(icon: IconResource, context: Context): Boolean

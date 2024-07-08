@@ -3,7 +3,7 @@ package com.github.skytoph.taski.presentation.habit.list.view
 import com.github.skytoph.taski.core.Matches
 import com.github.skytoph.taski.domain.habit.Habit
 
-interface FilterHabits : Matches<FilterHabits> {
+sealed interface FilterHabits : Matches<FilterHabits> {
     fun predicate(todayDone: Int = 0): (Habit) -> Boolean
 
     fun <T> filter(habits: List<T>, selector: (T) -> Habit, today: (T) -> Int = { 0 }): List<T> =
@@ -14,7 +14,7 @@ interface FilterHabits : Matches<FilterHabits> {
 
     override fun matches(item: FilterHabits): Boolean = this == item
 
-    object None : FilterHabits {
+    data object None : FilterHabits {
         override fun predicate(todayDone: Int): (Habit) -> Boolean = { true }
         override fun filter(habits: List<Habit>): List<Habit> = habits
         override fun <T> filter(
@@ -22,7 +22,7 @@ interface FilterHabits : Matches<FilterHabits> {
         ): List<T> = habits
     }
 
-    object ByState : FilterHabits {
+    data object ByState : FilterHabits {
         override fun predicate(todayDone: Int): (Habit) -> Boolean = { todayDone < it.goal }
     }
 

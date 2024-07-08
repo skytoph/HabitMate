@@ -4,11 +4,13 @@ import android.content.Context
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.skytoph.taski.core.datastore.SettingsCache
 import com.github.skytoph.taski.presentation.appbar.InitAppBar
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitUiMapper
+import com.github.skytoph.taski.presentation.habit.list.view.HabitsViewOptionsProvider
+import com.github.skytoph.taski.presentation.settings.SettingsViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -19,8 +21,9 @@ import javax.inject.Inject
 class ReorderHabitsViewModel @Inject constructor(
     private val interactor: ReorderHabitsInteractor,
     private val mapper: HabitUiMapper,
-    initAppBar: InitAppBar,
-) : ViewModel(), InitAppBar by initAppBar {
+    private val settings: SettingsCache,
+    initAppBar: InitAppBar
+) : SettingsViewModel<SettingsViewModel.Event>(settings, initAppBar) {
 
     private val habits: MutableState<List<HabitUi>> = mutableStateOf(emptyList())
 
@@ -40,4 +43,16 @@ class ReorderHabitsViewModel @Inject constructor(
     }
 
     fun habits(): State<List<HabitUi>> = habits
+
+    fun applyManualOrder() = viewModelScope.launch(Dispatchers.IO) {
+        ReorderHabitsEvent.ApplyManualOrder.handle(settings)
+    }
+}
+
+sealed interface ReorderHabitsEvent : SettingsViewModel.Event {
+    data object ApplyManualOrder : ReorderHabitsEvent {
+        override suspend fun handle(settings: SettingsCache) {
+            settings.updateView(sortBy = HabitsViewOptionsProvider.optionSortManually)
+        }
+    }
 }

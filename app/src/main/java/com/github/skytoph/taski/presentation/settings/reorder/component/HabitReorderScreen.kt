@@ -25,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
@@ -50,6 +51,7 @@ import com.github.skytoph.taski.presentation.core.preview.HabitsProvider
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.HabitWithHistoryUi
 import com.github.skytoph.taski.presentation.habit.list.HistoryUi
+import com.github.skytoph.taski.presentation.habit.list.view.SortHabits
 import com.github.skytoph.taski.presentation.settings.reorder.ReorderHabitsViewModel
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 import org.burnoutcrew.reorderable.ReorderableItem
@@ -77,9 +79,10 @@ fun HabitReorderScreen(
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
 
+    val state = viewModel.state().collectAsState()
     HabitsReorder(
         habits = viewModel.habits().value,
-        isOrderManual = viewModel.isOrderManual(),
+        isOrderManual = SortHabits.Manually.matches(state.value.view.sortBy.data),
         applyManualOrder = { viewModel.applyManualOrder() },
         onSwap = { from, to -> viewModel.swap(from, to) },
     )
@@ -183,7 +186,9 @@ fun HabitReorderingItem(
             modifier = Modifier.fillMaxWidth()
         ) {
             HabitTitleWithIcon(
-                modifier = Modifier.weight(1f).padding(start = 8.dp, end = 8.dp, top = 8.dp),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 8.dp, end = 8.dp, top = 8.dp),
                 icon = habit.icon.vector(LocalContext.current),
                 color = habit.color,
                 title = habit.title,

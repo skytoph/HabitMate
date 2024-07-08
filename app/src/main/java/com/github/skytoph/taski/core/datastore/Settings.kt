@@ -1,6 +1,7 @@
 package com.github.skytoph.taski.core.datastore
 
 import androidx.compose.runtime.Stable
+import com.github.skytoph.taski.presentation.habit.list.view.HabitsView
 import com.github.skytoph.taski.presentation.settings.theme.AppTheme
 import java.util.Calendar
 import java.util.TimeZone
@@ -10,7 +11,8 @@ data class Settings(
     val weekStartsOnSunday: Initializable<Boolean> = Initializable(),
     val currentDayHighlighted: Boolean = true,
     val streaksHighlighted: Boolean = true,
-    val theme: AppTheme = AppTheme.System
+    val theme: AppTheme = AppTheme.System,
+    val view: HabitsView = HabitsView()
 )
 
 @Stable
