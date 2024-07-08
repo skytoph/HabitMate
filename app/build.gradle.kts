@@ -119,5 +119,9 @@ dependencies {
     implementation("com.google.code.gson:gson:2.11.0")
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.0")
 
+    // WorkManager
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
+    implementation("androidx.hilt:hilt-work:1.2.0")
     implementation("androidx.work:work-runtime:2.9.0")
+    ksp("androidx.hilt:hilt-compiler:1.2.0")
 }
