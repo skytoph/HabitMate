@@ -1,9 +1,13 @@
 package com.github.skytoph.taski.presentation.settings.reorder.component
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,10 +21,12 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -73,6 +79,8 @@ fun HabitReorderScreen(
 
     HabitsReorder(
         habits = viewModel.habits().value,
+        isOrderManual = viewModel.isOrderManual(),
+        applyManualOrder = { viewModel.applyManualOrder() },
         onSwap = { from, to -> viewModel.swap(from, to) },
     )
 }
@@ -80,7 +88,9 @@ fun HabitReorderScreen(
 @Composable
 private fun HabitsReorder(
     habits: List<HabitUi>,
-    onSwap: (Int, Int) -> Unit = { _, _ -> }
+    isOrderManual: Boolean = false,
+    onSwap: (Int, Int) -> Unit = { _, _ -> },
+    applyManualOrder: () -> Unit = {}
 ) {
     val state =
         rememberReorderableLazyListState(onMove = { from, to -> onSwap(from.index, to.index) })
@@ -98,6 +108,48 @@ private fun HabitsReorder(
             .detectReorderAfterLongPress(state),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        if (!isOrderManual) item {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        color = MaterialTheme.colorScheme.primaryContainer,
+                        shape = MaterialTheme.shapes.small
+                    )
+                    .padding(horizontal = 16.dp, vertical = 16.dp)
+                    .animateContentSize(),
+            ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(id = R.drawable.arrow_up_down),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onBackground
+                )
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Text(
+                        text = "Apply manual order",
+                        color = MaterialTheme.colorScheme.onBackground,
+                        style = MaterialTheme.typography.titleSmall,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                    Text(
+                        text = "Current order setting is: by color",
+                        color = MaterialTheme.colorScheme.onBackground,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                    Box(modifier = Modifier
+                        .clip(MaterialTheme.shapes.small)
+                        .clickable { applyManualOrder() }
+                        .padding(horizontal = 8.dp, vertical = 8.dp)) {
+                        Text(
+                            text = "Apply",
+                            color = MaterialTheme.colorScheme.primary,
+                            style = MaterialTheme.typography.titleSmall,
+                        )
+                    }
+                }
+            }
+        }
         items(habits, key = { it.id }) { habit ->
             ReorderableItem(state, key = habit.id) { isDragging ->
                 val elevation = animateDpAsState(

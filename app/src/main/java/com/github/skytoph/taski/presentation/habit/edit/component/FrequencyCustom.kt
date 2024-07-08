@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Remove
@@ -31,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.skytoph.taski.R
+import com.github.skytoph.taski.presentation.core.component.MenuOptionComponent
 import com.github.skytoph.taski.presentation.core.component.SquareButton
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyCustomType
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyState
@@ -138,51 +138,16 @@ fun FrequencyCustom(
             )
         }
         if (typeExpanded) Column(modifier = Modifier.clip(MaterialTheme.shapes.small)) {
-            FrequencyType(
-                option = FrequencyCustomType.Day,
-                selected = frequency.frequencyType == FrequencyCustomType.Day,
-                selectType = selectType
-            )
-            HorizontalDivider()
-            FrequencyType(
-                option = FrequencyCustomType.Week,
-                selected = frequency.frequencyType == FrequencyCustomType.Week,
-                selectType = selectType
-            )
-            HorizontalDivider()
-            FrequencyType(
-                option = FrequencyCustomType.Month,
-                selected = frequency.frequencyType == FrequencyCustomType.Month,
-                selectType = selectType
-            )
+            FrequencyCustomType.values.forEachIndexed { index, item ->
+                MenuOptionComponent(
+                    option = item,
+                    selected = frequency.frequencyType == item,
+                    select = selectType,
+                    title = pluralStringResource(id = item.title, count = 1)
+                )
+                if (index < FrequencyCustomType.values.size - 1) HorizontalDivider()
+            }
         }
-    }
-}
-
-@Composable
-private fun FrequencyType(
-    option: FrequencyCustomType,
-    selected: Boolean,
-    selectType: (FrequencyCustomType) -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { selectType(option) }
-            .padding(8.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text(
-            text = pluralStringResource(id = option.title, count = 1),
-            color = MaterialTheme.colorScheme.onBackground,
-            style = MaterialTheme.typography.bodySmall,
-        )
-        if (selected) Icon(
-            imageVector = Icons.Default.Check,
-            contentDescription = "selected frequency type",
-            tint = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier.size(16.dp)
-        )
     }
 }
 
@@ -190,6 +155,6 @@ private fun FrequencyType(
 @Composable
 private fun Preview() {
     HabitMateTheme(darkTheme = true) {
-        FrequencySettings(frequency = FrequencyState(selectedName = FrequencyUi.Custom().name))
+        FrequencySettings(frequency = FrequencyState(selectedName = FrequencyUi.Custom().name), typeExpanded = true)
     }
 }

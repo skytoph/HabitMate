@@ -79,4 +79,8 @@ sealed class FrequencyCustomType : MapToDatesCustom, ScheduleAlarm {
         override fun schedule(scheduler: AlarmScheduler, context: Context, items: List<AlarmItem>) =
             scheduler.schedule(context, items)
     }
+
+    companion object {
+        val values = listOf(Day, Week, Month)
+    }
 }

@@ -1,4 +1,4 @@
-package com.github.skytoph.taski.presentation.settings.menu
+package com.github.skytoph.taski.presentation.settings.menu.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -26,16 +26,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.skytoph.taski.R
+import com.github.skytoph.taski.presentation.core.component.MenuTitleText
 import com.github.skytoph.taski.presentation.core.component.TitleWithIconMenuItem
-import com.github.skytoph.taski.presentation.settings.SettingsViewModel
+import com.github.skytoph.taski.presentation.settings.menu.SettingsMenuViewModel
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
 fun SettingsMenuScreen(
-    viewModel: SettingsViewModel = hiltViewModel(),
+    viewModel: SettingsMenuViewModel = hiltViewModel(),
     archiveClick: () -> Unit,
     reorderClick: () -> Unit,
     generalClick: () -> Unit,
+    themeClick: () -> Unit,
 ) {
     LaunchedEffect(Unit) {
         viewModel.initAppBar(title = R.string.settings_title)
@@ -44,7 +46,8 @@ fun SettingsMenuScreen(
     SettingsMenu(
         generalClick = generalClick,
         reorderClick = reorderClick,
-        archiveClick = archiveClick
+        archiveClick = archiveClick,
+        themeClick = themeClick
     )
 }
 
@@ -53,14 +56,10 @@ private fun SettingsMenu(
     generalClick: () -> Unit = {},
     reorderClick: () -> Unit = {},
     archiveClick: () -> Unit = {},
+    themeClick: () -> Unit = {},
 ) {
     Column(modifier = Modifier.padding(24.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text(
-            text = "App",
-            modifier = Modifier.padding(start = 16.dp),
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onBackground
-        )
+        MenuTitleText(text = "App", modifier = Modifier.padding(start = 16.dp))
         Column(modifier = Modifier.clip(MaterialTheme.shapes.small)) {
             SettingsMenuItem(
                 title = "General",
@@ -71,7 +70,7 @@ private fun SettingsMenu(
             SettingsMenuItem(
                 title = "Theme",
                 icon = ImageVector.vectorResource(id = R.drawable.palette),
-                onClick = {}
+                onClick = themeClick
             )
             HorizontalDivider()
             SettingsMenuItem(
@@ -93,12 +92,7 @@ private fun SettingsMenu(
             )
         }
         Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = "Info",
-            modifier = Modifier.padding(start = 16.dp),
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onBackground
-        )
+        MenuTitleText(text = "Info", modifier = Modifier.padding(start = 16.dp))
         Column(modifier = Modifier.clip(MaterialTheme.shapes.small)) {
             SettingsMenuItem(
                 title = "Privacy policy",
@@ -152,7 +146,6 @@ private fun SettingsMenuItem(
         icon = icon,
         onClick = onClick,
         tint = MaterialTheme.colorScheme.primary,
-        style = MaterialTheme.typography.bodyMedium,
         iconSize = 20.dp,
     )
 }

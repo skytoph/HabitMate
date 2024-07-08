@@ -249,7 +249,7 @@ private fun DailyEntry(
                 .padding(padding)
                 .background(color, shape = MaterialTheme.shapes.extraSmall)
                 .border(
-                    width = 2.dp,
+                    width = 1.dp,
                     color = if (entry.hasBorder) habitColor else Color.Transparent,
                     shape = MaterialTheme.shapes.extraSmall
                 )
