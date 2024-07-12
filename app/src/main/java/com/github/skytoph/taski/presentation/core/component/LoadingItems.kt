@@ -4,7 +4,6 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,24 +11,26 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.github.skytoph.taski.R
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 import kotlinx.coroutines.delay
 
 
 @Composable
-fun LoadingCirclesFullscreen(
+fun LoadingFullscreen(
     modifier: Modifier = Modifier,
     circleColor: Color = MaterialTheme.colorScheme.primary,
     circleSize: Dp = 16.dp,
@@ -42,18 +43,24 @@ fun LoadingCirclesFullscreen(
             .padding(),
         contentAlignment = Alignment.Center
     ) {
-        LoadingCircles(circleColor, circleSize, animationDelay, initialAlpha)
+        LoadingItems(
+            circleColor = circleColor,
+            circleSize = circleSize,
+            animationDelay = animationDelay,
+            initialAlpha = initialAlpha,
+            item = ImageVector.vectorResource(id = R.drawable.sparkle_filled)
+        )
     }
 }
 
 @Composable
-fun LoadingCircles(
+fun LoadingItems(
     circleColor: Color = MaterialTheme.colorScheme.primary,
     circleSize: Dp = 16.dp,
     animationDelay: Int = 400,
-    initialAlpha: Float = 0.3f
+    initialAlpha: Float = 0.3f,
+    item: ImageVector
 ) {
-
     val animatableList = listOf(
         remember {
             Animatable(initialValue = initialAlpha)
@@ -82,15 +89,14 @@ fun LoadingCircles(
     Row {
         animatableList.forEachIndexed { index, animatable ->
             if (index != 0)
-                Spacer(modifier = Modifier.width(width = 6.dp))
-            Box(
-                modifier = Modifier
-                    .size(size = circleSize)
-                    .clip(shape = CircleShape)
-                    .background(
-                        color = circleColor.copy(alpha = animatable.value)
-                    )
-            )
+                Spacer(modifier = Modifier.width(width = 8.dp))
+            Box(modifier = Modifier.size(circleSize)) {
+                Icon(
+                    imageVector = item,
+                    contentDescription = null,
+                    tint = circleColor.copy(alpha = animatable.value)
+                )
+            }
         }
     }
 }
@@ -98,7 +104,7 @@ fun LoadingCircles(
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
 fun CirclesAnimationPreview() {
-    HabitMateTheme {
-        LoadingCirclesFullscreen()
+    HabitMateTheme(darkTheme = true) {
+        LoadingFullscreen()
     }
 }

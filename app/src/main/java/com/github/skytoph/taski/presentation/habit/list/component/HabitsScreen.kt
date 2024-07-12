@@ -18,7 +18,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.component.AppBarAction
 import com.github.skytoph.taski.presentation.core.component.EmptyScreen
-import com.github.skytoph.taski.presentation.core.component.LoadingCirclesFullscreen
+import com.github.skytoph.taski.presentation.core.component.LoadingFullscreen
 import com.github.skytoph.taski.presentation.core.preview.HabitsProvider
 import com.github.skytoph.taski.presentation.habit.HabitScreens
 import com.github.skytoph.taski.presentation.habit.HabitUi
@@ -75,7 +75,7 @@ fun HabitsScreen(
     val state = viewModel.habitsState()
 
     if (state.value.isLoading)
-        LoadingCirclesFullscreen()
+        LoadingFullscreen()
     else if (state.value.habits.isEmpty())
         EmptyScreen(
             title = stringResource(R.string.list_of_habits_is_empty_label),
