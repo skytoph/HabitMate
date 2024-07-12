@@ -109,6 +109,7 @@
     <string name="message_habit_unarchived">habit restored</string>
     <string name="title_archive">Archive</string>
     <string name="list_of_habits_is_empty_label">List of habits is empty</string>
+    <string name="list_of_habits_is_empty_create_label">There is no habit for today. Create one?</string>
     <string name="archive_is_empty_label">Archive is empty</string>
     <string name="frequency_summary_custom">%1$d times in %2$d %3$s</string>
     <string name="frequency_summary_monthly">Every month on</string>

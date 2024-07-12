@@ -1,7 +1,12 @@
 package com.github.skytoph.taski.presentation.settings.reorder.component
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -10,6 +15,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -26,6 +32,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
@@ -111,44 +119,50 @@ private fun HabitsReorder(
             .detectReorderAfterLongPress(state),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        if (!isOrderManual) item {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        color = MaterialTheme.colorScheme.primaryContainer,
-                        shape = MaterialTheme.shapes.small
-                    )
-                    .padding(horizontal = 16.dp, vertical = 16.dp)
-                    .animateContentSize(),
+        item {
+            AnimatedVisibility(
+                visible = !isOrderManual,
+                enter = fadeIn() + expandVertically(),
+                exit = fadeOut() + shrinkVertically()
             ) {
-                Icon(
-                    imageVector = ImageVector.vectorResource(id = R.drawable.arrow_up_down),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onBackground
-                )
-                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    Text(
-                        text = "Apply manual order",
-                        color = MaterialTheme.colorScheme.onBackground,
-                        style = MaterialTheme.typography.titleSmall,
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
-                    Text(
-                        text = "Current order setting is: by color",
-                        color = MaterialTheme.colorScheme.onBackground,
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
-                    Box(modifier = Modifier
-                        .clip(MaterialTheme.shapes.small)
-                        .clickable { applyManualOrder() }
-                        .padding(horizontal = 8.dp, vertical = 8.dp)) {
-                        Text(
-                            text = "Apply",
-                            color = MaterialTheme.colorScheme.primary,
-                            style = MaterialTheme.typography.titleSmall,
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            color = MaterialTheme.colorScheme.primaryContainer,
+                            shape = MaterialTheme.shapes.small
                         )
+                        .padding(horizontal = 16.dp, vertical = 16.dp)
+                        .animateContentSize(),
+                ) {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(id = R.drawable.arrow_up_down),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onBackground
+                    )
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        Text(
+                            text = "Apply manual order",
+                            color = MaterialTheme.colorScheme.onBackground,
+                            style = MaterialTheme.typography.titleSmall,
+                            modifier = Modifier.padding(start = 8.dp)
+                        )
+                        Text(
+                            text = "Current order setting is: by color",
+                            color = MaterialTheme.colorScheme.onBackground,
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.padding(start = 8.dp)
+                        )
+                        Box(modifier = Modifier
+                            .clip(MaterialTheme.shapes.small)
+                            .clickable { applyManualOrder() }
+                            .padding(horizontal = 8.dp, vertical = 8.dp)) {
+                            Text(
+                                text = "Apply",
+                                color = MaterialTheme.colorScheme.primary,
+                                style = MaterialTheme.typography.titleSmall,
+                            )
+                        }
                     }
                 }
             }
@@ -212,6 +226,11 @@ fun HabitReorderingItem(
 @Preview(showBackground = true, showSystemUi = true)
 private fun DarkHabitReorderingPreview(@PreviewParameter(HabitsProvider::class) habits: List<HabitWithHistoryUi<HistoryUi>>) {
     HabitMateTheme(darkTheme = true) {
-        HabitsReorder(habits = habits.map { it.habit })
+        val state = remember { mutableStateOf(false) }
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .clickable { state.value = !state.value }) {
+            HabitsReorder(isOrderManual = state.value, habits = habits.map { it.habit })
+        }
     }
 }

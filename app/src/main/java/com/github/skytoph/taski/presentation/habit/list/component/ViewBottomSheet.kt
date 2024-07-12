@@ -13,8 +13,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -26,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -64,50 +65,63 @@ fun ViewBottomSheet(
                 selected = view.viewType,
                 selectOption = selectViewType
             )
-            Divider()
+            HorizontalDivider()
             OptionsDropdown(
                 title = stringResource(R.string.view_filter),
                 options = HabitsViewOptionsProvider.filterOptions,
                 selected = view.filterBy,
                 selectOption = selectFilter
             )
-            Divider()
+            HorizontalDivider()
             OptionsDropdown(
                 title = stringResource(R.string.view_sort),
                 options = HabitsViewOptionsProvider.sortOptions,
                 selected = view.sortBy,
                 selectOption = selectSorting
             )
-            Divider()
-            ReorderButton(reorder)
+            HorizontalDivider()
+            ButtonWithIcon(
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
+                onClick = reorder,
+                backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
+                title = stringResource(R.string.reorder_habits),
+                icon = ImageVector.vectorResource(R.drawable.arrow_up_down),
+                color = MaterialTheme.colorScheme.onBackground
+            )
             Spacer(modifier = Modifier.height(300.dp))
         }
     }
 }
 
 @Composable
-private fun ReorderButton(reorder: () -> Unit = {}) {
+fun ButtonWithIcon(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {},
+    backgroundColor: Color,
+    title: String,
+    icon: ImageVector,
+    color: Color
+) {
     Row(
-        modifier = Modifier
-            .padding(horizontal = 16.dp, vertical = 16.dp)
+        modifier = modifier
             .clip(MaterialTheme.shapes.large)
-            .clickable { reorder() }
-            .background(MaterialTheme.colorScheme.secondaryContainer)
+            .clickable { onClick() }
+            .background(backgroundColor)
             .padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
         Icon(
-            imageVector = ImageVector.vectorResource(R.drawable.arrow_up_down),
-            contentDescription = stringResource(R.string.reorder_habits),
+            imageVector = icon,
+            contentDescription = title,
             modifier = Modifier.size(20.dp),
-            tint = MaterialTheme.colorScheme.onBackground
+            tint = color
         )
         Spacer(modifier = Modifier.width(4.dp))
         Text(
-            text = stringResource(R.string.reorder_habits),
+            text = title,
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onBackground,
+            color = color,
             fontWeight = FontWeight.Normal
         )
     }

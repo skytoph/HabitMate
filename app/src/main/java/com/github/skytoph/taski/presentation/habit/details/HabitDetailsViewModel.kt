@@ -55,11 +55,13 @@ class HabitDetailsViewModel @Inject constructor(
             .launchIn(viewModelScope)
 
         interactor.statistics(savedStateHandle.id())
-            .map { history -> statsMapper.map(history) }
+            .map { history -> history?.let { statsMapper.map(it) } }
             .flowOn(Dispatchers.IO)
             .onEach { stats ->
-                onEvent(HabitDetailsEvent.UpdateStats(stats))
-                HabitEntriesAction.ApplyStatistics(stats).handle(actions)
+                stats?.let {
+                    onEvent(HabitDetailsEvent.UpdateStats(it))
+                    HabitEntriesAction.ApplyStatistics(stats).handle(actions)
+                }
             }.launchIn(viewModelScope)
     }
 

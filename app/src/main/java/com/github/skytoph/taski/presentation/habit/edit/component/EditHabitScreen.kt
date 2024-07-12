@@ -497,7 +497,7 @@ fun IconSelector(
             Icon(
                 imageVector = icon.vector(context),
                 contentDescription = icon.name(context.resources),
-                modifier = Modifier.size(32.dp),
+                modifier = Modifier.size(36.dp),
                 tint = Color.White
             )
         }

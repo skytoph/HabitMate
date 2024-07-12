@@ -108,14 +108,16 @@ fun HabitDetails(
         ) {
             Box(
                 modifier = Modifier
-                    .size(size = 40.dp)
+                    .size(size = 44.dp)
                     .background(color = habit.color, shape = RoundedCornerShape(10)),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = habit.icon.vector(context),
                     contentDescription = habit.icon.name(context.resources),
-                    modifier = Modifier.size(32.dp),
+                    modifier = Modifier
+                        .size(32.dp)
+                        .padding(6.dp),
                     tint = Color.White
                 )
             }

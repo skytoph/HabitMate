@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface HabitRepository: CheckHabitState {
     fun habitsWithEntries(): Flow<List<HabitWithEntries>>
-    fun habitWithEntriesFlow(id: Long): Flow<HabitWithEntries>
+    fun habitWithEntriesFlow(id: Long): Flow<HabitWithEntries?>
     fun entriesFlow(id: Long): Flow<EntryList>
     fun habitFlow(id: Long): Flow<Habit?>
     fun habitsFlow(): Flow<List<Habit>>

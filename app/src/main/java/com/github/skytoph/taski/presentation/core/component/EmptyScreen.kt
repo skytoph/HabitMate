@@ -17,20 +17,26 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun EmptyScreen(
     title: String,
-    icon: ImageVector
+    icon: ImageVector,
+    button: @Composable () -> Unit = {}
 ) {
     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Column(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = title)
             Icon(
                 imageVector = icon,
                 contentDescription = title,
                 tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(48.dp)
+                modifier = Modifier.size(40.dp)
             )
+            Text(
+                text = title,
+                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.bodyMedium
+            )
+            button()
         }
     }
 }

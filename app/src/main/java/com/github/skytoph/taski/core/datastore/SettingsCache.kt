@@ -21,7 +21,7 @@ interface SettingsCache {
     class Base(
         private val dataStore: DataStore<Settings>,
         private val mapper: InitializeEmptyValues,
-        private val state: MutableStateFlow<Settings> = MutableStateFlow(mapper.initialize(Settings()))
+        private val state: MutableStateFlow<Settings> = MutableStateFlow(Settings.default(mapper))
     ) : SettingsCache {
 
         override suspend fun initialize() {

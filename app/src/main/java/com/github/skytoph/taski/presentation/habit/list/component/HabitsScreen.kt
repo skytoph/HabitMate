@@ -2,18 +2,24 @@
 
 package com.github.skytoph.taski.presentation.habit.list.component
 
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.component.AppBarAction
@@ -42,18 +48,19 @@ fun HabitsScreen(
     deleteState: State<Long?>,
     archiveState: State<Long?>,
 ) {
+    val state = viewModel.habitsState()
     val onSurface = MaterialTheme.colorScheme.onBackground
     val context = LocalContext.current
-    LaunchedEffect(Unit) {
-        val actionAdd = AppBarAction.add.copy(color = onSurface, onClick = onCreateHabit)
-        val actionView = AppBarAction.view.copy(color = onSurface,
-            onClick = { viewModel.onEvent(HabitListEvent.ShowViewType(true)) })
-        val actionSettings =
-            AppBarAction.settings.copy(color = onSurface, onClick = onSettingsClick)
+    val actionAdd = AppBarAction.add.copy(color = onSurface, onClick = onCreateHabit)
+    val actionView = AppBarAction.view.copy(color = onSurface,
+        onClick = { viewModel.onEvent(HabitListEvent.ShowViewType(true)) })
+    val actionSettings =
+        AppBarAction.settings.copy(color = onSurface, onClick = onSettingsClick)
+    LaunchedEffect(state.value.habits.isEmpty()) {
         viewModel.initAppBar(
             canNavigateUp = false,
             title = R.string.habit_list_title,
-            menuItems = listOf(actionAdd),
+            menuItems = if (state.value.habits.isEmpty()) emptyList() else listOf(actionAdd),
             dropDownItems = listOf(actionView, actionSettings)
         )
     }
@@ -72,14 +79,23 @@ fun HabitsScreen(
     }
 
     val settings = viewModel.view.collectAsState()
-    val state = viewModel.habitsState()
 
     if (state.value.isLoading)
         LoadingFullscreen()
     else if (state.value.habits.isEmpty())
         EmptyScreen(
-            title = stringResource(R.string.list_of_habits_is_empty_label),
-            icon = ImageVector.vectorResource(R.drawable.sparkles)
+            title = stringResource(R.string.list_of_habits_is_empty_create_label),
+            icon = ImageVector.vectorResource(R.drawable.sparkles),
+            button = {
+                ButtonWithIcon(
+                    modifier = Modifier.padding(top = 4.dp),
+                    onClick = onCreateHabit,
+                    backgroundColor = MaterialTheme.colorScheme.primary,
+                    title = "Create",
+                    icon = Icons.Default.Add,
+                    color = Color.White
+                )
+            }
         )
     else
         Habits(

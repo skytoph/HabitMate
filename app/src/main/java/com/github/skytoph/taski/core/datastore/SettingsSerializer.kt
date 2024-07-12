@@ -12,7 +12,7 @@ object SettingsSerializer : Serializer<Settings> {
 
     private val gson = GsonBuilder().registerTypeAdapterFactory(GeneralTypeAdapterFactory()).create()
 
-    override val defaultValue: Settings = Settings()
+    override val defaultValue: Settings = Settings.default(InitializeEmptyValues())
 
     override suspend fun readFrom(input: InputStream): Settings =
         gson.fromJson(input.readBytes().decodeToString(), Settings::class.java)

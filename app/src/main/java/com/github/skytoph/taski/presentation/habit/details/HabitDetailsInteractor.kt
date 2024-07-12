@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.Flow
 interface HabitDetailsInteractor : HabitDoneInteractor {
     fun entries(id: Long): Flow<PagingData<EditableHistoryUi>>
     fun habit(id: Long): Flow<Habit?>
-    fun statistics(id: Long): Flow<HabitWithEntries>
+    fun statistics(id: Long): Flow<HabitWithEntries?>
     suspend fun entryEditable(
         id: Long,
         daysAgo: Int,
@@ -48,7 +48,7 @@ interface HabitDetailsInteractor : HabitDoneInteractor {
 
         override fun habit(id: Long) = repository.habitFlow(id)
 
-        override fun statistics(id: Long): Flow<HabitWithEntries> =
+        override fun statistics(id: Long): Flow<HabitWithEntries?> =
             repository.habitWithEntriesFlow(id)
     }
 }

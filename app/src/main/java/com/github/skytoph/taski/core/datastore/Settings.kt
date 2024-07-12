@@ -13,7 +13,11 @@ data class Settings(
     val streaksHighlighted: Boolean = true,
     val theme: AppTheme = AppTheme.System,
     val view: HabitsView = HabitsView()
-)
+) {
+    companion object {
+        fun default(mapper: InitializeEmptyValues): Settings = mapper.initialize(Settings())
+    }
+}
 
 @Stable
 data class Initializable<T : Any>(private val initialValue: T? = null) {
