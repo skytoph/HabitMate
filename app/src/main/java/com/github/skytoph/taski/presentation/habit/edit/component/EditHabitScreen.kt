@@ -6,6 +6,9 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
@@ -259,7 +262,9 @@ fun EditBaseHabit(
                 AnimatedContent(
                     targetState = goal.value,
                     transitionSpec = {
-                        if (targetState > initialState)
+                        if (initialState == EditHabitState.goalIsNotInitialized || targetState == EditHabitState.goalIsNotInitialized)
+                            fadeIn(tween(durationMillis = 0)) togetherWith fadeOut(tween(durationMillis = 0))
+                        else if (targetState > initialState)
                             slideInVertically { -it } togetherWith slideOutVertically { it }
                         else
                             slideInVertically { it } togetherWith slideOutVertically { -it }
