@@ -40,7 +40,6 @@ class HabitsEditableProvider : PreviewParameterProvider<List<EditableHistoryUi>>
         EditableHistoryUi((0..28).associate { day ->
             day * month to EntryEditableUi(
                 day = day.toString(),
-                percentDone = 1F / (day + 1),
                 daysAgo = day * month,
                 hasBorder = false
             )

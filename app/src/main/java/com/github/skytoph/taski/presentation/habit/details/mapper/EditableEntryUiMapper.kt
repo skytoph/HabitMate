@@ -39,7 +39,7 @@ class EditableEntryUiMapper(
             val daysAgo =
                 now.dayOfWeek() - index % ROWS + index / ROWS * ROWS - 1
             val timesDone = history[daysAgo]?.timesDone ?: 0
-            val hasBorder = stats.isInRange(daysAgo)
+            val hasBorder = timesDone == 0 && stats.isInRange(daysAgo)
             daysAgo to entryMapper.map(daysAgo, timesDone, goal, hasBorder)
         }
 

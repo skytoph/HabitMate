@@ -2,6 +2,7 @@ package com.github.skytoph.taski.presentation.nav
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -90,6 +91,7 @@ fun HabitAppBar(
                     DropdownMenu(
                         expanded = state.isListExpanded,
                         onDismissRequest = { expandList(false) },
+                        modifier = Modifier.background(color = MaterialTheme.colorScheme.primaryContainer)
                     ) {
                         state.dropdownItems.forEach { item ->
                             val title = item.title.getString(context)

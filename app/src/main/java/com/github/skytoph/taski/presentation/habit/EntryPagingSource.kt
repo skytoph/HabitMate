@@ -5,6 +5,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.github.skytoph.taski.domain.habit.EntryList
 import com.github.skytoph.taski.domain.habit.HabitRepository
 import com.github.skytoph.taski.domain.habit.HabitWithEntries
 import com.github.skytoph.taski.presentation.habit.details.mapper.StatisticsUiMapper
@@ -21,17 +22,18 @@ class EntryPagingSource(
     private val entryCache: HabitCache,
     private val id: Long,
     private val statsMapper: StatisticsUiMapper,
-    ) : PagingSource<Int, EditableHistoryUi>() {
+) : PagingSource<Int, EditableHistoryUi>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, EditableHistoryUi> {
         val page = params.key ?: 0
 
         return try {
             withContext(Dispatchers.IO) {
-                entryCache.cacheIfEmpty { repository.habitWithEntries(id) }
-                val habit = entryCache.get()
-                val stats = statsMapper.map(habit)
-                val history = uiMapper.map(page = page, history = habit.entries, stats = stats)
+                entryCache.cacheIfEmpty { repository.entries(id) }
+                val entries = entryCache.get()
+                val habit = repository.habit(id)
+                val stats = statsMapper.map(HabitWithEntries(habit, entries))
+                val history = uiMapper.map(page = page, goal = habit.goal, history = entries, stats = stats)
 
                 LoadResult.Page(
                     data = listOf(history),
@@ -51,12 +53,12 @@ class EntryPagingSource(
         }
 }
 
-class HabitCache(private val data: MutableList<HabitWithEntries> = ArrayList()) {
-    suspend fun cacheIfEmpty(fetch: suspend () -> HabitWithEntries) {
+class HabitCache(private val data: MutableList<EntryList> = ArrayList()) {
+    suspend fun cacheIfEmpty(fetch: suspend () -> EntryList) {
         if (data.isEmpty()) data.add(fetch())
     }
 
-    fun get(): HabitWithEntries = data[0]
+    fun get(): EntryList = data[0]
 }
 
 class EntityPagerProvider(
@@ -65,6 +67,8 @@ class EntityPagerProvider(
     private val statsMapper: StatisticsUiMapper,
     private val entryCache: HabitCache
 ) {
+    private var dataSource: EntryPagingSource? = null
+
     fun getEntries(id: Long): Flow<PagingData<EditableHistoryUi>> = Pager(
         config = PagingConfig(
             pageSize = 1,
@@ -74,6 +78,7 @@ class EntityPagerProvider(
         ),
         pagingSourceFactory = {
             EntryPagingSource(repository, uiMapper, entryCache, id, statsMapper)
+                .also { dataSource = it }
         }
     ).flow
 }

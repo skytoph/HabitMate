@@ -63,6 +63,7 @@ import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
 import com.github.skytoph.taski.presentation.habit.edit.EntryEditableUi
 import com.github.skytoph.taski.presentation.habit.edit.MonthUi
 import com.github.skytoph.taski.presentation.habit.icon.IconsColors
+import com.github.skytoph.taski.presentation.habit.list.mapper.ColorPercentMapper
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -234,8 +235,10 @@ private fun DailyEntry(
     size: Dp,
     padding: Dp,
 ) {
-    val color =
-        habitColor.applyColor(MaterialTheme.colorScheme.onSecondaryContainer, entry.percentDone)
+    val color = habitColor.applyColor(
+        MaterialTheme.colorScheme.onSecondaryContainer,
+        ColorPercentMapper.toColorPercent(entry.timesDone, goal)
+    )
     TooltipBox(
         state = rememberTooltipState(),
         positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
