@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
 
 package com.github.skytoph.taski.presentation.habit.list.component
 
@@ -35,11 +35,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.component.OptionsDropdown
-import com.github.skytoph.taski.presentation.habit.list.view.FilterOption
+import com.github.skytoph.taski.presentation.habit.list.view.FilterHabits
 import com.github.skytoph.taski.presentation.habit.list.view.HabitsView
-import com.github.skytoph.taski.presentation.habit.list.view.HabitsViewOptionsProvider
-import com.github.skytoph.taski.presentation.habit.list.view.SortOption
-import com.github.skytoph.taski.presentation.habit.list.view.ViewOption
+import com.github.skytoph.taski.presentation.habit.list.view.SortHabits
+import com.github.skytoph.taski.presentation.habit.list.view.ViewType
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
@@ -47,35 +46,36 @@ fun ViewBottomSheet(
     state: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
     view: HabitsView = HabitsView(),
     hideBottomSheet: () -> Unit = {},
-    selectViewType: (ViewOption) -> Unit = {},
-    selectSorting: (SortOption) -> Unit = {},
-    selectFilter: (FilterOption) -> Unit = {},
+    selectViewType: (ViewType) -> Unit = {},
+    selectSorting: (SortHabits) -> Unit = {},
+    selectFilter: (FilterHabits) -> Unit = {},
     reorder: () -> Unit = {}
 ) {
     ModalBottomSheet(
         onDismissRequest = hideBottomSheet,
-        sheetState = state
+        sheetState = state,
+        containerColor = MaterialTheme.colorScheme.primaryContainer
     ) {
         Column(
             modifier = Modifier.fillMaxWidth()
         ) {
             OptionsDropdown(
                 title = stringResource(R.string.view_layout),
-                options = HabitsViewOptionsProvider.viewOptions,
+                options = ViewType.options,
                 selected = view.viewType,
                 selectOption = selectViewType
             )
             HorizontalDivider()
             OptionsDropdown(
                 title = stringResource(R.string.view_filter),
-                options = HabitsViewOptionsProvider.filterOptions,
+                options = FilterHabits.options,
                 selected = view.filterBy,
                 selectOption = selectFilter
             )
             HorizontalDivider()
             OptionsDropdown(
                 title = stringResource(R.string.view_sort),
-                options = HabitsViewOptionsProvider.sortOptions,
+                options = SortHabits.options,
                 selected = view.sortBy,
                 selectOption = selectSorting
             )
@@ -129,7 +129,7 @@ fun ButtonWithIcon(
 
 @Composable
 @Preview
-private fun BottomSheetPreview() {
+private fun DarkBottomSheetPreview() {
     HabitMateTheme(darkTheme = true) {
         ViewBottomSheet(state = rememberStandardBottomSheetState())
     }

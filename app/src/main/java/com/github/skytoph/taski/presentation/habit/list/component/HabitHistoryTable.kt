@@ -49,7 +49,7 @@ fun HabitHistoryTable(
     val initialOffsetDp = dimensionResource(R.dimen.entry_calendar_padding)
 
     val state = rememberScrollState()
-    LaunchedEffect(key1 = Unit) {
+    LaunchedEffect(history.size) {
         state.scrollTo(state.maxValue)
     }
 

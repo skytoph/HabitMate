@@ -36,7 +36,7 @@ class HabitsViewModel @Inject constructor(
         interactor.habits()
             .combine(view) { habits, viewState -> applyViewState(habits, viewState.view) }
             .flowOn(Dispatchers.IO)
-            .onEach { habits -> onEvent(HabitListEvent.UpdateList(habits)) }
+            .onEach { habits -> habits?.let { onEvent(HabitListEvent.UpdateList(habits)) } }
             .launchIn(viewModelScope)
     }
 

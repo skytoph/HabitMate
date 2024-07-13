@@ -100,7 +100,7 @@ fun HabitsScreen(
     else
         Habits(
             state = state,
-            view = settings.value.view.viewType.data,
+            view = settings.value.view.viewType,
             onHabitClick = { onHabitClick(it.id) },
             onHabitLongClick = { habit -> viewModel.onEvent(HabitListEvent.UpdateContextMenu(habit.id)) },
             onHabitDone = { habit, daysAgo -> viewModel.habitDone(habit, daysAgo) },

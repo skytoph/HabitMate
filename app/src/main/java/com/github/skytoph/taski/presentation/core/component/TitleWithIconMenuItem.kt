@@ -14,8 +14,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -25,8 +23,6 @@ fun TitleWithIconMenuItem(
     icon: ImageVector,
     onClick: () -> Unit,
     tint: Color = MaterialTheme.colorScheme.onBackground,
-    style: TextStyle = MaterialTheme.typography.bodyMedium,
-    iconSize: Dp = 24.dp,
 ) {
     Row(
         modifier = modifier
@@ -39,12 +35,12 @@ fun TitleWithIconMenuItem(
             imageVector = icon,
             contentDescription = title,
             tint = tint,
-            modifier = Modifier.size(iconSize)
+            modifier = Modifier.size(20.dp)
         )
         Spacer(modifier = Modifier.width(12.dp))
         MenuItemText(
             text = title,
-            style = style,
+            style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(vertical = 12.dp)
         )
     }

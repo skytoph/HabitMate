@@ -1,12 +1,11 @@
 package com.github.skytoph.taski.presentation.habit.list.view
 
-import com.github.skytoph.taski.core.Matches
 import com.github.skytoph.taski.domain.habit.HabitWithEntries
 import com.github.skytoph.taski.presentation.habit.HabitWithHistoryUi
 import com.github.skytoph.taski.presentation.habit.list.HistoryUi
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitListUiMapper
 
-sealed class ViewType: Matches<ViewType> {
+sealed class ViewType : ProvideOptionUi<ViewType> {
     abstract fun map(mapper: HabitListUiMapper, habits: List<HabitWithEntries>)
             : List<HabitWithHistoryUi<HistoryUi>>
 
@@ -20,6 +19,8 @@ sealed class ViewType: Matches<ViewType> {
 
         override fun withEntries(entries: Int): ViewType = Calendar(entries)
 
+        override fun optionUi(): OptionUi = HabitsViewTypesProvider.optionCalendar
+
         override fun matches(item: ViewType): Boolean = item is Calendar
     }
 
@@ -29,6 +30,12 @@ sealed class ViewType: Matches<ViewType> {
 
         override fun withEntries(numberOfEntries: Int): ViewType = Daily(numberOfEntries)
 
+        override fun optionUi(): OptionUi = HabitsViewTypesProvider.optionDaily
+
         override fun matches(item: ViewType): Boolean = item is Daily
+    }
+
+    companion object {
+        val options = listOf(Calendar(), Daily())
     }
 }

@@ -9,7 +9,7 @@ import com.github.skytoph.taski.core.datastore.SettingsCache
 import com.github.skytoph.taski.presentation.appbar.InitAppBar
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitUiMapper
-import com.github.skytoph.taski.presentation.habit.list.view.HabitsViewOptionsProvider
+import com.github.skytoph.taski.presentation.habit.list.view.SortHabits
 import com.github.skytoph.taski.presentation.settings.SettingsViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -35,6 +35,7 @@ class ReorderHabitsViewModel @Inject constructor(
     }
 
     fun swap(from: Int, to: Int) {
+        if ((from < 0 || from > habits.value.size) || (to < 0 || to > habits.value.size)) return
         habits.value = habits.value.toMutableList().apply { add(to, removeAt(from)) }
     }
 
@@ -52,7 +53,7 @@ class ReorderHabitsViewModel @Inject constructor(
 sealed interface ReorderHabitsEvent : SettingsViewModel.Event {
     data object ApplyManualOrder : ReorderHabitsEvent {
         override suspend fun handle(settings: SettingsCache) {
-            settings.updateView(sortBy = HabitsViewOptionsProvider.optionSortManually)
+            settings.updateView(sortBy = SortHabits.Manually)
         }
     }
 }

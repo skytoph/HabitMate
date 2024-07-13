@@ -146,7 +146,6 @@ private fun SettingsMenuItem(
         icon = icon,
         onClick = onClick,
         tint = MaterialTheme.colorScheme.primary,
-        iconSize = 20.dp,
     )
 }
 

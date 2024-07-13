@@ -16,6 +16,7 @@ data class Settings(
 ) {
     companion object {
         fun default(mapper: InitializeEmptyValues): Settings = mapper.initialize(Settings())
+        val notInitialized: Settings = Settings()
     }
 }
 
@@ -33,6 +34,7 @@ class InitializeEmptyValues {
 
         return value.copy(
             weekStartsOnSunday = value.weekStartsOnSunday.initializeIfEmpty(weekStartDefault),
+            view = HabitsView(initialized = true)
         )
     }
 }

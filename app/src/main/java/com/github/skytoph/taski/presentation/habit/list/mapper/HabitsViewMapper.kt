@@ -16,10 +16,10 @@ interface HabitsViewMapper {
             val selector: (HabitWithEntries) -> Habit = { it.habit }
             val today: (HabitWithEntries) -> Int = { it.entries.entries[0]?.timesDone ?: 0 }
             val notArchived = FilterHabits.Archived().filter(habits = habits, selector = selector)
-            val filtered = view.filterBy.data
+            val filtered = view.filterBy
                 .filter(habits = notArchived, selector = selector, today = today)
-            val sorted = view.sortBy.data.sort(habits = filtered, selector = selector)
-            return view.viewType.data.map(mapper, sorted)
+            val sorted = view.sortBy.sort(habits = filtered, selector = selector)
+            return view.viewType.map(mapper, sorted)
         }
     }
 }

@@ -34,6 +34,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
@@ -88,20 +89,66 @@ fun HabitReorderScreen(
     }
 
     val state = viewModel.state().collectAsState()
-    HabitsReorder(
-        habits = viewModel.habits().value,
-        isOrderManual = SortHabits.Manually.matches(state.value.view.sortBy.data),
-        applyManualOrder = { viewModel.applyManualOrder() },
-        onSwap = { from, to -> viewModel.swap(from, to) },
-    )
+    Column(Modifier.fillMaxWidth()) {
+        AnimatedVisibility(
+            visible = !SortHabits.Manually.matches(state.value.view.sortBy),
+            enter = fadeIn() + expandVertically(),
+            exit = fadeOut() + shrinkVertically()
+        ) {
+            Row(
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .fillMaxWidth()
+                    .background(
+                        color = MaterialTheme.colorScheme.primaryContainer,
+                        shape = MaterialTheme.shapes.small
+                    )
+                    .padding(horizontal = 16.dp, vertical = 16.dp)
+                    .animateContentSize(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(id = R.drawable.arrow_up_down),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onBackground
+                )
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Text(
+                        text = stringResource(R.string.apply_manual_sorting_title),
+                        color = MaterialTheme.colorScheme.onBackground,
+                        style = MaterialTheme.typography.titleSmall,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                    Text(
+                        text = stringResource(R.string.apply_manual_sorting_description),
+                        color = MaterialTheme.colorScheme.onBackground,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                    Box(modifier = Modifier
+                        .clip(MaterialTheme.shapes.small)
+                        .clickable { viewModel.applyManualOrder() }
+                        .padding(horizontal = 8.dp, vertical = 8.dp)) {
+                        Text(
+                            text = "Apply",
+                            color = MaterialTheme.colorScheme.primary,
+                            style = MaterialTheme.typography.titleSmall,
+                        )
+                    }
+                }
+            }
+        }
+        HabitsReorder(
+            habits = viewModel.habits().value,
+            onSwap = { from, to -> viewModel.swap(from, to) },
+        )
+    }
 }
 
 @Composable
 private fun HabitsReorder(
     habits: List<HabitUi>,
-    isOrderManual: Boolean = false,
     onSwap: (Int, Int) -> Unit = { _, _ -> },
-    applyManualOrder: () -> Unit = {}
 ) {
     val state =
         rememberReorderableLazyListState(onMove = { from, to -> onSwap(from.index, to.index) })
@@ -119,54 +166,6 @@ private fun HabitsReorder(
             .detectReorderAfterLongPress(state),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        item {
-            AnimatedVisibility(
-                visible = !isOrderManual,
-                enter = fadeIn() + expandVertically(),
-                exit = fadeOut() + shrinkVertically()
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            color = MaterialTheme.colorScheme.primaryContainer,
-                            shape = MaterialTheme.shapes.small
-                        )
-                        .padding(horizontal = 16.dp, vertical = 16.dp)
-                        .animateContentSize(),
-                ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(id = R.drawable.arrow_up_down),
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onBackground
-                    )
-                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        Text(
-                            text = "Apply manual order",
-                            color = MaterialTheme.colorScheme.onBackground,
-                            style = MaterialTheme.typography.titleSmall,
-                            modifier = Modifier.padding(start = 8.dp)
-                        )
-                        Text(
-                            text = "Current order setting is: by color",
-                            color = MaterialTheme.colorScheme.onBackground,
-                            style = MaterialTheme.typography.bodySmall,
-                            modifier = Modifier.padding(start = 8.dp)
-                        )
-                        Box(modifier = Modifier
-                            .clip(MaterialTheme.shapes.small)
-                            .clickable { applyManualOrder() }
-                            .padding(horizontal = 8.dp, vertical = 8.dp)) {
-                            Text(
-                                text = "Apply",
-                                color = MaterialTheme.colorScheme.primary,
-                                style = MaterialTheme.typography.titleSmall,
-                            )
-                        }
-                    }
-                }
-            }
-        }
         items(habits, key = { it.id }) { habit ->
             ReorderableItem(state, key = habit.id) { isDragging ->
                 val elevation = animateDpAsState(
@@ -230,7 +229,7 @@ private fun DarkHabitReorderingPreview(@PreviewParameter(HabitsProvider::class) 
         Box(modifier = Modifier
             .fillMaxSize()
             .clickable { state.value = !state.value }) {
-            HabitsReorder(isOrderManual = state.value, habits = habits.map { it.habit })
+            HabitsReorder(habits = habits.map { it.habit })
         }
     }
 }

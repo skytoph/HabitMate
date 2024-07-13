@@ -3,9 +3,9 @@ package com.github.skytoph.taski.presentation.habit.list
 import androidx.compose.runtime.MutableState
 import com.github.skytoph.taski.core.datastore.SettingsCache
 import com.github.skytoph.taski.presentation.habit.HabitWithHistoryUi
-import com.github.skytoph.taski.presentation.habit.list.view.FilterOption
-import com.github.skytoph.taski.presentation.habit.list.view.SortOption
-import com.github.skytoph.taski.presentation.habit.list.view.ViewOption
+import com.github.skytoph.taski.presentation.habit.list.view.FilterHabits
+import com.github.skytoph.taski.presentation.habit.list.view.SortHabits
+import com.github.skytoph.taski.presentation.habit.list.view.ViewType
 import com.github.skytoph.taski.presentation.settings.SettingsViewModel
 
 interface HabitListEvent {
@@ -18,9 +18,9 @@ interface HabitListEvent {
     }
 
     class UpdateView(
-        private val viewType: ViewOption? = null,
-        private val sortBy: SortOption? = null,
-        private val filterBy: FilterOption? = null
+        private val viewType: ViewType? = null,
+        private val sortBy: SortHabits? = null,
+        private val filterBy: FilterHabits? = null
     ) : SettingsViewModel.Event {
         override suspend fun handle(settings: SettingsCache) {
             settings.updateView(viewType, sortBy, filterBy)

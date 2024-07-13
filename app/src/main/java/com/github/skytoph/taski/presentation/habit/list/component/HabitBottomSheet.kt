@@ -7,8 +7,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -36,7 +37,8 @@ fun HabitBottomSheet(
 ) {
     ModalBottomSheet(
         onDismissRequest = hideBottomSheet,
-        sheetState = state
+        sheetState = state,
+        containerColor = MaterialTheme.colorScheme.primaryContainer
     ) {
         Column(
             modifier = Modifier
@@ -45,22 +47,22 @@ fun HabitBottomSheet(
                 .padding(16.dp)
         ) {
             TitleWithIconMenuItem(
-                title = "edit",
+                title = stringResource(R.string.habit_menu_edit),
                 icon = ImageVector.vectorResource(id = R.drawable.pencil),
                 onClick = { hideBottomSheet(); editHabit() })
-            Divider()
+            HorizontalDivider()
             TitleWithIconMenuItem(
-                title = "archive",
+                title = stringResource(R.string.habit_menu_archive),
                 icon = ImageVector.vectorResource(id = R.drawable.archive_down),
                 onClick = { archiveHabit() })
-            Divider()
+            HorizontalDivider()
             TitleWithIconMenuItem(
-                title = "delete",
+                title = stringResource(R.string.habit_menu_delete),
                 icon = ImageVector.vectorResource(id = R.drawable.trash),
                 onClick = { deleteHabit() })
-            Divider()
+            HorizontalDivider()
             TitleWithIconMenuItem(
-                title = "reorder habits",
+                title = stringResource(R.string.habit_menu_reorder_habits),
                 icon = ImageVector.vectorResource(id = R.drawable.arrow_up_down),
                 onClick = { hideBottomSheet(); reorder() })
 

@@ -23,8 +23,7 @@ object DataStoreModule {
 
     @Provides
     @Singleton
-    fun settings(dataStore: DataStore<Settings>, mapper: InitializeEmptyValues): SettingsCache =
-        SettingsCache.Base(dataStore = dataStore, mapper = mapper)
+    fun settings(dataStore: DataStore<Settings>): SettingsCache = SettingsCache.Base(dataStore = dataStore)
 
     @Provides
     fun mapper(): InitializeEmptyValues = InitializeEmptyValues()

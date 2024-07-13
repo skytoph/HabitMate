@@ -136,6 +136,13 @@
     <string name="week_starts_on_sunday">week starts on sunday</string>
     <string name="highlight_current_day">highlight current day</string>
     <string name="highlight_streaks">highlight streaks</string>
+    <string name="filter_archived">Archived</string>
+    <string name="apply_manual_sorting_description">The current order: by color.\n To apply order changes, switch to manual sorting.</string>
+    <string name="apply_manual_sorting_title">Switch to Manual Sorting?</string>
+    <string name="habit_menu_edit">Edit</string>
+    <string name="habit_menu_archive">Archive</string>
+    <string name="habit_menu_delete">Delete</string>
+    <string name="habit_menu_reorder_habits">Reorder habits</string>
 
     <plurals name="times_label">
         <item quantity="one">time</item>
