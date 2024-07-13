@@ -13,8 +13,9 @@ class EntriesCalendarUiMapper(
 ) : HabitHistoryUiMapper<HistoryUi, ViewType.Calendar> {
 
     override fun map(numberOfColumns: Int, goal: Int, history: EntryList, stats: HabitStatisticsUi): HistoryUi {
+        val timesDone = history.entries[0]?.timesDone ?: 0
         val todayDonePercent =
-            ColorPercentMapper.toColorPercent(history.entries[0]?.timesDone ?: 0, goal)
+            ColorPercentMapper.toColorPercent(timesDone, goal)
         if (numberOfColumns == 0) return HistoryUi(entries = emptyList(), todayDonePercent)
 
         val numberOfCells: Int = max(COLUMNS, numberOfColumns) * ROWS
@@ -23,7 +24,7 @@ class EntriesCalendarUiMapper(
         val entries = (numberOfCells - todayPosition - 1 downTo -todayPosition).map { index ->
             mapper.map(history = history, daysAgo = index, goal = goal)
         }
-        return HistoryUi(entries = entries, todayDonePercent = todayDonePercent)
+        return HistoryUi(entries = entries, todayDonePercent = todayDonePercent, todayDone = timesDone)
     }
 
     private companion object {

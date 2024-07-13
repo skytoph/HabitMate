@@ -2,6 +2,8 @@
 
 package com.github.skytoph.taski.presentation.habit.list.component
 
+import androidx.compose.animation.Animatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -15,7 +17,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material3.Card
@@ -24,6 +25,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,8 +39,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.github.skytoph.taski.R
-import com.github.skytoph.taski.presentation.core.color.habitColor
 import com.github.skytoph.taski.presentation.core.component.HabitTitleWithIcon
+import com.github.skytoph.taski.presentation.core.component.ProgressCircle
 import com.github.skytoph.taski.presentation.core.preview.HabitProvider
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.HabitWithHistoryUi
@@ -54,6 +57,11 @@ fun HabitCalendar(
     onClick: () -> Unit = {},
     onLongClick: () -> Unit = {}
 ) {
+    val defaultColor = MaterialTheme.colorScheme.secondaryContainer
+    val color = remember { Animatable(if (history.todayDonePercent >= 1f) habit.color else defaultColor) }
+    LaunchedEffect(history.todayDonePercent) {
+        color.animateTo(if (history.todayDonePercent >= 1f) habit.color else defaultColor, animationSpec = tween(300))
+    }
     BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
         val entries = calculateNumberOfCalendarEntries(maxWidth = maxWidth)
         updateEntries(entries)
@@ -70,7 +78,9 @@ fun HabitCalendar(
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth().padding(start = 8.dp, end = 8.dp, top = 8.dp, bottom = 4.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 8.dp, end = 8.dp, top = 8.dp, bottom = 4.dp)
                 ) {
                     HabitTitleWithIcon(
                         modifier = Modifier.weight(1f),
@@ -78,18 +88,23 @@ fun HabitCalendar(
                         color = habit.color,
                         title = habit.title
                     )
-                    Box(Modifier.clickable { onDone() }) {
-                        val defaultColor = MaterialTheme.colorScheme.secondaryContainer
-                        val color = habitColor(history.todayDonePercent, defaultColor, habit.color)
+                    Box(
+                        modifier = Modifier
+                            .clip(MaterialTheme.shapes.small)
+                            .clickable { onDone() }
+                            .background(color = color.value)) {
+                        if (habit.goal > 1) ProgressCircle(
+                            goal = habit.goal,
+                            done = history.todayDone,
+                            size = 32.dp,
+                            padding = 2.dp,
+                            color = habit.color
+                        )
                         Icon(
                             imageVector = Icons.Outlined.Check,
                             contentDescription = null,
                             modifier = Modifier
                                 .size(32.dp)
-                                .background(
-                                    color = color,
-                                    shape = RoundedCornerShape(30)
-                                )
                                 .padding(6.dp),
                             tint = Color.White
                         )
@@ -112,7 +127,7 @@ fun HabitCardPreview(
     @PreviewParameter(HabitProvider::class, limit = 1) habit: HabitWithHistoryUi<HistoryUi>
 ) {
     HabitMateTheme {
-        HabitCalendar(habit = habit.habit, history = habit.history)
+        HabitCalendar(habit = habit.habit.copy(goal = 2), history = habit.history.copy(todayDone = 2))
     }
 }
 
