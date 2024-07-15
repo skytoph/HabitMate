@@ -49,7 +49,7 @@ sealed class FrequencyCustomType : MapToDatesCustom, ScheduleAlarm {
 
         override fun map(): Frequency.Custom.Type = Frequency.Custom.Type.Day
 
-        override fun dates(mapper: HabitDateMapper, timesCount: Int, typeCount: Int) =
+        override fun dates(mapper: HabitDateMapper, isFirstDaySunday: Boolean, timesCount: Int, typeCount: Int) =
             mapper.mapCustomDay(timesCount, typeCount)
     }
 
@@ -61,8 +61,8 @@ sealed class FrequencyCustomType : MapToDatesCustom, ScheduleAlarm {
 
         override fun map(): Frequency.Custom.Type = Frequency.Custom.Type.Week
 
-        override fun dates(mapper: HabitDateMapper, timesCount: Int, typeCount: Int) =
-            mapper.mapCustomWeek(timesCount, typeCount)
+        override fun dates(mapper: HabitDateMapper, isFirstDaySunday: Boolean, timesCount: Int, typeCount: Int) =
+            mapper.mapCustomWeek(isFirstDaySunday, timesCount, typeCount)
     }
 
     data object Month : FrequencyCustomType() {
@@ -73,14 +73,10 @@ sealed class FrequencyCustomType : MapToDatesCustom, ScheduleAlarm {
 
         override fun map(): Frequency.Custom.Type = Frequency.Custom.Type.Month
 
-        override fun dates(mapper: HabitDateMapper, timesCount: Int, typeCount: Int) =
+        override fun dates(mapper: HabitDateMapper, isFirstDaySunday: Boolean, timesCount: Int, typeCount: Int) =
             mapper.mapCustomMonth(timesCount, typeCount)
 
         override fun schedule(scheduler: AlarmScheduler, context: Context, items: List<AlarmItem>) =
             scheduler.schedule(context, items)
-    }
-
-    companion object {
-        val values = listOf(Day, Week, Month)
     }
 }

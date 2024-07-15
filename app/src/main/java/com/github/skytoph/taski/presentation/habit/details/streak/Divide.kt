@@ -7,8 +7,7 @@ interface Divide {
 
     class Week(private val now: Now, private val weeks: Int) : Divide {
 
-        override fun divide(daysAgo: Int): Int =
-            (daysAgo + now.dayOfWeek(daysAgo) - 1) / (7 * weeks)
+        override fun divide(daysAgo: Int): Int = (daysAgo + now.dayOfWeek(now.default, daysAgo) - 1) / (7 * weeks)
 
     }
 

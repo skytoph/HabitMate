@@ -8,6 +8,7 @@ import com.github.skytoph.taski.core.datastore.SettingsCache
 import com.github.skytoph.taski.domain.habit.HabitWithEntries
 import com.github.skytoph.taski.presentation.appbar.InitAppBar
 import com.github.skytoph.taski.presentation.habit.HabitUi
+import com.github.skytoph.taski.presentation.habit.HabitWithHistoryUi
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitsViewMapper
 import com.github.skytoph.taski.presentation.habit.list.view.HabitsView
 import com.github.skytoph.taski.presentation.settings.SettingsViewModel
@@ -29,7 +30,7 @@ class HabitsViewModel @Inject constructor(
     initAppBar: InitAppBar
 ) : SettingsViewModel<SettingsViewModel.Event>(settings, initAppBar) {
 
-    val view = state()
+    val view = settings()
 
     init {
         onEvent(HabitListEvent.Progress)
@@ -40,8 +41,9 @@ class HabitsViewModel @Inject constructor(
             .launchIn(viewModelScope)
     }
 
-    private fun applyViewState(habits: List<HabitWithEntries>, viewState: HabitsView) =
-        viewState.map(mapper, habits)
+    private fun applyViewState(
+        habits: List<HabitWithEntries>, viewState: HabitsView
+    ): List<HabitWithHistoryUi<HistoryUi>>? = viewState.map(mapper, habits, settings().value)
 
     fun habitDone(habit: HabitUi, daysAgo: Int = 0) = viewModelScope.launch(Dispatchers.IO) {
         interactor.habitDone(habit, daysAgo)

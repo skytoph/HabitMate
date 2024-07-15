@@ -1,15 +1,15 @@
 package com.github.skytoph.taski.presentation.habit.edit
 
+import com.github.skytoph.taski.core.CalendarProvider
 import com.github.skytoph.taski.core.alarm.AlarmItem
 import java.util.Calendar
-import java.util.TimeZone
 
 interface AddMonthMapper {
     fun addMonth(item: AlarmItem): Calendar
 
     class Base : AddMonthMapper {
         override fun addMonth(item: AlarmItem): Calendar {
-            val calendar = Calendar.getInstance(TimeZone.getDefault())
+            val calendar = CalendarProvider.getCalendar(false)
             calendar.timeInMillis = item.timeMillis
             return calendar.apply {
                 val daysInMonth = getActualMaximum(Calendar.DAY_OF_MONTH)

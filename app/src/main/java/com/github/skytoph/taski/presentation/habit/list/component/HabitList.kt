@@ -76,7 +76,7 @@ private fun HabitCard(
 @Preview(showSystemUi = true, showBackground = true)
 fun HabitListPreview(@PreviewParameter(HabitsProvider::class) habits: List<HabitWithHistoryUi<HistoryUi>>) {
     HabitMateTheme {
-        HabitList(habits = habits)
+        HabitList(habits = habits,)
     }
 }
 
@@ -84,6 +84,6 @@ fun HabitListPreview(@PreviewParameter(HabitsProvider::class) habits: List<Habit
 @Preview(showBackground = true, showSystemUi = true)
 fun DarkHabitListPreview(@PreviewParameter(HabitsProvider::class) habits: List<HabitWithHistoryUi<HistoryUi>>) {
     HabitMateTheme(darkTheme = true) {
-        HabitList(habits = habits)
+        HabitList(habits = habits,)
     }
 }

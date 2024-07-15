@@ -8,7 +8,12 @@ import com.github.skytoph.taski.presentation.habit.details.mapper.HabitStatistic
 import com.github.skytoph.taski.presentation.habit.list.view.ViewType
 
 interface HabitWithHistoryUiMapper<T : HabitHistoryUi, V : ViewType> {
-    fun map(habitWithEntries: HabitWithEntries, entries: Int): HabitWithHistoryUi<T>
+    fun map(
+        habitWithEntries: HabitWithEntries,
+        entries: Int,
+        isBorderOn: Boolean,
+        isFirstDaySunday: Boolean
+    ): HabitWithHistoryUi<T>
 
     abstract class Abstract<T : HabitHistoryUi, V : ViewType>(
         private val habitMapper: HabitUiMapper,
@@ -16,13 +21,20 @@ interface HabitWithHistoryUiMapper<T : HabitHistoryUi, V : ViewType> {
         private val statsMapper: HabitStatisticsMapper
     ) : HabitWithHistoryUiMapper<T, V> {
 
-        override fun map(habitWithEntries: HabitWithEntries, entries: Int): HabitWithHistoryUi<T> {
+        override fun map(
+            habitWithEntries: HabitWithEntries,
+            entries: Int,
+            isBorderOn: Boolean,
+            isFirstDaySunday: Boolean
+        ): HabitWithHistoryUi<T> {
             val habitUi = habitMapper.map(habitWithEntries.habit)
             val historyUi = historyMapper.map(
                 page = entries,
                 goal = habitWithEntries.habit.goal,
                 history = habitWithEntries.entries,
-                stats = HabitStatisticsUi()
+                stats = HabitStatisticsUi(),
+                isBorderOn = isBorderOn,
+                isFirstDaySunday = isFirstDaySunday
             )
             return HabitWithHistoryUi(habit = habitUi, history = historyUi)
         }

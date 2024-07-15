@@ -30,7 +30,7 @@ interface EditHabitInteractor : HabitDoneInteractor, NotificationInteractor {
             repository.update(habit.map(mapper, context))
         }
 
-        override fun scheduleNotification(habit: HabitUi, context: Context) =
-            habit.frequency.schedule(scheduler, context, notificationMapper.map(habit, context))
+        override fun scheduleNotification(habit: HabitUi, context: Context, isFirstDaySunday: Boolean) =
+            habit.frequency.schedule(scheduler, context, notificationMapper.map(habit, context, isFirstDaySunday))
     }
 }

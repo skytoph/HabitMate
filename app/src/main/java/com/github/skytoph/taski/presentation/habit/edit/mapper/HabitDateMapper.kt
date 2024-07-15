@@ -1,23 +1,25 @@
 package com.github.skytoph.taski.presentation.habit.edit.mapper
 
+import com.github.skytoph.taski.core.CalendarProvider
+import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyUi
 import java.util.Calendar
-import java.util.TimeZone
 
 interface HabitDateMapper {
     fun mapEveryday(): Map<Int, Calendar>
-    fun mapDaily(days: Set<Int>): Map<Int, Calendar>
+    fun mapDaily(isFirstDaySunday: Boolean, days: Set<Int>): Map<Int, Calendar>
     fun mapMonthly(days: Set<Int>): Map<Int, Calendar>
     fun mapCustomDay(timesCount: Int, typeCount: Int): Map<Int, Calendar>
-    fun mapCustomWeek(timesCount: Int, typeCount: Int): Map<Int, Calendar>
+    fun mapCustomWeek(isFirstDaySunday: Boolean, timesCount: Int, typeCount: Int): Map<Int, Calendar>
     fun mapCustomMonth(timesCount: Int, typeCount: Int): Map<Int, Calendar>
 
-    class Base(private val timeZone: TimeZone = TimeZone.getDefault()) : HabitDateMapper {
+    class Base : HabitDateMapper {
 
         override fun mapEveryday(): Map<Int, Calendar> = mapOf(1 to calendar())
 
-        override fun mapDaily(days: Set<Int>): Map<Int, Calendar> = days.associateWith { day ->
-            calendar().apply { set(Calendar.DAY_OF_WEEK, dayOfWeekCalendar(day)) }
-        }
+        override fun mapDaily(isFirstDaySunday: Boolean, days: Set<Int>): Map<Int, Calendar> =
+            days.associateWith { day ->
+                calendar().apply { set(Calendar.DAY_OF_WEEK, dayOfWeekCalendar(FrequencyUi.NOW_DEFAULT, day)) }
+            }
 
         override fun mapMonthly(days: Set<Int>): Map<Int, Calendar> = days.associateWith { day ->
             calendar().apply {
@@ -33,11 +35,11 @@ interface HabitDateMapper {
             }
         }
 
-        override fun mapCustomWeek(timesCount: Int, typeCount: Int): Map<Int, Calendar> {
+        override fun mapCustomWeek(isFirstDaySunday: Boolean, timesCount: Int, typeCount: Int): Map<Int, Calendar> {
             val step = typeCount * 7 / timesCount
             return (0 until timesCount).associate {
                 val day = step * it
-                day to calendar().apply {
+                day to calendar(isFirstDaySunday).apply {
                     set(Calendar.DAY_OF_WEEK, firstDayOfWeek)
                     add(Calendar.DAY_OF_YEAR, day)
                 }
@@ -55,17 +57,18 @@ interface HabitDateMapper {
             }
         }
 
-        private fun dayOfWeekCalendar(day: Int): Int =
-            calendar().let { (day + it.firstDayOfWeek + 5) % 7 + 1 }
+        private fun dayOfWeekCalendar(isFirstDaySunday: Boolean, day: Int): Int =
+            calendar(isFirstDaySunday).let { (day + it.firstDayOfWeek + 5) % 7 + 1 }
 
-        private fun calendar(): Calendar = Calendar.getInstance(timeZone)
+        private fun calendar(isFirstDaySunday: Boolean = false): Calendar =
+            CalendarProvider.getCalendar(isFirstDaySunday)
     }
 }
 
 interface MapToDates {
-    fun dates(mapper: HabitDateMapper): Map<Int, Calendar>
+    fun dates(mapper: HabitDateMapper, isFirstDaySunday: Boolean): Map<Int, Calendar>
 }
 
 interface MapToDatesCustom {
-    fun dates(mapper: HabitDateMapper, timesCount: Int, typeCount: Int): Map<Int, Calendar>
+    fun dates(mapper: HabitDateMapper, isFirstDaySunday: Boolean, timesCount: Int, typeCount: Int): Map<Int, Calendar>
 }

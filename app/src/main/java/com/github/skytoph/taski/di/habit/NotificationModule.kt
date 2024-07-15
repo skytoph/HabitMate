@@ -4,7 +4,7 @@ import com.github.skytoph.taski.core.alarm.AlarmScheduler
 import com.github.skytoph.taski.core.alarm.HabitUriConverter
 import com.github.skytoph.taski.domain.habit.HabitRepository
 import com.github.skytoph.taski.presentation.habit.edit.AddMonthMapper
-import com.github.skytoph.taski.presentation.habit.edit.NotificationInteractor
+import com.github.skytoph.taski.presentation.habit.edit.NotificationStateInteractor
 import com.github.skytoph.taski.presentation.habit.edit.mapper.HabitDateMapper
 import com.github.skytoph.taski.presentation.habit.edit.mapper.HabitNotificationMapper
 import dagger.Module
@@ -20,10 +20,8 @@ object NotificationModule {
     fun interactor(
         repository: HabitRepository,
         scheduler: AlarmScheduler,
-        notificationMapper: HabitNotificationMapper,
         rescheduleMapper: AddMonthMapper
-    ): NotificationInteractor =
-        NotificationInteractor.Base(repository, scheduler, notificationMapper, rescheduleMapper)
+    ): NotificationStateInteractor = NotificationStateInteractor.Base(repository, scheduler, rescheduleMapper)
 
     @Provides
     fun rescheduleMapper(): AddMonthMapper = AddMonthMapper.Base()

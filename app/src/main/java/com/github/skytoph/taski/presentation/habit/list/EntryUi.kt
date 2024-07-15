@@ -12,5 +12,6 @@ data class HistoryUi(
 data class EntryUi(
     val daysAgo: Int = 0,
     val percentDone: Float = 0F,
+    val timesDone: Int = 0,
     val hasBorder: Boolean = false,
 ) : HabitEntryUi

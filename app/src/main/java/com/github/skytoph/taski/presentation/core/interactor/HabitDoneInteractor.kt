@@ -6,7 +6,7 @@ import com.github.skytoph.taski.domain.habit.HabitRepository
 import com.github.skytoph.taski.presentation.habit.HabitUi
 
 interface HabitDoneInteractor {
-    suspend fun habitDone(habit: HabitUi, daysAgo: Int = 0)
+    suspend fun habitDone(habit: HabitUi, daysAgo: Int = 0): Entry
     suspend fun entry(id: Long, daysAgo: Int): Entry
 
     class Base(private val repository: HabitRepository, private val now: Now) :
@@ -17,14 +17,15 @@ interface HabitDoneInteractor {
             return repository.entry(id, timestamp) ?: Entry(timestamp, 0)
         }
 
-        override suspend fun habitDone(habit: HabitUi, daysAgo: Int) {
+        override suspend fun habitDone(habit: HabitUi, daysAgo: Int): Entry {
             val entry = entry(habit.id, daysAgo)
             val timesDone = entry.timesDone.plus(1)
-            val newEntry = entry.copy(timesDone = timesDone)
+            val newEntry = entry.copy(timesDone = if (timesDone <= habit.goal) timesDone else 0)
             if (timesDone <= habit.goal)
                 repository.insertEntry(habit.id, newEntry)
             else
                 repository.deleteEntry(habit.id, newEntry)
+            return newEntry
         }
     }
 }

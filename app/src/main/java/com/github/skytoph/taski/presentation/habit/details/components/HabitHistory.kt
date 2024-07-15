@@ -55,6 +55,7 @@ import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.color.contrastColor
 import com.github.skytoph.taski.presentation.core.component.WeekDayLabel
 import com.github.skytoph.taski.presentation.core.component.getLocale
+import com.github.skytoph.taski.presentation.core.component.weekDayCalendar
 import com.github.skytoph.taski.presentation.core.fadingEdge
 import com.github.skytoph.taski.presentation.core.leftFadingEdge
 import com.github.skytoph.taski.presentation.core.preview.HabitsEditableProvider
@@ -73,6 +74,7 @@ fun HabitHistory(
     entries: Flow<PagingData<EditableHistoryUi>>,
     goal: Int = 1,
     habitColor: Color = IconsColors.Default,
+    isFirstDaySunday: Boolean = false,
     onEdit: () -> Unit = {},
 ) {
     Column(
@@ -89,6 +91,7 @@ fun HabitHistory(
             entries = entries,
             habitColor = habitColor,
             goal = goal,
+            isFirstDaySunday = isFirstDaySunday,
         )
         Box(modifier = Modifier
             .fillMaxWidth()
@@ -120,6 +123,7 @@ fun HabitHistoryGrid(
     squareDp: Dp = 32.dp,
     squareOffsetDp: Dp = 1.dp,
     initialOffsetDp: Dp = 4.dp,
+    isFirstDaySunday: Boolean,
 ) {
     val items = entries.collectAsLazyPagingItems()
 
@@ -158,7 +162,7 @@ fun HabitHistoryGrid(
                             modifier = Modifier
                                 .size(squareDp)
                                 .padding(start = 4.dp),
-                            index = index,
+                            index = weekDayCalendar(isFirstDaySunday, index),
                             alignment = Alignment.CenterStart
                         )
                 }
@@ -308,7 +312,7 @@ private fun MonthLabel(
 fun DarkCalendarEditableGridPreview(@PreviewParameter(HabitsEditableProvider::class) entries: List<EditableHistoryUi>) {
     HabitMateTheme(darkTheme = true) {
         Surface(modifier = Modifier.padding(16.dp)) {
-            HabitHistory(flowOf(PagingData.from(entries)))
+            HabitHistory(flowOf(PagingData.from(entries)), isFirstDaySunday = false)
         }
     }
 }

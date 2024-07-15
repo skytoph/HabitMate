@@ -42,7 +42,7 @@ fun GeneralSettingsScreen(
     }
 
     GeneralContent(
-        state = viewModel.state().collectAsState(),
+        state = viewModel.settings().collectAsState(),
         weekStartChange = { viewModel.onEvent(GeneralSettingsEvent.ToggleWeekStart) },
         currentDayHighlightChange = { viewModel.onEvent(GeneralSettingsEvent.ToggleCurrentDayHighlight) },
         streakHighlightChange = { viewModel.onEvent(GeneralSettingsEvent.ToggleStreakHighlight) },

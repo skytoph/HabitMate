@@ -62,7 +62,7 @@ object HabitRepositoryModule {
 
     @Provides
     @Singleton
-    fun provider(now: Now): CalculatorProvider = CalculatorProvider.Base(now)
+    fun provider(): CalculatorProvider = CalculatorProvider.Base()
 
     @Provides
     @Singleton

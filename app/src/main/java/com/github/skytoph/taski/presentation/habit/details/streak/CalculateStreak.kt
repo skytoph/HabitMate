@@ -53,7 +53,7 @@ interface CalculateStreak {
 
     abstract class Iterable(
         private val days: Set<Int> = emptySet(),
-        private val counter: StreakCounterCache = StreakCounterCache(),
+        protected val counter: StreakCounterCache = StreakCounterCache(),
     ) : Abstract(days), StartAndEnd {
 
         override fun streaks(data: Map<Int, Entry>, goal: Int, days: List<Int>): List<Streak> =
@@ -62,20 +62,17 @@ interface CalculateStreak {
                 val streaks: MutableList<Streak> = mutableListOf()
 
                 val dataIterator = data.keys.iterator()
-                var daysIterator = days.listIterator()
+                val daysIterator = LoopIterator(days)
 
                 val today = dayNumber(0)
                 var dayNextValue = daysIterator.next()
-                    .also { if (!daysIterator.hasNext()) daysIterator = days.listIterator() }
-                var dayCurrentValue = dayNextValue
                 while (dayNextValue > today && daysIterator.hasNext()) {
                     dayNextValue = daysIterator.next()
                 }
                 if (!daysIterator.hasNext() && dayNextValue > today) {
-                    daysIterator = days.listIterator()
                     dayNextValue = daysIterator.next()
                 }
-                var currentStreak = days.indexOf(dayNextValue)
+                var currentStreak = mutableListOf(days.indexOf(dayNextValue))
 
                 var dayNextPosition = findNextPosition(-1, dayNextValue)
                 var dataNextPosition = dataIterator.next()
@@ -89,19 +86,11 @@ interface CalculateStreak {
                         }
 
                         dayNextPosition < dataNextPosition -> dayNextPosition.also {
-                            if (!daysIterator.hasNext()) {
-                                daysIterator = days.listIterator()
-                            }
-                            dayCurrentValue = dayNextValue
                             dayNextValue = daysIterator.next()
                             dayNextPosition = findNextPosition(dayNextPosition, dayNextValue)
                         }
 
                         else -> dayNextPosition.also {
-                            if (!daysIterator.hasNext()) {
-                                daysIterator = days.listIterator()
-                            }
-                            dayCurrentValue = dayNextValue
                             dayNextValue = daysIterator.next()
                             dayNextPosition = findNextPosition(dayNextPosition, dayNextValue)
                             dataNextPosition =
@@ -114,20 +103,49 @@ interface CalculateStreak {
                     when {
                         entry == null || !entry.isCompleted(goal) -> {
                             counter.save(list = streaks)
-                            currentStreak = 0
+                            currentStreak[0] = 0
                         }
 
                         else -> {
-                            val isPointedToGoal = dayNumber(daysAgo) == dayCurrentValue
-                            if (isPointedToGoal) currentStreak++
-                            if (isPointedToGoal && currentStreak == days.size) {
-                                val start = end(daysAgo)
-                                val end = start(daysAgo)
-                                counter.add(count = 1, start = end)
-                                counter.setStart(start = start)
-                                currentStreak = 0
-                            } else
-                                counter.add(count = 1, start = daysAgo)
+                            val isPointedToGoal = dayNumber(daysAgo) == daysIterator.previousAndReturnBack(2)
+                            if (isPointedToGoal) currentStreak[0]++
+                            when {
+                                isPointedToGoal && currentStreak[0] == days.size -> {
+                                    val start = end(daysAgo)
+                                    val end = start(daysAgo)
+                                    val next = if (streaks.isEmpty()
+                                        && daysIterator.nextAndReturnBack(2) != days.last()
+                                        && isStreakCurrently(data, goal)
+                                    ) findPosition(start, daysIterator.nextAndReturnBack(2)) + 1 else start
+                                    counter.add(count = 1, start = end)
+                                    counter.setStart(start = next)
+                                    currentStreak[0] = 0
+                                }
+
+                                isPointedToGoal && dayNumber(daysAgo) == days.last() -> {
+                                    val next = daysIterator.previousAndReturnBack(3)
+                                    val position = findPosition(end(daysAgo), next) + 1
+                                    counter.add(count = 1, start = position, end = start(daysAgo))
+                                }
+
+                                isPointedToGoal && dayNumber(daysAgo) == days.first() -> {
+                                    val next = daysIterator.previousAndReturnBack()
+                                    val position = findPosition(end(daysAgo), next) - 1
+                                    counter.add(count = 1, start = end(daysAgo), end = position)
+                                }
+
+                                isPointedToGoal -> {
+                                    val next = daysIterator.previousAndReturnBack()
+                                    val prev = daysIterator.previousAndReturnBack(3)
+                                    val positionNext = findPosition(end(daysAgo), next) - 1
+                                    val positionPrev = findPosition(end(daysAgo), prev) + 1
+                                    counter.add(count = 1, start = positionPrev, end = positionNext)
+                                }
+
+                                else -> {
+                                    counter.add(count = 1)
+                                }
+                            }
                         }
                     }
                 }
@@ -173,5 +191,41 @@ interface CalculateStreak {
         companion object {
             private const val BREAK_VALUE = -1
         }
+    }
+}
+
+class LoopIterator<T>(private val data: List<T>) : ListIterator<T> {
+    private var iterator: ListIterator<T> = data.listIterator()
+
+    override fun hasNext(): Boolean = iterator.hasNext()
+
+    override fun next(): T {
+        if (!iterator.hasNext()) iterator = data.listIterator()
+        return iterator.next()
+    }
+
+    override fun hasPrevious(): Boolean = iterator.hasPrevious()
+
+    override fun nextIndex(): Int = iterator.nextIndex()
+
+    override fun previous(): T {
+        if (!iterator.hasPrevious()) iterator = data.listIterator(data.size)
+        return iterator.previous()
+    }
+
+    override fun previousIndex(): Int = iterator.previousIndex()
+
+    fun nextAndReturnBack(repeat: Int = 1): T {
+        repeat(repeat - 1) { next() }
+        val result = next()
+        repeat(repeat) { previous() }
+        return result
+    }
+
+    fun previousAndReturnBack(repeat: Int = 1): T {
+        repeat(repeat - 1) { previous() }
+        val result = previous()
+        repeat(repeat) { next() }
+        return result
     }
 }

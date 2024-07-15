@@ -6,16 +6,18 @@ import com.github.skytoph.taski.presentation.habit.list.HistoryUi
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitListUiMapper
 
 sealed class ViewType : ProvideOptionUi<ViewType> {
-    abstract fun map(mapper: HabitListUiMapper, habits: List<HabitWithEntries>)
-            : List<HabitWithHistoryUi<HistoryUi>>
+    abstract fun map(
+        mapper: HabitListUiMapper, habits: List<HabitWithEntries>, isBorderOn: Boolean, isFirstDaySunday: Boolean
+    ): List<HabitWithHistoryUi<HistoryUi>>
 
     abstract fun withEntries(entries: Int): ViewType
 
     abstract val entries: Int
 
     data class Calendar(override val entries: Int = 0) : ViewType() {
-        override fun map(mapper: HabitListUiMapper, habits: List<HabitWithEntries>) =
-            mapper.mapCalendar(habits, entries)
+        override fun map(
+            mapper: HabitListUiMapper, habits: List<HabitWithEntries>, isBorderOn: Boolean, isFirstDaySunday: Boolean
+        ) = mapper.mapCalendar(habits, entries, isBorderOn, isFirstDaySunday)
 
         override fun withEntries(entries: Int): ViewType = Calendar(entries)
 
@@ -25,8 +27,9 @@ sealed class ViewType : ProvideOptionUi<ViewType> {
     }
 
     data class Daily(override val entries: Int = 0) : ViewType() {
-        override fun map(mapper: HabitListUiMapper, habits: List<HabitWithEntries>) =
-            mapper.mapDaily(habits, entries)
+        override fun map(
+            mapper: HabitListUiMapper, habits: List<HabitWithEntries>, isBorderOn: Boolean, isFirstDaySunday: Boolean
+        ) = mapper.mapDaily(habits, entries, isBorderOn)
 
         override fun withEntries(numberOfEntries: Int): ViewType = Daily(numberOfEntries)
 

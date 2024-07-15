@@ -8,35 +8,39 @@ import com.github.skytoph.taski.presentation.habit.details.streak.CalculateMonth
 import com.github.skytoph.taski.presentation.habit.details.streak.CalculateStreak
 
 interface CalculatorProvider {
-    fun provideEveryday(): CalculateStreak
-    fun provideMonthly(isEveryday: Boolean, days: Set<Int>): CalculateStreak
-    fun provideDaily(isEveryday: Boolean, days: Set<Int>): CalculateStreak
-    fun provideCustomDaily(isEveryday: Boolean, times: Int, type: Int): CalculateStreak
-    fun provideCustomWeekly(isEveryday: Boolean, times: Int, type: Int): CalculateStreak
-    fun provideCustomMonthly(isEveryday: Boolean, times: Int, type: Int): CalculateStreak
+    fun provideEveryday(isFirstDaySunday: Boolean): CalculateStreak
+    fun provideMonthly(isFirstDaySunday: Boolean, isEveryday: Boolean, days: Set<Int>): CalculateStreak
+    fun provideDaily(isFirstDaySunday: Boolean, isEveryday: Boolean, days: Set<Int>): CalculateStreak
+    fun provideCustomDaily(isFirstDaySunday: Boolean, isEveryday: Boolean, times: Int, type: Int): CalculateStreak
+    fun provideCustomWeekly(isFirstDaySunday: Boolean, isEveryday: Boolean, times: Int, type: Int): CalculateStreak
+    fun provideCustomMonthly(isFirstDaySunday: Boolean, isEveryday: Boolean, times: Int, type: Int): CalculateStreak
 
-    class Base(private val now: Now) : CalculatorProvider {
+    class Base : CalculatorProvider {
 
-        override fun provideEveryday() = CalculateEverydayStreak()
+        override fun provideEveryday(isFirstDaySunday: Boolean) = CalculateEverydayStreak()
 
-        override fun provideDaily(isEveryday: Boolean, days: Set<Int>) =
-            if (isEveryday) provideEveryday() else CalculateDailyStreak(now, days)
+        override fun provideDaily(isFirstDaySunday: Boolean, isEveryday: Boolean, days: Set<Int>) =
+            if (isEveryday) provideEveryday(isFirstDaySunday)
+            else CalculateDailyStreak(provideNow(isFirstDaySunday), days)
 
-        override fun provideMonthly(isEveryday: Boolean, days: Set<Int>) =
-            if (isEveryday) provideEveryday() else CalculateMonthlyStreak(now, days)
+        override fun provideMonthly(isFirstDaySunday: Boolean, isEveryday: Boolean, days: Set<Int>) =
+            if (isEveryday) provideEveryday(isFirstDaySunday)
+            else CalculateMonthlyStreak(provideNow(isFirstDaySunday), days)
 
-        override fun provideCustomDaily(isEveryday: Boolean, times: Int, type: Int) = when {
+        override fun provideCustomDaily(isFirstDaySunday: Boolean, isEveryday: Boolean, times: Int, type: Int) = when {
             isEveryday -> CalculateEverydayStreak()
-            type % 7 == 0 -> CalculateCustomStreak.Week(times, type / 7, now)
+            type % 7 == 0 -> CalculateCustomStreak.Week(times, type / 7, provideNow(isFirstDaySunday))
             else -> CalculateCustomStreak.Day(times, type)
         }
 
-        override fun provideCustomWeekly(isEveryday: Boolean, times: Int, type: Int) =
+        override fun provideCustomWeekly(isFirstDaySunday: Boolean, isEveryday: Boolean, times: Int, type: Int) =
             if (isEveryday) CalculateEverydayStreak()
-            else CalculateCustomStreak.Week(times, type, now)
+            else CalculateCustomStreak.Week(times, type, provideNow(isFirstDaySunday))
 
-        override fun provideCustomMonthly(isEveryday: Boolean, times: Int, type: Int) =
+        override fun provideCustomMonthly(isFirstDaySunday: Boolean, isEveryday: Boolean, times: Int, type: Int) =
             if (isEveryday) CalculateEverydayStreak()
-            else CalculateCustomStreak.Month(times, type, now)
+            else CalculateCustomStreak.Month(times, type, provideNow(isFirstDaySunday))
+
+        private fun provideNow(isFirstDaySunday: Boolean): Now = Now.Base(isFirstDaySunday)
     }
 }

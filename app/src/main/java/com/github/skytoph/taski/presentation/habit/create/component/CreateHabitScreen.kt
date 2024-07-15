@@ -55,7 +55,6 @@ fun CreateHabitScreen(
         onDecreaseGoal = { viewModel.onEvent(CreateHabitEvent.DecreaseGoal) },
         onIncreaseGoal = { viewModel.onEvent(CreateHabitEvent.IncreaseGoal) },
         expandFrequency = { viewModel.onEvent(CreateHabitEvent.ExpandFrequency) },
-        expandType = { viewModel.onEvent(CreateHabitEvent.ExpandCustomType) },
         increaseTimes = { viewModel.onEvent(CreateHabitEvent.IncreaseFrequencyTimes) },
         decreaseTimes = { viewModel.onEvent(CreateHabitEvent.DecreaseFrequencyTimes) },
         increaseType = { viewModel.onEvent(CreateHabitEvent.IncreaseFrequencyType) },
@@ -63,6 +62,7 @@ fun CreateHabitScreen(
         selectType = { viewModel.onEvent(CreateHabitEvent.SelectFrequency(it)) },
         selectDay = { viewModel.onEvent(CreateHabitEvent.SelectDay(it)) },
         selectCustomType = { viewModel.onEvent(CreateHabitEvent.SelectCustomType(it)) },
+        expandType = { viewModel.onEvent(CreateHabitEvent.ExpandCustomType) },
         switchOn = { viewModel.onEvent(CreateHabitEvent.UpdateReminder(switchOn = it)) },
         showDialog = { viewModel.onEvent(CreateHabitEvent.UpdateReminder(showDialog = it)) },
         updateReminder = { hour, minute ->
@@ -70,7 +70,8 @@ fun CreateHabitScreen(
                 CreateHabitEvent.UpdateReminder(hour = hour, minute = minute, showDialog = false)
             )
         },
-        showPermissionDialog = { viewModel.onEvent(CreateHabitEvent.ShowPermissionDialog(it)) }
+        showPermissionDialog = { viewModel.onEvent(CreateHabitEvent.ShowPermissionDialog(it)) },
+        isFirstDaySunday = viewModel.settings().value.weekStartsOnSunday.value
     )
 }
 
@@ -93,7 +94,8 @@ private fun CreateHabit(
     switchOn: (Boolean) -> Unit = {},
     showDialog: (Boolean) -> Unit = {},
     updateReminder: (Int, Int) -> Unit = { _, _ -> },
-    showPermissionDialog: (DialogItem?) -> Unit = {}
+    showPermissionDialog: (DialogItem?) -> Unit = {},
+    isFirstDaySunday: Boolean = false
 ) {
     Column(
         modifier = Modifier.fillMaxSize()
@@ -104,11 +106,11 @@ private fun CreateHabit(
             icon = state.value.icon,
             color = state.value.color,
             reminder = state.value.reminder,
+            dialog = state.value.dialog,
             onTypeTitle = onTypeTitle,
             onSelectIconClick = onSelectIconClick,
             onDecreaseGoal = onDecreaseGoal,
             onIncreaseGoal = onIncreaseGoal,
-            dialog = state.value.dialog,
             frequency = state.value.frequencyState,
             isFrequencyExpanded = state.value.isFrequencyExpanded,
             expandFrequency = expandFrequency,
@@ -123,8 +125,9 @@ private fun CreateHabit(
             typeExpanded = state.value.isCustomTypeExpanded,
             switchOn = switchOn,
             showTimeDialog = showDialog,
+            showPermissionDialog = showPermissionDialog,
             updateReminder = updateReminder,
-            showPermissionDialog = showPermissionDialog
+            isFirstDaySunday = isFirstDaySunday
         )
     }
 }

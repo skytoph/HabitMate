@@ -22,7 +22,7 @@ class MainActivity : ComponentActivity() {
                 viewModel.initState()
             }
 
-            val theme = viewModel.state().collectAsState().value.theme
+            val theme = viewModel.settings().collectAsState().value.theme
             HabitMateTheme(theme = theme) {
                 HabitMateApp()
             }

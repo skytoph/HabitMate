@@ -24,7 +24,10 @@ abstract class CalculateCustomStreak(
                     val firstItem = items.firstOrNull() ?: return@also
                     val timesDone = firstItem.second.count { it.value.isCompleted(goal) }
                     addCounter(timesDone, goal, firstItem.first, firstItem.second)
-                    if (timesDone < frequencyGoal) counter.save(streaks)
+                    val nextItem = items.getOrNull(1)
+                    val nextTimesDone = nextItem?.second?.count { it.value.isCompleted(goal) } ?: 0
+                    if (firstItem.first == 0 && nextItem?.first == 1 && nextTimesDone >= frequencyGoal) return@also
+                    else if (timesDone < frequencyGoal) counter.save(streaks)
                 }
                 .zipWithNext()
                 .fold(streaks) { list, (prev, current) ->
@@ -55,7 +58,7 @@ abstract class CalculateCustomStreak(
         StartAndEnd by StartAndEnd.Week(now),
         Divide by Divide.Week(now, typeCount) {
 
-        override val skipMax: Int = now.dayOfWeek() + 7 * (typeCount - 1)
+        override val skipMax: Int = now.dayOfWeek(now.default) + 7 * (typeCount - 1)
     }
 
     class Month(timesCount: Int, private val typeCount: Int, private val now: Now) :

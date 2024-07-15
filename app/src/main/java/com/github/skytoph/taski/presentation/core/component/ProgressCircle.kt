@@ -2,7 +2,7 @@ package com.github.skytoph.taski.presentation.core.component
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
-import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
@@ -25,18 +25,13 @@ import com.github.skytoph.taski.ui.theme.HabitMateTheme
 @Composable
 fun ProgressCircle(goal: Int, done: Int, size: Dp = 50.dp, width: Dp = 3.dp, padding: Dp = 0.dp, color: Color) {
     val angleState = remember { mutableStateOf(0f) }
-    val list: List<Animatable<Float, AnimationVector1D>> = remember { MutableList(goal) { Animatable(0f) } }
+    val animatable: Animatable<Float, AnimationVector1D> = remember { Animatable(0f) }
     LaunchedEffect(done) {
-        list.forEachIndexed { index, item ->
-            if (index == done - 1 && item.value != 0f) item.apply {
-                snapTo(0f)
-                animateTo(
-                    targetValue = angleState.value,
-                    animationSpec = tween(durationMillis = 300, easing = LinearOutSlowInEasing)
-                )
-            }
-            else item.snapTo(angleState.value)
-        }
+        animatable.snapTo(0f)
+        animatable.animateTo(
+            targetValue = angleState.value,
+            animationSpec = tween(durationMillis = 300, easing = LinearEasing)
+        )
     }
     Box {
         Canvas(modifier = Modifier
@@ -46,8 +41,9 @@ fun ProgressCircle(goal: Int, done: Int, size: Dp = 50.dp, width: Dp = 3.dp, pad
                 val offset = width.times(3).toPx()
                 var startAngle = 180f + width.toPx().times(1.5F)
                 val sweepAngle: Float = 360F / goal - offset
+                angleState.value = sweepAngle
 
-                repeat(goal) { index ->
+                repeat(goal) {
 
                     drawArc(
                         color = color.copy(alpha = 0.2f),
@@ -66,12 +62,12 @@ fun ProgressCircle(goal: Int, done: Int, size: Dp = 50.dp, width: Dp = 3.dp, pad
 
                 startAngle = 180f + width.toPx().times(1.5F)
 
-                repeat(done) { index ->
+                repeat(done - 1) {
 
                     drawArc(
                         color = color,
                         startAngle = startAngle,
-                        sweepAngle = list[index].value,
+                        sweepAngle = sweepAngle,
                         useCenter = false,
                         style = Stroke(
                             width = width.toPx(),
@@ -81,8 +77,18 @@ fun ProgressCircle(goal: Int, done: Int, size: Dp = 50.dp, width: Dp = 3.dp, pad
                     )
 
                     startAngle += sweepAngle + width.times(3).toPx()
-                    angleState.value = sweepAngle
                 }
+                if (done > 0) drawArc(
+                    color = color,
+                    startAngle = startAngle,
+                    sweepAngle = animatable.value,
+                    useCenter = false,
+                    style = Stroke(
+                        width = width.toPx(),
+                        cap = StrokeCap.Round,
+                        join = StrokeJoin.Round
+                    )
+                )
             })
     }
 }

@@ -64,5 +64,5 @@ class BaseHabitRepository(
     override suspend fun delete(id: Long) = habitDao.delete(id)
 
     override suspend fun isHabitDone(habitId: Long): Boolean =
-        stateMapper.map(habitWithEntries(habitId)).isStreakCurrently
+        entryMapper.map(entryDao.entriesList(habitId)).entries.containsKey(0)
 }

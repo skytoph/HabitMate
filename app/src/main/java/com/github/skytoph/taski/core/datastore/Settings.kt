@@ -4,7 +4,6 @@ import androidx.compose.runtime.Stable
 import com.github.skytoph.taski.presentation.habit.list.view.HabitsView
 import com.github.skytoph.taski.presentation.settings.theme.AppTheme
 import java.util.Calendar
-import java.util.TimeZone
 
 @Stable
 data class Settings(
@@ -30,7 +29,7 @@ data class Initializable<T : Any>(private val initialValue: T? = null) {
 
 class InitializeEmptyValues {
     fun initialize(value: Settings): Settings {
-        val weekStartDefault = Calendar.getInstance(TimeZone.getDefault()).firstDayOfWeek == Calendar.SUNDAY
+        val weekStartDefault = Calendar.getInstance().firstDayOfWeek == Calendar.SUNDAY
 
         return value.copy(
             weekStartsOnSunday = value.weekStartsOnSunday.initializeIfEmpty(weekStartDefault),

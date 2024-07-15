@@ -138,15 +138,26 @@ fun FrequencyCustom(
             )
         }
         if (typeExpanded) Column(modifier = Modifier.clip(MaterialTheme.shapes.small)) {
-            FrequencyCustomType.values.forEachIndexed { index, item ->
-                MenuOptionComponent(
-                    option = item,
-                    selected = frequency.frequencyType == item,
-                    select = selectType,
-                    title = pluralStringResource(id = item.title, count = 1)
-                )
-                if (index < FrequencyCustomType.values.size - 1) HorizontalDivider()
-            }
+            MenuOptionComponent(
+                option = FrequencyCustomType.Day,
+                selected = frequency.frequencyType == FrequencyCustomType.Day,
+                select = selectType,
+                title = pluralStringResource(id = FrequencyCustomType.Day.title, count = 1)
+            )
+            HorizontalDivider()
+            MenuOptionComponent(
+                option = FrequencyCustomType.Week,
+                selected = frequency.frequencyType == FrequencyCustomType.Week,
+                select = selectType,
+                title = pluralStringResource(id = FrequencyCustomType.Week.title, count = 1)
+            )
+            HorizontalDivider()
+            MenuOptionComponent(
+                option = FrequencyCustomType.Month,
+                selected = frequency.frequencyType == FrequencyCustomType.Month,
+                select = selectType,
+                title = pluralStringResource(id = FrequencyCustomType.Week.title, count = 1)
+            )
         }
     }
 }

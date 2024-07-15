@@ -13,7 +13,7 @@ sealed interface Frequency {
     fun mapToDB(): FrequencyEntity
     fun <T : HabitStatisticsResult> map(mapper: FrequencyMapper<T>): T
     fun isEveryday(): Boolean
-    fun provide(provider: CalculatorProvider): CalculateStreak
+    fun provide(provider: CalculatorProvider, isFirstDaySunday: Boolean): CalculateStreak
     val times: Int
 
     data class Daily(val days: Set<Int> = (1..7).toSet()) : Frequency {
@@ -23,8 +23,8 @@ sealed interface Frequency {
             mapper.map(days)
 
         override fun isEveryday(): Boolean = days.size >= 7
-        override fun provide(provider: CalculatorProvider): CalculateStreak =
-            provider.provideDaily(isEveryday(), days)
+        override fun provide(provider: CalculatorProvider, isFirstDaySunday: Boolean): CalculateStreak =
+            provider.provideDaily(isFirstDaySunday, isEveryday(), days)
 
         override val times: Int = days.size.let { if (isEveryday()) 1 else it }
     }
@@ -36,8 +36,8 @@ sealed interface Frequency {
             mapper.map(days)
 
         override fun isEveryday(): Boolean = days.size >= 31
-        override fun provide(provider: CalculatorProvider): CalculateStreak =
-            provider.provideMonthly(isEveryday(), days)
+        override fun provide(provider: CalculatorProvider, isFirstDaySunday: Boolean): CalculateStreak =
+            provider.provideMonthly(isFirstDaySunday, isEveryday(), days)
 
         override val times: Int = days.size.let { if (isEveryday()) 1 else it }
     }
@@ -66,13 +66,15 @@ sealed interface Frequency {
 
         override fun isEveryday(): Boolean = type.isEveryday(timesCount, typeCount)
 
-        override fun provide(provider: CalculatorProvider): CalculateStreak =
-            type.provide(provider, timesCount, typeCount)
+        override fun provide(provider: CalculatorProvider, isFirstDaySunday: Boolean): CalculateStreak =
+            type.provide(provider, timesCount, typeCount, isFirstDaySunday)
 
         sealed interface Type {
             fun map(): FrequencyCustomType
-            fun provide(provider: CalculatorProvider, times: Int, type: Int): CalculateStreak
             fun isEveryday(timesCount: Int, typeCount: Int): Boolean
+
+            fun provide(provider: CalculatorProvider, times: Int, type: Int, isFirstDaySunday: Boolean)
+                    : CalculateStreak
 
             val name: String
 
@@ -82,8 +84,8 @@ sealed interface Frequency {
                 override fun isEveryday(timesCount: Int, typeCount: Int): Boolean =
                     timesCount == typeCount
 
-                override fun provide(provider: CalculatorProvider, times: Int, type: Int) =
-                    provider.provideCustomDaily(isEveryday(times, type), times, type)
+                override fun provide(provider: CalculatorProvider, times: Int, type: Int, isFirstDaySunday: Boolean) =
+                    provider.provideCustomDaily(isFirstDaySunday, isEveryday(times, type), times, type)
             }
 
             data object Week : Type {
@@ -92,8 +94,8 @@ sealed interface Frequency {
                 override fun isEveryday(timesCount: Int, typeCount: Int): Boolean =
                     timesCount == 7 * typeCount
 
-                override fun provide(provider: CalculatorProvider, times: Int, type: Int) =
-                    provider.provideCustomWeekly(isEveryday(times, type), times, type)
+                override fun provide(provider: CalculatorProvider, times: Int, type: Int, isFirstDaySunday: Boolean) =
+                    provider.provideCustomWeekly(isFirstDaySunday, isEveryday(times, type), times, type)
             }
 
             data object Month : Type {
@@ -102,8 +104,8 @@ sealed interface Frequency {
                 override fun isEveryday(timesCount: Int, typeCount: Int): Boolean =
                     timesCount == 31 * typeCount
 
-                override fun provide(provider: CalculatorProvider, times: Int, type: Int) =
-                    provider.provideCustomMonthly(isEveryday(times, type), times, type)
+                override fun provide(provider: CalculatorProvider, times: Int, type: Int, isFirstDaySunday: Boolean) =
+                    provider.provideCustomMonthly(isFirstDaySunday, isEveryday(times, type), times, type)
             }
 
             companion object {

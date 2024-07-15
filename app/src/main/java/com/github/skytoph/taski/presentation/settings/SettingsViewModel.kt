@@ -32,9 +32,9 @@ abstract class InitStateViewModel(private val settings: SettingsCache) : ViewMod
 }
 
 interface ProvideState {
-    fun state(): StateFlow<Settings>
+    fun settings(): StateFlow<Settings>
 
     class Base(private val settings: SettingsCache) : ProvideState {
-        override fun state(): StateFlow<Settings> = settings.state()
+        override fun settings(): StateFlow<Settings> = settings.state()
     }
 }

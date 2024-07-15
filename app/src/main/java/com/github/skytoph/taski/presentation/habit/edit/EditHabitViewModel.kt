@@ -5,13 +5,14 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.skytoph.taski.core.datastore.SettingsCache
 import com.github.skytoph.taski.presentation.appbar.InitAppBar
 import com.github.skytoph.taski.presentation.core.EventHandler
 import com.github.skytoph.taski.presentation.habit.HabitScreens
 import com.github.skytoph.taski.presentation.habit.icon.IconState
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitUiMapper
+import com.github.skytoph.taski.presentation.settings.SettingsViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -25,9 +26,10 @@ class EditHabitViewModel @Inject constructor(
     private val interactor: EditHabitInteractor,
     private val habitMapper: HabitUiMapper,
     private val validator: EditHabitValidator,
-    initAppBar: InitAppBar,
     savedStateHandle: SavedStateHandle,
-) : ViewModel(), EventHandler<EditHabitEvent>, InitAppBar by initAppBar {
+    settings: SettingsCache,
+    initAppBar: InitAppBar
+) : SettingsViewModel<SettingsViewModel.Event>(settings, initAppBar), EventHandler<EditHabitEvent> {
 
     init {
         onEvent(EditHabitEvent.Progress(true))
@@ -40,9 +42,10 @@ class EditHabitViewModel @Inject constructor(
     fun saveHabit(navigateUp: () -> Unit, context: Context) =
         viewModelScope.launch(Dispatchers.IO) {
             val habit = state.value.toHabitUi()
+            val isFirstDaySunday = settings().value.weekStartsOnSunday.value
             interactor.insert(habit, context)
             withContext(Dispatchers.Main) {
-                interactor.scheduleNotification(habit, context)
+                interactor.scheduleNotification(habit, context, isFirstDaySunday)
                 navigateUp()
             }
         }

@@ -1,5 +1,6 @@
 package com.github.skytoph.taski.presentation.habit.list.view
 
+import com.github.skytoph.taski.core.datastore.Settings
 import com.github.skytoph.taski.domain.habit.HabitWithEntries
 import com.github.skytoph.taski.presentation.habit.HabitWithHistoryUi
 import com.github.skytoph.taski.presentation.habit.list.HistoryUi
@@ -11,6 +12,8 @@ data class HabitsView(
     val filterBy: FilterHabits = FilterHabits.None,
     val initialized: Boolean = false
 ) {
-    fun map(mapper: HabitsViewMapper, habits: List<HabitWithEntries>)
-            : List<HabitWithHistoryUi<HistoryUi>>? = if (!initialized) null else mapper.map(habits, this)
+    fun map(mapper: HabitsViewMapper, habits: List<HabitWithEntries>, settings: Settings)
+            : List<HabitWithHistoryUi<HistoryUi>>? =
+        if (!initialized) null
+        else mapper.map(habits, this, settings.currentDayHighlighted, settings.weekStartsOnSunday.value)
 }

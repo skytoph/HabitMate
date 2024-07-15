@@ -132,7 +132,8 @@ fun EditHabitScreen(
                 EditHabitEvent.UpdateReminder(hour = hour, minute = minute, showDialog = false)
             )
         },
-        showPermissionDialog = { viewModel.onEvent(EditHabitEvent.ShowPermissionDialog(it)) }
+        showPermissionDialog = { viewModel.onEvent(EditHabitEvent.ShowPermissionDialog(it)) },
+        isFirstDaySunday = viewModel.settings().value.weekStartsOnSunday.value
     )
 }
 
@@ -155,7 +156,8 @@ private fun EditHabit(
     switchOn: (Boolean) -> Unit = {},
     showDialog: (Boolean) -> Unit = {},
     updateReminder: (Int, Int) -> Unit = { _, _ -> },
-    showPermissionDialog: (DialogItem?) -> Unit = {}
+    showPermissionDialog: (DialogItem?) -> Unit = {},
+    isFirstDaySunday: Boolean = false,
 ) {
     EditBaseHabit(
         title = state.value.title,
@@ -182,8 +184,9 @@ private fun EditHabit(
         typeExpanded = state.value.isCustomTypeExpanded,
         switchOn = switchOn,
         showTimeDialog = showDialog,
+        showPermissionDialog = showPermissionDialog,
         updateReminder = updateReminder,
-        showPermissionDialog = showPermissionDialog
+        isFirstDaySunday = isFirstDaySunday
     )
 }
 
@@ -216,6 +219,7 @@ fun EditBaseHabit(
     showTimeDialog: (Boolean) -> Unit,
     showPermissionDialog: (DialogItem?) -> Unit,
     updateReminder: (Int, Int) -> Unit,
+    isFirstDaySunday: Boolean,
 ) {
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
@@ -316,7 +320,8 @@ fun EditBaseHabit(
             selectDay = selectDay,
             selectCustomType = selectCustomType,
             expandType = expandType,
-            typeExpanded = typeExpanded
+            typeExpanded = typeExpanded,
+            isFirstDaySunday = isFirstDaySunday
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
@@ -446,9 +451,7 @@ private fun EditReminder(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = if (isReminderOn) reminder.formatted(getLocale()) else stringResource(
-                        R.string.reminder_none
-                    ),
+                    text = reminder.formatted(getLocale(), stringResource(R.string.reminder_none)),
                     style = MaterialTheme.typography.bodyMedium,
                     color = if (isReminderOn) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.padding(horizontal = 16.dp),

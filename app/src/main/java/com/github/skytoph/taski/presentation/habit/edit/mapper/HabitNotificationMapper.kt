@@ -9,14 +9,14 @@ import com.github.skytoph.taski.presentation.habit.HabitUi
 import java.util.Calendar
 
 interface HabitNotificationMapper {
-    fun map(habit: HabitUi, context: Context): List<AlarmItem>
+    fun map(habit: HabitUi, context: Context, isFirstDaySunday: Boolean): List<AlarmItem>
 
     class Base(
         private val dateMapper: HabitDateMapper,
         private val uriConverter: HabitUriConverter
     ) : HabitNotificationMapper {
-        override fun map(habit: HabitUi, context: Context): List<AlarmItem> =
-            habit.frequency.dates(dateMapper).toList().mapIndexed { index, (day, calendar) ->
+        override fun map(habit: HabitUi, context: Context, isFirstDaySunday: Boolean): List<AlarmItem> =
+            habit.frequency.dates(dateMapper, isFirstDaySunday).toList().mapIndexed { index, (day, calendar) ->
                 AlarmItem(
                     id = habit.id,
                     title = habit.title,

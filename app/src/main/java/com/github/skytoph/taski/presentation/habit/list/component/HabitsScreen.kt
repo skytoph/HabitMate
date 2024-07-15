@@ -101,10 +101,10 @@ fun HabitsScreen(
         Habits(
             state = state,
             view = settings.value.view.viewType,
+            updateState = { entries -> viewModel.onEvent(HabitListEvent.UpdateEntries(entries)) },
             onHabitClick = { onHabitClick(it.id) },
             onHabitLongClick = { habit -> viewModel.onEvent(HabitListEvent.UpdateContextMenu(habit.id)) },
             onHabitDone = { habit, daysAgo -> viewModel.habitDone(habit, daysAgo) },
-            updateState = { entries -> viewModel.onEvent(HabitListEvent.UpdateEntries(entries)) }
         )
 
     if (state.value.isViewTypeVisible)
@@ -157,15 +157,15 @@ private fun Habits(
     updateState: (Int) -> Unit,
     onHabitClick: (HabitUi) -> Unit = {},
     onHabitLongClick: (HabitUi) -> Unit = {},
-    onHabitDone: (HabitUi, Int) -> Unit = { _, _ -> }
+    onHabitDone: (HabitUi, Int) -> Unit = { _, _ -> },
 ) {
     HabitList(
-        habits = state.value.habits,
         view = view,
+        habits = state.value.habits,
         onDone = onHabitDone,
         onClick = onHabitClick,
         onLongClick = onHabitLongClick,
-        updateView = updateState
+        updateView = updateState,
     )
 }
 
@@ -173,6 +173,6 @@ private fun Habits(
 @Preview(showSystemUi = true, showBackground = true)
 fun HabitScreenPreview(@PreviewParameter(HabitsProvider::class) habits: List<HabitWithHistoryUi<HistoryUi>>) {
     HabitMateTheme(darkTheme = true) {
-        HabitList(habits = habits)
+        HabitList(habits = habits,)
     }
 }

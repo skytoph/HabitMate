@@ -36,7 +36,8 @@ fun FrequencySettings(
     decreaseType: () -> Unit = {},
     selectCustomType: (FrequencyCustomType) -> Unit = {},
     expandType: () -> Unit = {},
-    typeExpanded: Boolean = false
+    typeExpanded: Boolean = false,
+    isFirstDaySunday: Boolean = false,
 ) {
     Column(
         modifier = Modifier
@@ -89,7 +90,8 @@ fun FrequencySettings(
             decreaseType = decreaseType,
             selectType = selectCustomType,
             expandType = expandType,
-            typeExpanded = typeExpanded
+            typeExpanded = typeExpanded,
+            isFirstDaySunday = isFirstDaySunday
         )
     }
 }
@@ -127,11 +129,22 @@ private fun FrequencySettingsContent(
     increaseType: () -> Unit,
     decreaseType: () -> Unit,
     selectType: (FrequencyCustomType) -> Unit,
-    expandType: () -> Unit
+    expandType: () -> Unit,
+    isFirstDaySunday: Boolean,
 ) {
     when (frequency) {
-        is FrequencyUi.Daily -> FrequencyDaily(frequency = frequency, select = selectDay)
-        is FrequencyUi.Monthly -> FrequencyMonthly(frequency = frequency, select = selectDay)
+        is FrequencyUi.Daily -> FrequencyDaily(
+            frequency = frequency,
+            select = selectDay,
+            isFirstDaySunday = isFirstDaySunday
+        )
+
+        is FrequencyUi.Monthly -> FrequencyMonthly(
+            frequency = frequency,
+            select = selectDay,
+            isFirstDaySunday = isFirstDaySunday
+        )
+
         is FrequencyUi.Custom -> FrequencyCustom(
             frequency = frequency,
             increaseTimes = increaseTimes,
@@ -152,7 +165,8 @@ private fun FrequencySettingsContent(
             increaseType,
             decreaseType,
             selectType,
-            expandType
+            expandType,
+            isFirstDaySunday
         )
     }
 }

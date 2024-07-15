@@ -5,10 +5,11 @@ import com.github.skytoph.taski.presentation.habit.details.HabitStatistics
 import com.github.skytoph.taski.presentation.habit.details.HabitStatisticsUi
 
 interface StatisticsUiMapper {
-    fun map(data: HabitWithEntries): HabitStatisticsUi
+    fun map(data: HabitWithEntries, isFirstDaySunday: Boolean): HabitStatisticsUi
 
     class Base(private val mapper: HabitStatisticsMapper) : StatisticsUiMapper {
-        override fun map(data: HabitWithEntries): HabitStatisticsUi = mapper.map(data).map()
+        override fun map(data: HabitWithEntries, isFirstDaySunday: Boolean): HabitStatisticsUi =
+            mapper.map(data, isFirstDaySunday).map()
     }
 }
 

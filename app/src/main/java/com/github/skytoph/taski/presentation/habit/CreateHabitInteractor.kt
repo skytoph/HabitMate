@@ -6,7 +6,7 @@ import com.github.skytoph.taski.presentation.habit.edit.NotificationInteractor
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitDomainMapper
 
 interface CreateHabitInteractor {
-    suspend fun insert(habit: HabitUi, context: Context)
+    suspend fun insert(habit: HabitUi, context: Context, isFirstDaySunday: Boolean)
 
     class Base(
         private val repository: HabitRepository,
@@ -14,9 +14,9 @@ interface CreateHabitInteractor {
         notificationInteractor: NotificationInteractor,
     ) : CreateHabitInteractor, NotificationInteractor by notificationInteractor {
 
-        override suspend fun insert(habit: HabitUi, context: Context) {
+        override suspend fun insert(habit: HabitUi, context: Context, isFirstDaySunday: Boolean) {
             val id = repository.insert(habit.map(mapper, context))
-            scheduleNotification(habit.copy(id = id), context)
+            scheduleNotification(habit.copy(id = id), context, isFirstDaySunday)
         }
     }
 }

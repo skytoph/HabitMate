@@ -13,13 +13,13 @@ abstract class HabitEntriesAction {
     class UpdateEntry(private val entry: EntryEditableUi) : HabitEntriesAction() {
         override fun apply(data: EditableHistoryUi): EditableHistoryUi =
             if (!data.entries.containsKey(entry.daysAgo)) data
-            else data.copy(entries = data.entries.toMutableMap().also { it[entry.daysAgo] = entry })
+            else data.copy(entries = data.entries.toMutableMap().apply { this[entry.daysAgo] = entry })
     }
 
-    class ApplyStatistics(private val statistics: HabitStatisticsUi) : HabitEntriesAction() {
+    class ApplyStatistics(private val statistics: HabitStatisticsUi, private val isBorderOn: Boolean) : HabitEntriesAction() {
         override fun apply(data: EditableHistoryUi): EditableHistoryUi =
             data.copy(entries = data.entries.entries.associate { entry ->
-                entry.key to entry.value.copy(hasBorder = statistics.isInRange(entry.key))
+                entry.key to entry.value.copy(hasBorder = isBorderOn && entry.value.timesDone == 0 && statistics.isInRange(entry.key))
             })
     }
 }

@@ -143,6 +143,7 @@
     <string name="habit_menu_archive">Archive</string>
     <string name="habit_menu_delete">Delete</string>
     <string name="habit_menu_reorder_habits">Reorder habits</string>
+    <string name="reminder_turned_off">-</string>
 
     <plurals name="times_label">
         <item quantity="one">time</item>

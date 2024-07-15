@@ -88,7 +88,7 @@ fun HabitReorderScreen(
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
 
-    val state = viewModel.state().collectAsState()
+    val state = viewModel.settings().collectAsState()
     Column(Modifier.fillMaxWidth()) {
         AnimatedVisibility(
             visible = !SortHabits.Manually.matches(state.value.view.sortBy),

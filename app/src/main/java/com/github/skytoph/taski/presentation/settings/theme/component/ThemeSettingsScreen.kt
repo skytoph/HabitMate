@@ -39,7 +39,7 @@ fun ThemeSettingsScreen(
     }
 
     ThemeSettings(
-        state = viewModel.state().collectAsState(),
+        state = viewModel.settings().collectAsState(),
         selectTheme = { viewModel.onEvent(ThemeSettingsEvent.SelectTheme(it)) }
     )
 }

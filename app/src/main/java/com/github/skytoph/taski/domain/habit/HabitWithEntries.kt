@@ -11,6 +11,9 @@ data class HabitWithEntries(
 ) {
 
     fun <V : ViewType> map(
-        mapper: HabitWithHistoryUiMapper<HistoryUi, V>, numberOfEntries: Int = 0
-    ): HabitWithHistoryUi<HistoryUi> = mapper.map(this, numberOfEntries)
+        mapper: HabitWithHistoryUiMapper<HistoryUi, V>,
+        numberOfEntries: Int = 0,
+        isBorderOn: Boolean,
+        isFirstDaySunday: Boolean,
+    ): HabitWithHistoryUi<HistoryUi> = mapper.map(this, numberOfEntries, isBorderOn, isFirstDaySunday)
 }

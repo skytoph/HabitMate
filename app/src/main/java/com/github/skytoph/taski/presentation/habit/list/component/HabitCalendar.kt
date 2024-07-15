@@ -60,7 +60,13 @@ fun HabitCalendar(
     val defaultColor = MaterialTheme.colorScheme.secondaryContainer
     val color = remember { Animatable(if (history.todayDonePercent >= 1f) habit.color else defaultColor) }
     LaunchedEffect(history.todayDonePercent) {
-        color.animateTo(if (history.todayDonePercent >= 1f) habit.color else defaultColor, animationSpec = tween(300))
+        color.animateTo(
+            targetValue = if (history.todayDonePercent >= 1f) habit.color else defaultColor,
+            animationSpec = tween(
+                durationMillis = 300,
+                delayMillis = if (habit.goal > 1 && history.todayDonePercent >= 1f) 300 else 0
+            )
+        )
     }
     BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
         val entries = calculateNumberOfCalendarEntries(maxWidth = maxWidth)

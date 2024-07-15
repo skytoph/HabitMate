@@ -73,14 +73,15 @@ fun HabitDetailsScreen(
     }
 
     val onHideDialog = { viewModel.onEvent(HabitDetailsEvent.ShowDialog(false)) }
-    val defaultColor = MaterialTheme.colorScheme.onSecondaryContainer
     HabitDetails(
         state = viewModel.state(),
         entries = viewModel.entries,
-        onDayClick = { viewModel.habitDone(it, defaultColor) },
         onHideDialog = onHideDialog,
         onDeleteHabit = { onHideDialog(); onDeleteHabit() },
-        onEditHistory = { viewModel.onEvent(HabitDetailsEvent.EditHistory) })
+        onDayClick = { viewModel.habitDone(it) },
+        onEditHistory = { viewModel.onEvent(HabitDetailsEvent.EditHistory) },
+        isFirstDaySunday = viewModel.settings().value.weekStartsOnSunday.value
+    )
 }
 
 @Composable
@@ -91,6 +92,7 @@ fun HabitDetails(
     onDeleteHabit: () -> Unit = {},
     onDayClick: (Int) -> Unit = {},
     onEditHistory: () -> Unit = {},
+    isFirstDaySunday: Boolean = false,
 ) {
     val context = LocalContext.current
     val habit = state.value.habit ?: return
@@ -141,7 +143,7 @@ fun HabitDetails(
         ) {
             LabelWithIcon(
                 modifier = Modifier.weight(1f),
-                annotatedText = habit.frequency.summarize(context.resources, getLocale()),
+                annotatedText = habit.frequency.summarize(context.resources, isFirstDaySunday, getLocale()),
                 icon = ImageVector.vectorResource(R.drawable.calendar),
             )
             LabelWithIcon(
@@ -151,7 +153,7 @@ fun HabitDetails(
             )
             LabelWithIcon(
                 modifier = Modifier.weight(1f),
-                text = habit.reminder.formatted(getLocale()),
+                text = habit.reminder.formatted(getLocale(), stringResource(R.string.reminder_turned_off)),
                 icon = ImageVector.vectorResource(R.drawable.bell),
             )
         }
@@ -204,6 +206,7 @@ fun HabitDetails(
             goal = habit.goal,
             habitColor = habit.color,
             onEdit = onEditHistory,
+            isFirstDaySunday = isFirstDaySunday
         )
         if (BuildConfig.DEBUG)
             Text(text = "streaks: " + state.value.statistics.streaksLength.joinToString(", "))
@@ -219,7 +222,8 @@ fun HabitDetails(
             onDayClick = onDayClick,
             onEdit = onEditHistory,
             habitColor = habit.color,
-            goal = habit.goal
+            goal = habit.goal,
+            isFirstDaySunday = isFirstDaySunday
         )
 }
 
@@ -323,7 +327,7 @@ fun DarkHabitDetailsScreenPreview(
         Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
             HabitDetails(
                 state = remember { mutableStateOf(HabitDetailsState(habit)) },
-                entries = flowOf(PagingData.from(entries))
+                entries = flowOf(PagingData.from(entries)),
             )
         }
     }

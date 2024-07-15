@@ -19,9 +19,10 @@ import kotlinx.coroutines.withContext
 class EntryPagingSource(
     private val repository: HabitRepository,
     private val uiMapper: HabitHistoryUiMapper<EditableHistoryUi, ViewType>,
-    private val entryCache: HabitCache,
-    private val id: Long,
     private val statsMapper: StatisticsUiMapper,
+    private val id: Long,
+    private val isBorderOn: Boolean,
+    private val isFirstDaySunday: Boolean,
 ) : PagingSource<Int, EditableHistoryUi>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, EditableHistoryUi> {
@@ -29,11 +30,13 @@ class EntryPagingSource(
 
         return try {
             withContext(Dispatchers.IO) {
-                entryCache.cacheIfEmpty { repository.entries(id) }
-                val entries = entryCache.get()
+                val entries = repository.entries(id)
                 val habit = repository.habit(id)
-                val stats = statsMapper.map(HabitWithEntries(habit, entries))
-                val history = uiMapper.map(page = page, goal = habit.goal, history = entries, stats = stats)
+                val stats = statsMapper.map(HabitWithEntries(habit, entries), isFirstDaySunday)
+                val history = uiMapper.map(
+                    page = page, goal = habit.goal, history = entries, stats = stats,
+                    isBorderOn = isBorderOn, isFirstDaySunday = isFirstDaySunday
+                )
 
                 LoadResult.Page(
                     data = listOf(history),
@@ -69,7 +72,7 @@ class EntityPagerProvider(
 ) {
     private var dataSource: EntryPagingSource? = null
 
-    fun getEntries(id: Long): Flow<PagingData<EditableHistoryUi>> = Pager(
+    fun getEntries(id: Long, isBorderOn: Boolean, isFirstDaySunday: Boolean): Flow<PagingData<EditableHistoryUi>> = Pager(
         config = PagingConfig(
             pageSize = 1,
             prefetchDistance = 3,
@@ -77,7 +80,7 @@ class EntityPagerProvider(
             enablePlaceholders = false
         ),
         pagingSourceFactory = {
-            EntryPagingSource(repository, uiMapper, entryCache, id, statsMapper)
+            EntryPagingSource(repository, uiMapper, statsMapper, id, isBorderOn, isFirstDaySunday)
                 .also { dataSource = it }
         }
     ).flow

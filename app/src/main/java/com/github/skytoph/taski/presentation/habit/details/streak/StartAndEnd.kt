@@ -9,9 +9,9 @@ interface StartAndEnd {
 
     class Week(private val now: Now) : StartAndEnd {
 
-        override fun start(index: Int): Int = now.firstDayOfWeekDaysAgo(index)
+        override fun start(index: Int): Int = now.firstDayOfWeekDaysAgo(now.default, index)
 
-        override fun end(index: Int): Int = now.lastDayOfWeekDaysAgo(index)
+        override fun end(index: Int): Int = now.lastDayOfWeekDaysAgo(now.default, index)
     }
 
     class Month(private val now: Now) : StartAndEnd {

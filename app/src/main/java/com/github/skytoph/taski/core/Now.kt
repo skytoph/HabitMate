@@ -1,29 +1,28 @@
 package com.github.skytoph.taski.core
 
 import java.util.Calendar
-import java.util.TimeZone
 import java.util.concurrent.TimeUnit
 
 interface Now {
-    fun dayOfWeek(): Int
-    fun dayOfWeek(daysAgo: Int): Int
+    fun dayOfWeek(isFirstDaySunday: Boolean): Int
+    fun dayOfWeek(isFirstDaySunday: Boolean, daysAgo: Int): Int
+    fun lastDayOfWeekDate(isFirstDaySunday: Boolean, weeksAgo: Int = 0): Int
+    fun lastDayOfWeekMillis(isFirstDaySunday: Boolean, weeksAgo: Int = 0): Long
+    fun lastDayOfWeekDaysAgo(isFirstDaySunday: Boolean, weeksAgo: Int): Int
+    fun firstDayOfWeekDaysAgo(isFirstDaySunday: Boolean, weeksAgo: Int): Int
     fun dayOfMonths(daysAgo: Int): Int
     fun milliseconds(): Long
     fun daysAgo(milliseconds: Long): Int
     fun daysAgoInMillis(days: Int): Long
     fun dayInMillis(): Long
-    fun lastDayOfWeekDate(weeksAgo: Int = 0): Int
-    fun lastDayOfWeekMillis(weeksAgo: Int = 0): Long
     fun monthMillis(monthsAgo: Int = 0): Long
-    fun weeksInMonth(monthsAgo: Int = 0): Int
     fun daysInMonth(daysAgo: Int): Int
     fun monthsAgo(daysAgo: Int): Int
-    fun lastDayOfWeekDaysAgo(weeksAgo: Int): Int
     fun lastDayOfMonthDaysAgo(monthsAgo: Int): Int
     fun firstDayOfMonthDaysAgo(monthsAgo: Int): Int
-    fun firstDayOfWeekDaysAgo(weeksAgo: Int): Int
+    val default: Boolean
 
-    class Base(private val timeZone: TimeZone = TimeZone.getDefault()) : Now {
+    class Base(override val default: Boolean = false) : Now {
 
         override fun monthsAgo(daysAgo: Int): Int {
             val compareWith = calendar().apply { add(Calendar.DAY_OF_YEAR, -daysAgo) }
@@ -32,57 +31,62 @@ interface Now {
                     today.get(Calendar.MONTH) - compareWith.get(Calendar.MONTH)
         }
 
-        override fun dayOfWeek(): Int =
-            calendar().run { (get(Calendar.DAY_OF_WEEK) - firstDayOfWeek + 7) % 7 } + 1
+        override fun dayOfWeek(isFirstDaySunday: Boolean): Int =
+            calendar(isFirstDaySunday).run { (get(Calendar.DAY_OF_WEEK) - firstDayOfWeek + 7) % 7 } + 1
 
-        override fun dayOfWeek(daysAgo: Int): Int =
-            (6 + dayOfWeek() - daysAgo % 7) % 7 + 1
+        override fun dayOfWeek(isFirstDaySunday: Boolean, daysAgo: Int): Int =
+            (6 + dayOfWeek(isFirstDaySunday) - daysAgo % 7) % 7 + 1
 
         override fun milliseconds(): Long = System.currentTimeMillis()
 
-        override fun daysAgoInMillis(days: Int): Long = startOfTheDay(days).timeInMillis
-
         override fun dayOfMonths(daysAgo: Int): Int =
-            startOfTheDay(daysAgo).get(Calendar.DAY_OF_MONTH)
+            startOfTheDay(daysAgo, calendar()).get(Calendar.DAY_OF_MONTH)
 
         override fun daysInMonth(daysAgo: Int): Int =
-            startOfTheDay(daysAgo).getActualMaximum(Calendar.DAY_OF_MONTH)
+            startOfTheDay(daysAgo, calendar()).getActualMaximum(Calendar.DAY_OF_MONTH)
+
+        override fun daysAgoInMillis(days: Int): Long = startOfTheDay(days, calendar()).timeInMillis
 
         override fun daysAgo(milliseconds: Long): Int =
             TimeUnit.MILLISECONDS.toDays(dayInMillis() - milliseconds).toInt()
 
-        override fun dayInMillis(): Long = startOfTheDay().timeInMillis
+        override fun dayInMillis(): Long = startOfTheDay(calendar = calendar()).timeInMillis
 
-        override fun lastDayOfWeekDate(weeksAgo: Int): Int =
-            endOfTheWeek(weeksAgo).get(Calendar.DAY_OF_MONTH)
+        override fun lastDayOfWeekDate(isFirstDaySunday: Boolean, weeksAgo: Int): Int =
+            endOfTheWeek(isFirstDaySunday, weeksAgo).get(Calendar.DAY_OF_MONTH)
+
+        override fun lastDayOfWeekDaysAgo(isFirstDaySunday: Boolean, weeksAgo: Int): Int =
+            TimeUnit.MILLISECONDS.toDays(dayInMillis() - endOfTheWeek(isFirstDaySunday, weeksAgo).timeInMillis)
+                .toInt()
+
+        override fun firstDayOfWeekDaysAgo(isFirstDaySunday: Boolean, weeksAgo: Int): Int =
+            TimeUnit.MILLISECONDS.toDays(dayInMillis() - startOfTheWeek(isFirstDaySunday, weeksAgo).timeInMillis)
+                .toInt()
+
+        override fun lastDayOfWeekMillis(isFirstDaySunday: Boolean, weeksAgo: Int): Long =
+            endOfTheWeek(isFirstDaySunday, weeksAgo).timeInMillis
+
+        private fun endOfTheWeek(isFirstDaySunday: Boolean, weeksAgo: Int = 0): Calendar =
+            startOfTheDay(calendar = calendar(isFirstDaySunday)).also { calendar ->
+                calendar.set(Calendar.DAY_OF_WEEK, calendar.firstDayOfWeek)
+                calendar.add(Calendar.DATE, 6 - weeksAgo * 7)
+            }
+
+        private fun startOfTheWeek(isFirstDaySunday: Boolean, weeksAgo: Int = 0): Calendar =
+            startOfTheDay(calendar = calendar(isFirstDaySunday)).also { calendar ->
+                calendar.set(Calendar.DAY_OF_WEEK, calendar.firstDayOfWeek)
+                calendar.add(Calendar.DATE, -weeksAgo * 7)
+            }
 
         override fun lastDayOfMonthDaysAgo(monthsAgo: Int): Int =
-            TimeUnit.MILLISECONDS.toDays(dayInMillis() - endOfTheMonth(monthsAgo).timeInMillis)
-                .toInt()
-
-        override fun lastDayOfWeekDaysAgo(weeksAgo: Int): Int =
-            TimeUnit.MILLISECONDS.toDays(dayInMillis() - endOfTheWeek(weeksAgo).timeInMillis)
-                .toInt()
+            TimeUnit.MILLISECONDS.toDays(dayInMillis() - endOfTheMonth(monthsAgo).timeInMillis).toInt()
 
         override fun firstDayOfMonthDaysAgo(monthsAgo: Int): Int =
-            TimeUnit.MILLISECONDS.toDays(dayInMillis() - startOfTheMonth(monthsAgo).timeInMillis)
-                .toInt()
-
-        override fun firstDayOfWeekDaysAgo(weeksAgo: Int): Int =
-            TimeUnit.MILLISECONDS.toDays(dayInMillis() - startOfTheWeek(weeksAgo).timeInMillis)
-                .toInt()
-
-        override fun lastDayOfWeekMillis(weeksAgo: Int): Long =
-            endOfTheWeek(weeksAgo).timeInMillis
+            TimeUnit.MILLISECONDS.toDays(dayInMillis() - startOfTheMonth(monthsAgo).timeInMillis).toInt()
 
         override fun monthMillis(monthsAgo: Int): Long = month(monthsAgo).timeInMillis
 
-        override fun weeksInMonth(monthsAgo: Int): Int =
-            month(monthsAgo).getActualMaximum(Calendar.WEEK_OF_MONTH)
-
-        private fun calendar(): Calendar = Calendar.getInstance(timeZone)
-
-        private fun startOfTheDay(daysAgo: Int = 0): Calendar = calendar().also {
+        private fun startOfTheDay(daysAgo: Int = 0, calendar: Calendar = calendar()): Calendar = calendar.also {
             it.set(Calendar.HOUR_OF_DAY, 0)
             it.set(Calendar.MINUTE, 0)
             it.set(Calendar.SECOND, 0)
@@ -90,23 +94,14 @@ interface Now {
             it.add(Calendar.DAY_OF_YEAR, -daysAgo)
         }
 
-        private fun endOfTheWeek(weeksAgo: Int = 0): Calendar = startOfTheDay().also { calendar ->
-            calendar.set(Calendar.DAY_OF_WEEK, calendar.firstDayOfWeek)
-            calendar.add(Calendar.DATE, 6 - weeksAgo * 7)
-        }
-
-        private fun endOfTheMonth(monthsAgo: Int = 0): Calendar = startOfTheDay().also { calendar ->
-            calendar.add(Calendar.MONTH, -monthsAgo)
-            calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH))
-        }
-
-        private fun startOfTheWeek(weeksAgo: Int = 0): Calendar = startOfTheDay().also { calendar ->
-            calendar.set(Calendar.DAY_OF_WEEK, calendar.firstDayOfWeek)
-            calendar.add(Calendar.DATE, -weeksAgo * 7)
-        }
+        private fun endOfTheMonth(monthsAgo: Int = 0): Calendar =
+            startOfTheDay(calendar = calendar()).also { calendar ->
+                calendar.add(Calendar.MONTH, -monthsAgo)
+                calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH))
+            }
 
         private fun startOfTheMonth(monthsAgo: Int = 0): Calendar =
-            startOfTheDay().also { calendar ->
+            startOfTheDay(calendar = calendar()).also { calendar ->
                 calendar.add(Calendar.MONTH, -monthsAgo)
                 calendar.set(Calendar.DAY_OF_MONTH, 1)
             }
@@ -114,5 +109,8 @@ interface Now {
         private fun month(monthsAgo: Int): Calendar = calendar().also { calendar ->
             calendar.add(Calendar.MONTH, -monthsAgo)
         }
+
+        private fun calendar(isFirstDaySunday: Boolean = default): Calendar =
+            CalendarProvider.getCalendarDefault(isFirstDaySunday)
     }
 }
