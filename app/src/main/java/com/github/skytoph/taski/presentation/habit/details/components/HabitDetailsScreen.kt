@@ -1,6 +1,9 @@
 package com.github.skytoph.taski.presentation.habit.details.components
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -80,7 +83,8 @@ fun HabitDetailsScreen(
         onDeleteHabit = { onHideDialog(); onDeleteHabit() },
         onDayClick = { viewModel.habitDone(it) },
         onEditHistory = { viewModel.onEvent(HabitDetailsEvent.EditHistory) },
-        isFirstDaySunday = viewModel.settings().value.weekStartsOnSunday.value
+        isFirstDaySunday = viewModel.settings().value.weekStartsOnSunday.value,
+        expandSummary = { viewModel.onEvent(HabitDetailsEvent.ExpandSummary) }
     )
 }
 
@@ -93,6 +97,7 @@ fun HabitDetails(
     onDayClick: (Int) -> Unit = {},
     onEditHistory: () -> Unit = {},
     isFirstDaySunday: Boolean = false,
+    expandSummary: () -> Unit = {},
 ) {
     val context = LocalContext.current
     val habit = state.value.habit ?: return
@@ -132,7 +137,6 @@ fun HabitDetails(
         Spacer(modifier = Modifier.height(8.dp))
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier
                 .fillMaxWidth()
                 .background(
@@ -140,11 +144,19 @@ fun HabitDetails(
                     shape = MaterialTheme.shapes.extraSmall
                 )
                 .padding(8.dp)
+                .animateContentSize(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             LabelWithIcon(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier
+                    .weight(1f)
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null
+                    ) { expandSummary() },
                 annotatedText = habit.frequency.summarize(context.resources, isFirstDaySunday, getLocale()),
                 icon = ImageVector.vectorResource(R.drawable.calendar),
+                maxLines = if (state.value.isSummaryExpanded) 100 else 2
             )
             LabelWithIcon(
                 modifier = Modifier.weight(1f),
@@ -228,14 +240,15 @@ fun HabitDetails(
 }
 
 @Composable
-fun LabelWithIcon(modifier: Modifier = Modifier, text: String, icon: ImageVector) =
-    LabelWithIcon(modifier = modifier, annotatedText = AnnotatedString(text), icon = icon)
+fun LabelWithIcon(modifier: Modifier = Modifier, text: String, icon: ImageVector, maxLines: Int = 2) =
+    LabelWithIcon(modifier = modifier, annotatedText = AnnotatedString(text), icon = icon, maxLines = maxLines)
 
 @Composable
 fun LabelWithIcon(
     modifier: Modifier = Modifier,
     annotatedText: AnnotatedString,
-    icon: ImageVector
+    icon: ImageVector,
+    maxLines: Int = 2
 ) {
     Row(
         modifier = modifier,
@@ -253,8 +266,9 @@ fun LabelWithIcon(
             text = annotatedText,
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onBackground,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis
+            maxLines = maxLines,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.animateContentSize()
         )
     }
 }

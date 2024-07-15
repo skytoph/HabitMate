@@ -5,7 +5,9 @@
 
 package com.github.skytoph.taski.presentation.habit.details.components
 
+import androidx.compose.animation.Animatable
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -34,6 +36,7 @@ import androidx.compose.material3.TooltipBox
 import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -239,22 +242,41 @@ private fun DailyEntry(
     size: Dp,
     padding: Dp,
 ) {
-    val color = habitColor.applyColor(
-        MaterialTheme.colorScheme.onSecondaryContainer,
-        ColorPercentMapper.toColorPercent(entry.timesDone, goal)
-    )
+    val defaultColor = MaterialTheme.colorScheme.onSecondaryContainer
+    val color = remember {
+        Animatable(habitColor.applyColor(defaultColor, ColorPercentMapper.toColorPercent(entry.timesDone, goal)))
+    }
+    LaunchedEffect(entry.timesDone) {
+        color.animateTo(
+            targetValue = habitColor.applyColor(defaultColor, ColorPercentMapper.toColorPercent(entry.timesDone, goal)),
+            animationSpec = tween(durationMillis = 300)
+        )
+    }
     TooltipBox(
         state = rememberTooltipState(),
         positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
         tooltip = {
-            Text(stringResource(R.string.entry_tooltip_percent_done, entry.timesDone, goal))
+            Box(
+                modifier = Modifier
+                    .background(
+                        color = MaterialTheme.colorScheme.onBackground,
+                        shape = MaterialTheme.shapes.small
+                    )
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.entry_tooltip_percent_done, entry.timesDone, goal),
+                    color = MaterialTheme.colorScheme.background,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
         }
     ) {
         Box(
             modifier = Modifier
                 .size(size)
                 .padding(padding)
-                .background(color, shape = MaterialTheme.shapes.extraSmall)
+                .background(color.value, shape = MaterialTheme.shapes.extraSmall)
                 .border(
                     width = 1.dp,
                     color = if (entry.hasBorder) habitColor else Color.Transparent,
@@ -267,7 +289,7 @@ private fun DailyEntry(
         ) {
             Text(
                 text = entry.day,
-                color = color.contrastColor(),
+                color = color.value.contrastColor(),
                 style = MaterialTheme.typography.labelSmall
             )
         }
