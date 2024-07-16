@@ -144,6 +144,7 @@
     <string name="habit_menu_delete">Delete</string>
     <string name="habit_menu_reorder_habits">Reorder habits</string>
     <string name="reminder_turned_off">-</string>
+    <string name="description_label">description</string>
 
     <plurals name="times_label">
         <item quantity="one">time</item>

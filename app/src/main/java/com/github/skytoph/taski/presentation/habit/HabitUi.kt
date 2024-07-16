@@ -13,6 +13,7 @@ import com.github.skytoph.taski.presentation.habit.list.mapper.HabitDomainMapper
 data class HabitUi(
     val id: Long = ID_DEFAULT,
     val title: String,
+    val description: String = "",
     val goal: Int = 1,
     val color: Color = IconsColors.Default,
     val icon: IconResource = IconResource.Default,

@@ -15,6 +15,9 @@ data class HabitEntity(
     @ColumnInfo(name = "title")
     val title: String,
 
+    @ColumnInfo(name = "description")
+    val description: String,
+
     @ColumnInfo(name = "goal")
     val goal: Int,
 

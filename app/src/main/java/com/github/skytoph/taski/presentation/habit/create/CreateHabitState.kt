@@ -11,6 +11,7 @@ import com.github.skytoph.taski.presentation.habit.list.component.DialogItem
 
 data class CreateHabitState(
     val title: FieldState = FieldState(),
+    val description: FieldState = FieldState(),
     val goal: GoalState = GoalState(),
     val icon: IconResource = IconResource.Default,
     val color: Color = IconsColors.Default,
@@ -24,6 +25,7 @@ data class CreateHabitState(
 
     fun toHabitUi() = HabitUi(
         title = title.field,
+        description = description.field,
         goal = goal.value,
         icon = icon,
         color = color,

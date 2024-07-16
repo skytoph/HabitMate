@@ -1,6 +1,7 @@
 package com.github.skytoph.taski.presentation.core.component
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.togetherWith
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -30,17 +32,20 @@ import androidx.compose.ui.unit.dp
 import com.github.skytoph.taski.R
 
 @Composable
-fun TitleTextField(
+fun TextFieldWithError(
     modifier: Modifier = Modifier,
     value: String,
     onValueChange: (String) -> Unit,
     error: String? = null,
     height: Dp = 40.dp,
-    clearFocus: () -> Unit = {}
+    clearFocus: () -> Unit = {},
+    title: String,
+    singleLine: Boolean = true,
+    maxLines: Int = 1
 ) {
     Column(modifier = modifier) {
         Text(
-            text = stringResource(R.string.habit_label),
+            text = title,
             style = MaterialTheme.typography.titleSmall,
             color = MaterialTheme.colorScheme.onBackground
         )
@@ -48,10 +53,12 @@ fun TitleTextField(
         BasicTextField(
             modifier = Modifier
                 .fillMaxWidth()
-                .semantics { contentDescription = "text field" },
+                .semantics { contentDescription = title }
+                .animateContentSize(),
             value = value,
             onValueChange = onValueChange,
-            singleLine = true,
+            singleLine = singleLine,
+            maxLines = maxLines,
             textStyle = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onBackground),
             cursorBrush = SolidColor(MaterialTheme.colorScheme.onSecondary),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
@@ -65,7 +72,7 @@ fun TitleTextField(
                                 MaterialTheme.colorScheme.surfaceVariant,
                                 MaterialTheme.shapes.extraSmall
                             )
-                            .height(height)
+                            .heightIn(min = height)
                             .padding(vertical = 8.dp, horizontal = 18.dp),
                         contentAlignment = Alignment.CenterStart
                     ) {
@@ -96,10 +103,12 @@ private fun TextFieldPreview() {
         modifier = Modifier
             .padding(16.dp), contentAlignment = Alignment.Center
     ) {
-        TitleTextField(
+        TextFieldWithError(
             value = "value",
+            onValueChange = {},
             error = stringResource(R.string.error_habit_title_is_empty),
-            onValueChange = {}
+            title = stringResource(R.string.habit_label),
+            singleLine = true,
         )
     }
 }

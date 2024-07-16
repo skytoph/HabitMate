@@ -24,6 +24,13 @@ interface CreateHabitEvent {
         }
     }
 
+    class EditDescription(private val value: String) : CreateHabitEvent {
+        override fun handle(state: MutableState<CreateHabitState>) {
+            state.value =
+                state.value.copy(description = state.value.description.copy(field = value))
+        }
+    }
+
     object Validate : CreateHabitEvent {
         override fun handle(state: MutableState<CreateHabitState>) {
             state.value = state.value.copy(isValidated = true)

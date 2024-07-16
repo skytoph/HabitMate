@@ -13,6 +13,7 @@ import com.github.skytoph.taski.presentation.habit.list.component.DialogItem
 data class EditHabitState(
     val id: Long = HabitUi.ID_DEFAULT,
     val title: FieldState = FieldState(),
+    val description: FieldState = FieldState(),
     val goal: GoalState = GoalState(value = goalIsNotInitialized),
     val frequencyState: FrequencyState = FrequencyState(),
     val reminder: ReminderUi = ReminderUi(),
@@ -29,6 +30,7 @@ data class EditHabitState(
     fun toHabitUi() = HabitUi(
         id = id,
         title = title.field,
+        description = description.field,
         goal = goal.value,
         icon = icon,
         color = color,

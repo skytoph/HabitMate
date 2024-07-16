@@ -41,6 +41,13 @@ interface EditHabitEvent {
         }
     }
 
+    class EditDescription(private val value: String) : EditHabitEvent {
+        override fun handle(state: MutableState<EditHabitState>, icon: MutableState<IconState>) {
+            state.value =
+                state.value.copy(description = state.value.description.copy(field = value))
+        }
+    }
+
     object IncreaseGoal : EditHabitEvent {
         override fun handle(state: MutableState<EditHabitState>, icon: MutableState<IconState>) {
             if (state.value.goal.canBeIncreased) {

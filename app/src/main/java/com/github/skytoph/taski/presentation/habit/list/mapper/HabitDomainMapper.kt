@@ -14,6 +14,7 @@ interface HabitDomainMapper {
         override fun map(habit: HabitUi, context: Context) = Habit(
             id = if (habit.id == HabitUi.ID_DEFAULT) now.milliseconds() else habit.id,
             title = habit.title,
+            description = habit.description,
             goal = habit.goal,
             iconName = habit.icon.name(context.resources),
             color = habit.color.toArgb(),

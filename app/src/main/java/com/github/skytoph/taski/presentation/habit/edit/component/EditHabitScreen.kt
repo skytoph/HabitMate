@@ -6,6 +6,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -64,8 +65,8 @@ import androidx.lifecycle.compose.currentStateAsState
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.component.AppBarAction
 import com.github.skytoph.taski.presentation.core.component.SquareButton
+import com.github.skytoph.taski.presentation.core.component.TextFieldWithError
 import com.github.skytoph.taski.presentation.core.component.TimePickerDialog
-import com.github.skytoph.taski.presentation.core.component.TitleTextField
 import com.github.skytoph.taski.presentation.core.component.getLocale
 import com.github.skytoph.taski.presentation.core.state.FieldState
 import com.github.skytoph.taski.presentation.core.state.IconResource
@@ -114,6 +115,7 @@ fun EditHabitScreen(
         state = viewModel.state(),
         onSelectIconClick = onSelectIconClick,
         onTypeTitle = { viewModel.onEvent(EditHabitEvent.EditTitle(it)) },
+        onTypeDescription = { viewModel.onEvent(EditHabitEvent.EditDescription(it)) },
         onDecreaseGoal = { viewModel.onEvent(EditHabitEvent.DecreaseGoal) },
         onIncreaseGoal = { viewModel.onEvent(EditHabitEvent.IncreaseGoal) },
         expandFrequency = { viewModel.onEvent(EditHabitEvent.ExpandFrequency) },
@@ -142,6 +144,7 @@ private fun EditHabit(
     state: State<EditHabitState>,
     onSelectIconClick: () -> Unit = {},
     onTypeTitle: (String) -> Unit = {},
+    onTypeDescription: (String) -> Unit = {},
     onDecreaseGoal: () -> Unit = {},
     onIncreaseGoal: () -> Unit = {},
     expandFrequency: () -> Unit = {},
@@ -161,12 +164,14 @@ private fun EditHabit(
 ) {
     EditBaseHabit(
         title = state.value.title,
+        description = state.value.description,
         goal = state.value.goal,
         icon = state.value.icon,
         color = state.value.color,
         reminder = state.value.reminder,
         dialog = state.value.dialog,
         onTypeTitle = onTypeTitle,
+        onTypeDescription = onTypeDescription,
         onSelectIconClick = onSelectIconClick,
         onDecreaseGoal = onDecreaseGoal,
         onIncreaseGoal = onIncreaseGoal,
@@ -193,12 +198,14 @@ private fun EditHabit(
 @Composable
 fun EditBaseHabit(
     title: FieldState,
+    description: FieldState,
     goal: GoalState,
     icon: IconResource,
     color: Color,
     reminder: ReminderUi,
     dialog: DialogItem?,
     onTypeTitle: (String) -> Unit,
+    onTypeDescription: (String) -> Unit,
     onSelectIconClick: () -> Unit,
     onDecreaseGoal: () -> Unit,
     onIncreaseGoal: () -> Unit,
@@ -229,13 +236,15 @@ fun EditBaseHabit(
             .verticalScroll(rememberScrollState())
     ) {
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-            TitleTextField(
+            TextFieldWithError(
                 modifier = Modifier.weight(1f),
                 value = title.field,
                 onValueChange = onTypeTitle,
                 error = title.error?.getString(context),
                 height = minHeight,
-                clearFocus = { focusManager.clearFocus() }
+                clearFocus = { focusManager.clearFocus() },
+                title = stringResource(R.string.habit_label),
+                singleLine = true,
             )
             IconSelector(
                 icon = icon,
@@ -244,6 +253,17 @@ fun EditBaseHabit(
                 onClick = { focusManager.clearFocus(); onSelectIconClick() }
             )
         }
+        Spacer(modifier = Modifier.height(4.dp))
+        TextFieldWithError(
+            modifier = Modifier.fillMaxWidth().animateContentSize(),
+            value = description.field,
+            onValueChange = onTypeDescription,
+            height = minHeight,
+            clearFocus = { focusManager.clearFocus() },
+            title = stringResource(R.string.description_label),
+            singleLine = false,
+            maxLines = 5
+        )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = stringResource(R.string.goal_label),
