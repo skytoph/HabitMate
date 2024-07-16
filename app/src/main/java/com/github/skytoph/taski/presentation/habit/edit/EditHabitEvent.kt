@@ -22,6 +22,7 @@ interface EditHabitEvent {
             state.value = EditHabitState(
                 id = habit.id,
                 title = FieldState(field = habit.title),
+                description = FieldState(field = habit.description),
                 goal = GoalState(habit.goal),
                 icon = habit.icon,
                 color = habit.color,

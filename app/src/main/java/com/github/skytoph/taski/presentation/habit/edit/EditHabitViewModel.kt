@@ -43,11 +43,8 @@ class EditHabitViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val habit = state.value.toHabitUi()
             val isFirstDaySunday = settings().value.weekStartsOnSunday.value
-            interactor.insert(habit, context)
-            withContext(Dispatchers.Main) {
-                interactor.scheduleNotification(habit, context, isFirstDaySunday)
-                navigateUp()
-            }
+            interactor.insert(habit, context, isFirstDaySunday)
+            withContext(Dispatchers.Main) { navigateUp() }
         }
 
     fun validate() = validator.validate(state.value.title, this)

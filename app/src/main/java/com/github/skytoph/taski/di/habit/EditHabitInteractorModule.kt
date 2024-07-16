@@ -9,7 +9,6 @@ import com.github.skytoph.taski.presentation.habit.details.mapper.StatisticsUiMa
 import com.github.skytoph.taski.presentation.habit.edit.EditHabitInteractor
 import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
 import com.github.skytoph.taski.presentation.habit.edit.NotificationInteractor
-import com.github.skytoph.taski.presentation.habit.edit.mapper.HabitNotificationMapper
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitDomainMapper
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitHistoryUiMapper
 import com.github.skytoph.taski.presentation.habit.list.view.ViewType
@@ -27,11 +26,10 @@ object EditHabitInteractorModule {
         repository: HabitRepository,
         mapper: HabitDomainMapper,
         alarm: AlarmScheduler,
-        notificationMapper: HabitNotificationMapper,
         habitInteractor: HabitDoneInteractor,
         notificationInteractor: NotificationInteractor
     ): EditHabitInteractor = EditHabitInteractor.Base(
-        mapper, repository, alarm, notificationMapper, notificationInteractor, habitInteractor
+        mapper, repository, alarm, notificationInteractor, habitInteractor
     )
 
     @Provides

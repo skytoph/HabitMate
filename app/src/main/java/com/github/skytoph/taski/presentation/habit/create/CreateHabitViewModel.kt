@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.github.skytoph.taski.core.datastore.SettingsCache
 import com.github.skytoph.taski.presentation.appbar.InitAppBar
 import com.github.skytoph.taski.presentation.core.EventHandler
-import com.github.skytoph.taski.presentation.habit.CreateHabitInteractor
 import com.github.skytoph.taski.presentation.habit.icon.IconState
 import com.github.skytoph.taski.presentation.habit.icon.SelectIconEvent
 import com.github.skytoph.taski.presentation.settings.SettingsViewModel

@@ -14,6 +14,7 @@ interface HabitUiMapper {
         override fun map(habit: Habit): HabitUi = HabitUi(
             id = habit.id,
             title = habit.title,
+            description = habit.description,
             goal = habit.goal,
             icon = IconResource.Name(habit.iconName),
             color = Color(habit.color),

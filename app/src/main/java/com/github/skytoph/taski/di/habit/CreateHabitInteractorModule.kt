@@ -1,7 +1,7 @@
 package com.github.skytoph.taski.di.habit
 
 import com.github.skytoph.taski.domain.habit.HabitRepository
-import com.github.skytoph.taski.presentation.habit.CreateHabitInteractor
+import com.github.skytoph.taski.presentation.habit.create.CreateHabitInteractor
 import com.github.skytoph.taski.presentation.habit.edit.NotificationInteractor
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitDomainMapper
 import dagger.Module
