@@ -53,7 +53,7 @@ interface CalculateStreak {
 
     abstract class Iterable(
         private val days: Set<Int> = emptySet(),
-        protected val counter: StreakCounterCache = StreakCounterCache(),
+        private val counter: StreakCounterCache = StreakCounterCache(),
     ) : Abstract(days), StartAndEnd {
 
         override fun streaks(data: Map<Int, Entry>, goal: Int, days: List<Int>): List<Streak> =
@@ -64,15 +64,15 @@ interface CalculateStreak {
                 val dataIterator = data.keys.iterator()
                 val daysIterator = LoopIterator(days)
 
-                val today = dayNumber(0)
+                val today = transform(dayNumber(0))
                 var dayNextValue = daysIterator.next()
-                while (dayNextValue > today && daysIterator.hasNext()) {
+                while (transform(dayNextValue) > today && daysIterator.hasNext()) {
                     dayNextValue = daysIterator.next()
                 }
-                if (!daysIterator.hasNext() && dayNextValue > today) {
+                if (!daysIterator.hasNext() && transform(dayNextValue) > today) {
                     dayNextValue = daysIterator.next()
                 }
-                var currentStreak = mutableListOf(days.indexOf(dayNextValue))
+                val currentStreak = mutableListOf(days.indexOf(dayNextValue))
 
                 var dayNextPosition = findNextPosition(-1, dayNextValue)
                 var dataNextPosition = dataIterator.next()
@@ -114,9 +114,9 @@ interface CalculateStreak {
                                     val start = end(daysAgo)
                                     val end = start(daysAgo)
                                     val next = if (streaks.isEmpty()
-                                        && daysIterator.nextAndReturnBack(2) != days.last()
+                                        && daysIterator.nextAndReturnBack(1) != days.last()
                                         && isStreakCurrently(data, goal)
-                                    ) findPosition(start, daysIterator.nextAndReturnBack(2)) + 1 else start
+                                    ) findPosition(start, daysIterator.nextAndReturnBack(1)) + 1 else start
                                     counter.add(count = 1, start = end)
                                     counter.setStart(start = next)
                                     currentStreak[0] = 0
@@ -143,7 +143,7 @@ interface CalculateStreak {
                                 }
 
                                 else -> {
-                                    counter.add(count = 1)
+                                    counter.add(count = 1, start = daysAgo)
                                 }
                             }
                         }
@@ -161,16 +161,19 @@ interface CalculateStreak {
         }
 
         open fun findPosition(currentPosition: Int, nextValue: Int): Int {
-            val currentValue = dayNumber(currentPosition)
+            val next = transform(nextValue)
+            val currentValue = transform(dayNumber(currentPosition))
             return currentPosition + currentValue - when {
-                currentValue < nextValue ->
-                    nextValue - dayNumber(currentPosition + currentValue)
+                currentValue < next ->
+                    next - transform(dayNumber(currentPosition + currentValue))
 
-                else -> nextValue
+                else -> next
             }
         }
 
         abstract fun dayNumber(daysAgo: Int): Int
+
+        open fun transform(day: Int): Int = day
 
         abstract val maxDays: Int
 
