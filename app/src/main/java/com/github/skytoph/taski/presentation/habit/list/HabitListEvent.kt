@@ -20,10 +20,11 @@ interface HabitListEvent {
     class UpdateView(
         private val viewType: ViewType? = null,
         private val sortBy: SortHabits? = null,
-        private val filterBy: FilterHabits? = null
+        private val filterBy: FilterHabits? = null,
+        private val showTodayHabitsOnly: Boolean? = null,
     ) : SettingsViewModel.Event {
         override suspend fun handle(settings: SettingsCache) {
-            settings.updateView(viewType, sortBy, filterBy)
+            settings.updateView(viewType, sortBy, filterBy, showTodayHabitsOnly)
         }
     }
 

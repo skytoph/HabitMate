@@ -13,7 +13,7 @@ import com.github.skytoph.taski.domain.habit.EntryList
 import com.github.skytoph.taski.domain.habit.Habit
 import com.github.skytoph.taski.domain.habit.HabitRepository
 import com.github.skytoph.taski.domain.habit.HabitWithEntries
-import com.github.skytoph.taski.presentation.habit.details.mapper.HabitStateMapper
+import com.github.skytoph.taski.presentation.habit.details.mapper.StatisticsUiMapper
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -22,7 +22,7 @@ class BaseHabitRepository(
     private val entryDao: EntriesDao,
     private val habitMapper: HabitDBToDomainMapper,
     private val entryMapper: EntryListMapper,
-    private val stateMapper: HabitStateMapper,
+    private val stats: StatisticsUiMapper,
 ) : HabitRepository {
 
     override fun entriesFlow(id: Long): Flow<EntryList> =
@@ -63,6 +63,10 @@ class BaseHabitRepository(
 
     override suspend fun delete(id: Long) = habitDao.delete(id)
 
-    override suspend fun isHabitDone(habitId: Long): Boolean =
-        entryMapper.map(entryDao.entriesList(habitId)).entries.containsKey(0)
+    override suspend fun notCompleted(habitId: Long, isFirstDaySunday: Boolean): Boolean {
+        val data = habitWithEntries(habitId)
+        return !data.habit.isArchived
+                && data.entries.entries[0].let { today -> today == null || today.timesDone < data.habit.goal }
+                && stats.state(data, isFirstDaySunday).isScheduledForToday
+    }
 }

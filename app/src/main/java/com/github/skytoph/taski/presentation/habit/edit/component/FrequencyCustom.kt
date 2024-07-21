@@ -156,7 +156,7 @@ fun FrequencyCustom(
                 option = FrequencyCustomType.Month,
                 selected = frequency.frequencyType == FrequencyCustomType.Month,
                 select = selectType,
-                title = pluralStringResource(id = FrequencyCustomType.Week.title, count = 1)
+                title = pluralStringResource(id = FrequencyCustomType.Month.title, count = 1)
             )
         }
     }

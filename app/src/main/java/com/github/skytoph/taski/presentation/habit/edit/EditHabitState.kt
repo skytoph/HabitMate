@@ -15,6 +15,7 @@ data class EditHabitState(
     val title: FieldState = FieldState(),
     val description: FieldState = FieldState(),
     val goal: GoalState = GoalState(value = goalIsNotInitialized),
+    val priority: Int = Int.MAX_VALUE,
     val frequencyState: FrequencyState = FrequencyState(),
     val reminder: ReminderUi = ReminderUi(),
     val isFrequencyExpanded: Boolean = false,
@@ -34,6 +35,7 @@ data class EditHabitState(
         goal = goal.value,
         icon = icon,
         color = color,
+        priority = priority,
         frequency = frequencyState.selected,
         reminder = reminder
     )

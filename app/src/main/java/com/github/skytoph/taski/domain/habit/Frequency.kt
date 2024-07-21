@@ -7,6 +7,7 @@ import com.github.skytoph.taski.presentation.habit.details.mapper.FrequencyMappe
 import com.github.skytoph.taski.presentation.habit.details.streak.CalculateStreak
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyCustomType
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyUi
+import com.github.skytoph.taski.presentation.habit.edit.mapper.MapToDates
 
 sealed interface Frequency {
     fun mapToUi(): FrequencyUi
@@ -16,12 +17,10 @@ sealed interface Frequency {
     fun provide(provider: CalculatorProvider, isFirstDaySunday: Boolean): CalculateStreak
     val times: Int
 
-    data class Daily(val days: Set<Int> = (1..7).toSet()) : Frequency {
+    data class Daily(val days: Set<Int> = (1..7).toSet()) : Frequency, MapToDates by MapToDates.MapDaily(days) {
         override fun mapToUi(): FrequencyUi = FrequencyUi.Daily(days)
         override fun mapToDB(): FrequencyEntity = FrequencyEntity.Daily(days)
-        override fun <T : HabitStatisticsResult> map(mapper: FrequencyMapper<T>): T =
-            mapper.map(days)
-
+        override fun <T : HabitStatisticsResult> map(mapper: FrequencyMapper<T>): T = mapper.map(days)
         override fun isEveryday(): Boolean = days.size >= 7
         override fun provide(provider: CalculatorProvider, isFirstDaySunday: Boolean): CalculateStreak =
             provider.provideDaily(isFirstDaySunday, isEveryday(), days)
@@ -32,9 +31,7 @@ sealed interface Frequency {
     data class Monthly(val days: Set<Int>) : Frequency {
         override fun mapToUi(): FrequencyUi = FrequencyUi.Monthly(days)
         override fun mapToDB(): FrequencyEntity = FrequencyEntity.Monthly(days)
-        override fun <T : HabitStatisticsResult> map(mapper: FrequencyMapper<T>): T =
-            mapper.map(days)
-
+        override fun <T : HabitStatisticsResult> map(mapper: FrequencyMapper<T>): T = mapper.map(days)
         override fun isEveryday(): Boolean = days.size >= 31
         override fun provide(provider: CalculatorProvider, isFirstDaySunday: Boolean): CalculateStreak =
             provider.provideMonthly(isFirstDaySunday, isEveryday(), days)
@@ -81,9 +78,7 @@ sealed interface Frequency {
             data object Day : Type {
                 override val name: String = "day"
                 override fun map(): FrequencyCustomType = FrequencyCustomType.Day
-                override fun isEveryday(timesCount: Int, typeCount: Int): Boolean =
-                    timesCount == typeCount
-
+                override fun isEveryday(timesCount: Int, typeCount: Int): Boolean = timesCount == typeCount
                 override fun provide(provider: CalculatorProvider, times: Int, type: Int, isFirstDaySunday: Boolean) =
                     provider.provideCustomDaily(isFirstDaySunday, isEveryday(times, type), times, type)
             }
@@ -91,9 +86,7 @@ sealed interface Frequency {
             data object Week : Type {
                 override val name: String = "week"
                 override fun map(): FrequencyCustomType = FrequencyCustomType.Week
-                override fun isEveryday(timesCount: Int, typeCount: Int): Boolean =
-                    timesCount == 7 * typeCount
-
+                override fun isEveryday(timesCount: Int, typeCount: Int): Boolean = timesCount == 7 * typeCount
                 override fun provide(provider: CalculatorProvider, times: Int, type: Int, isFirstDaySunday: Boolean) =
                     provider.provideCustomWeekly(isFirstDaySunday, isEveryday(times, type), times, type)
             }
@@ -101,9 +94,7 @@ sealed interface Frequency {
             data object Month : Type {
                 override val name: String = "month"
                 override fun map(): FrequencyCustomType = FrequencyCustomType.Month
-                override fun isEveryday(timesCount: Int, typeCount: Int): Boolean =
-                    timesCount == 31 * typeCount
-
+                override fun isEveryday(timesCount: Int, typeCount: Int): Boolean = timesCount == 31 * typeCount
                 override fun provide(provider: CalculatorProvider, times: Int, type: Int, isFirstDaySunday: Boolean) =
                     provider.provideCustomMonthly(isFirstDaySunday, isEveryday(times, type), times, type)
             }

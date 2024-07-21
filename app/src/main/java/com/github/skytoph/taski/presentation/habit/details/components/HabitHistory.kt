@@ -59,7 +59,6 @@ import com.github.skytoph.taski.presentation.core.color.contrastColor
 import com.github.skytoph.taski.presentation.core.component.WeekDayLabel
 import com.github.skytoph.taski.presentation.core.component.getLocale
 import com.github.skytoph.taski.presentation.core.component.weekDayCalendar
-import com.github.skytoph.taski.presentation.core.fadingEdge
 import com.github.skytoph.taski.presentation.core.leftFadingEdge
 import com.github.skytoph.taski.presentation.core.preview.HabitsEditableProvider
 import com.github.skytoph.taski.presentation.habit.applyColor
@@ -100,7 +99,7 @@ fun HabitHistory(
             .fillMaxWidth()
             .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
             .background(
-                color = MaterialTheme.colorScheme.secondaryContainer,
+                color = MaterialTheme.colorScheme.onTertiaryContainer,
                 shape = MaterialTheme.shapes.small
             )
             .clip(MaterialTheme.shapes.small)
@@ -156,8 +155,7 @@ fun HabitHistoryGrid(
                 Column(
                     Modifier
                         .size(width = squareDp, height = squareDp.times(8))
-                        .fadingEdge(fadingBrushHeader)
-                        .background(color = MaterialTheme.colorScheme.tertiaryContainer)
+                        .background(color = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.9f))
                 ) {
                     Box(modifier = Modifier.size(squareDp))
                     for (index in 1..7)
@@ -242,13 +240,14 @@ private fun DailyEntry(
     size: Dp,
     padding: Dp,
 ) {
-    val defaultColor = MaterialTheme.colorScheme.onSecondaryContainer
-    val color = remember {
-        Animatable(habitColor.applyColor(defaultColor, ColorPercentMapper.toColorPercent(entry.timesDone, goal)))
-    }
-    LaunchedEffect(entry.timesDone) {
+    val defaultColor = Color.White
+    val color = remember { Animatable(entryColor(entry, habitColor, defaultColor, isEditable, goal)) }
+//    val background = if (entry.hasBorder) habitColor.applyColor(defaultColor, 0.3f)
+//    else if (isEditable && entry.daysAgo < 0) Color.Gray.applyColor(defaultColor, 0.3f)
+//    else color.value
+    LaunchedEffect(entry.timesDone, entry.hasBorder) {
         color.animateTo(
-            targetValue = habitColor.applyColor(defaultColor, ColorPercentMapper.toColorPercent(entry.timesDone, goal)),
+            targetValue = entryColor(entry, habitColor, defaultColor, isEditable, goal),
             animationSpec = tween(durationMillis = 300)
         )
     }
@@ -276,10 +275,14 @@ private fun DailyEntry(
             modifier = Modifier
                 .size(size)
                 .padding(padding)
-                .background(color.value, shape = MaterialTheme.shapes.extraSmall)
+                .background(
+                    color = color.value,
+                    shape = MaterialTheme.shapes.extraSmall
+                )
+                .clip(shape = MaterialTheme.shapes.extraSmall)
                 .border(
-                    width = 1.dp,
-                    color = if (entry.hasBorder) habitColor else Color.Transparent,
+                    width = 2.dp,
+                    color = if (entry.hasBorder) habitColor.applyColor(defaultColor, 0.1f) else Color.Transparent,
                     shape = MaterialTheme.shapes.extraSmall
                 )
                 .clickable(enabled = isEditable && entry.daysAgo >= 0) {
@@ -294,6 +297,14 @@ private fun DailyEntry(
             )
         }
     }
+}
+
+private fun entryColor(
+    entry: EntryEditableUi, habitColor: Color, defaultColor: Color, isEditable: Boolean, goal: Int
+) = when {
+    entry.daysAgo < 0 -> Color.Gray.applyColor(defaultColor, 0.3f)
+    entry.hasBorder -> habitColor.applyColor(defaultColor, 0.5f)
+    else -> habitColor.applyColor(defaultColor, ColorPercentMapper.toColorPercent(entry.timesDone, goal))
 }
 
 @Composable

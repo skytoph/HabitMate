@@ -1,6 +1,6 @@
 package com.github.skytoph.taski.di.habit
 
-import com.github.skytoph.taski.core.alarm.AlarmScheduler
+import com.github.skytoph.taski.core.alarm.ReminderScheduler
 import com.github.skytoph.taski.domain.habit.HabitRepository
 import com.github.skytoph.taski.presentation.core.interactor.HabitDoneInteractor
 import com.github.skytoph.taski.presentation.habit.EntityPagerProvider
@@ -25,7 +25,7 @@ object EditHabitInteractorModule {
     fun interactor(
         repository: HabitRepository,
         mapper: HabitDomainMapper,
-        alarm: AlarmScheduler,
+        alarm: ReminderScheduler,
         habitInteractor: HabitDoneInteractor,
         notificationInteractor: NotificationInteractor
     ): EditHabitInteractor = EditHabitInteractor.Base(

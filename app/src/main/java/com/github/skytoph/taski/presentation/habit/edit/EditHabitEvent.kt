@@ -26,6 +26,7 @@ interface EditHabitEvent {
                 goal = GoalState(habit.goal),
                 icon = habit.icon,
                 color = habit.color,
+                priority = habit.priority,
                 isLoading = false,
                 frequencyState = FrequencyState(selectedName = habit.frequency.name)
                     .updateSelected(habit.frequency),

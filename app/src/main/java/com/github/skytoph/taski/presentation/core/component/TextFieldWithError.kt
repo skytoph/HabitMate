@@ -41,7 +41,9 @@ fun TextFieldWithError(
     clearFocus: () -> Unit = {},
     title: String,
     singleLine: Boolean = true,
-    maxLines: Int = 1
+    maxLines: Int = 1,
+    keyboardOptions: KeyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+    keyboardActions: KeyboardActions = KeyboardActions(onDone = { clearFocus() })
 ) {
     Column(modifier = modifier) {
         Text(
@@ -61,8 +63,8 @@ fun TextFieldWithError(
             maxLines = maxLines,
             textStyle = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onBackground),
             cursorBrush = SolidColor(MaterialTheme.colorScheme.onSecondary),
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-            keyboardActions = KeyboardActions(onDone = { clearFocus() }),
+            keyboardOptions = keyboardOptions,
+            keyboardActions = keyboardActions,
             decorationBox = { innerTextField ->
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Box(

@@ -7,5 +7,6 @@ data class HabitDetailsState(
     val isHistoryEditable: Boolean = false,
     val isDeleteDialogShown: Boolean = false,
     val isSummaryExpanded: Boolean = false,
+    val isDescriptionExpanded: Boolean = false,
     val statistics: HabitStatisticsUi = HabitStatisticsUi()
 )

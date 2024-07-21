@@ -18,6 +18,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -63,19 +64,23 @@ fun <T : ProvideOptionUi<T>> OptionsDropdown(
                 Icon(
                     imageVector = option.icon.vector(context),
                     contentDescription = option.icon.name(context.resources),
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(24.dp),
+                    tint = MaterialTheme.colorScheme.onBackground
                 )
                 Spacer(modifier = Modifier.width(12.dp))
                 Text(
                     text = option.title.getString(context),
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onBackground
                 )
             }
 
             DropdownMenu(
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
-                modifier = Modifier.fillMaxWidth().background(color = MaterialTheme.colorScheme.primaryContainer),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(color = MaterialTheme.colorScheme.primaryContainer),
             ) {
                 options.forEach { option ->
                     if (!selected.matches(option)) {
@@ -84,7 +89,8 @@ fun <T : ProvideOptionUi<T>> OptionsDropdown(
                             text = {
                                 Text(
                                     text = optionUi.title.getString(context),
-                                    style = MaterialTheme.typography.bodyMedium
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onBackground
                                 )
                             },
                             leadingIcon = {
@@ -93,7 +99,8 @@ fun <T : ProvideOptionUi<T>> OptionsDropdown(
                                     contentDescription = null,
                                     modifier = Modifier
                                         .padding(start = 4.dp)
-                                        .size(24.dp)
+                                        .size(24.dp),
+                                    tint = MaterialTheme.colorScheme.onBackground
                                 )
                             },
                             onClick = {
@@ -111,6 +118,6 @@ fun <T : ProvideOptionUi<T>> OptionsDropdown(
 @Preview(showSystemUi = true, showBackground = true)
 private fun BottomSheetPreview() {
     HabitMateTheme(darkTheme = true) {
-        ViewBottomSheet()
+        ViewBottomSheet(state = rememberStandardBottomSheetState())
     }
 }

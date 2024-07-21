@@ -11,7 +11,6 @@ interface HabitRepository: CheckHabitState {
     suspend fun habits(): List<Habit>
     suspend fun habitWithEntries(id: Long): HabitWithEntries
     suspend fun entries(id: Long): EntryList
-    suspend fun habit(id: Long): Habit
     suspend fun entry(id: Long, timestamp: Long): Entry?
     suspend fun insert(habit: Habit): Long
     suspend fun update(habit: Habit)

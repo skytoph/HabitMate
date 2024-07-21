@@ -12,7 +12,8 @@ data class HabitStatistics(
 }
 
 data class HabitState(
-    val isStreakCurrently: Boolean = false
+    val isStreakCurrently: Boolean = false,
+    val isScheduledForToday: Boolean = true,
 ) : HabitStatisticsResult
 
 interface HabitStatisticsResult {

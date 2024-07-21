@@ -17,6 +17,7 @@ val BrightDarkRed = Color(0xFFA64058)
 val LightGray = Color(0xFFF1F0F8)
 
 val PurpleLight = Color(0xFFFAF9FF)
+val BlueLight = Color(0xFFE1E1F2)
 val PurpleLightGray = Color(0xFFE5E3EF)
 
 val PurpleVeryDark = Color(0xFF222128)

@@ -12,6 +12,7 @@ import com.github.skytoph.taski.data.habit.repository.BaseHabitRepository
 import com.github.skytoph.taski.domain.habit.HabitRepository
 import com.github.skytoph.taski.presentation.habit.details.mapper.CalculatorProvider
 import com.github.skytoph.taski.presentation.habit.details.mapper.HabitStateMapper
+import com.github.skytoph.taski.presentation.habit.details.mapper.StatisticsUiMapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -30,13 +31,13 @@ object HabitRepositoryModule {
         entriesDao: EntriesDao,
         mapper: HabitDBToDomainMapper,
         entryMapper: EntryListMapper,
-        stateMapper: HabitStateMapper
+        stats: StatisticsUiMapper,
     ): HabitRepository = BaseHabitRepository(
         habitDao = habitsDao,
         entryDao = entriesDao,
         habitMapper = mapper,
         entryMapper = entryMapper,
-        stateMapper = stateMapper
+        stats = stats
     )
 
     @Provides

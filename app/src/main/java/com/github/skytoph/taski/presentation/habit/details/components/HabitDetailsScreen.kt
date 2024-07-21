@@ -28,6 +28,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
@@ -84,7 +85,8 @@ fun HabitDetailsScreen(
         onDayClick = { viewModel.habitDone(it) },
         onEditHistory = { viewModel.onEvent(HabitDetailsEvent.EditHistory) },
         isFirstDaySunday = viewModel.settings().value.weekStartsOnSunday.value,
-        expandSummary = { viewModel.onEvent(HabitDetailsEvent.ExpandSummary) }
+        expandSummary = { viewModel.onEvent(HabitDetailsEvent.ExpandSummary) },
+        expandDescription = { viewModel.onEvent(HabitDetailsEvent.ExpandDescription) }
     )
 }
 
@@ -98,6 +100,7 @@ fun HabitDetails(
     onEditHistory: () -> Unit = {},
     isFirstDaySunday: Boolean = false,
     expandSummary: () -> Unit = {},
+    expandDescription: () -> Unit = {},
 ) {
     val context = LocalContext.current
     val habit = state.value.habit ?: return
@@ -134,7 +137,37 @@ fun HabitDetails(
                 color = MaterialTheme.colorScheme.onBackground
             )
         }
-        Spacer(modifier = Modifier.height(8.dp))
+        if (state.value.habit?.description?.isNotEmpty() == true) {
+            Spacer(modifier = Modifier.height(8.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(shape = MaterialTheme.shapes.extraSmall)
+                    .clickable { expandDescription() }
+                    .background(
+                        color = MaterialTheme.colorScheme.tertiaryContainer,
+                        shape = MaterialTheme.shapes.extraSmall
+                    )
+                    .padding(8.dp)
+                    .animateContentSize(),
+            ) {
+                Text(
+                    text = habit.description,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    style = MaterialTheme.typography.bodySmall,
+                    maxLines = if (state.value.isDescriptionExpanded) Int.MAX_VALUE else 3,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.animateContentSize()
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = stringResource(R.string.frequency_label),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+        Spacer(modifier = Modifier.height(4.dp))
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
@@ -156,7 +189,7 @@ fun HabitDetails(
                     ) { expandSummary() },
                 annotatedText = habit.frequency.summarize(context.resources, isFirstDaySunday, getLocale()),
                 icon = ImageVector.vectorResource(R.drawable.calendar),
-                maxLines = if (state.value.isSummaryExpanded) 100 else 2
+                maxLines = if (state.value.isSummaryExpanded) Int.MAX_VALUE else 2
             )
             LabelWithIcon(
                 modifier = Modifier.weight(1f),
@@ -171,7 +204,7 @@ fun HabitDetails(
         }
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = "overview",
+            text = stringResource(R.string.overview_label),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onBackground
         )
@@ -332,12 +365,28 @@ fun LabelWithIconAndValue(
 }
 
 @Composable
-@Preview
+@Preview(showBackground = true)
 fun DarkHabitDetailsScreenPreview(
     @PreviewParameter(HabitsEditableProvider::class) entries: List<EditableHistoryUi>,
-    habit: HabitUi = HabitUi(title = "dev")
+    habit: HabitUi = HabitUi(title = "dev", description = "description")
 ) {
     HabitMateTheme(darkTheme = true) {
+        Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+            HabitDetails(
+                state = remember { mutableStateOf(HabitDetailsState(habit)) },
+                entries = flowOf(PagingData.from(entries)),
+            )
+        }
+    }
+}
+
+@Composable
+@Preview(showBackground = true)
+fun HabitDetailsScreenPreview(
+    @PreviewParameter(HabitsEditableProvider::class) entries: List<EditableHistoryUi>,
+    habit: HabitUi = HabitUi(title = "dev", description = "description")
+) {
+    HabitMateTheme(darkTheme = false) {
         Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
             HabitDetails(
                 state = remember { mutableStateOf(HabitDetailsState(habit)) },

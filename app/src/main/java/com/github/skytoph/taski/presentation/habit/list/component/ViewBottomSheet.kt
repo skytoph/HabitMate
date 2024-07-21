@@ -2,9 +2,7 @@
 
 package com.github.skytoph.taski.presentation.habit.list.component
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,6 +11,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -25,7 +25,6 @@ import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -49,7 +48,8 @@ fun ViewBottomSheet(
     selectViewType: (ViewType) -> Unit = {},
     selectSorting: (SortHabits) -> Unit = {},
     selectFilter: (FilterHabits) -> Unit = {},
-    reorder: () -> Unit = {}
+    reorder: () -> Unit = {},
+    showTodayHabitsOnly: (Boolean) -> Unit = {},
 ) {
     ModalBottomSheet(
         onDismissRequest = hideBottomSheet,
@@ -67,62 +67,63 @@ fun ViewBottomSheet(
             )
             HorizontalDivider()
             OptionsDropdown(
-                title = stringResource(R.string.view_filter),
-                options = FilterHabits.options,
-                selected = view.filterBy,
-                selectOption = selectFilter
-            )
-            HorizontalDivider()
-            OptionsDropdown(
                 title = stringResource(R.string.view_sort),
                 options = SortHabits.options,
                 selected = view.sortBy,
                 selectOption = selectSorting
             )
             HorizontalDivider()
+            OptionsDropdown(
+                title = stringResource(R.string.view_filter),
+                options = FilterHabits.options,
+                selected = view.filterBy,
+                selectOption = selectFilter
+            )
+            HorizontalDivider()
+            OptionSwitch(
+                text = stringResource(R.string.show_only_todays_habits),
+                isChecked = view.showTodayHabitsOnly,
+                icon = Icons.Default.Check,
+                onClick = showTodayHabitsOnly
+            )
+            HorizontalDivider()
             ButtonWithIcon(
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
                 onClick = reorder,
-                backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
                 title = stringResource(R.string.reorder_habits),
                 icon = ImageVector.vectorResource(R.drawable.arrow_up_down),
-                color = MaterialTheme.colorScheme.onBackground
+                color = MaterialTheme.colorScheme.primary
             )
-            Spacer(modifier = Modifier.height(300.dp))
+            Spacer(modifier = Modifier.height(80.dp))
         }
     }
 }
 
 @Composable
 fun ButtonWithIcon(
-    modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
-    backgroundColor: Color,
     title: String,
     icon: ImageVector,
     color: Color
 ) {
     Row(
-        modifier = modifier
-            .clip(MaterialTheme.shapes.large)
+        modifier = Modifier
+            .fillMaxWidth()
             .clickable { onClick() }
-            .background(backgroundColor)
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .padding(horizontal = 16.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
     ) {
         Icon(
             imageVector = icon,
             contentDescription = title,
-            modifier = Modifier.size(20.dp),
+            modifier = Modifier.size(24.dp),
             tint = color
         )
-        Spacer(modifier = Modifier.width(4.dp))
+        Spacer(modifier = Modifier.width(12.dp))
         Text(
             text = title,
-            style = MaterialTheme.typography.bodyMedium,
+            style = MaterialTheme.typography.bodySmall,
             color = color,
-            fontWeight = FontWeight.Normal
+            fontWeight = FontWeight.Bold
         )
     }
 }

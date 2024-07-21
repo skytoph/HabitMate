@@ -10,6 +10,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.github.skytoph.taski.MainActivity
 import com.github.skytoph.taski.presentation.core.state.IconResource
+import com.github.skytoph.taski.presentation.core.state.StringResource
 import com.github.skytoph.taski.presentation.habit.edit.NotificationStateInteractor
 import com.google.gson.Gson
 import dagger.assisted.Assisted
@@ -18,15 +19,16 @@ import dagger.assisted.AssistedInject
 @HiltWorker
 class ReminderWorker @AssistedInject constructor(
     private val interactor: NotificationStateInteractor,
+    private val gson: Gson,
     @Assisted private val context: Context,
     @Assisted private val workerParams: WorkerParameters
 ) : CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
-        val item: AlarmItem =
-            Gson().fromJson(workerParams.inputData.getString(KEY_ITEM), AlarmItem::class.java)
+        val item: AlarmItem = gson.fromJson(workerParams.inputData.getString(KEY_ITEM), AlarmItem::class.java)
 
-        if (!interactor.isHabitDone(item.id)) {
+        if (interactor.notCompleted(item.id)) {
+            val habit = interactor.habit(item.id)
             val channelId = HabitAlarmChannel.Base.id
 
             val notificationManager =
@@ -37,10 +39,10 @@ class ReminderWorker @AssistedInject constructor(
                 PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 
             val builder = NotificationCompat.Builder(context, channelId)
-                .setSmallIcon(IconResource.Name(item.icon).id(context))
-                .setColor(item.color)
-                .setContentTitle(item.title)
-                .setContentText(context.getString(item.message))
+                .setSmallIcon(IconResource.Name(habit.iconName).id(context))
+                .setColor(habit.color)
+                .setContentTitle(habit.title)
+                .setContentText(StringResource.Identifier(item.messageIdentifier).getString(context))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)

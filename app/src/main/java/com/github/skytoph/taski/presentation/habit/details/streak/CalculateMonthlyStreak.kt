@@ -5,9 +5,12 @@ import com.github.skytoph.taski.core.Now
 class CalculateMonthlyStreak(
     private val now: Now,
     days: Set<Int>,
-) : CalculateStreak.Iterable(days.sorted().toSet()), CalculateInterval by CalculateInterval.Month(now) {
+) : CalculateStreak.Iterable(days.sorted().toSet()),
+    StartAndEnd by CalculateInterval.Month(now) {
 
     override val maxDays: Int = now.daysInMonth(dayNumber(0))
+
+    override fun transform(day: Int): Int = day
 
     override fun dayNumber(daysAgo: Int): Int = now.dayOfMonths(daysAgo)
 

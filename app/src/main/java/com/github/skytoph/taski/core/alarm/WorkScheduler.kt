@@ -16,12 +16,14 @@ class WorkScheduler(
     private val workManager: WorkManager,
     private val uriConverter: HabitUriConverter,
     private val gson: Gson,
-) : AlarmScheduler {
+) : ReminderScheduler {
 
     override fun scheduleRepeating(context: Context, items: List<AlarmItem>) {
         for (item in items) {
-            val delay = item.timeMillis - System.currentTimeMillis()
-            if (delay < 0) continue
+            val currentTime = System.currentTimeMillis()
+            val targetTime = item.timeMillis
+                .let { if (it < currentTime) item.interval.next(it, item.day) else it }
+            val delay = targetTime - currentTime
             workManager.enqueueUniquePeriodicWork(
                 item.uri + "name",
                 ExistingPeriodicWorkPolicy.UPDATE,
@@ -32,8 +34,10 @@ class WorkScheduler(
 
     override fun schedule(context: Context, items: List<AlarmItem>) {
         for (item in items) {
-            val delay = item.timeMillis - System.currentTimeMillis()
-            if (delay < 0) continue
+            val currentTime = System.currentTimeMillis()
+            val targetTime = item.timeMillis
+                .let { if (it < currentTime) item.interval.next(it, item.day) else it }
+            val delay = targetTime - currentTime
             workManager.enqueue(request(item, delay))
         }
     }
@@ -44,8 +48,7 @@ class WorkScheduler(
     }
 
     private fun periodicRequest(item: AlarmItem, delay: Long): PeriodicWorkRequest {
-        val builder =
-            PeriodicWorkRequestBuilder<ReminderWorker>(item.interval.toLong(), TimeUnit.DAYS)
+        val builder = PeriodicWorkRequestBuilder<ReminderWorker>(item.interval.interval.toLong(), TimeUnit.DAYS)
         return request(item, delay, builder)
     }
 

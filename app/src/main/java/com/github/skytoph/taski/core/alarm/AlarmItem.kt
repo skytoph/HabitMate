@@ -1,18 +1,14 @@
 package com.github.skytoph.taski.core.alarm
 
-import androidx.annotation.ColorInt
-import androidx.annotation.StringRes
+import com.github.skytoph.taski.presentation.habit.edit.mapper.FrequencyInterval
 import java.io.Serializable
 
 data class AlarmItem(
     val id: Long,
-    val title: String,
-    @StringRes val message: Int,
-    val icon: String,
-    @ColorInt val color: Int,
+    val messageIdentifier: String,
     val uri: String,
     val day: Int,
-    val interval: Int = 1,
+    val interval: FrequencyInterval,
     val timeMillis: Long,
 ) : Serializable {
 

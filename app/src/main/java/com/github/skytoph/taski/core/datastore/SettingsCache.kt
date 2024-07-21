@@ -15,8 +15,11 @@ interface SettingsCache {
     suspend fun updateCurrentDayHighlight()
     suspend fun updateStreakHighlight()
     suspend fun updateTheme(theme: AppTheme)
-    suspend fun updateView(viewType: ViewType? = null, sortBy: SortHabits? = null, filterBy: FilterHabits? = null)
     suspend fun updateViewNumberOfEntries(number: Int)
+    suspend fun updateView(
+        viewType: ViewType? = null, sortBy: SortHabits? = null, filterBy: FilterHabits? = null,
+        showTodayHabitsOnly: Boolean? = null
+    )
 
     class Base(
         private val dataStore: DataStore<Settings>,
@@ -43,10 +46,14 @@ interface SettingsCache {
             dataStore.updateData { it.copy(theme = theme) }
         }
 
-        override suspend fun updateView(viewType: ViewType?, sortBy: SortHabits?, filterBy: FilterHabits?) {
+        override suspend fun updateView(
+            viewType: ViewType?, sortBy: SortHabits?, filterBy: FilterHabits?,
+            showTodayHabitsOnly: Boolean?
+        ) {
             viewType?.let { dataStore.updateData { it.copy(view = it.view.copy(viewType = viewType)) } }
             sortBy?.let { dataStore.updateData { it.copy(view = it.view.copy(sortBy = sortBy)) } }
             filterBy?.let { dataStore.updateData { it.copy(view = it.view.copy(filterBy = filterBy)) } }
+            showTodayHabitsOnly?.let { dataStore.updateData { it.copy(view = it.view.copy(showTodayHabitsOnly = showTodayHabitsOnly)) } }
         }
 
         override suspend fun updateViewNumberOfEntries(number: Int) {

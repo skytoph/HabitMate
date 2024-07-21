@@ -1,5 +1,7 @@
 package com.github.skytoph.taski.presentation.habit.list.view
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.state.IconResource
 import com.github.skytoph.taski.presentation.core.state.StringResource
@@ -36,5 +38,9 @@ object HabitsViewTypesProvider {
     val optionFilterArchived = OptionUi(
         title = StringResource.ResId(R.string.filter_archived),
         icon = IconResource.Id(R.drawable.archive),
+    )
+    val optionFilterToday = OptionUi(
+        title = StringResource.ResId(R.string.show_only_todays_habits),
+        icon = IconResource.Vector(Icons.Default.Check)
     )
 }

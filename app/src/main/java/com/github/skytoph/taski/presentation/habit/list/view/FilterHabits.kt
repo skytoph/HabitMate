@@ -1,6 +1,8 @@
 package com.github.skytoph.taski.presentation.habit.list.view
 
 import com.github.skytoph.taski.domain.habit.Habit
+import com.github.skytoph.taski.domain.habit.HabitWithEntries
+import com.github.skytoph.taski.presentation.habit.details.mapper.StatisticsUiMapper
 
 sealed interface FilterHabits : ProvideOptionUi<FilterHabits> {
     fun predicate(todayDone: Int = 0): (Habit) -> Boolean
@@ -30,6 +32,11 @@ sealed interface FilterHabits : ProvideOptionUi<FilterHabits> {
     class Archived(private val archived: Boolean = false) : FilterHabits {
         override fun optionUi(): OptionUi = HabitsViewTypesProvider.optionFilterArchived
         override fun predicate(todayDone: Int): (Habit) -> Boolean = { it.isArchived == archived }
+    }
+
+    class Today(private val todayOnly: Boolean = false, private val mapper: StatisticsUiMapper) {
+        fun filter(habits: List<HabitWithEntries>, isFirstDaySunday: Boolean): List<HabitWithEntries> =
+            if (!todayOnly) habits else habits.filter { mapper.state(it, isFirstDaySunday).isScheduledForToday }
     }
 
     companion object {

@@ -10,7 +10,7 @@ object CalendarProvider {
     fun getCalendar(locale: Locale, isFirstDaySunday: Boolean): Calendar = Calendar.getInstance(getTimeZone(), locale)
         .apply { firstDayOfWeek = if (isFirstDaySunday) Calendar.SUNDAY else Calendar.MONDAY }
 
-    fun getCalendar(isFirstDaySunday: Boolean): Calendar = Calendar.getInstance(TimeZone.getDefault())
+    fun getCalendar(isFirstDaySunday: Boolean): Calendar = Calendar.getInstance(getTimeZone())
         .apply { firstDayOfWeek = if (isFirstDaySunday) Calendar.SUNDAY else Calendar.MONDAY }
 
     fun getCalendarDefault(isFirstDaySunday: Boolean): Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))

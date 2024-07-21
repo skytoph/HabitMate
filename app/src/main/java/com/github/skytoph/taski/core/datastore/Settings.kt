@@ -10,7 +10,7 @@ data class Settings(
     val weekStartsOnSunday: Initializable<Boolean> = Initializable(),
     val currentDayHighlighted: Boolean = true,
     val streaksHighlighted: Boolean = true,
-    val theme: AppTheme = AppTheme.System,
+    val theme: AppTheme = AppTheme.Dark,
     val view: HabitsView = HabitsView()
 ) {
     companion object {

@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.component.AppBarAction
+import com.github.skytoph.taski.presentation.core.component.ButtonWithIconOnBackground
 import com.github.skytoph.taski.presentation.core.component.EmptyScreen
 import com.github.skytoph.taski.presentation.core.component.LoadingFullscreen
 import com.github.skytoph.taski.presentation.core.preview.HabitsProvider
@@ -87,7 +88,7 @@ fun HabitsScreen(
             title = stringResource(R.string.list_of_habits_is_empty_create_label),
             icon = ImageVector.vectorResource(R.drawable.sparkles),
             button = {
-                ButtonWithIcon(
+                ButtonWithIconOnBackground(
                     modifier = Modifier.padding(top = 4.dp),
                     onClick = onCreateHabit,
                     backgroundColor = MaterialTheme.colorScheme.primary,
@@ -114,6 +115,7 @@ fun HabitsScreen(
             selectViewType = { viewModel.onEvent(HabitListEvent.UpdateView(viewType = it)) },
             selectSorting = { viewModel.onEvent(HabitListEvent.UpdateView(sortBy = it)) },
             selectFilter = { viewModel.onEvent(HabitListEvent.UpdateView(filterBy = it)) },
+            showTodayHabitsOnly ={viewModel.onEvent(HabitListEvent.UpdateView(showTodayHabitsOnly = it))},
             reorder = onReorderHabits
         )
 

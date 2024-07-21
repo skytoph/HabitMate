@@ -17,7 +17,7 @@ data class HabitUi(
     val goal: Int = 1,
     val color: Color = IconsColors.Default,
     val icon: IconResource = IconResource.Default,
-    val priority: Int = 0,
+    val priority: Int = Int.MAX_VALUE,
     val isArchived: Boolean = false,
     val frequency: FrequencyUi = FrequencyUi.Daily(),
     val reminder: ReminderUi = ReminderUi(),

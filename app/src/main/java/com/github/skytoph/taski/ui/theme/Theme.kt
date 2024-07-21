@@ -40,6 +40,7 @@ private val DarkColorScheme = darkColorScheme(
     inverseSurface = Color.White,
 
     tertiaryContainer = PurpleVeryDark,
+    onTertiaryContainer = PurpleDark,
 
     error = DarkRed,
     errorContainer = GrayRed
@@ -59,20 +60,21 @@ private val LightColorScheme = lightColorScheme(
     primaryContainer = Color.White,
     onPrimaryContainer = PurpleDark,
 
-    secondaryContainer = PurpleLightGray,
+    secondaryContainer = BlueLight,
     onSecondaryContainer = Color.White,
 
-    tertiaryContainer = PurpleLight,
+    tertiaryContainer = BlueLight,
+    onTertiaryContainer = PurpleLight,
 
     surface = Color.White,
-    surfaceVariant = PurpleLight,
+    surfaceVariant = Color.White,
 
     error = BrightDarkRed
 )
 
 @Composable
 fun HabitMateTheme(
-    theme: AppTheme = AppTheme.Dark,
+    theme: AppTheme = AppTheme.System,
     darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit

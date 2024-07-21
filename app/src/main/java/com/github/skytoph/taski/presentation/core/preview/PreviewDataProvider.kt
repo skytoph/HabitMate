@@ -17,7 +17,7 @@ class HabitsProvider : PreviewParameterProvider<List<HabitWithHistoryUi<HistoryU
         HistoryUi((0..363).map { EntryUi(percentDone = 1F / (it % 20)) }.toList())
 
     private val habits = IconsColors.allColors.mapIndexed { i, color ->
-        HabitWithHistoryUi(HabitUi(i.toLong(), "habit", "",1, color), history)
+        HabitWithHistoryUi(HabitUi(i.toLong(), "habit", "", 1, color), history)
     }
 
     override val values: Sequence<List<HabitWithHistoryUi<HistoryUi>>> = sequenceOf(habits)
@@ -28,7 +28,7 @@ class HabitProvider : PreviewParameterProvider<HabitWithHistoryUi<HistoryUi>> {
         HistoryUi((1..364).map { EntryUi(percentDone = it % 4 * 0.3f) }.toList())
 
     private val habits = IconsColors.allColors.mapIndexed { i, color ->
-        HabitWithHistoryUi(HabitUi(i.toLong(), "habit", "",1, color), history)
+        HabitWithHistoryUi(HabitUi(i.toLong(), "habit", "", 1, color), history)
     }
 
     override val values: Sequence<HabitWithHistoryUi<HistoryUi>> = habits.asSequence()
@@ -41,7 +41,7 @@ class HabitsEditableProvider : PreviewParameterProvider<List<EditableHistoryUi>>
             day * month to EntryEditableUi(
                 day = day.toString(),
                 daysAgo = day * month,
-                hasBorder = false
+                hasBorder = day % 7 == 0
             )
         }, MonthUi(timestamp = month.toLong(), weeks = 4))
     }

@@ -1,9 +1,9 @@
 package com.github.skytoph.taski.di.habit
 
-import com.github.skytoph.taski.core.alarm.AlarmScheduler
 import com.github.skytoph.taski.core.alarm.HabitUriConverter
+import com.github.skytoph.taski.core.alarm.ReminderScheduler
+import com.github.skytoph.taski.core.datastore.SettingsCache
 import com.github.skytoph.taski.domain.habit.HabitRepository
-import com.github.skytoph.taski.presentation.habit.edit.AddMonthMapper
 import com.github.skytoph.taski.presentation.habit.edit.NotificationStateInteractor
 import com.github.skytoph.taski.presentation.habit.edit.mapper.HabitDateMapper
 import com.github.skytoph.taski.presentation.habit.edit.mapper.HabitNotificationMapper
@@ -17,14 +17,8 @@ import dagger.hilt.components.SingletonComponent
 object NotificationModule {
 
     @Provides
-    fun interactor(
-        repository: HabitRepository,
-        scheduler: AlarmScheduler,
-        rescheduleMapper: AddMonthMapper
-    ): NotificationStateInteractor = NotificationStateInteractor.Base(repository, scheduler, rescheduleMapper)
-
-    @Provides
-    fun rescheduleMapper(): AddMonthMapper = AddMonthMapper.Base()
+    fun interactor(repository: HabitRepository, scheduler: ReminderScheduler, settings: SettingsCache)
+            : NotificationStateInteractor = NotificationStateInteractor.Base(repository, scheduler, settings)
 
     @Provides
     fun alertMapper(mapper: HabitDateMapper, uriConverter: HabitUriConverter)

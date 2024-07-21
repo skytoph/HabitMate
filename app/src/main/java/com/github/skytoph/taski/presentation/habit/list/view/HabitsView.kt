@@ -10,6 +10,7 @@ data class HabitsView(
     val viewType: ViewType = ViewType.Calendar(),
     val sortBy: SortHabits = SortHabits.ByTitle,
     val filterBy: FilterHabits = FilterHabits.None,
+    val showTodayHabitsOnly: Boolean = false,
     val initialized: Boolean = false
 ) {
     fun map(mapper: HabitsViewMapper, habits: List<HabitWithEntries>, settings: Settings)

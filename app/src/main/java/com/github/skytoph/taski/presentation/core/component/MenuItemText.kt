@@ -7,7 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 
 @Composable
-fun MenuItemText(modifier: Modifier = Modifier, text: String, style: TextStyle = MaterialTheme.typography.bodySmall) {
+fun MenuItemText(modifier: Modifier = Modifier, text: String, style: TextStyle = MaterialTheme.typography.bodyMedium) {
     Text(
         text = text,
         modifier = modifier,

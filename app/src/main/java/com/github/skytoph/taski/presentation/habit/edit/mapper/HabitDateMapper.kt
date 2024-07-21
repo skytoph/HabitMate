@@ -1,7 +1,6 @@
 package com.github.skytoph.taski.presentation.habit.edit.mapper
 
 import com.github.skytoph.taski.core.CalendarProvider
-import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyUi
 import java.util.Calendar
 
 interface HabitDateMapper {
@@ -18,7 +17,7 @@ interface HabitDateMapper {
 
         override fun mapDaily(isFirstDaySunday: Boolean, days: Set<Int>): Map<Int, Calendar> =
             days.associateWith { day ->
-                calendar().apply { set(Calendar.DAY_OF_WEEK, dayOfWeekCalendar(FrequencyUi.NOW_DEFAULT, day)) }
+                calendar().apply { set(Calendar.DAY_OF_WEEK, day) }
             }
 
         override fun mapMonthly(days: Set<Int>): Map<Int, Calendar> = days.associateWith { day ->
@@ -57,9 +56,6 @@ interface HabitDateMapper {
             }
         }
 
-        private fun dayOfWeekCalendar(isFirstDaySunday: Boolean, day: Int): Int =
-            calendar(isFirstDaySunday).let { (day + it.firstDayOfWeek + 5) % 7 + 1 }
-
         private fun calendar(isFirstDaySunday: Boolean = false): Calendar =
             CalendarProvider.getCalendar(isFirstDaySunday)
     }
@@ -67,6 +63,11 @@ interface HabitDateMapper {
 
 interface MapToDates {
     fun dates(mapper: HabitDateMapper, isFirstDaySunday: Boolean): Map<Int, Calendar>
+
+    class MapDaily(private val days: Set<Int>) : MapToDates {
+        override fun dates(mapper: HabitDateMapper, isFirstDaySunday: Boolean): Map<Int, Calendar> =
+            mapper.mapDaily(isFirstDaySunday, days)
+    }
 }
 
 interface MapToDatesCustom {

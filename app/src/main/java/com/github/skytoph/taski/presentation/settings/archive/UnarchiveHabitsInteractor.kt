@@ -1,6 +1,6 @@
 package com.github.skytoph.taski.presentation.settings.archive
 
-import com.github.skytoph.taski.core.alarm.AlarmScheduler
+import com.github.skytoph.taski.core.alarm.ReminderScheduler
 import com.github.skytoph.taski.domain.habit.HabitRepository
 import com.github.skytoph.taski.presentation.appbar.PopupMessage
 import com.github.skytoph.taski.presentation.appbar.SnackbarMessage
@@ -17,7 +17,7 @@ interface UnarchiveHabitsInteractor :
     class Base(
         private val repository: HabitRepository,
         private val popup: PopupMessage.Show<SnackbarMessage>,
-        scheduler: AlarmScheduler,
+        scheduler: ReminderScheduler,
     ) : UnarchiveHabitsInteractor,
         ArchiveHabitInteractor by ArchiveHabitInteractor.Base(repository, popup),
         DeleteHabitInteractor by DeleteHabitInteractor.Base(repository, popup, scheduler),
