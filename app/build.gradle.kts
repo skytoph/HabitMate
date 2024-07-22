@@ -127,4 +127,7 @@ dependencies {
 
     // DataStore
     implementation("androidx.datastore:datastore-preferences:1.1.1")
+
+    // Compress backup file
+    implementation("org.apache.commons:commons-compress:1.22")
 }

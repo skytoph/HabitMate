@@ -38,6 +38,7 @@ fun SettingsMenuScreen(
     reorderClick: () -> Unit,
     generalClick: () -> Unit,
     themeClick: () -> Unit,
+    backupClick: () -> Unit,
 ) {
     LaunchedEffect(Unit) {
         viewModel.initAppBar(title = R.string.settings_title)
@@ -47,7 +48,8 @@ fun SettingsMenuScreen(
         generalClick = generalClick,
         reorderClick = reorderClick,
         archiveClick = archiveClick,
-        themeClick = themeClick
+        themeClick = themeClick,
+        backupClick = backupClick
     )
 }
 
@@ -57,6 +59,7 @@ private fun SettingsMenu(
     reorderClick: () -> Unit = {},
     archiveClick: () -> Unit = {},
     themeClick: () -> Unit = {},
+    backupClick: () -> Unit = {},
 ) {
     Column(modifier = Modifier.padding(24.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         MenuTitleText(text = "App", modifier = Modifier.padding(start = 16.dp))
@@ -88,7 +91,7 @@ private fun SettingsMenu(
             SettingsMenuItem(
                 title = "Backup",
                 icon = ImageVector.vectorResource(id = R.drawable.folder_input),
-                onClick = {}
+                onClick = backupClick
             )
         }
         Spacer(modifier = Modifier.height(8.dp))

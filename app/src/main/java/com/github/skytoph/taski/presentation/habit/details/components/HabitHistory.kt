@@ -56,6 +56,7 @@ import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.color.contrastColor
+import com.github.skytoph.taski.presentation.core.component.ButtonWithBackground
 import com.github.skytoph.taski.presentation.core.component.WeekDayLabel
 import com.github.skytoph.taski.presentation.core.component.getLocale
 import com.github.skytoph.taski.presentation.core.component.weekDayCalendar
@@ -95,23 +96,11 @@ fun HabitHistory(
             goal = goal,
             isFirstDaySunday = isFirstDaySunday,
         )
-        Box(modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
-            .background(
-                color = MaterialTheme.colorScheme.onTertiaryContainer,
-                shape = MaterialTheme.shapes.small
-            )
-            .clip(MaterialTheme.shapes.small)
-            .clickable { onEdit() }
-            .padding(horizontal = 16.dp, vertical = 6.dp),
-            contentAlignment = Alignment.Center) {
-            Text(
-                text = stringResource(R.string.button_edit),
-                style = MaterialTheme.typography.titleSmall,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-        }
+        ButtonWithBackground(
+            onEdit,
+            stringResource(R.string.button_edit),
+            MaterialTheme.colorScheme.onTertiaryContainer,
+        )
     }
 }
 

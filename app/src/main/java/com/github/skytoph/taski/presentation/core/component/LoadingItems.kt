@@ -44,8 +44,8 @@ fun LoadingFullscreen(
         contentAlignment = Alignment.Center
     ) {
         LoadingItems(
-            circleColor = circleColor,
-            circleSize = circleSize,
+            itemColor = circleColor,
+            itemSize = circleSize,
             animationDelay = animationDelay,
             initialAlpha = initialAlpha,
             item = ImageVector.vectorResource(id = R.drawable.sparkle_filled)
@@ -55,11 +55,11 @@ fun LoadingFullscreen(
 
 @Composable
 fun LoadingItems(
-    circleColor: Color = MaterialTheme.colorScheme.primary,
-    circleSize: Dp = 16.dp,
+    itemColor: Color = MaterialTheme.colorScheme.primary,
+    itemSize: Dp = 16.dp,
     animationDelay: Int = 400,
     initialAlpha: Float = 0.3f,
-    item: ImageVector
+    item: ImageVector = ImageVector.vectorResource(id = R.drawable.sparkle_filled)
 ) {
     val animatableList = listOf(
         remember {
@@ -90,11 +90,11 @@ fun LoadingItems(
         animatableList.forEachIndexed { index, animatable ->
             if (index != 0)
                 Spacer(modifier = Modifier.width(width = 8.dp))
-            Box(modifier = Modifier.size(circleSize)) {
+            Box(modifier = Modifier.size(itemSize)) {
                 Icon(
                     imageVector = item,
                     contentDescription = null,
-                    tint = circleColor.copy(alpha = animatable.value)
+                    tint = itemColor.copy(alpha = animatable.value)
                 )
             }
         }

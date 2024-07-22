@@ -132,6 +132,7 @@
     <string name="theme_light">Light</string>
     <string name="theme_dark">Dark</string>
     <string name="settings_theme_title">Theme</string>
+    <string name="settings_backup_title">Backup</string>
     <string name="settings_theme_mode">Mode</string>
     <string name="week_starts_on_sunday">week starts on sunday</string>
     <string name="highlight_current_day">highlight current day</string>
@@ -148,6 +149,16 @@
     <string name="overview_label">overview</string>
     <string name="frequency_label">frequency</string>
     <string name="show_only_todays_habits">show only today\'s habits</string>
+    <string name="error_export">Something went wrong, can\'t export the data.</string>
+    <string name="error_import">Something went wrong, can\'t import the data.</string>
+    <string name="success_import_message">The data restored successfully!</string>
+    <string name="success_import_title">Success</string>
+    <string name="export_title">Export</string>
+    <string name="import_title">Import</string>
+    <string name="import_description">Restore your habit data from a previously exported file.</string>
+    <string name="export_description">Export your habits to a file and restore them later.</string>
+    <string name="import_error_title">Fail</string>
+    <string name="error_export_title">Failed to export</string>
 
     <plurals name="times_label">
         <item quantity="one">time</item>
