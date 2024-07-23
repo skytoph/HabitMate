@@ -23,7 +23,7 @@ sealed interface SortHabits : ProvideOptionUi<SortHabits> {
     }
 
     data object ByState : SortHabits {
-        override fun comparator(): Comparator<Pair<Int, Habit>> = compareBy { it.first * 100 / it.second.goal }
+        override fun comparator(): Comparator<Pair<Int, Habit>> = compareBy { it.first / it.second.goal }
 
         override fun optionUi(): OptionUi = HabitsViewTypesProvider.optionSortByState
     }

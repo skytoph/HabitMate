@@ -38,7 +38,7 @@ fun HabitList(
             WeekDayLabelsCard(entries = view.entries)
         }
         items(items = habits, key = { it.habit.id }) { habitWithHistory ->
-            HabitCard(view, habitWithHistory, updateView, onClick, onLongClick, onDone)
+            HabitCard(view, habitWithHistory, updateView, onClick, onLongClick, onDone, Modifier.animateItemPlacement())
         }
     }
 }
@@ -50,10 +50,12 @@ private fun HabitCard(
     updateViewState: (Int) -> Unit,
     onHabitClick: (HabitUi) -> Unit,
     onHabitLongClick: (HabitUi) -> Unit = {},
-    onDoneHabit: (HabitUi, Int) -> Unit
+    onDoneHabit: (HabitUi, Int) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     if (view is ViewType.Daily)
         HabitDaily(
+            modifier = modifier,
             onDone = onDoneHabit,
             habit = habitWithHistory.habit,
             history = habitWithHistory.history,
@@ -63,6 +65,7 @@ private fun HabitCard(
         )
     else
         HabitCalendar(
+            modifier = modifier,
             onDone = { onDoneHabit(habitWithHistory.habit, 0) },
             habit = habitWithHistory.habit,
             history = habitWithHistory.history,
@@ -76,7 +79,7 @@ private fun HabitCard(
 @Preview(showSystemUi = true, showBackground = true)
 fun HabitListPreview(@PreviewParameter(HabitsProvider::class) habits: List<HabitWithHistoryUi<HistoryUi>>) {
     HabitMateTheme {
-        HabitList(habits = habits,)
+        HabitList(habits = habits)
     }
 }
 
@@ -84,6 +87,6 @@ fun HabitListPreview(@PreviewParameter(HabitsProvider::class) habits: List<Habit
 @Preview(showBackground = true, showSystemUi = true)
 fun DarkHabitListPreview(@PreviewParameter(HabitsProvider::class) habits: List<HabitWithHistoryUi<HistoryUi>>) {
     HabitMateTheme(darkTheme = true) {
-        HabitList(habits = habits,)
+        HabitList(habits = habits)
     }
 }

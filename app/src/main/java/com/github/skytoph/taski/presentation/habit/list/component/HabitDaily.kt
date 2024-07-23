@@ -60,9 +60,10 @@ fun HabitDaily(
     updateEntries: (Int) -> Unit = {},
     onDone: (HabitUi, Int) -> Unit = { _, _ -> },
     onClick: () -> Unit = {},
-    onLongClick: () -> Unit = {}
+    onLongClick: () -> Unit = {},
+    modifier: Modifier = Modifier
 ) {
-    BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+    BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
         val entries = calculateNumberOfDailyEntries(maxWidth = maxWidth)
         updateEntries(entries)
         Card(

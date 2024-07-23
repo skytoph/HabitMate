@@ -55,7 +55,8 @@ fun HabitCalendar(
     history: HistoryUi,
     updateEntries: (Int) -> Unit = {},
     onClick: () -> Unit = {},
-    onLongClick: () -> Unit = {}
+    onLongClick: () -> Unit = {},
+    modifier: Modifier = Modifier
 ) {
     val defaultColor = MaterialTheme.colorScheme.secondaryContainer
     val color = remember { Animatable(if (history.todayDonePercent >= 1f) habit.color else defaultColor) }
@@ -68,7 +69,7 @@ fun HabitCalendar(
             )
         )
     }
-    BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+    BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
         val entries = calculateNumberOfCalendarEntries(maxWidth = maxWidth)
         updateEntries(entries)
         Card(
