@@ -159,6 +159,7 @@
     <string name="export_description">Export your habits to a file and restore them later.</string>
     <string name="import_error_title">Fail</string>
     <string name="error_export_title">Failed to export</string>
+    <string name="sort_by_state">state</string>
 
     <plurals name="times_label">
         <item quantity="one">time</item>

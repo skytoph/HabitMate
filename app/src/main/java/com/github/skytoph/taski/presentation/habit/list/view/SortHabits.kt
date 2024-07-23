@@ -23,9 +23,9 @@ sealed interface SortHabits : ProvideOptionUi<SortHabits> {
     }
 
     data object ByState : SortHabits {
-        override fun comparator(): Comparator<Pair<Int, Habit>> = compareBy { it.first / it.second.goal }
+        override fun comparator(): Comparator<Pair<Int, Habit>> = compareBy { it.first * 100 / it.second.goal }
 
-        override fun optionUi(): OptionUi = HabitsViewTypesProvider.optionSortByColor
+        override fun optionUi(): OptionUi = HabitsViewTypesProvider.optionSortByState
     }
 
     data object Manually : SortHabits {
@@ -34,6 +34,6 @@ sealed interface SortHabits : ProvideOptionUi<SortHabits> {
     }
 
     companion object {
-        val options = listOf(ByTitle, ByColor, Manually)
+        val options = listOf(ByTitle, ByColor, Manually, ByState)
     }
 }

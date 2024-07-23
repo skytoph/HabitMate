@@ -23,6 +23,10 @@ object HabitsViewTypesProvider {
         title = StringResource.ResId(R.string.sort_by_color),
         icon = IconResource.Id(R.drawable.sort_color),
     )
+    val optionSortByState = OptionUi(
+        title = StringResource.ResId(R.string.sort_by_state),
+        icon = IconResource.Id(R.drawable.sort_state),
+    )
     val optionSortManually = OptionUi(
         title = StringResource.ResId(R.string.sort_manually),
         icon = IconResource.Id(R.drawable.sort_numbers),
