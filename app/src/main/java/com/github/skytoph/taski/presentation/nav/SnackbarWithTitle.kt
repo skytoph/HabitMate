@@ -42,7 +42,7 @@ fun SnackbarWithTitle(message: SnackbarMessage, modifier: Modifier = Modifier) {
             Icon(
                 imageVector = message.icon.vector(context = LocalContext.current),
                 contentDescription = message.title,
-                modifier = Modifier.size(32.dp)
+                modifier = Modifier.size(24.dp)
             )
             Spacer(modifier = Modifier.width(8.dp))
             Column(

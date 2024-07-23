@@ -6,7 +6,9 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.Animatable
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,17 +26,18 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.appbar.SnackbarMessage
-import com.github.skytoph.taski.presentation.core.component.ButtonWithBackground
 import com.github.skytoph.taski.presentation.core.component.LoadingItems
 import com.github.skytoph.taski.presentation.core.state.IconResource
 import com.github.skytoph.taski.presentation.settings.backup.BackupEvent
@@ -46,22 +49,32 @@ fun BackupScreen(viewModel: BackupViewModel = hiltViewModel()) {
     val context = LocalContext.current
     val state = viewModel.state()
     val contract = ActivityResultContracts.StartActivityForResult()
-    val successfulImportMessage = stringResource(id = R.string.success_import_message)
-    val successfulImportTitle = stringResource(id = R.string.success_import_title)
-    val errorImportMessage = stringResource(id = R.string.error_import)
-    val errorImportTitle = stringResource(id = R.string.import_error_title)
-    val errorExportMessage = stringResource(id = R.string.error_export)
-    val errorExportTitle = stringResource(id = R.string.error_export_title)
-    val importIcon = IconResource.Id(id = R.drawable.folder_input)
-    val exportIcon = IconResource.Id(id = R.drawable.folder_output)
+    val successfulImport by lazy {
+        SnackbarMessage(
+            message = context.getString(R.string.success_import_message),
+            title = context.getString(R.string.success_import_title),
+            icon = IconResource.Id(id = R.drawable.folder_input)
+        )
+    }
+    val errorImport by lazy {
+        SnackbarMessage(
+            message = context.getString(R.string.error_import),
+            title = context.getString(R.string.import_error_title),
+            icon = IconResource.Id(id = R.drawable.folder_input)
+        )
+    }
+    val errorExport by lazy {
+        SnackbarMessage(
+            message = context.getString(R.string.error_export),
+            title = context.getString(R.string.error_export_title),
+            icon = IconResource.Id(id = R.drawable.folder_output)
+        )
+    }
+
     val launcherImport = rememberLauncherForActivityResult(contract = contract) { result ->
         if (result.resultCode == Activity.RESULT_OK)
             result.data?.data?.let { uri ->
-                val success =
-                    SnackbarMessage(message = successfulImportMessage, title = successfulImportTitle, icon = importIcon)
-                val error =
-                    SnackbarMessage(message = errorImportMessage, title = errorImportTitle, icon = importIcon)
-                viewModel.import(context.contentResolver, uri, success, error)
+                viewModel.import(context.contentResolver, uri, successfulImport, errorImport)
             }
     }
 
@@ -82,11 +95,7 @@ fun BackupScreen(viewModel: BackupViewModel = hiltViewModel()) {
     Backup(
         isImportLoading = state.value.importLoading,
         isExportLoading = state.value.exportLoading,
-        export = {
-            val error =
-                SnackbarMessage(message = errorExportMessage, title = errorExportTitle, icon = exportIcon)
-            viewModel.export(context, error)
-        },
+        export = { viewModel.export(context, errorExport) },
         import = { launcherImport.launch(Intent(Intent.ACTION_GET_CONTENT).apply { type = "*/*" }) })
 }
 
@@ -99,7 +108,7 @@ private fun Backup(
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
-        modifier = Modifier.padding(16.dp)
+        modifier = Modifier.padding(horizontal = 16.dp)
     ) {
         BackupItem(
             onClick = export,
@@ -131,7 +140,7 @@ private fun BackupItem(
 ) {
     val enabled = MaterialTheme.colorScheme.primary
     val disabled = MaterialTheme.colorScheme.secondaryContainer
-    val color = remember { Animatable(enabled) }
+    val color = remember { Animatable(if (isLoading) disabled else enabled) }
     LaunchedEffect(isLoading) {
         color.animateTo(if (isLoading) disabled else enabled)
     }
@@ -149,7 +158,7 @@ private fun BackupItem(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier
-                .padding(8.dp)
+                .padding(horizontal = 8.dp)
                 .fillMaxWidth()
         ) {
             Icon(
@@ -164,25 +173,39 @@ private fun BackupItem(
                 style = MaterialTheme.typography.bodySmall
             )
         }
-        Spacer(modifier = Modifier.height(4.dp))
-        ButtonWithBackground(
-            onClick = onClick,
-            text = if (isLoading) loadingText else title,
-            background = color.value,
-            enabled = !isLoading
-        )
-        Crossfade(targetState = isLoading, label = "loading_crossfade") {
+        Crossfade(targetState = isLoading, label = "loading_crossfade", animationSpec = tween(durationMillis = 150)) {
             if (it) LoadingItems(
                 itemColor = MaterialTheme.colorScheme.primary,
                 item = ImageVector.vectorResource(id = R.drawable.sparkle_filled)
             ) else Spacer(modifier = Modifier.height(16.dp))
         }
+        Spacer(modifier = Modifier.height(4.dp))
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
+            .background(
+                color = color.value,
+                shape = MaterialTheme.shapes.small
+            )
+            .clip(MaterialTheme.shapes.small)
+            .clickable(enabled = !isLoading) { onClick() }
+            .padding(horizontal = 16.dp, vertical = 6.dp),
+            contentAlignment = Alignment.Center) {
+            Crossfade(
+                targetState = isLoading,
+                label = "backup_button_crossfade",
+                animationSpec = tween(durationMillis = 150)
+            ) {
+                Text(
+                    text = if (it) loadingText else title,
+                    style = MaterialTheme.typography.titleSmall,
+                    color = Color.White,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
     }
-}
-
-@Composable
-fun BackupLoading() {
-
 }
 
 @Composable
