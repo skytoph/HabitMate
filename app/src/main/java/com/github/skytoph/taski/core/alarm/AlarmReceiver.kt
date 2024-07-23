@@ -22,7 +22,7 @@ class AlarmReceiver : BroadcastReceiver() {
             intent?.getSerializableExtra(AlarmItem.KEY_ITEM, AlarmItem::class.java) ?: return
         else (intent?.getSerializableExtra(AlarmItem.KEY_ITEM) ?: return) as AlarmItem
 
-        val channelId = HabitAlarmChannel.Base.id
+        val channelId = HabitNotificationChannel.HabitReminder.id
 
         context?.let {
             val notificationManager =
@@ -49,3 +49,4 @@ class AlarmReceiver : BroadcastReceiver() {
         const val ACTION = "com.github.skytoph.habitmate.NOTIFY"
     }
 }
+

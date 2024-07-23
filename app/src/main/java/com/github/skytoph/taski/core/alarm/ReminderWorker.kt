@@ -29,7 +29,7 @@ class ReminderWorker @AssistedInject constructor(
 
         if (interactor.notCompleted(item.id)) {
             val habit = interactor.habit(item.id)
-            val channelId = HabitAlarmChannel.Base.id
+            val channelId = HabitNotificationChannel.HabitReminder.id
 
             val notificationManager =
                 context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

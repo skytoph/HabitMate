@@ -8,10 +8,10 @@ import com.github.skytoph.taski.presentation.habit.list.mapper.HabitUiMapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.components.SingletonComponent
 
 @Module
-@InstallIn(ViewModelComponent::class)
+@InstallIn(SingletonComponent::class)
 object NotificationInteractorModule {
 
     @Provides
@@ -21,4 +21,7 @@ object NotificationInteractorModule {
         repository: HabitRepository,
         mapper: HabitUiMapper
     ): NotificationInteractor = NotificationInteractor.Base(repository, scheduler, notificationMapper, mapper)
+
+    @Provides
+    fun uiMapper(): HabitUiMapper = HabitUiMapper.Base()
 }

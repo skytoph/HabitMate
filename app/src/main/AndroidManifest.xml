@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
 
     <application
         android:name=".app.HabitMateApplication"
@@ -24,7 +25,6 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:launchMode="singleTask"
             android:theme="@style/Theme.Taski">
             <intent-filter>
@@ -35,10 +35,11 @@
         </activity>
 
         <receiver
-            android:name=".core.alarm.AlarmReceiver"
+            android:name=".core.alarm.TimeZoneChangedReceiver"
+            android:enabled="true"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.github.skytoph.habitmate.NOTIFY" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
             </intent-filter>
         </receiver>
 
@@ -46,15 +47,22 @@
             android:name="androidx.startup.InitializationProvider"
             android:authorities="com.github.skytoph.taski.androidx-startup"
             tools:node="remove" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}.provider"
+            android:authorities="com.github.skytoph.taski.provider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
+
+        <service
+            android:name="androidx.work.impl.foreground.SystemForegroundService"
+            android:directBootAware="false"
+            android:exported="false"
+            android:foregroundServiceType="dataSync" />
     </application>
 
 </manifest>

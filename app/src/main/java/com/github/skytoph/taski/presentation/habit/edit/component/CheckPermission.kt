@@ -20,7 +20,7 @@ import androidx.compose.runtime.State
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
-import com.github.skytoph.taski.core.alarm.HabitAlarmChannel
+import com.github.skytoph.taski.core.alarm.HabitNotificationChannel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -97,7 +97,7 @@ fun startAlarmSettingsActivity(
 fun notificationSettingsIntent(context: Context): Intent =
     Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
         .putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
-        .putExtra(Settings.EXTRA_CHANNEL_ID, HabitAlarmChannel.Base.id)
+        .putExtra(Settings.EXTRA_CHANNEL_ID, HabitNotificationChannel.HabitReminder.id)
         .apply {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
                 addFlags(Intent.FLAG_ACTIVITY_REQUIRE_DEFAULT)

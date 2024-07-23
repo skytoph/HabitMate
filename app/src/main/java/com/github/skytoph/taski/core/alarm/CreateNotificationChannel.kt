@@ -3,26 +3,17 @@ package com.github.skytoph.taski.core.alarm
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.os.Build
 
 interface CreateNotificationChannel {
-    fun createChannel(context: Context)
+    fun createChannel(context: Context, channel: HabitNotificationChannel)
 
     class Base : CreateNotificationChannel {
-        override fun createChannel(context: Context) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val channelId = HabitAlarmChannel.Base.id
-                val channelName = HabitAlarmChannel.Base.name
-                val notificationManager =
-                    context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                val channel = NotificationChannel(
-                    channelId,
-                    channelName,
-                    NotificationManager.IMPORTANCE_HIGH
-                )
 
-                notificationManager.createNotificationChannel(channel)
-            }
+        override fun createChannel(context: Context, channel: HabitNotificationChannel) {
+            val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(
+                NotificationChannel(channel.id, channel.name, channel.priority)
+            )
         }
     }
 }

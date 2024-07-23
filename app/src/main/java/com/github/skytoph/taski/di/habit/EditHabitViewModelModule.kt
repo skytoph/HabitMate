@@ -34,9 +34,6 @@ object EditHabitViewModelModule {
     fun domainMapper(now: Now): HabitDomainMapper = HabitDomainMapper.Base(now)
 
     @Provides
-    fun uiMapper(): HabitUiMapper = HabitUiMapper.Base()
-
-    @Provides
     fun historyMapper(
         now: Now, weekCache: WeeksCache, mapper: EditableEntryDomainToUiMapper
     ): HabitHistoryUiMapper<EditableHistoryUi, ViewType> = EditableEntryUiMapper(now, weekCache, mapper)

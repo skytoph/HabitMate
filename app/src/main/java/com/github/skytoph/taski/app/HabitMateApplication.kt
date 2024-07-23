@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import com.github.skytoph.taski.core.alarm.CreateNotificationChannel
+import com.github.skytoph.taski.core.alarm.HabitNotificationChannel
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 
@@ -22,6 +23,6 @@ class HabitMateApplication : Application(),
 
     override fun onCreate() {
         super.onCreate()
-        createChannel(context = applicationContext)
+        createChannel(context = applicationContext, channel = HabitNotificationChannel.HabitReminder)
     }
 }

@@ -160,6 +160,7 @@
     <string name="import_error_title">Fail</string>
     <string name="error_export_title">Failed to export</string>
     <string name="sort_by_state">state</string>
+    <string name="notification_reschedule_title">Refreshing reminders</string>
 
     <plurals name="times_label">
         <item quantity="one">time</item>
