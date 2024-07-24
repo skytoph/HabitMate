@@ -27,7 +27,11 @@ interface EntriesDao {
 
     @Transaction
     @Query("SELECT * FROM habit")
-    fun habitsWithEntries(): Flow<List<HabitWithEntriesEntity>>
+    fun habitsWithEntriesFlow(): Flow<List<HabitWithEntriesEntity>>
+
+    @Transaction
+    @Query("SELECT * FROM habit")
+    suspend fun habitsWithEntries(): List<HabitWithEntriesEntity>
 
     @Transaction
     @Query("SELECT * FROM habit WHERE id = :id")
@@ -35,5 +39,5 @@ interface EntriesDao {
 
     @Transaction
     @Query("SELECT * FROM habit WHERE id = :id")
-    fun habitWithEntriesFlow(id: Long): Flow<HabitWithEntriesEntity>
+    fun habitWithEntriesFlow(id: Long): Flow<HabitWithEntriesEntity?>
 }

@@ -24,8 +24,10 @@ class CalculateEverydayStreak(private val counter: StreakCounterCache = StreakCo
                 }
             }.apply { counter.save(this) }
 
-    override val skipMax: Int = 0
+    override fun isStreakCurrently(data: Map<Int, Entry>, goal: Int): Boolean {
+        (0..1).forEach { index -> data[index]?.let { if (it.isCompleted(goal)) return true } }
+        return false
+    }
 
-    override fun isStreakCurrently(data: Map<Int, Entry>, goal: Int): Boolean =
-        data.iterator().next().let { it.key == skipMax && it.value.isCompleted(goal) }
+    override fun isScheduledForToday(data: Map<Int, Entry>, goal: Int): Boolean = true
 }

@@ -1,44 +1,27 @@
 package com.github.skytoph.taski.presentation.habit.list.mapper
 
-import androidx.compose.ui.graphics.Color
+import android.content.Context
 import androidx.compose.ui.graphics.toArgb
 import com.github.skytoph.taski.core.Now
 import com.github.skytoph.taski.domain.habit.Habit
 import com.github.skytoph.taski.presentation.habit.HabitUi
-import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyUi
 
 interface HabitDomainMapper {
-    fun map(
-        id: Long,
-        title: String,
-        goal: Int,
-        color: Color,
-        iconName: String,
-        priority: Int,
-        isArchived: Boolean,
-        frequency: FrequencyUi
-    ): Habit
+    fun map(habit: HabitUi, context: Context): Habit
 
     class Base(private val now: Now) : HabitDomainMapper {
 
-        override fun map(
-            id: Long,
-            title: String,
-            goal: Int,
-            color: Color,
-            iconName: String,
-            priority: Int,
-            isArchived: Boolean,
-            frequency: FrequencyUi
-        ) = Habit(
-            id = if (id == HabitUi.ID_DEFAULT) now.milliseconds() else id,
-            title = title,
-            goal = goal,
-            iconName = iconName,
-            color = color.toArgb(),
-            priority = priority,
-            isArchived = isArchived,
-            frequency = frequency.map()
+        override fun map(habit: HabitUi, context: Context) = Habit(
+            id = if (habit.id == HabitUi.ID_DEFAULT) now.milliseconds() else habit.id,
+            title = habit.title,
+            description = habit.description.ifBlank { "" },
+            goal = habit.goal,
+            iconName = habit.icon.name(context.resources),
+            color = habit.color.toArgb(),
+            priority = habit.priority,
+            isArchived = habit.isArchived,
+            frequency = habit.frequency.map(),
+            reminder = habit.reminder.map()
         )
     }
 }

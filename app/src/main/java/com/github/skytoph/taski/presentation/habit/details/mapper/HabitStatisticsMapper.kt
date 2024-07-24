@@ -1,11 +1,12 @@
 package com.github.skytoph.taski.presentation.habit.details.mapper
 
+import com.github.skytoph.taski.domain.habit.Entry
 import com.github.skytoph.taski.presentation.habit.details.HabitStatistics
-import com.github.skytoph.taski.presentation.habit.details.HabitStatisticsUi
+import com.github.skytoph.taski.presentation.habit.details.streak.CalculateStreak
 
-fun HabitStatistics.map(): HabitStatisticsUi = HabitStatisticsUi(
-    currentStreak = currentStreak,
-    bestStreak = bestStreak,
-    total = total,
-    streaks = streaks.map { it.map() }
-)
+class HabitStatisticsMapper(provider: CalculatorProvider) :
+    HabitStatisticsResultMapper.Abstract<HabitStatistics>(provider) {
+
+    override val action: CalculateStreak.(Map<Int, Entry>, Int) -> HabitStatistics =
+        CalculateStreak::streaks
+}

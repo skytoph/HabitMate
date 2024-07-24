@@ -5,9 +5,10 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.github.skytoph.taski.domain.habit.EntryList
 import com.github.skytoph.taski.domain.habit.HabitRepository
 import com.github.skytoph.taski.domain.habit.HabitWithEntries
-import com.github.skytoph.taski.presentation.habit.details.mapper.HabitStatsUiMapper
+import com.github.skytoph.taski.presentation.habit.details.mapper.StatisticsUiMapper
 import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitHistoryUiMapper
 import com.github.skytoph.taski.presentation.habit.list.view.ViewType
@@ -18,20 +19,24 @@ import kotlinx.coroutines.withContext
 class EntryPagingSource(
     private val repository: HabitRepository,
     private val uiMapper: HabitHistoryUiMapper<EditableHistoryUi, ViewType>,
-    private val entryCache: HabitCache,
+    private val statsMapper: StatisticsUiMapper,
     private val id: Long,
-    private val statsMapper: HabitStatsUiMapper,
-    ) : PagingSource<Int, EditableHistoryUi>() {
+    private val isBorderOn: Boolean,
+    private val isFirstDaySunday: Boolean,
+) : PagingSource<Int, EditableHistoryUi>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, EditableHistoryUi> {
         val page = params.key ?: 0
 
         return try {
             withContext(Dispatchers.IO) {
-                entryCache.cacheIfEmpty { repository.habitWithEntries(id) }
-                val habit = entryCache.get()
-                val stats = statsMapper.map(habit)
-                val history = uiMapper.map(page = page, history = habit.entries, stats = stats)
+                val entries = repository.entries(id)
+                val habit = repository.habit(id)
+                val stats = statsMapper.map(HabitWithEntries(habit, entries), isFirstDaySunday)
+                val history = uiMapper.map(
+                    page = page, goal = habit.goal, history = entries, stats = stats,
+                    isBorderOn = isBorderOn, isFirstDaySunday = isFirstDaySunday
+                )
 
                 LoadResult.Page(
                     data = listOf(history),
@@ -51,21 +56,23 @@ class EntryPagingSource(
         }
 }
 
-class HabitCache(private val data: MutableList<HabitWithEntries> = ArrayList()) {
-    suspend fun cacheIfEmpty(fetch: suspend () -> HabitWithEntries) {
+class HabitCache(private val data: MutableList<EntryList> = ArrayList()) {
+    suspend fun cacheIfEmpty(fetch: suspend () -> EntryList) {
         if (data.isEmpty()) data.add(fetch())
     }
 
-    fun get(): HabitWithEntries = data[0]
+    fun get(): EntryList = data[0]
 }
 
 class EntityPagerProvider(
     private val repository: HabitRepository,
     private val uiMapper: HabitHistoryUiMapper<EditableHistoryUi, ViewType>,
-    private val statsMapper: HabitStatsUiMapper,
+    private val statsMapper: StatisticsUiMapper,
     private val entryCache: HabitCache
 ) {
-    fun getEntries(id: Long): Flow<PagingData<EditableHistoryUi>> = Pager(
+    private var dataSource: EntryPagingSource? = null
+
+    fun getEntries(id: Long, isBorderOn: Boolean, isFirstDaySunday: Boolean): Flow<PagingData<EditableHistoryUi>> = Pager(
         config = PagingConfig(
             pageSize = 1,
             prefetchDistance = 3,
@@ -73,7 +80,8 @@ class EntityPagerProvider(
             enablePlaceholders = false
         ),
         pagingSourceFactory = {
-            EntryPagingSource(repository, uiMapper, entryCache, id, statsMapper)
+            EntryPagingSource(repository, uiMapper, statsMapper, id, isBorderOn, isFirstDaySunday)
+                .also { dataSource = it }
         }
     ).flow
 }

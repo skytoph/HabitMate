@@ -4,15 +4,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Divider
 import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,7 +36,8 @@ fun FrequencySettings(
     decreaseType: () -> Unit = {},
     selectCustomType: (FrequencyCustomType) -> Unit = {},
     expandType: () -> Unit = {},
-    typeExpanded: Boolean = false
+    typeExpanded: Boolean = false,
+    isFirstDaySunday: Boolean = false,
 ) {
     Column(
         modifier = Modifier
@@ -58,7 +58,7 @@ fun FrequencySettings(
                 title = "daily",
                 selected = frequency.isSelected(frequency.daily),
                 select = { selectType(frequency.daily) })
-            Divider(
+            VerticalDivider(
                 modifier = Modifier
                     .width(1.dp)
                     .height(16.dp),
@@ -69,7 +69,7 @@ fun FrequencySettings(
                 title = "monthly",
                 selected = frequency.isSelected(frequency.monthly),
                 select = { selectType(frequency.monthly) })
-            Divider(
+            VerticalDivider(
                 modifier = Modifier
                     .width(1.dp)
                     .height(16.dp),
@@ -90,9 +90,9 @@ fun FrequencySettings(
             decreaseType = decreaseType,
             selectType = selectCustomType,
             expandType = expandType,
-            typeExpanded = typeExpanded
+            typeExpanded = typeExpanded,
+            isFirstDaySunday = isFirstDaySunday
         )
-        Spacer(modifier = Modifier.height(8.dp))
     }
 }
 
@@ -129,11 +129,22 @@ private fun FrequencySettingsContent(
     increaseType: () -> Unit,
     decreaseType: () -> Unit,
     selectType: (FrequencyCustomType) -> Unit,
-    expandType: () -> Unit
+    expandType: () -> Unit,
+    isFirstDaySunday: Boolean,
 ) {
     when (frequency) {
-        is FrequencyUi.Daily -> FrequencyDaily(frequency = frequency, select = selectDay)
-        is FrequencyUi.Monthly -> FrequencyMonthly(frequency = frequency, select = selectDay)
+        is FrequencyUi.Daily -> FrequencyDaily(
+            frequency = frequency,
+            select = selectDay,
+            isFirstDaySunday = isFirstDaySunday
+        )
+
+        is FrequencyUi.Monthly -> FrequencyMonthly(
+            frequency = frequency,
+            select = selectDay,
+            isFirstDaySunday = isFirstDaySunday
+        )
+
         is FrequencyUi.Custom -> FrequencyCustom(
             frequency = frequency,
             increaseTimes = increaseTimes,
@@ -143,6 +154,19 @@ private fun FrequencySettingsContent(
             selectType = selectType,
             expandType = expandType,
             typeExpanded = typeExpanded
+        )
+
+        is FrequencyUi.Everyday -> FrequencySettingsContent(
+            frequency.frequency,
+            typeExpanded,
+            selectDay,
+            increaseTimes,
+            decreaseTimes,
+            increaseType,
+            decreaseType,
+            selectType,
+            expandType,
+            isFirstDaySunday
         )
     }
 }

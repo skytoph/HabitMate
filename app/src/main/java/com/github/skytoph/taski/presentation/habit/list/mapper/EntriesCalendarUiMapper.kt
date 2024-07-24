@@ -12,18 +12,25 @@ class EntriesCalendarUiMapper(
     private val mapper: EntryUiMapper,
 ) : HabitHistoryUiMapper<HistoryUi, ViewType.Calendar> {
 
-    override fun map(numberOfColumns: Int, goal: Int, history: EntryList, stats: HabitStatisticsUi): HistoryUi {
-        val todayDonePercent =
-            ColorPercentMapper.toColorPercent(history.entries[0]?.timesDone ?: 0, goal)
+    override fun map(
+        numberOfColumns: Int,
+        goal: Int,
+        history: EntryList,
+        stats: HabitStatisticsUi,
+        isBorderOn: Boolean,
+        isFirstDaySunday: Boolean
+    ): HistoryUi {
+        val timesDone = history.entries[0]?.timesDone ?: 0
+        val todayDonePercent = ColorPercentMapper.toColorPercent(timesDone, goal)
         if (numberOfColumns == 0) return HistoryUi(entries = emptyList(), todayDonePercent)
 
         val numberOfCells: Int = max(COLUMNS, numberOfColumns) * ROWS
 
-        val todayPosition = 7 - now.dayOfWeek()
+        val todayPosition = 7 - now.dayOfWeek(isFirstDaySunday)
         val entries = (numberOfCells - todayPosition - 1 downTo -todayPosition).map { index ->
-            mapper.map(history = history, daysAgo = index, goal = goal)
+            mapper.map(history = history, daysAgo = index, goal = goal, isBorderOn = isBorderOn)
         }
-        return HistoryUi(entries = entries, todayDonePercent = todayDonePercent)
+        return HistoryUi(entries = entries, todayDonePercent = todayDonePercent, todayDone = timesDone)
     }
 
     private companion object {
@@ -36,9 +43,16 @@ class EntriesDailyUiMapper(
     private val mapper: EntryUiMapper,
 ) : HabitHistoryUiMapper<HistoryUi, ViewType.Daily> {
 
-    override fun map(numberOfEntries: Int, goal: Int, history: EntryList, stats: HabitStatisticsUi): HistoryUi {
+    override fun map(
+        numberOfEntries: Int,
+        goal: Int,
+        history: EntryList,
+        stats: HabitStatisticsUi,
+        isBorderOn: Boolean,
+        isFirstDaySunday: Boolean
+    ): HistoryUi {
         val entries = (0 until numberOfEntries).map { index ->
-            mapper.map(history = history, daysAgo = index, goal = goal)
+            mapper.map(history = history, daysAgo = index, goal = goal, isBorderOn = isBorderOn)
         }
         return HistoryUi(entries = entries)
     }

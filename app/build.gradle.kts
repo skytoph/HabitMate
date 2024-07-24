@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.github.skytoph.taski"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -26,6 +26,7 @@ android {
 
     buildTypes {
         release {
+            isDebuggable = true
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -84,16 +85,16 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
     // Compose lifecycle
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
 
     // Compose navigation
     implementation("androidx.navigation:navigation-compose:2.7.7")
 
     // Compose material
-    implementation("androidx.compose.material3:material3:1.1.2")
+    implementation("androidx.compose.material3:material3:1.2.0-alpha08")
     implementation("androidx.compose.material:material-icons-extended:1.1.2")
-    implementation("androidx.compose.foundation:foundation:1.3.0")
+    implementation("androidx.compose.foundation:foundation:1.6.0-alpha06")
 
     // Hilt
     implementation("com.google.dagger:hilt-android:2.48")
@@ -117,4 +118,16 @@ dependencies {
     // Gson
     implementation("com.google.code.gson:gson:2.11.0")
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.0")
+
+    // WorkManager
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
+    implementation("androidx.hilt:hilt-work:1.2.0")
+    implementation("androidx.work:work-runtime:2.9.0")
+    ksp("androidx.hilt:hilt-compiler:1.2.0")
+
+    // DataStore
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
+
+    // Compress backup file
+    implementation("org.apache.commons:commons-compress:1.22")
 }

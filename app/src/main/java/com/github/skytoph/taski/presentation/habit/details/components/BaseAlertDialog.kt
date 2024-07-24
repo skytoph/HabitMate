@@ -34,14 +34,16 @@ fun BaseAlertDialog(
             Text(
                 text = text,
                 modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colorScheme.onBackground
+                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.bodyMedium
             )
         },
         title = {
             Text(
                 text = title,
                 modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colorScheme.onBackground
+                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.titleLarge
             )
         },
         onDismissRequest = {
@@ -59,7 +61,8 @@ fun BaseAlertDialog(
                 ) {
                     Text(
                         text = confirmLabel,
-                        color = confirmColor
+                        color = confirmColor,
+                        style = MaterialTheme.typography.labelLarge
                     )
                 }
             }
@@ -71,7 +74,8 @@ fun BaseAlertDialog(
                 TextButton(onClick = onDismissRequest) {
                     Text(
                         text = dismissLabel,
-                        color = MaterialTheme.colorScheme.onSecondary
+                        color = MaterialTheme.colorScheme.onSecondary,
+                        style = MaterialTheme.typography.labelLarge
                     )
                 }
             }

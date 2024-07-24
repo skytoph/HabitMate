@@ -17,29 +17,35 @@ class EditableEntryUiMapper(
     private val entryMapper: EditableEntryDomainToUiMapper
 ) : HabitHistoryUiMapper<EditableHistoryUi, ViewType> {
 
-    override fun map(page: Int, goal: Int, history: EntryList, stats: HabitStatisticsUi)
-            : EditableHistoryUi {
+    override fun map(
+        page: Int,
+        goal: Int,
+        history: EntryList,
+        stats: HabitStatisticsUi,
+        isBorderOn: Boolean,
+        isFirstDaySunday: Boolean
+    ): EditableHistoryUi {
         val weeksAgoStart = cache.get()
-        val weeks = weeksInMonth(weeksAgoStart)
+        val weeks = weeksInMonth(isFirstDaySunday, weeksAgoStart)
         cache.add(weeks)
         return EditableHistoryUi(
-            entries(weeksAgoStart, weeks, history.entries, goal, stats),
+            entries(weeksAgoStart, weeks, history.entries, goal, stats, isBorderOn, isFirstDaySunday),
             month(page, weeks)
         )
     }
 
-    private fun weeksInMonth(weeksAgo: Int): Int =
-        ceil(now.lastDayOfWeekDate(weeksAgo).toFloat().div(ROWS)).toInt()
-            .let { if (it > 0) it else if (weeksAgo == 0) 2 else weeksInMonth(weeksAgo + 1) }
+    private fun weeksInMonth(isFirstDaySunday: Boolean, weeksAgo: Int): Int =
+        ceil(now.lastDayOfWeekDate(isFirstDaySunday).toFloat().div(ROWS)).toInt()
+            .let { if (it > 0) it else if (weeksAgo == 0) 2 else weeksInMonth(isFirstDaySunday,weeksAgo + 1) }
 
     private fun entries(
-        weeksAgo: Int, weeks: Int, history: Map<Int, Entry>, goal: Int, stats: HabitStatisticsUi
+        weeksAgo: Int, weeks: Int, history: Map<Int, Entry>, goal: Int, stats: HabitStatisticsUi, isBorderOn: Boolean, isFirstDaySunday: Boolean
     ): Map<Int, EntryEditableUi> =
         (weeksAgo * ROWS until weeksAgo * ROWS + weeks * ROWS).associate { index ->
             val daysAgo =
-                now.dayOfWeek() - index % ROWS + index / ROWS * ROWS - 1
+                now.dayOfWeek(isFirstDaySunday) - index % ROWS + index / ROWS * ROWS - 1
             val timesDone = history[daysAgo]?.timesDone ?: 0
-            val hasBorder = stats.isInRange(daysAgo)
+            val hasBorder = isBorderOn && timesDone == 0 && stats.isInRange(daysAgo)
             daysAgo to entryMapper.map(daysAgo, timesDone, goal, hasBorder)
         }
 

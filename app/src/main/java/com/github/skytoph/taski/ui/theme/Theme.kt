@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import com.github.skytoph.taski.presentation.settings.theme.AppTheme
 
 private val DarkColorScheme = darkColorScheme(
     background = Black,
@@ -39,6 +40,7 @@ private val DarkColorScheme = darkColorScheme(
     inverseSurface = Color.White,
 
     tertiaryContainer = PurpleVeryDark,
+    onTertiaryContainer = PurpleDark,
 
     error = DarkRed,
     errorContainer = GrayRed
@@ -58,19 +60,21 @@ private val LightColorScheme = lightColorScheme(
     primaryContainer = Color.White,
     onPrimaryContainer = PurpleDark,
 
-    secondaryContainer = PurpleLightGray,
+    secondaryContainer = BlueLight,
     onSecondaryContainer = Color.White,
 
-    tertiaryContainer = PurpleLight,
+    tertiaryContainer = BlueLight,
+    onTertiaryContainer = PurpleLight,
 
     surface = Color.White,
-    surfaceVariant = PurpleLight,
+    surfaceVariant = Color.White,
 
     error = BrightDarkRed
 )
 
 @Composable
 fun HabitMateTheme(
+    theme: AppTheme = AppTheme.System,
     darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit
@@ -81,7 +85,7 @@ fun HabitMateTheme(
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
 
-        darkTheme -> DarkColorScheme
+        theme == AppTheme.Dark || (theme == AppTheme.System && darkTheme) -> DarkColorScheme
         else -> LightColorScheme
     }
     val view = LocalView.current

@@ -3,7 +3,8 @@ package com.github.skytoph.taski.di.habit
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import com.github.skytoph.taski.core.Now
-import com.github.skytoph.taski.presentation.habit.details.mapper.HabitStatsUiMapper
+import com.github.skytoph.taski.presentation.habit.details.mapper.HabitStatisticsMapper
+import com.github.skytoph.taski.presentation.habit.details.mapper.StatisticsUiMapper
 import com.github.skytoph.taski.presentation.habit.list.HabitListState
 import com.github.skytoph.taski.presentation.habit.list.HistoryUi
 import com.github.skytoph.taski.presentation.habit.list.mapper.EntriesCalendarUiMapper
@@ -30,7 +31,7 @@ object HabitsViewModelModule {
     fun habitWithEntriesDailyMapper(
         habitMapper: HabitUiMapper,
         mapper: HabitHistoryUiMapper<HistoryUi, ViewType.Daily>,
-        statsMapper: HabitStatsUiMapper,
+        statsMapper: HabitStatisticsMapper,
     ): HabitWithHistoryUiMapper<HistoryUi, ViewType.Daily> =
         HabitWithEntriesDailyUiMapper(habitMapper, mapper, statsMapper)
 
@@ -38,7 +39,7 @@ object HabitsViewModelModule {
     fun habitWithEntriesCalendarMapper(
         habitMapper: HabitUiMapper,
         mapper: HabitHistoryUiMapper<HistoryUi, ViewType.Calendar>,
-        statsMapper: HabitStatsUiMapper,
+        statsMapper: HabitStatisticsMapper,
     ): HabitWithHistoryUiMapper<HistoryUi, ViewType.Calendar> =
         HabitWithEntriesCalendarUiMapper(habitMapper, mapper, statsMapper)
 
@@ -61,8 +62,8 @@ object HabitsViewModelModule {
     ): HabitListUiMapper = HabitListUiMapper.Base(mapperDaily, mapperCalendar)
 
     @Provides
-    fun habitsViewMapper(mapper: HabitListUiMapper): HabitsViewMapper =
-        HabitsViewMapper.Base(mapper)
+    fun habitsViewMapper(mapper: HabitListUiMapper, stateMapper: StatisticsUiMapper): HabitsViewMapper =
+        HabitsViewMapper.Base(mapper, stateMapper)
 
     @Provides
     fun state(): MutableState<HabitListState> = mutableStateOf(HabitListState())

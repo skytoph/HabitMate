@@ -17,7 +17,7 @@ fun WeekDayLabel(
     index: Int,
     alignment: Alignment = Alignment.CenterStart,
     locale: Locale = getLocale(),
-    color: Color = MaterialTheme.colorScheme.onBackground
+    color: Color = MaterialTheme.colorScheme.onBackground,
 ) {
     Box(
         modifier = modifier,

@@ -2,7 +2,6 @@ package com.github.skytoph.taski.presentation.habit.create.component
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -12,7 +11,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.component.AppBarAction
@@ -22,6 +20,7 @@ import com.github.skytoph.taski.presentation.habit.create.CreateHabitViewModel
 import com.github.skytoph.taski.presentation.habit.edit.component.EditBaseHabit
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyCustomType
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyUi
+import com.github.skytoph.taski.presentation.habit.list.component.DialogItem
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
@@ -53,6 +52,7 @@ fun CreateHabitScreen(
         state = viewModel.state(),
         onSelectIconClick = onSelectIconClick,
         onTypeTitle = { viewModel.onEvent(CreateHabitEvent.EditTitle(it)) },
+        onTypeDescription = { viewModel.onEvent(CreateHabitEvent.EditDescription(it)) },
         onDecreaseGoal = { viewModel.onEvent(CreateHabitEvent.DecreaseGoal) },
         onIncreaseGoal = { viewModel.onEvent(CreateHabitEvent.IncreaseGoal) },
         expandFrequency = { viewModel.onEvent(CreateHabitEvent.ExpandFrequency) },
@@ -63,7 +63,17 @@ fun CreateHabitScreen(
         selectType = { viewModel.onEvent(CreateHabitEvent.SelectFrequency(it)) },
         selectDay = { viewModel.onEvent(CreateHabitEvent.SelectDay(it)) },
         selectCustomType = { viewModel.onEvent(CreateHabitEvent.SelectCustomType(it)) },
-        expandType = { viewModel.onEvent(CreateHabitEvent.ExpandCustomType) })
+        expandType = { viewModel.onEvent(CreateHabitEvent.ExpandCustomType) },
+        switchOn = { viewModel.onEvent(CreateHabitEvent.UpdateReminder(switchOn = it)) },
+        showDialog = { viewModel.onEvent(CreateHabitEvent.UpdateReminder(showDialog = it)) },
+        updateReminder = { hour, minute ->
+            viewModel.onEvent(
+                CreateHabitEvent.UpdateReminder(hour = hour, minute = minute, showDialog = false)
+            )
+        },
+        showPermissionDialog = { viewModel.onEvent(CreateHabitEvent.ShowPermissionDialog(it)) },
+        isFirstDaySunday = viewModel.settings().value.weekStartsOnSunday.value
+    )
 }
 
 @Composable
@@ -71,6 +81,7 @@ private fun CreateHabit(
     state: State<CreateHabitState>,
     onSelectIconClick: () -> Unit = {},
     onTypeTitle: (String) -> Unit = {},
+    onTypeDescription: (String) -> Unit = {},
     onDecreaseGoal: () -> Unit = {},
     onIncreaseGoal: () -> Unit = {},
     expandFrequency: () -> Unit = {},
@@ -82,18 +93,25 @@ private fun CreateHabit(
     selectDay: (Int) -> Unit = {},
     selectCustomType: (FrequencyCustomType) -> Unit = {},
     expandType: () -> Unit = {},
+    switchOn: (Boolean) -> Unit = {},
+    showDialog: (Boolean) -> Unit = {},
+    updateReminder: (Int, Int) -> Unit = { _, _ -> },
+    showPermissionDialog: (DialogItem?) -> Unit = {},
+    isFirstDaySunday: Boolean = false
 ) {
     Column(
-        modifier = Modifier
-            .padding(horizontal = 16.dp)
-            .fillMaxSize()
+        modifier = Modifier.fillMaxSize()
     ) {
         EditBaseHabit(
             title = state.value.title,
+            description = state.value.description,
             goal = state.value.goal,
             icon = state.value.icon,
             color = state.value.color,
+            reminder = state.value.reminder,
+            dialog = state.value.dialog,
             onTypeTitle = onTypeTitle,
+            onTypeDescription = onTypeDescription,
             onSelectIconClick = onSelectIconClick,
             onDecreaseGoal = onDecreaseGoal,
             onIncreaseGoal = onIncreaseGoal,
@@ -108,7 +126,12 @@ private fun CreateHabit(
             selectDay = selectDay,
             selectCustomType = selectCustomType,
             expandType = expandType,
-            typeExpanded = state.value.isCustomTypeExpanded
+            typeExpanded = state.value.isCustomTypeExpanded,
+            switchOn = switchOn,
+            showTimeDialog = showDialog,
+            showPermissionDialog = showPermissionDialog,
+            updateReminder = updateReminder,
+            isFirstDaySunday = isFirstDaySunday
         )
     }
 }

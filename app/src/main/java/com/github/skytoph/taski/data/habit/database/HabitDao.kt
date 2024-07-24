@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 interface HabitDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(habit: HabitEntity)
+    suspend fun insert(habit: HabitEntity): Long
 
     @Update
     suspend fun update(habit: HabitEntity)

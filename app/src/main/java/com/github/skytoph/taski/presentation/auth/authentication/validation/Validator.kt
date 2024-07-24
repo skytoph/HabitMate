@@ -41,14 +41,14 @@ class NumericCharValidator(validator: Validator?) :
 class EmptinessValidator(validator: Validator?, errorResId: Int?) :
     Validator.Abstract(errorResId, validator) {
 
-    override fun isValid(value: String): Boolean = value.isNotEmpty()
+    override fun isValid(value: String): Boolean = value.isNotBlank()
 }
 
 class EmailValidator(validator: Validator?) :
     Validator.Abstract(R.string.error_email_is_invalid, validator) {
 
     override fun isValid(value: String): Boolean =
-        android.util.Patterns.EMAIL_ADDRESS.matcher(value).matches();
+        android.util.Patterns.EMAIL_ADDRESS.matcher(value).matches()
 }
 
 abstract class AuthValidator(

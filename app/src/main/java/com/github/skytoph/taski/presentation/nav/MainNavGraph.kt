@@ -39,7 +39,7 @@ fun MainNavGraph(controller: NavHostController) {
             exitTransition = { fadeOut(tween(delayMillis = 60)) },
             popEnterTransition = { fadeIn(tween(delayMillis = 60)) }) { backStackEntry ->
             val stateDelete = backStackEntry.collectByKey<Long>(HabitScreens.HabitList.keyDelete)
-            val stateArchive = backStackEntry.collectByKey<Long>(HabitScreens.HabitList.keyDelete)
+            val stateArchive = backStackEntry.collectByKey<Long>(HabitScreens.HabitList.keyArchive)
 
             HabitsScreen(
                 deleteState = stateDelete,

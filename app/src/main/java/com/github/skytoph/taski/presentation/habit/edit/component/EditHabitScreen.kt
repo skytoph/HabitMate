@@ -1,7 +1,15 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.github.skytoph.taski.presentation.habit.edit.component
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
@@ -19,40 +27,53 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.currentStateAsState
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.component.AppBarAction
 import com.github.skytoph.taski.presentation.core.component.SquareButton
-import com.github.skytoph.taski.presentation.core.component.TitleTextField
+import com.github.skytoph.taski.presentation.core.component.TextFieldWithError
+import com.github.skytoph.taski.presentation.core.component.TimePickerDialog
+import com.github.skytoph.taski.presentation.core.component.getLocale
 import com.github.skytoph.taski.presentation.core.state.FieldState
 import com.github.skytoph.taski.presentation.core.state.IconResource
+import com.github.skytoph.taski.presentation.habit.ReminderUi
 import com.github.skytoph.taski.presentation.habit.create.GoalState
 import com.github.skytoph.taski.presentation.habit.edit.EditHabitEvent
 import com.github.skytoph.taski.presentation.habit.edit.EditHabitState
@@ -60,7 +81,10 @@ import com.github.skytoph.taski.presentation.habit.edit.EditHabitViewModel
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyCustomType
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyState
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyUi
+import com.github.skytoph.taski.presentation.habit.list.component.DialogItem
+import com.github.skytoph.taski.presentation.habit.list.component.NotificationPermissionDialog
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
+
 
 @Composable
 fun EditHabitScreen(
@@ -94,6 +118,7 @@ fun EditHabitScreen(
         state = viewModel.state(),
         onSelectIconClick = onSelectIconClick,
         onTypeTitle = { viewModel.onEvent(EditHabitEvent.EditTitle(it)) },
+        onTypeDescription = { viewModel.onEvent(EditHabitEvent.EditDescription(it)) },
         onDecreaseGoal = { viewModel.onEvent(EditHabitEvent.DecreaseGoal) },
         onIncreaseGoal = { viewModel.onEvent(EditHabitEvent.IncreaseGoal) },
         expandFrequency = { viewModel.onEvent(EditHabitEvent.ExpandFrequency) },
@@ -104,7 +129,16 @@ fun EditHabitScreen(
         selectType = { viewModel.onEvent(EditHabitEvent.SelectFrequency(it)) },
         selectDay = { viewModel.onEvent(EditHabitEvent.SelectDay(it)) },
         selectCustomType = { viewModel.onEvent(EditHabitEvent.SelectCustomType(it)) },
-        expandType = { viewModel.onEvent(EditHabitEvent.ExpandCustomType) }
+        expandType = { viewModel.onEvent(EditHabitEvent.ExpandCustomType) },
+        switchOn = { viewModel.onEvent(EditHabitEvent.UpdateReminder(switchOn = it)) },
+        showDialog = { viewModel.onEvent(EditHabitEvent.UpdateReminder(showDialog = it)) },
+        updateReminder = { hour, minute ->
+            viewModel.onEvent(
+                EditHabitEvent.UpdateReminder(hour = hour, minute = minute, showDialog = false)
+            )
+        },
+        showPermissionDialog = { viewModel.onEvent(EditHabitEvent.ShowPermissionDialog(it)) },
+        isFirstDaySunday = viewModel.settings().value.weekStartsOnSunday.value
     )
 }
 
@@ -113,6 +147,7 @@ private fun EditHabit(
     state: State<EditHabitState>,
     onSelectIconClick: () -> Unit = {},
     onTypeTitle: (String) -> Unit = {},
+    onTypeDescription: (String) -> Unit = {},
     onDecreaseGoal: () -> Unit = {},
     onIncreaseGoal: () -> Unit = {},
     expandFrequency: () -> Unit = {},
@@ -124,13 +159,22 @@ private fun EditHabit(
     selectDay: (Int) -> Unit = {},
     selectCustomType: (FrequencyCustomType) -> Unit = {},
     expandType: () -> Unit = {},
+    switchOn: (Boolean) -> Unit = {},
+    showDialog: (Boolean) -> Unit = {},
+    updateReminder: (Int, Int) -> Unit = { _, _ -> },
+    showPermissionDialog: (DialogItem?) -> Unit = {},
+    isFirstDaySunday: Boolean = false,
 ) {
     EditBaseHabit(
         title = state.value.title,
+        description = state.value.description,
         goal = state.value.goal,
         icon = state.value.icon,
         color = state.value.color,
+        reminder = state.value.reminder,
+        dialog = state.value.dialog,
         onTypeTitle = onTypeTitle,
+        onTypeDescription = onTypeDescription,
         onSelectIconClick = onSelectIconClick,
         onDecreaseGoal = onDecreaseGoal,
         onIncreaseGoal = onIncreaseGoal,
@@ -145,21 +189,30 @@ private fun EditHabit(
         selectDay = selectDay,
         selectCustomType = selectCustomType,
         expandType = expandType,
-        typeExpanded = state.value.isCustomTypeExpanded
+        typeExpanded = state.value.isCustomTypeExpanded,
+        switchOn = switchOn,
+        showTimeDialog = showDialog,
+        showPermissionDialog = showPermissionDialog,
+        updateReminder = updateReminder,
+        isFirstDaySunday = isFirstDaySunday
     )
 }
 
 @Composable
 fun EditBaseHabit(
     title: FieldState,
+    description: FieldState,
     goal: GoalState,
     icon: IconResource,
     color: Color,
+    reminder: ReminderUi,
+    dialog: DialogItem?,
     onTypeTitle: (String) -> Unit,
+    onTypeDescription: (String) -> Unit,
     onSelectIconClick: () -> Unit,
     onDecreaseGoal: () -> Unit,
     onIncreaseGoal: () -> Unit,
-    minHeight: Dp = 48.dp,
+    minHeight: Dp = 44.dp,
     frequency: FrequencyState = FrequencyState(),
     isFrequencyExpanded: Boolean = true,
     expandFrequency: () -> Unit = {},
@@ -172,27 +225,52 @@ fun EditBaseHabit(
     selectCustomType: (FrequencyCustomType) -> Unit = {},
     expandType: () -> Unit = {},
     typeExpanded: Boolean = true,
+    switchOn: (Boolean) -> Unit,
+    showTimeDialog: (Boolean) -> Unit,
+    showPermissionDialog: (DialogItem?) -> Unit,
+    updateReminder: (Int, Int) -> Unit,
+    isFirstDaySunday: Boolean,
 ) {
-    var isReminderOn by remember { mutableStateOf(false) }
-    var isReminderDialogShown by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val focusManager = LocalFocusManager.current
     Column(
-        modifier = Modifier.padding(horizontal = 16.dp)
+        modifier = Modifier
+            .padding(horizontal = 16.dp)
+            .verticalScroll(rememberScrollState())
     ) {
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-            TitleTextField(
+            TextFieldWithError(
                 modifier = Modifier.weight(1f),
                 value = title.field,
                 onValueChange = onTypeTitle,
-                error = title.error?.getString(LocalContext.current),
-                height = minHeight
+                error = title.error?.getString(context),
+                height = minHeight,
+                clearFocus = { focusManager.clearFocus() },
+                title = stringResource(R.string.habit_label),
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(onDone = { ({ focusManager.clearFocus() })() }),
             )
             IconSelector(
                 icon = icon,
                 color = color,
                 size = minHeight,
-                onClick = onSelectIconClick
+                onClick = { focusManager.clearFocus(); onSelectIconClick() }
             )
         }
+        Spacer(modifier = Modifier.height(4.dp))
+        TextFieldWithError(
+            modifier = Modifier.fillMaxWidth().animateContentSize(),
+            value = description.field,
+            onValueChange = onTypeDescription,
+            height = minHeight,
+            clearFocus = { focusManager.clearFocus() },
+            title = stringResource(R.string.description_label),
+            singleLine = false,
+            maxLines = 5,
+            keyboardOptions = KeyboardOptions.Default,
+            keyboardActions = KeyboardActions.Default
+        )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = stringResource(R.string.goal_label),
@@ -215,7 +293,9 @@ fun EditBaseHabit(
                 AnimatedContent(
                     targetState = goal.value,
                     transitionSpec = {
-                        if (targetState > initialState)
+                        if (initialState == EditHabitState.goalIsNotInitialized || targetState == EditHabitState.goalIsNotInitialized)
+                            fadeIn(tween(durationMillis = 0)) togetherWith fadeOut(tween(durationMillis = 0))
+                        else if (targetState > initialState)
                             slideInVertically { -it } togetherWith slideOutVertically { it }
                         else
                             slideInVertically { it } togetherWith slideOutVertically { -it }
@@ -235,13 +315,13 @@ fun EditBaseHabit(
                 )
             }
             SquareButton(
-                onClick = onDecreaseGoal,
+                onClick = { focusManager.clearFocus(); onDecreaseGoal() },
                 icon = Icons.Default.Remove,
                 size = minHeight,
                 isEnabled = goal.canBeDecreased
             )
             SquareButton(
-                onClick = onIncreaseGoal,
+                onClick = { focusManager.clearFocus(); onIncreaseGoal() },
                 icon = Icons.Default.Add,
                 size = minHeight,
                 isEnabled = goal.canBeIncreased
@@ -257,7 +337,7 @@ fun EditBaseHabit(
         EditFrequency(
             frequency = frequency,
             expanded = isFrequencyExpanded,
-            expand = expandFrequency,
+            expand = { focusManager.clearFocus(); expandFrequency() },
             minHeight = minHeight,
             selectType = selectType,
             increaseTimes = increaseTimes,
@@ -267,7 +347,8 @@ fun EditBaseHabit(
             selectDay = selectDay,
             selectCustomType = selectCustomType,
             expandType = expandType,
-            typeExpanded = typeExpanded
+            typeExpanded = typeExpanded,
+            isFirstDaySunday = isFirstDaySunday
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
@@ -276,58 +357,155 @@ fun EditBaseHabit(
             color = MaterialTheme.colorScheme.onBackground
         )
         Spacer(modifier = Modifier.height(4.dp))
-        Row(
-            modifier = Modifier
-                .background(
-                    color = MaterialTheme.colorScheme.surfaceVariant,
-                    shape = MaterialTheme.shapes.extraSmall
-                )
-                .padding(end = 16.dp)
-                .height(minHeight)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Crossfade(
-                targetState = isReminderOn,
-                label = "reminder_crossfade",
-            ) { isReminderOn ->
-                Box(
-                    modifier = Modifier
-                        .clip(MaterialTheme.shapes.extraSmall)
-                        .clickable(
-                            enabled = isReminderOn,
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null,
-                            onClick = { isReminderDialogShown = true })
-                        .fillMaxHeight(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = if (isReminderOn) "13:00" else "None",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = if (isReminderOn) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground,
-                        modifier = Modifier.padding(horizontal = 16.dp),
-                    )
-                }
-            }
-            Switch(
-                checked = isReminderOn,
-                onCheckedChange = { isReminderOn = !isReminderOn },
-                colors = SwitchDefaults.colors(
-                    uncheckedBorderColor = Color.Transparent,
-                    uncheckedTrackColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f),
-                    uncheckedThumbColor = MaterialTheme.colorScheme.primaryContainer
-                )
-            )
-        }
-        Spacer(modifier = Modifier.height(16.dp))
+        EditReminder(
+            minHeight = minHeight,
+            reminder = reminder,
+            switchOn = { focusManager.clearFocus(); switchOn(it) },
+            showTimeDialog = { focusManager.clearFocus(); showTimeDialog(it) },
+            requestPermissionDialog = { focusManager.clearFocus(); showPermissionDialog(it) }
+        )
+        Spacer(modifier = Modifier.height(80.dp))
     }
-    if (isReminderDialogShown)
-        Dialog(onDismissRequest = { isReminderDialogShown = false }) {
-            Text(text = "13:00")
-        }
+    if (reminder.isDialogShown)
+        TimePickerDialog(
+            onDismissRequest = { showTimeDialog(false) },
+            onConfirm = updateReminder,
+            initialHour = reminder.hour,
+            initialMinute = reminder.minute,
+        )
+    dialog?.let {
+        NotificationPermissionDialog(dialog)
+    }
 }
+
+@Composable
+private fun EditReminder(
+    minHeight: Dp,
+    reminder: ReminderUi,
+    switchOn: (Boolean) -> Unit,
+    showTimeDialog: (Boolean) -> Unit,
+    requestPermissionDialog: (DialogItem?) -> Unit,
+) {
+    val context = LocalContext.current
+    val lifecycleState: State<Lifecycle.State> =
+        LocalLifecycleOwner.current.lifecycle.currentStateAsState()
+    val lifecycleScope = rememberCoroutineScope()
+    var notificationEnabled: Boolean? by remember { mutableStateOf(null) }
+    var alarmEnabled: Boolean? by remember { mutableStateOf(null) }
+    val launcher = rememberLauncherForActivityResult(RequestPermission()) { isEnabled ->
+        if (isEnabled) {
+            notificationEnabled = true
+            alarmEnabled = areAlarmsEnabled(context)
+        }
+    }
+    val notificationLauncher = LaunchNotificationSettingsScreen(
+        handleResult = { isEnabled ->
+            if (isEnabled) {
+                notificationEnabled = true
+                requestPermissionDialog(null)
+                alarmEnabled = areAlarmsEnabled(context)
+            }
+        },
+        context = context
+    )
+    val alarmLauncher = LaunchAlarmSettingsScreen(
+        handleResult = { isEnabled ->
+            if (isEnabled) {
+                alarmEnabled = true
+                requestPermissionDialog(null)
+                notificationEnabled = areNotificationsEnabled(context)
+            }
+        },
+        context = context
+    )
+
+    val notificationDialog = remember {
+        DialogItem.notification.copy(
+            onConfirm = {
+                startNotificationSettingsActivity(lifecycleScope, context, notificationLauncher)
+            }, onDismiss = { requestPermissionDialog(null) }
+        )
+    }
+    val alarmDialog = remember {
+        DialogItem.alarm.copy(
+            onConfirm = { startAlarmSettingsActivity(lifecycleScope, context, alarmLauncher) },
+            onDismiss = { requestPermissionDialog(null) }
+        )
+    }
+    val askForNotificationPermission = {
+        askForNotificationPermission(
+            launcher = launcher,
+            showDialog = { requestPermissionDialog(notificationDialog) },
+            lifecycleState = lifecycleState
+        )
+    }
+    LaunchedEffect(Unit) {
+        if (!areNotificationsEnabled(context) || !areAlarmsEnabled(context))
+            switchOn(false)
+    }
+    LaunchedEffect(notificationEnabled, alarmEnabled) {
+        when {
+            notificationEnabled == false -> askForNotificationPermission()
+            alarmEnabled == false -> requestPermissionDialog(alarmDialog)
+            alarmEnabled == true && notificationEnabled == true -> switchOn(true)
+        }
+    }
+    Row(
+        modifier = Modifier
+            .background(
+                color = MaterialTheme.colorScheme.surfaceVariant,
+                shape = MaterialTheme.shapes.extraSmall
+            )
+            .padding(end = 16.dp)
+            .height(minHeight)
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Crossfade(
+            targetState = reminder.switchedOn,
+            label = "reminder_crossfade",
+        ) { isReminderOn ->
+            Box(
+                modifier = Modifier
+                    .clip(MaterialTheme.shapes.extraSmall)
+                    .clickable(
+                        enabled = isReminderOn,
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                        onClick = { showTimeDialog(true) })
+                    .fillMaxHeight(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = reminder.formatted(getLocale(), stringResource(R.string.reminder_none)),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = if (isReminderOn) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                )
+            }
+        }
+        Switch(
+            colors = SwitchDefaults.colors(
+                uncheckedBorderColor = Color.Transparent,
+                uncheckedTrackColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f),
+                uncheckedThumbColor = MaterialTheme.colorScheme.primaryContainer
+            ),
+            checked = reminder.switchedOn,
+            onCheckedChange = {
+                if (!reminder.switchedOn)
+                    checkPermission(
+                        context = context,
+                        requestAlarmPermission = { requestPermissionDialog(alarmDialog) },
+                        requestNotificationPermission = { askForNotificationPermission() },
+                        onGranted = { switchOn(true) })
+                else
+                    switchOn(false)
+            },
+        )
+    }
+}
+
 
 @Composable
 fun IconSelector(
@@ -345,16 +523,16 @@ fun IconSelector(
             style = MaterialTheme.typography.titleSmall
         )
         Spacer(modifier = Modifier.height(4.dp))
-        IconButton(
+        TextButton(
             onClick = onClick,
             modifier = Modifier
-                .size(size)
                 .background(color = color, shape = MaterialTheme.shapes.extraSmall)
+                .size(size)
         ) {
             Icon(
                 imageVector = icon.vector(context),
                 contentDescription = icon.name(context.resources),
-                modifier = Modifier.size(32.dp),
+                modifier = Modifier.size(36.dp),
                 tint = Color.White
             )
         }
@@ -366,9 +544,7 @@ fun IconSelector(
 private fun DarkHabitScreenPreview() {
     HabitMateTheme(darkTheme = true) {
         Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
-            EditHabit(
-                state = remember { mutableStateOf(EditHabitState()) }
-            )
+            EditHabit(state = remember { mutableStateOf(EditHabitState()) })
         }
     }
 }

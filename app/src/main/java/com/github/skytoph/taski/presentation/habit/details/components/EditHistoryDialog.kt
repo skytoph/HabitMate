@@ -40,10 +40,11 @@ fun EditHistoryDialog(
     onEdit: () -> Unit,
     onDayClick: (Int) -> Unit,
     habitColor: Color,
-    goal: Int
+    goal: Int,
+    isFirstDaySunday: Boolean = false,
 ) {
     Dialog(onDismissRequest = onEdit) {
-        HabitHistoryGridEditable(entries, habitColor, goal, onDayClick)
+        HabitHistoryGridEditable(entries, habitColor, goal, onDayClick, isFirstDaySunday)
     }
 }
 
@@ -52,7 +53,8 @@ fun HabitHistoryGridEditable(
     entries: Flow<PagingData<EditableHistoryUi>>,
     habitColor: Color,
     goal: Int,
-    onDayClick: (Int) -> Unit
+    onDayClick: (Int) -> Unit,
+    isFirstDaySunday: Boolean = false,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -71,6 +73,7 @@ fun HabitHistoryGridEditable(
             goal = goal,
             isEditable = true,
             onDayClick = onDayClick,
+            isFirstDaySunday = isFirstDaySunday
         )
         Row(
             modifier = Modifier

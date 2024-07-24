@@ -11,6 +11,7 @@ import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyCusto
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyState
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyUi
 import com.github.skytoph.taski.presentation.habit.icon.IconState
+import com.github.skytoph.taski.presentation.habit.list.component.DialogItem
 
 interface EditHabitEvent {
     fun handle(state: MutableState<EditHabitState>, icon: MutableState<IconState>)
@@ -21,12 +22,15 @@ interface EditHabitEvent {
             state.value = EditHabitState(
                 id = habit.id,
                 title = FieldState(field = habit.title),
+                description = FieldState(field = habit.description),
                 goal = GoalState(habit.goal),
                 icon = habit.icon,
                 color = habit.color,
+                priority = habit.priority,
                 isLoading = false,
                 frequencyState = FrequencyState(selectedName = habit.frequency.name)
-                    .updateSelected(habit.frequency)
+                    .updateSelected(habit.frequency),
+                reminder = habit.reminder
             )
             icon.value = IconState(habit.icon, habit.color)
         }
@@ -36,6 +40,13 @@ interface EditHabitEvent {
         override fun handle(state: MutableState<EditHabitState>, icon: MutableState<IconState>) {
             state.value =
                 state.value.copy(title = state.value.title.copy(field = title, error = null))
+        }
+    }
+
+    class EditDescription(private val value: String) : EditHabitEvent {
+        override fun handle(state: MutableState<EditHabitState>, icon: MutableState<IconState>) {
+            state.value =
+                state.value.copy(description = state.value.description.copy(field = value))
         }
     }
 
@@ -140,6 +151,38 @@ interface EditHabitEvent {
                 frequencyState = state.value.frequencyState.updateCustom(type),
                 isCustomTypeExpanded = false
             )
+        }
+    }
+
+    class UpdateReminder(
+        private val switchOn: Boolean? = null,
+        private val showDialog: Boolean? = null,
+        private val hour: Int? = null,
+        private val minute: Int? = null
+    ) : EditHabitEvent {
+        override fun handle(state: MutableState<EditHabitState>, icon: MutableState<IconState>) {
+            switchOn?.let {
+                state.value =
+                    state.value.copy(reminder = state.value.reminder.copy(switchedOn = it))
+            }
+            showDialog?.let {
+                state.value =
+                    state.value.copy(reminder = state.value.reminder.copy(isDialogShown = it))
+            }
+            hour?.let {
+                state.value =
+                    state.value.copy(reminder = state.value.reminder.copy(hour = it))
+            }
+            minute?.let {
+                state.value =
+                    state.value.copy(reminder = state.value.reminder.copy(minute = it))
+            }
+        }
+    }
+
+    class ShowPermissionDialog(private val dialog: DialogItem? = null) : EditHabitEvent {
+        override fun handle(state: MutableState<EditHabitState>, icon: MutableState<IconState>) {
+            state.value = state.value.copy(dialog = dialog)
         }
     }
 }

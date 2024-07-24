@@ -55,4 +55,6 @@
     <string name="restore_habit_confirmation_dialog_description">Ви хочете відновити звичку?</string>
     <string name="action_restore">Підтвердити</string>
 
+    <string name="habit_reminder_message">Час виконати звичку!</string>
+
 </resources>

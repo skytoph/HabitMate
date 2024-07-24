@@ -13,6 +13,7 @@ import com.github.skytoph.taski.domain.habit.EntryList
 import com.github.skytoph.taski.domain.habit.Habit
 import com.github.skytoph.taski.domain.habit.HabitRepository
 import com.github.skytoph.taski.domain.habit.HabitWithEntries
+import com.github.skytoph.taski.presentation.habit.details.mapper.StatisticsUiMapper
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -20,17 +21,18 @@ class BaseHabitRepository(
     private val habitDao: HabitDao,
     private val entryDao: EntriesDao,
     private val habitMapper: HabitDBToDomainMapper,
-    private val entryMapper: EntryListMapper
+    private val entryMapper: EntryListMapper,
+    private val stats: StatisticsUiMapper,
 ) : HabitRepository {
 
     override fun entriesFlow(id: Long): Flow<EntryList> =
         entryDao.entriesPagingSource(id).map { entryMapper.map(it) }
 
     override fun habitsWithEntries(): Flow<List<HabitWithEntries>> =
-        entryDao.habitsWithEntries().map { list -> list.map { it.map(habitMapper) } }
+        entryDao.habitsWithEntriesFlow().map { list -> list.map { it.map(habitMapper) } }
 
-    override fun habitWithEntriesFlow(id: Long): Flow<HabitWithEntries> =
-        entryDao.habitWithEntriesFlow(id).map { it.map(habitMapper) }
+    override fun habitWithEntriesFlow(id: Long): Flow<HabitWithEntries?> =
+        entryDao.habitWithEntriesFlow(id).map { it?.map(habitMapper) }
 
     override suspend fun habits(): List<Habit> =
         habitDao.habits().map { habit -> habit.toHabit() }
@@ -49,7 +51,7 @@ class BaseHabitRepository(
 
     override suspend fun entry(id: Long, timestamp: Long) = entryDao.entry(id, timestamp)?.toEntry()
 
-    override suspend fun insert(habit: Habit) = habitDao.insert(habit.toHabitDB())
+    override suspend fun insert(habit: Habit): Long = habitDao.insert(habit.toHabitDB())
 
     override suspend fun update(habit: Habit) = habitDao.update(habit.toHabitDB())
 
@@ -60,4 +62,11 @@ class BaseHabitRepository(
         entryDao.delete(id, entry.timestamp)
 
     override suspend fun delete(id: Long) = habitDao.delete(id)
+
+    override suspend fun notCompleted(habitId: Long, isFirstDaySunday: Boolean): Boolean {
+        val data = habitWithEntries(habitId)
+        return !data.habit.isArchived
+                && data.entries.entries[0].let { today -> today == null || today.timesDone < data.habit.goal }
+                && stats.state(data, isFirstDaySunday).isScheduledForToday
+    }
 }

@@ -1,11 +1,11 @@
 package com.github.skytoph.taski.presentation.settings.archive
 
+import android.content.Context
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.skytoph.taski.presentation.appbar.InitAppBar
-import com.github.skytoph.taski.presentation.core.component.AppBarState
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitUiMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -21,8 +21,8 @@ class HabitsArchiveViewModel @Inject constructor(
     private val interactor: UnarchiveHabitsInteractor,
     private val mapper: HabitUiMapper,
     private val state: MutableState<ArchiveState>,
-    appBarState: MutableState<AppBarState>,
-) : ViewModel(), InitAppBar by InitAppBar.Base(appBarState) {
+    initAppBar: InitAppBar,
+) : ViewModel(), InitAppBar by initAppBar {
 
     init {
         interactor.habitsFlow()
@@ -38,9 +38,10 @@ class HabitsArchiveViewModel @Inject constructor(
         interactor.archive(id, message, false)
     }
 
-    fun delete(id: Long, message: String) = viewModelScope.launch(Dispatchers.IO) {
-        interactor.delete(id, message)
-    }
+    fun delete(id: Long, message: String, context: Context) =
+        viewModelScope.launch(Dispatchers.IO) {
+            interactor.delete(id, message, context)
+        }
 
     fun state(): State<ArchiveState> = state
 }

@@ -20,16 +20,15 @@ import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.component.MonthDayLabel
 import com.github.skytoph.taski.presentation.core.component.WeekDayLabel
 import com.github.skytoph.taski.presentation.core.component.getLocale
-import com.github.skytoph.taski.presentation.core.format.getTodayDayOfWeek
+import com.github.skytoph.taski.presentation.core.format.getDayOfWeek
 import java.util.Locale
 
 @Composable
 fun WeekDayLabelsCard(
     modifier: Modifier = Modifier,
     entries: Int = 5,
-    locale: Locale = getLocale()
+    locale: Locale = getLocale(),
 ) {
-    val today = getTodayDayOfWeek(locale)
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -46,7 +45,7 @@ fun WeekDayLabelsCard(
             Row(horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.entries_daily_spaced_by))) {
                 for (index in 0 until entries) {
                     Column {
-                        WeekDayLabel(Modifier.width(48.dp), today - index, Alignment.Center)
+                        WeekDayLabel(Modifier.width(48.dp), getDayOfWeek(locale, index), Alignment.Center)
                         MonthDayLabel(Modifier.width(48.dp), -index, TextAlign.Center)
                     }
                 }

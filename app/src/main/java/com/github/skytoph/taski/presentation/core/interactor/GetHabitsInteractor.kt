@@ -22,8 +22,7 @@ interface GetHabitsInteractor {
         private val filter: FilterHabits? = null,
     ) : GetHabitsInteractor, HabitsList, HabitsFlow {
 
-        override fun habitsFlow(): Flow<List<Habit>> = repository.habitsFlow()
-            .map { it.filterAndSort() }
+        override fun habitsFlow(): Flow<List<Habit>> = repository.habitsFlow().map { it.filterAndSort() }
 
         override suspend fun habits(): List<Habit> = repository.habits().filterAndSort()
 

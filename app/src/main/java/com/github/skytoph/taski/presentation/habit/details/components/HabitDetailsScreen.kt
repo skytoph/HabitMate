@@ -1,6 +1,9 @@
 package com.github.skytoph.taski.presentation.habit.details.components
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,6 +28,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
@@ -73,14 +77,17 @@ fun HabitDetailsScreen(
     }
 
     val onHideDialog = { viewModel.onEvent(HabitDetailsEvent.ShowDialog(false)) }
-    val defaultColor = MaterialTheme.colorScheme.onSecondaryContainer
     HabitDetails(
         state = viewModel.state(),
         entries = viewModel.entries,
-        onDayClick = { viewModel.habitDone(it, defaultColor) },
         onHideDialog = onHideDialog,
         onDeleteHabit = { onHideDialog(); onDeleteHabit() },
-        onEditHistory = { viewModel.onEvent(HabitDetailsEvent.EditHistory) })
+        onDayClick = { viewModel.habitDone(it) },
+        onEditHistory = { viewModel.onEvent(HabitDetailsEvent.EditHistory) },
+        isFirstDaySunday = viewModel.settings().value.weekStartsOnSunday.value,
+        expandSummary = { viewModel.onEvent(HabitDetailsEvent.ExpandSummary) },
+        expandDescription = { viewModel.onEvent(HabitDetailsEvent.ExpandDescription) }
+    )
 }
 
 @Composable
@@ -91,6 +98,9 @@ fun HabitDetails(
     onDeleteHabit: () -> Unit = {},
     onDayClick: (Int) -> Unit = {},
     onEditHistory: () -> Unit = {},
+    isFirstDaySunday: Boolean = false,
+    expandSummary: () -> Unit = {},
+    expandDescription: () -> Unit = {},
 ) {
     val context = LocalContext.current
     val habit = state.value.habit ?: return
@@ -108,14 +118,16 @@ fun HabitDetails(
         ) {
             Box(
                 modifier = Modifier
-                    .size(size = 40.dp)
+                    .size(size = 44.dp)
                     .background(color = habit.color, shape = RoundedCornerShape(10)),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = habit.icon.vector(context),
                     contentDescription = habit.icon.name(context.resources),
-                    modifier = Modifier.size(32.dp),
+                    modifier = Modifier
+                        .size(32.dp)
+                        .padding(6.dp),
                     tint = Color.White
                 )
             }
@@ -125,10 +137,39 @@ fun HabitDetails(
                 color = MaterialTheme.colorScheme.onBackground
             )
         }
-        Spacer(modifier = Modifier.height(8.dp))
+        if (state.value.habit?.description?.isNotEmpty() == true) {
+            Spacer(modifier = Modifier.height(8.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(shape = MaterialTheme.shapes.extraSmall)
+                    .clickable { expandDescription() }
+                    .background(
+                        color = MaterialTheme.colorScheme.tertiaryContainer,
+                        shape = MaterialTheme.shapes.extraSmall
+                    )
+                    .padding(8.dp)
+                    .animateContentSize(),
+            ) {
+                Text(
+                    text = habit.description,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    style = MaterialTheme.typography.bodySmall,
+                    maxLines = if (state.value.isDescriptionExpanded) Int.MAX_VALUE else 3,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.animateContentSize()
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = stringResource(R.string.frequency_label),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+        Spacer(modifier = Modifier.height(4.dp))
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier
                 .fillMaxWidth()
                 .background(
@@ -136,26 +177,34 @@ fun HabitDetails(
                     shape = MaterialTheme.shapes.extraSmall
                 )
                 .padding(8.dp)
+                .animateContentSize(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             LabelWithIcon(
-                modifier = Modifier.weight(1f),
-                annotatedText = habit.frequency.summarize(context.resources, getLocale()),
+                modifier = Modifier
+                    .weight(1f)
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null
+                    ) { expandSummary() },
+                annotatedText = habit.frequency.summarize(context.resources, isFirstDaySunday, getLocale()),
                 icon = ImageVector.vectorResource(R.drawable.calendar),
+                maxLines = if (state.value.isSummaryExpanded) Int.MAX_VALUE else 2
             )
             LabelWithIcon(
                 modifier = Modifier.weight(1f),
                 text = stringResource(R.string.goal_value, habit.goal),
-                icon = ImageVector.vectorResource(R.drawable.goal),
+                icon = ImageVector.vectorResource(R.drawable.flame),
             )
             LabelWithIcon(
                 modifier = Modifier.weight(1f),
-                text = "13:00",
+                text = habit.reminder.formatted(getLocale(), stringResource(R.string.reminder_turned_off)),
                 icon = ImageVector.vectorResource(R.drawable.bell),
             )
         }
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = "overview",
+            text = stringResource(R.string.overview_label),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onBackground
         )
@@ -202,6 +251,7 @@ fun HabitDetails(
             goal = habit.goal,
             habitColor = habit.color,
             onEdit = onEditHistory,
+            isFirstDaySunday = isFirstDaySunday
         )
         if (BuildConfig.DEBUG)
             Text(text = "streaks: " + state.value.statistics.streaksLength.joinToString(", "))
@@ -217,19 +267,21 @@ fun HabitDetails(
             onDayClick = onDayClick,
             onEdit = onEditHistory,
             habitColor = habit.color,
-            goal = habit.goal
+            goal = habit.goal,
+            isFirstDaySunday = isFirstDaySunday
         )
 }
 
 @Composable
-fun LabelWithIcon(modifier: Modifier = Modifier, text: String, icon: ImageVector) =
-    LabelWithIcon(modifier = modifier, annotatedText = AnnotatedString(text), icon = icon)
+fun LabelWithIcon(modifier: Modifier = Modifier, text: String, icon: ImageVector, maxLines: Int = 2) =
+    LabelWithIcon(modifier = modifier, annotatedText = AnnotatedString(text), icon = icon, maxLines = maxLines)
 
 @Composable
 fun LabelWithIcon(
     modifier: Modifier = Modifier,
     annotatedText: AnnotatedString,
-    icon: ImageVector
+    icon: ImageVector,
+    maxLines: Int = 2
 ) {
     Row(
         modifier = modifier,
@@ -247,8 +299,9 @@ fun LabelWithIcon(
             text = annotatedText,
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onBackground,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis
+            maxLines = maxLines,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.animateContentSize()
         )
     }
 }
@@ -312,16 +365,32 @@ fun LabelWithIconAndValue(
 }
 
 @Composable
-@Preview
+@Preview(showBackground = true)
 fun DarkHabitDetailsScreenPreview(
     @PreviewParameter(HabitsEditableProvider::class) entries: List<EditableHistoryUi>,
-    habit: HabitUi = HabitUi(title = "dev")
+    habit: HabitUi = HabitUi(title = "dev", description = "description")
 ) {
     HabitMateTheme(darkTheme = true) {
         Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
             HabitDetails(
                 state = remember { mutableStateOf(HabitDetailsState(habit)) },
-                entries = flowOf(PagingData.from(entries))
+                entries = flowOf(PagingData.from(entries)),
+            )
+        }
+    }
+}
+
+@Composable
+@Preview(showBackground = true)
+fun HabitDetailsScreenPreview(
+    @PreviewParameter(HabitsEditableProvider::class) entries: List<EditableHistoryUi>,
+    habit: HabitUi = HabitUi(title = "dev", description = "description")
+) {
+    HabitMateTheme(darkTheme = false) {
+        Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+            HabitDetails(
+                state = remember { mutableStateOf(HabitDetailsState(habit)) },
+                entries = flowOf(PagingData.from(entries)),
             )
         }
     }

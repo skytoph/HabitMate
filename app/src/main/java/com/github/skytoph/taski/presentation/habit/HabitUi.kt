@@ -13,16 +13,17 @@ import com.github.skytoph.taski.presentation.habit.list.mapper.HabitDomainMapper
 data class HabitUi(
     val id: Long = ID_DEFAULT,
     val title: String,
+    val description: String = "",
     val goal: Int = 1,
     val color: Color = IconsColors.Default,
     val icon: IconResource = IconResource.Default,
-    val priority: Int = 0,
+    val priority: Int = Int.MAX_VALUE,
     val isArchived: Boolean = false,
-    val frequency: FrequencyUi = FrequencyUi.Daily()
+    val frequency: FrequencyUi = FrequencyUi.Daily(),
+    val reminder: ReminderUi = ReminderUi(),
 ) {
 
-    fun map(mapper: HabitDomainMapper, context: Context) =
-        mapper.map(id, title, goal, color, icon.name(context.resources), priority, isArchived, frequency)
+    fun map(mapper: HabitDomainMapper, context: Context) = mapper.map(this, context)
 
     companion object {
         const val MIN_GOAL: Int = 1

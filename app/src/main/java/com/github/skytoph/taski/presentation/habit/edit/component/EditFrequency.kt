@@ -47,6 +47,7 @@ fun EditFrequency(
     selectCustomType: (FrequencyCustomType) -> Unit = {},
     expandType: () -> Unit = {},
     typeExpanded: Boolean = true,
+    isFirstDaySunday: Boolean = false,
 ) {
     Column(
         modifier = Modifier
@@ -70,7 +71,7 @@ fun EditFrequency(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
-                text = frequency.selected.summarize(LocalContext.current.resources, getLocale()),
+                text = frequency.selected.summarize(LocalContext.current.resources, isFirstDaySunday, getLocale()),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.weight(1f)
@@ -93,7 +94,8 @@ fun EditFrequency(
                 decreaseType = decreaseType,
                 selectCustomType = selectCustomType,
                 expandType = expandType,
-                typeExpanded = typeExpanded
+                typeExpanded = typeExpanded,
+                isFirstDaySunday = isFirstDaySunday
             )
     }
 }

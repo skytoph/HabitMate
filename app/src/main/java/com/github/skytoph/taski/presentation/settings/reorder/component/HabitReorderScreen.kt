@@ -1,11 +1,21 @@
 package com.github.skytoph.taski.presentation.settings.reorder.component
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -17,10 +27,16 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -44,6 +60,7 @@ import com.github.skytoph.taski.presentation.core.preview.HabitsProvider
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.HabitWithHistoryUi
 import com.github.skytoph.taski.presentation.habit.list.HistoryUi
+import com.github.skytoph.taski.presentation.habit.list.view.SortHabits
 import com.github.skytoph.taski.presentation.settings.reorder.ReorderHabitsViewModel
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 import org.burnoutcrew.reorderable.ReorderableItem
@@ -71,16 +88,67 @@ fun HabitReorderScreen(
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
 
-    HabitsReorder(
-        habits = viewModel.habits().value,
-        onSwap = { from, to -> viewModel.swap(from, to) },
-    )
+    val state = viewModel.settings().collectAsState()
+    Column(Modifier.fillMaxWidth()) {
+        AnimatedVisibility(
+            visible = !SortHabits.Manually.matches(state.value.view.sortBy),
+            enter = fadeIn() + expandVertically(),
+            exit = fadeOut() + shrinkVertically()
+        ) {
+            Row(
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .fillMaxWidth()
+                    .background(
+                        color = MaterialTheme.colorScheme.primaryContainer,
+                        shape = MaterialTheme.shapes.small
+                    )
+                    .padding(horizontal = 16.dp, vertical = 16.dp)
+                    .animateContentSize(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(id = R.drawable.arrow_up_down),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onBackground
+                )
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Text(
+                        text = stringResource(R.string.apply_manual_sorting_title),
+                        color = MaterialTheme.colorScheme.onBackground,
+                        style = MaterialTheme.typography.titleSmall,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                    Text(
+                        text = stringResource(R.string.apply_manual_sorting_description),
+                        color = MaterialTheme.colorScheme.onBackground,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                    Box(modifier = Modifier
+                        .clip(MaterialTheme.shapes.small)
+                        .clickable { viewModel.applyManualOrder() }
+                        .padding(horizontal = 8.dp, vertical = 8.dp)) {
+                        Text(
+                            text = "Apply",
+                            color = MaterialTheme.colorScheme.primary,
+                            style = MaterialTheme.typography.titleSmall,
+                        )
+                    }
+                }
+            }
+        }
+        HabitsReorder(
+            habits = viewModel.habits().value,
+            onSwap = { from, to -> viewModel.swap(from, to) },
+        )
+    }
 }
 
 @Composable
 private fun HabitsReorder(
     habits: List<HabitUi>,
-    onSwap: (Int, Int) -> Unit = { _, _ -> }
+    onSwap: (Int, Int) -> Unit = { _, _ -> },
 ) {
     val state =
         rememberReorderableLazyListState(onMove = { from, to -> onSwap(from.index, to.index) })
@@ -93,7 +161,7 @@ private fun HabitsReorder(
     LazyColumn(
         state = state.listState,
         modifier = Modifier
-            .padding(horizontal = 16.dp)
+            .padding(16.dp)
             .reorderable(state)
             .detectReorderAfterLongPress(state),
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -131,7 +199,9 @@ fun HabitReorderingItem(
             modifier = Modifier.fillMaxWidth()
         ) {
             HabitTitleWithIcon(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 8.dp, end = 8.dp, top = 8.dp),
                 icon = habit.icon.vector(LocalContext.current),
                 color = habit.color,
                 title = habit.title,
@@ -155,6 +225,11 @@ fun HabitReorderingItem(
 @Preview(showBackground = true, showSystemUi = true)
 private fun DarkHabitReorderingPreview(@PreviewParameter(HabitsProvider::class) habits: List<HabitWithHistoryUi<HistoryUi>>) {
     HabitMateTheme(darkTheme = true) {
-        HabitsReorder(habits = habits.map { it.habit })
+        val state = remember { mutableStateOf(false) }
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .clickable { state.value = !state.value }) {
+            HabitsReorder(habits = habits.map { it.habit })
+        }
     }
 }

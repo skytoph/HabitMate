@@ -3,19 +3,18 @@ package com.github.skytoph.taski.presentation.habit.details
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
+import com.github.skytoph.taski.core.datastore.SettingsCache
 import com.github.skytoph.taski.presentation.appbar.InitAppBar
-import com.github.skytoph.taski.presentation.core.component.AppBarState
 import com.github.skytoph.taski.presentation.habit.HabitScreens
-import com.github.skytoph.taski.presentation.habit.details.mapper.HabitStatsUiMapper
+import com.github.skytoph.taski.presentation.habit.details.mapper.StatisticsUiMapper
 import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitUiMapper
+import com.github.skytoph.taski.presentation.settings.SettingsViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -34,15 +33,16 @@ class HabitDetailsViewModel @Inject constructor(
     private val state: MutableState<HabitDetailsState> = mutableStateOf(HabitDetailsState()),
     private val interactor: HabitDetailsInteractor,
     private val habitMapper: HabitUiMapper,
-    private val statsMapper: HabitStatsUiMapper,
+    private val statsMapper: StatisticsUiMapper,
     savedStateHandle: SavedStateHandle,
-    appBarState: MutableState<AppBarState>
-) : ViewModel(), InitAppBar by InitAppBar.Base(appBarState) {
+    settings: SettingsCache,
+    initAppBar: InitAppBar
+) : SettingsViewModel<SettingsViewModel.Event>(settings, initAppBar) {
 
     private val actions = MutableStateFlow<List<HabitEntriesAction>>(emptyList())
 
     val entries: Flow<PagingData<EditableHistoryUi>> =
-        interactor.entries(savedStateHandle.id())
+        interactor.entries(savedStateHandle.id(), settings().value)
             .cachedIn(viewModelScope)
             .combine(actions) { pagingData, actions ->
                 actions.fold(pagingData) { paging, event -> applyAction(paging, event) }
@@ -56,23 +56,22 @@ class HabitDetailsViewModel @Inject constructor(
             .launchIn(viewModelScope)
 
         interactor.statistics(savedStateHandle.id())
-            .map { history -> statsMapper.map(history) }
+            .map { history -> history?.let { statsMapper.map(it, settings().value.weekStartsOnSunday.value) } }
             .flowOn(Dispatchers.IO)
             .onEach { stats ->
-                onEvent(HabitDetailsEvent.UpdateStats(stats))
-                HabitEntriesAction.ApplyStatistics(stats).handle(actions)
+                stats?.let {
+                    onEvent(HabitDetailsEvent.UpdateStats(it))
+                    HabitEntriesAction.ApplyStatistics(stats, settings().value.streaksHighlighted).handle(actions)
+                }
             }.launchIn(viewModelScope)
     }
 
     private fun applyAction(pagingData: PagingData<EditableHistoryUi>, action: HabitEntriesAction) =
         pagingData.map { data -> action.apply(data) }
 
-    fun habitDone(daysAgo: Int, defaultColor: Color) = state.value.habit?.let { habit ->
+    fun habitDone(daysAgo: Int) = state.value.habit?.let { habit ->
         viewModelScope.launch(Dispatchers.IO) {
-            interactor.habitDone(habit, daysAgo)
-            val entry = interactor.entryEditable(
-                habit.id, daysAgo, habit.goal, habit.color, defaultColor, state.value.statistics
-            )
+            val entry = interactor.habitDoneAndReturn(habit, daysAgo)
             withContext(Dispatchers.Main) { HabitEntriesAction.UpdateEntry(entry).handle(actions) }
         }
     }

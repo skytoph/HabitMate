@@ -21,7 +21,6 @@ data class EditableHistoryUi(
 data class EntryEditableUi(
     val day: String,
     val timesDone: Int = 0,
-    val percentDone: Float = 0F,
     val daysAgo: Int = 0,
     val hasBorder: Boolean
 ) : HabitEntryUi

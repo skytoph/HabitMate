@@ -1,18 +1,19 @@
 package com.github.skytoph.taski.presentation.habit.list
 
+import android.content.Context
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.skytoph.taski.core.datastore.SettingsCache
 import com.github.skytoph.taski.domain.habit.HabitWithEntries
 import com.github.skytoph.taski.presentation.appbar.InitAppBar
-import com.github.skytoph.taski.presentation.core.component.AppBarState
 import com.github.skytoph.taski.presentation.habit.HabitUi
+import com.github.skytoph.taski.presentation.habit.HabitWithHistoryUi
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitsViewMapper
 import com.github.skytoph.taski.presentation.habit.list.view.HabitsView
+import com.github.skytoph.taski.presentation.settings.SettingsViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
@@ -25,35 +26,35 @@ class HabitsViewModel @Inject constructor(
     private val state: MutableState<HabitListState>,
     private val mapper: HabitsViewMapper,
     private val interactor: HabitListInteractor,
-    appBarState: MutableState<AppBarState>
-) : ViewModel(), InitAppBar by InitAppBar.Base(appBarState) {
+    settings: SettingsCache,
+    initAppBar: InitAppBar
+) : SettingsViewModel<SettingsViewModel.Event>(settings, initAppBar) {
 
-    val view = MutableStateFlow(HabitsView())
+    val view = settings()
 
     init {
         onEvent(HabitListEvent.Progress)
         interactor.habits()
-            .combine(view) { habits, viewState -> applyViewState(habits, viewState) }
+            .combine(view) { habits, viewState -> applyViewState(habits, viewState.view) }
             .flowOn(Dispatchers.IO)
-            .onEach { habits -> onEvent(HabitListEvent.UpdateList(habits)) }
+            .onEach { habits -> habits?.let { onEvent(HabitListEvent.UpdateList(habits)) } }
             .launchIn(viewModelScope)
     }
 
-    private fun applyViewState(habits: List<HabitWithEntries>, viewState: HabitsView) =
-        viewState.map(mapper, habits)
+    private fun applyViewState(
+        habits: List<HabitWithEntries>, viewState: HabitsView
+    ): List<HabitWithHistoryUi<HistoryUi>>? = viewState.map(mapper, habits, settings().value)
 
-    fun habitDone(habit: HabitUi, daysAgo: Int = 0) {
-        viewModelScope.launch(Dispatchers.IO) {
-            interactor.habitDone(habit, daysAgo)
-        }
+    fun habitDone(habit: HabitUi, daysAgo: Int = 0) = viewModelScope.launch(Dispatchers.IO) {
+        interactor.habitDone(habit, daysAgo)
     }
 
-    fun onEvent(event: HabitListEvent) = event.handle(state, view)
+    fun onEvent(event: HabitListEvent) = event.handle(state)
 
-    fun state(): State<HabitListState> = state
+    fun habitsState(): State<HabitListState> = state
 
-    fun deleteHabit(id: Long, message: String) = viewModelScope.launch(Dispatchers.IO) {
-        interactor.delete(id, message)
+    fun deleteHabit(id: Long, message: String, context: Context) = viewModelScope.launch(Dispatchers.IO) {
+        interactor.delete(id, message, context)
     }
 
     fun archiveHabit(id: Long, archived: String) = viewModelScope.launch(Dispatchers.IO) {

@@ -4,15 +4,13 @@ import android.content.Context
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.skytoph.taski.domain.habit.HabitRepository
+import com.github.skytoph.taski.core.datastore.SettingsCache
 import com.github.skytoph.taski.presentation.appbar.InitAppBar
 import com.github.skytoph.taski.presentation.core.EventHandler
-import com.github.skytoph.taski.presentation.core.component.AppBarState
 import com.github.skytoph.taski.presentation.habit.icon.IconState
 import com.github.skytoph.taski.presentation.habit.icon.SelectIconEvent
-import com.github.skytoph.taski.presentation.habit.list.mapper.HabitDomainMapper
+import com.github.skytoph.taski.presentation.settings.SettingsViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -23,11 +21,11 @@ import javax.inject.Inject
 class CreateHabitViewModel @Inject constructor(
     private val state: MutableState<CreateHabitState> = mutableStateOf(CreateHabitState()),
     private val iconState: MutableState<IconState>,
-    private val repository: HabitRepository,
-    private val mapper: HabitDomainMapper,
     private val validator: HabitValidator<CreateHabitEvent>,
-    appBarState: MutableState<AppBarState>
-) : ViewModel(), EventHandler<CreateHabitEvent>, InitAppBar by InitAppBar.Base(appBarState) {
+    private val interactor: CreateHabitInteractor,
+    settings: SettingsCache,
+    initAppBar: InitAppBar
+) : SettingsViewModel<SettingsViewModel.Event>(settings, initAppBar), EventHandler<CreateHabitEvent> {
 
     init {
         SelectIconEvent.Clear.handle(iconState)
@@ -35,8 +33,9 @@ class CreateHabitViewModel @Inject constructor(
 
     fun saveHabit(onNavigate: () -> Unit, context: Context) =
         viewModelScope.launch(Dispatchers.IO) {
-            val habit = state.value.toHabitUi().map(mapper, context)
-            repository.insert(habit)
+            val habit = state.value.toHabitUi()
+            val isFirstDaySunday = settings().value.weekStartsOnSunday.value
+            interactor.insert(habit, context, isFirstDaySunday)
             withContext(Dispatchers.Main) { onNavigate() }
         }
 

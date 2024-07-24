@@ -29,4 +29,16 @@ interface HabitDetailsEvent {
             state.value = state.value.copy(isDeleteDialogShown = isDialogShown)
         }
     }
+
+    object ExpandSummary : HabitDetailsEvent {
+        override fun handle(state: MutableState<HabitDetailsState>) {
+            state.value = state.value.copy(isSummaryExpanded = !state.value.isSummaryExpanded)
+        }
+    }
+
+    object ExpandDescription : HabitDetailsEvent {
+        override fun handle(state: MutableState<HabitDetailsState>) {
+            state.value = state.value.copy(isDescriptionExpanded = !state.value.isDescriptionExpanded)
+        }
+    }
 }

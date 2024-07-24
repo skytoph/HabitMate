@@ -6,6 +6,7 @@ import com.github.skytoph.taski.presentation.core.state.IconResource
 import com.github.skytoph.taski.presentation.core.state.StringResource
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyCustomType
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyUi
+import com.github.skytoph.taski.presentation.habit.list.component.DialogItem
 
 interface CreateHabitEvent {
     fun handle(state: MutableState<CreateHabitState>)
@@ -20,6 +21,13 @@ interface CreateHabitEvent {
     class TitleError(private val error: StringResource?) : CreateHabitEvent {
         override fun handle(state: MutableState<CreateHabitState>) {
             state.value = state.value.copy(title = state.value.title.copy(error = error))
+        }
+    }
+
+    class EditDescription(private val value: String) : CreateHabitEvent {
+        override fun handle(state: MutableState<CreateHabitState>) {
+            state.value =
+                state.value.copy(description = state.value.description.copy(field = value))
         }
     }
 
@@ -116,6 +124,38 @@ interface CreateHabitEvent {
                 frequencyState = state.value.frequencyState.updateCustom(type),
                 isCustomTypeExpanded = false
             )
+        }
+    }
+
+    class UpdateReminder(
+        private val switchOn: Boolean? = null,
+        private val showDialog: Boolean? = null,
+        private val hour: Int? = null,
+        private val minute: Int? = null
+    ) : CreateHabitEvent {
+        override fun handle(state: MutableState<CreateHabitState>) {
+            switchOn?.let {
+                state.value =
+                    state.value.copy(reminder = state.value.reminder.copy(switchedOn = it))
+            }
+            showDialog?.let {
+                state.value =
+                    state.value.copy(reminder = state.value.reminder.copy(isDialogShown = it))
+            }
+            hour?.let {
+                state.value =
+                    state.value.copy(reminder = state.value.reminder.copy(hour = it))
+            }
+            minute?.let {
+                state.value =
+                    state.value.copy(reminder = state.value.reminder.copy(minute = it))
+            }
+        }
+    }
+
+    class ShowPermissionDialog(private val dialog: DialogItem?) : CreateHabitEvent {
+        override fun handle(state: MutableState<CreateHabitState>) {
+            state.value = state.value.copy(dialog = dialog)
         }
     }
 }

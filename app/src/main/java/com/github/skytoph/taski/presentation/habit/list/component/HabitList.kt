@@ -1,10 +1,14 @@
 package com.github.skytoph.taski.presentation.habit.list.component
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -38,7 +42,7 @@ fun HabitList(
             WeekDayLabelsCard(entries = view.entries)
         }
         items(items = habits, key = { it.habit.id }) { habitWithHistory ->
-            HabitCard(view, habitWithHistory, updateView, onClick, onLongClick, onDone)
+            HabitCard(view, habitWithHistory, updateView, onClick, onLongClick, onDone, Modifier.animateItemPlacement())
         }
     }
 }
@@ -50,10 +54,12 @@ private fun HabitCard(
     updateViewState: (Int) -> Unit,
     onHabitClick: (HabitUi) -> Unit,
     onHabitLongClick: (HabitUi) -> Unit = {},
-    onDoneHabit: (HabitUi, Int) -> Unit
+    onDoneHabit: (HabitUi, Int) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     if (view is ViewType.Daily)
         HabitDaily(
+            modifier = modifier,
             onDone = onDoneHabit,
             habit = habitWithHistory.habit,
             history = habitWithHistory.history,
@@ -63,6 +69,7 @@ private fun HabitCard(
         )
     else
         HabitCalendar(
+            modifier = modifier,
             onDone = { onDoneHabit(habitWithHistory.habit, 0) },
             habit = habitWithHistory.habit,
             history = habitWithHistory.history,
@@ -84,6 +91,6 @@ fun HabitListPreview(@PreviewParameter(HabitsProvider::class) habits: List<Habit
 @Preview(showBackground = true, showSystemUi = true)
 fun DarkHabitListPreview(@PreviewParameter(HabitsProvider::class) habits: List<HabitWithHistoryUi<HistoryUi>>) {
     HabitMateTheme(darkTheme = true) {
-        HabitList(habits = habits)
+        Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)){HabitList(habits = habits)}
     }
 }
