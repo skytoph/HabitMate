@@ -2,6 +2,8 @@
 
 package com.github.skytoph.taski.presentation.habit.list.component
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -175,6 +177,6 @@ private fun Habits(
 @Preview(showSystemUi = true, showBackground = true)
 fun HabitScreenPreview(@PreviewParameter(HabitsProvider::class) habits: List<HabitWithHistoryUi<HistoryUi>>) {
     HabitMateTheme(darkTheme = true) {
-        HabitList(habits = habits,)
+        Box(Modifier.background(MaterialTheme.colorScheme.background)){ HabitList(habits = habits) }
     }
 }

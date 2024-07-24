@@ -1,10 +1,14 @@
 package com.github.skytoph.taski.presentation.habit.list.component
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -87,6 +91,6 @@ fun HabitListPreview(@PreviewParameter(HabitsProvider::class) habits: List<Habit
 @Preview(showBackground = true, showSystemUi = true)
 fun DarkHabitListPreview(@PreviewParameter(HabitsProvider::class) habits: List<HabitWithHistoryUi<HistoryUi>>) {
     HabitMateTheme(darkTheme = true) {
-        HabitList(habits = habits)
+        Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)){HabitList(habits = habits)}
     }
 }

@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -144,6 +145,8 @@ fun DarkHabitCardPreview(
     @PreviewParameter(HabitProvider::class, limit = 1) habit: HabitWithHistoryUi<HistoryUi>
 ) {
     HabitMateTheme(darkTheme = true) {
-        HabitCalendar(habit = habit.habit, history = habit.history)
+        Box(Modifier.background(MaterialTheme.colorScheme.background).fillMaxSize()) {
+            HabitCalendar(habit = habit.habit, history = habit.history)
+        }
     }
 }
