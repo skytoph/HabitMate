@@ -130,4 +130,14 @@ dependencies {
 
     // Compress backup file
     implementation("org.apache.commons:commons-compress:1.22")
+
+    //Drive
+    implementation("com.google.api-client:google-api-client-android:2.6.0") {
+        exclude(group = "org.apache.httpcomponents")
+        exclude(module = "guava-jdk5")
+    }
+    implementation("com.google.apis:google-api-services-drive:v3-rev136-1.25.0") {
+        exclude(group = "org.apache.httpcomponents")
+        exclude(module = "guava-jdk5")
+    }
 }
