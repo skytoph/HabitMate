@@ -15,7 +15,7 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class DatabaseExporter(
+class DatabaseExporter(//todo refactor
     private val database: HabitDatabase,
     private val gson: Gson,
     private val compressor: StringCompressor
