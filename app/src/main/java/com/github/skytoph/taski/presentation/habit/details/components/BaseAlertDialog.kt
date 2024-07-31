@@ -1,21 +1,28 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
 
 package com.github.skytoph.taski.presentation.habit.details.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalMinimumInteractiveComponentEnforcement
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
-import com.github.skytoph.taski.presentation.habit.list.component.DeleteDialog
+import androidx.compose.ui.unit.dp
+import com.github.skytoph.taski.presentation.core.component.ExportDialog
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
@@ -28,15 +35,30 @@ fun BaseAlertDialog(
     title: String,
     confirmColor: Color = MaterialTheme.colorScheme.error,
     confirmContainerColor: Color = MaterialTheme.colorScheme.errorContainer,
+    icon: ImageVector? = null
 ) {
     AlertDialog(
         text = {
-            Text(
-                text = text,
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colorScheme.onBackground,
-                style = MaterialTheme.typography.bodyMedium
-            )
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                icon?.let {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = title,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+                Text(
+                    text = text,
+                    modifier = Modifier.fillMaxWidth(),
+                    color = MaterialTheme.colorScheme.onBackground,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
         },
         title = {
             Text(
@@ -56,7 +78,7 @@ fun BaseAlertDialog(
                 TextButton(
                     onClick = onConfirm,
                     modifier = Modifier.background(
-                        color = confirmContainerColor, shape = MaterialTheme.shapes.medium
+                        color = confirmContainerColor, shape = MaterialTheme.shapes.extraLarge
                     )
                 ) {
                     Text(
@@ -96,6 +118,28 @@ private fun DeleteDialogPreview() {
 @Preview
 private fun DarkDeleteDialogPreview() {
     HabitMateTheme(darkTheme = true) {
-        DeleteDialog()
+        ExportDialog()
     }
 }
+
+//@Composable
+//@Preview
+//private fun DeleteDialogPreview() {
+//    HabitMateTheme {
+//        DeleteDialog(
+//            text = stringResource(R.string.delete_habit_confirmation_dialog_description),
+//            title = stringResource(R.string.delete_habit_confirmation_dialog_title),
+//        )
+//    }
+//}
+//
+//@Composable
+//@Preview
+//private fun DarkDeleteDialogPreview() {
+//    HabitMateTheme(darkTheme = true) {
+//        DeleteDialog(
+//            text = stringResource(R.string.delete_habit_confirmation_dialog_description),
+//            title = stringResource(R.string.delete_habit_confirmation_dialog_title)
+//        )
+//    }
+//}

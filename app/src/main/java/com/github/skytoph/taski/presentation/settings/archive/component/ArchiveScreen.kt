@@ -32,11 +32,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.skytoph.taski.R
+import com.github.skytoph.taski.presentation.core.component.DeleteDialog
 import com.github.skytoph.taski.presentation.core.component.EmptyScreen
 import com.github.skytoph.taski.presentation.core.component.HabitTitleWithIcon
+import com.github.skytoph.taski.presentation.core.component.RestoreDialog
 import com.github.skytoph.taski.presentation.habit.HabitUi
-import com.github.skytoph.taski.presentation.habit.list.component.DeleteDialog
-import com.github.skytoph.taski.presentation.habit.list.component.RestoreDialog
 import com.github.skytoph.taski.presentation.settings.archive.HabitArchiveEvent
 import com.github.skytoph.taski.presentation.settings.archive.HabitsArchiveViewModel
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
@@ -56,7 +56,7 @@ fun ArchiveScreen(
     val messageDelete = stringResource(R.string.message_habit_deleted)
     if (habits.isEmpty()) EmptyScreen(
         title = stringResource(R.string.archive_is_empty_label),
-        icon = ImageVector.vectorResource(R.drawable.archive)
+        icon = ImageVector.vectorResource(R.drawable.archive_large)
     )
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(8.dp),

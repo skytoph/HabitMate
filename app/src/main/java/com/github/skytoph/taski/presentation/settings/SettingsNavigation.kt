@@ -17,6 +17,7 @@ import com.github.skytoph.taski.presentation.settings.backup.component.BackupScr
 import com.github.skytoph.taski.presentation.settings.general.component.GeneralSettingsScreen
 import com.github.skytoph.taski.presentation.settings.menu.component.SettingsMenuScreen
 import com.github.skytoph.taski.presentation.settings.reorder.component.HabitReorderScreen
+import com.github.skytoph.taski.presentation.settings.restore.component.BackupRestoreScreen
 import com.github.skytoph.taski.presentation.settings.theme.component.ThemeSettingsScreen
 
 abstract class SettingsScreens(val route: String) {
@@ -26,6 +27,7 @@ abstract class SettingsScreens(val route: String) {
     object ReorderList : SettingsScreens("reorder")
     object Theme : SettingsScreens("theme")
     object Backup : SettingsScreens("backup")
+    object BackupRestore : SettingsScreens("backup_restore")
 }
 
 fun NavGraphBuilder.settingsNavigation(
@@ -96,7 +98,16 @@ fun NavGraphBuilder.settingsNavigation(
             popExitTransition = { scaleOutOfContainer(direction = ScaleTransitionDirection.INWARDS) },
             popEnterTransition = null,
         ) {
-            BackupScreen()
+            BackupScreen(restoreBackup = { controller.navigate(SettingsScreens.BackupRestore.route) })
+        }
+        composable(
+            route = SettingsScreens.BackupRestore.route,
+            enterTransition = { scaleIntoContainer(direction = ScaleTransitionDirection.OUTWARDS) },
+            exitTransition = { fadeOut(tween(delayMillis = 60)) },
+            popExitTransition = { scaleOutOfContainer(direction = ScaleTransitionDirection.INWARDS) },
+            popEnterTransition = null,
+        ) {
+            BackupRestoreScreen()
         }
     }
 }

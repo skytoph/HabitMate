@@ -79,21 +79,25 @@ fun HabitMateTheme(
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
+    val isDark = theme == AppTheme.Dark || (theme == AppTheme.System && darkTheme)
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
 
-        theme == AppTheme.Dark || (theme == AppTheme.System && darkTheme) -> DarkColorScheme
+        isDark -> DarkColorScheme
         else -> LightColorScheme
     }
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.background.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
+            val background = colorScheme.background.toArgb()
+            window.statusBarColor = background
+            window.navigationBarColor = background
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !isDark
+            WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars = !isDark
         }
     }
 

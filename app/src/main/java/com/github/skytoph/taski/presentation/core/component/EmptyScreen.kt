@@ -53,11 +53,11 @@ fun EmptyScreen(
 @Composable
 @Preview
 fun EmptyScreenPreview() {
-    HabitMateTheme {
+    HabitMateTheme(darkTheme = true) {
         Box(modifier = Modifier.fillMaxSize()) {
             EmptyScreen(
                 title = stringResource(R.string.list_of_habits_is_empty_create_label),
-                icon = ImageVector.vectorResource(R.drawable.sparkles),
+                icon = ImageVector.vectorResource(R.drawable.sparkles_large),
                 button = {
                     ButtonWithIconOnBackground(
                         modifier = Modifier.padding(top = 4.dp),

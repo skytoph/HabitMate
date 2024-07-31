@@ -35,7 +35,8 @@ fun LoadingFullscreen(
     circleColor: Color = MaterialTheme.colorScheme.primary,
     circleSize: Dp = 16.dp,
     animationDelay: Int = 400,
-    initialAlpha: Float = 0.3f
+    initialAlpha: Float = 0.3f,
+    backgroundColor: Color = Color.Transparent
 ) {
     Box(
         modifier = modifier
@@ -57,6 +58,7 @@ fun LoadingFullscreen(
 fun LoadingItems(
     itemColor: Color = MaterialTheme.colorScheme.primary,
     itemSize: Dp = 16.dp,
+    spaceSize: Dp = 8.dp,
     animationDelay: Int = 400,
     initialAlpha: Float = 0.3f,
     item: ImageVector = ImageVector.vectorResource(id = R.drawable.sparkle_filled)
@@ -89,7 +91,7 @@ fun LoadingItems(
     Row {
         animatableList.forEachIndexed { index, animatable ->
             if (index != 0)
-                Spacer(modifier = Modifier.width(width = 8.dp))
+                Spacer(modifier = Modifier.width(width = spaceSize))
             Box(modifier = Modifier.size(itemSize)) {
                 Icon(
                     imageVector = item,

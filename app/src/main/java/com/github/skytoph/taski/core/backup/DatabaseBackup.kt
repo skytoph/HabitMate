@@ -1,48 +1,37 @@
 package com.github.skytoph.taski.core.backup
 
-import android.content.ContentResolver
-import android.content.Context
-import android.net.Uri
-import androidx.core.content.FileProvider
 import androidx.room.withTransaction
 import com.github.skytoph.taski.data.habit.database.HabitDatabase
 import com.github.skytoph.taski.data.habit.database.HabitWithEntriesEntity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import java.io.File
-import java.text.SimpleDateFormat
-import java.util.Locale
 
-class DatabaseExporter(//todo refactor
-    private val database: HabitDatabase,
-    private val gson: Gson,
-    private val compressor: StringCompressor
-) {
+interface DatabaseBackup {
+    suspend fun exportHabits(): ByteArray
+    suspend fun importHabits(byteArray: ByteArray)
 
-    suspend fun exportHabits(context: Context): Uri {
-        val entries: List<HabitWithEntriesEntity> = database.entryDao().habitsWithEntries()
-        val json = gson.toJson(entries)
-        val compressedData = compressor.compressString(json)
+    class Base(
+        private val database: HabitDatabase,
+        private val gson: Gson,
+        private val compressor: StringCompressor
+    ) : DatabaseBackup {
 
-        val date = SimpleDateFormat("dd.MM.yyyy", Locale.US).format(System.currentTimeMillis())
-        val file = File(context.cacheDir, "backup-$date.db")
-        file.writeBytes(compressedData)
+        override suspend fun exportHabits(): ByteArray {
+            val entries: List<HabitWithEntriesEntity> = database.entryDao().habitsWithEntries()
+            val json = gson.toJson(entries)
+            return compressor.compressString(json)
+        }
 
-        return FileProvider.getUriForFile(context, context.packageName + ".provider", file)
-    }
-
-    suspend fun importHabits(contentResolver: ContentResolver, uri: Uri) = withContext(Dispatchers.IO) {
-        val byteArray = contentResolver.openInputStream(uri)?.run { readBytes() } ?: return@withContext
-        val json: String = compressor.decompressString(byteArray)
-        val habits: List<HabitWithEntriesEntity> =
-            gson.fromJson(json, object : TypeToken<List<HabitWithEntriesEntity>>() {}.type)
-        database.withTransaction {
-            habits.forEach { habitWithEntries ->
-                database.habitDao().insert(habitWithEntries.habit)
-                habitWithEntries.entries.forEach { entry ->
-                    database.entryDao().insert(entry)
+        override suspend fun importHabits(byteArray: ByteArray) {
+            val json: String = compressor.decompressString(byteArray)
+            val habits: List<HabitWithEntriesEntity> =
+                gson.fromJson(json, object : TypeToken<List<HabitWithEntriesEntity>>() {}.type)
+            database.withTransaction {
+                habits.forEach { habitWithEntries ->
+                    database.habitDao().insert(habitWithEntries.habit)
+                    habitWithEntries.entries.forEach { entry ->
+                        database.entryDao().insert(entry)
+                    }
                 }
             }
         }

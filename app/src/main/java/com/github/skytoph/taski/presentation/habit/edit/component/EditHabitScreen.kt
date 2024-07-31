@@ -44,6 +44,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -55,7 +56,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -67,6 +67,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.currentStateAsState
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.component.AppBarAction
+import com.github.skytoph.taski.presentation.core.component.NotificationPermissionDialog
 import com.github.skytoph.taski.presentation.core.component.SquareButton
 import com.github.skytoph.taski.presentation.core.component.TextFieldWithError
 import com.github.skytoph.taski.presentation.core.component.TimePickerDialog
@@ -82,7 +83,6 @@ import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyCusto
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyState
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyUi
 import com.github.skytoph.taski.presentation.habit.list.component.DialogItem
-import com.github.skytoph.taski.presentation.habit.list.component.NotificationPermissionDialog
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 
@@ -388,7 +388,7 @@ private fun EditReminder(
 ) {
     val context = LocalContext.current
     val lifecycleState: State<Lifecycle.State> =
-        LocalLifecycleOwner.current.lifecycle.currentStateAsState()
+        androidx.lifecycle.compose.LocalLifecycleOwner.current.lifecycle.currentStateAsState()
     val lifecycleScope = rememberCoroutineScope()
     var notificationEnabled: Boolean? by remember { mutableStateOf(null) }
     var alarmEnabled: Boolean? by remember { mutableStateOf(null) }

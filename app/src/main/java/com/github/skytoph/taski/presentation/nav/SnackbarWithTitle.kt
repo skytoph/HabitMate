@@ -11,8 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Snackbar
@@ -20,11 +19,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.appbar.SnackbarMessage
 import com.github.skytoph.taski.presentation.core.state.IconResource
+import com.github.skytoph.taski.presentation.core.state.StringResource
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
@@ -36,7 +38,9 @@ fun SnackbarWithTitle(message: SnackbarMessage, modifier: Modifier = Modifier) {
         modifier = modifier.padding(16.dp)
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 8.dp, end = 8.dp, bottom = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
@@ -46,13 +50,12 @@ fun SnackbarWithTitle(message: SnackbarMessage, modifier: Modifier = Modifier) {
             )
             Spacer(modifier = Modifier.width(8.dp))
             Column(
-                modifier = Modifier.padding(bottom = 4.dp),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
+                verticalArrangement = Arrangement.spacedBy(2.dp)
             ) {
                 Text(
                     text = message.title,
                     style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.primary
+                    color = color
                 )
                 Text(
                     text = message.message,
@@ -76,9 +79,9 @@ private fun SnackbarPreview() {
         ) {
             SnackbarWithTitle(
                 message = SnackbarMessage(
-                    title = "habit",
-                    message = "message...",
-                    icon = IconResource.Vector(Icons.Default.Delete)
+                    title = StringResource.Value("habit"),
+                    messageResource = StringResource.Value("message..."),
+                    icon = IconResource.Id(R.drawable.trash)
                 )
             )
         }

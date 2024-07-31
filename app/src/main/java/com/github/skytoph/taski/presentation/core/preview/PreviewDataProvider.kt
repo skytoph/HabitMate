@@ -10,6 +10,7 @@ import com.github.skytoph.taski.presentation.habit.icon.IconsColors
 import com.github.skytoph.taski.presentation.habit.icon.IconsGroup
 import com.github.skytoph.taski.presentation.habit.list.EntryUi
 import com.github.skytoph.taski.presentation.habit.list.HistoryUi
+import com.github.skytoph.taski.presentation.settings.restore.BackupItemUi
 
 class HabitsProvider : PreviewParameterProvider<List<HabitWithHistoryUi<HistoryUi>>> {
 
@@ -51,4 +52,9 @@ class HabitsEditableProvider : PreviewParameterProvider<List<EditableHistoryUi>>
 
 class IconProvider : PreviewParameterProvider<IconsGroup> {
     override val values: Sequence<IconsGroup> = IconsGroup.allGroups.asSequence()
+}
+
+class BackupItemsProvider : PreviewParameterProvider<List<BackupItemUi>> {
+    override val values: Sequence<List<BackupItemUi>> =
+        sequenceOf(MutableList(15) { BackupItemUi(date = "$it apr. 2024 19:05:11", size = "$it b") })
 }

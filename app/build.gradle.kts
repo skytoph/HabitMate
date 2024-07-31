@@ -94,7 +94,10 @@ dependencies {
     // Compose material
     implementation("androidx.compose.material3:material3:1.2.0-alpha08")
     implementation("androidx.compose.material:material-icons-extended:1.1.2")
-    implementation("androidx.compose.foundation:foundation:1.6.0-alpha06")
+    implementation("androidx.compose.foundation:foundation:1.7.0-beta06")
+
+    // Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
 
     // Hilt
     implementation("com.google.dagger:hilt-android:2.48")
@@ -113,7 +116,7 @@ dependencies {
     implementation("androidx.room:room-paging:2.6.1")
 
     implementation("androidx.profileinstaller:profileinstaller:1.3.1")
-    implementation("org.burnoutcrew.composereorderable:reorderable:0.9.6")
+    implementation("sh.calvin.reorderable:reorderable:2.3.0")
 
     // Gson
     implementation("com.google.code.gson:gson:2.11.0")
@@ -131,7 +134,7 @@ dependencies {
     // Compress backup file
     implementation("org.apache.commons:commons-compress:1.22")
 
-    //Drive
+    // Drive
     implementation("com.google.api-client:google-api-client-android:2.6.0") {
         exclude(group = "org.apache.httpcomponents")
         exclude(module = "guava-jdk5")
@@ -140,4 +143,7 @@ dependencies {
         exclude(group = "org.apache.httpcomponents")
         exclude(module = "guava-jdk5")
     }
+
+    // Coil
+    implementation("io.coil-kt:coil-compose:2.7.0")
 }

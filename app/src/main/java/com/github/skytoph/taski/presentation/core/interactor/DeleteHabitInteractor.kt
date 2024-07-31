@@ -25,7 +25,8 @@ interface DeleteHabitInteractor {
                 message = message,
                 title = habit.title,
                 icon = IconResource.Id(R.drawable.trash),
-                duration = SnackbarDuration.Short
+                duration = SnackbarDuration.Short,
+                isError = true
             )
             popup.show(message)
         }

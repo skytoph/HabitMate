@@ -24,6 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -45,6 +46,7 @@ import androidx.paging.PagingData
 import com.github.skytoph.taski.BuildConfig
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.component.AppBarAction
+import com.github.skytoph.taski.presentation.core.component.DeleteDialog
 import com.github.skytoph.taski.presentation.core.component.getLocale
 import com.github.skytoph.taski.presentation.core.preview.HabitsEditableProvider
 import com.github.skytoph.taski.presentation.habit.HabitUi
@@ -52,7 +54,6 @@ import com.github.skytoph.taski.presentation.habit.details.HabitDetailsEvent
 import com.github.skytoph.taski.presentation.habit.details.HabitDetailsState
 import com.github.skytoph.taski.presentation.habit.details.HabitDetailsViewModel
 import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
-import com.github.skytoph.taski.presentation.habit.list.component.DeleteDialog
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf

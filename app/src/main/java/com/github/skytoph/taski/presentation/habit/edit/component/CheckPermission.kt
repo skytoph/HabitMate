@@ -71,7 +71,7 @@ private fun showDialogIfPermissionNotRequested(
     Handler(Looper.getMainLooper()).postDelayed({
         if (lifecycleState.value === Lifecycle.State.RESUMED)
             showDialog()
-    }, 250)
+    }, 400)
 }
 
 fun startNotificationSettingsActivity(

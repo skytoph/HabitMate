@@ -58,6 +58,6 @@ class HabitsViewModel @Inject constructor(
     }
 
     fun archiveHabit(id: Long, archived: String) = viewModelScope.launch(Dispatchers.IO) {
-        interactor.archive(id, archived)
+        interactor.archive(id,  archived)
     }
 }

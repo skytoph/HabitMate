@@ -25,7 +25,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.component.AppBarAction
+import com.github.skytoph.taski.presentation.core.component.ArchiveDialog
 import com.github.skytoph.taski.presentation.core.component.ButtonWithIconOnBackground
+import com.github.skytoph.taski.presentation.core.component.DeleteDialog
 import com.github.skytoph.taski.presentation.core.component.EmptyScreen
 import com.github.skytoph.taski.presentation.core.component.LoadingFullscreen
 import com.github.skytoph.taski.presentation.core.preview.HabitsProvider
@@ -88,7 +90,7 @@ fun HabitsScreen(
     else if (state.value.habits.isEmpty())
         EmptyScreen(
             title = stringResource(R.string.list_of_habits_is_empty_create_label),
-            icon = ImageVector.vectorResource(R.drawable.sparkles),
+            icon = ImageVector.vectorResource(R.drawable.sparkles_large),
             button = {
                 ButtonWithIconOnBackground(
                     modifier = Modifier.padding(top = 4.dp),

@@ -23,6 +23,7 @@ fun TitleWithIconMenuItem(
     icon: ImageVector,
     onClick: () -> Unit,
     tint: Color = MaterialTheme.colorScheme.onBackground,
+    color: Color = MaterialTheme.colorScheme.onBackground
 ) {
     Row(
         modifier = modifier
@@ -41,7 +42,8 @@ fun TitleWithIconMenuItem(
         MenuItemText(
             text = title,
             style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.padding(vertical = 12.dp)
+            modifier = Modifier.padding(vertical = 12.dp),
+            color = color
         )
     }
 }

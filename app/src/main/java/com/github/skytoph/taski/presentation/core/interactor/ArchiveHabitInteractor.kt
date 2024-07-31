@@ -18,10 +18,14 @@ interface ArchiveHabitInteractor {
         override suspend fun archive(id: Long, archived: String, archive: Boolean) {
             val habit = repository.habit(id)
             repository.update(habit.copy(isArchived = archive))
-            val icon =
-                IconResource.Id(if (archive) R.drawable.archive_down else R.drawable.archive_up)
-            val message =
-                SnackbarMessage(archived, habit.title, icon, duration = SnackbarDuration.Short)
+            val icon = IconResource.Id(if (archive) R.drawable.archive_down else R.drawable.archive_up)
+            val message = SnackbarMessage(
+                messageResource = StringResource.Value(archived),
+                title = StringResource.Value(habit.title),
+                icon = icon,
+                color = habit.color,
+                duration = SnackbarDuration.Short
+            )
             popup.show(message)
         }
     }
