@@ -39,10 +39,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.component.AppBarAction
-import com.github.skytoph.taski.presentation.core.component.DeleteDialog
+import com.github.skytoph.taski.presentation.core.component.DeleteAllBackupsDialog
+import com.github.skytoph.taski.presentation.core.component.DeleteBackupDialog
 import com.github.skytoph.taski.presentation.core.component.EmptyScreen
 import com.github.skytoph.taski.presentation.core.component.LoadingFullscreen
-import com.github.skytoph.taski.presentation.core.component.RestoreDialog
+import com.github.skytoph.taski.presentation.core.component.RestoreBackupDialog
 import com.github.skytoph.taski.presentation.core.component.getLocale
 import com.github.skytoph.taski.presentation.core.preview.BackupItemsProvider
 import com.github.skytoph.taski.presentation.core.state.StringResource
@@ -183,23 +184,19 @@ fun DialogItem(
     deleteAllData: () -> Unit,
     dismiss: () -> Unit
 ) = when (dialog) {
-    is RestoreDialogUi.Restore -> RestoreDialog(
-        title = stringResource(R.string.restore_backup_title),
-        text = stringResource(R.string.restore_dialog_description, dialog.item.date),
+    is RestoreDialogUi.Restore -> RestoreBackupDialog(
+        date = dialog.item.date,
         onConfirm = { restore(dialog.item) },
         onDismissRequest = dismiss
     )
 
-    is RestoreDialogUi.Delete -> DeleteDialog(
-        title = stringResource(R.string.delete_backup_title),
-        text = stringResource(R.string.delete_backup_dialog_description, dialog.item.date),
+    is RestoreDialogUi.Delete -> DeleteBackupDialog(
+        date = dialog.item.date,
         onConfirm = { delete(dialog.item) },
         onDismissRequest = dismiss
     )
 
-    is RestoreDialogUi.DeleteAllData -> DeleteDialog(
-        title = stringResource(R.string.delete_all_data_title),
-        text = stringResource(R.string.delete_all_data_description),
+    is RestoreDialogUi.DeleteAllData -> DeleteAllBackupsDialog(
         onConfirm = deleteAllData,
         onDismissRequest = dismiss
     )

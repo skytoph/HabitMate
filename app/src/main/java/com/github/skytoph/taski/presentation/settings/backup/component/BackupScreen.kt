@@ -168,7 +168,7 @@ private fun Backup(
     isLoadingFullscreen: Boolean = false,
     isInternetConnected: Boolean = true,
     profile: ProfileUi? = ProfileUi(email = "email@gmail.com", name = "Name"),
-    lastTimeBackupSaved: String? = "null",
+    lastTimeBackupSaved: String? = "28.09.24 12:00",
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -275,7 +275,7 @@ private fun LocalBackup(
             title = stringResource(R.string.export_title),
             onClick = export,
             isLoading = isExportLoading,
-            loadingText = "Preparing the data...",
+            loadingText = stringResource(R.string.loading_export),
             modifier = Modifier.fillMaxWidth(),
         )
         HorizontalDivider()
@@ -283,7 +283,7 @@ private fun LocalBackup(
             title = stringResource(R.string.import_title),
             onClick = import,
             isLoading = isImportLoading,
-            loadingText = "Restoring the data...",
+            loadingText = stringResource(R.string.loading_import),
             modifier = Modifier.fillMaxWidth(),
         )
     }
@@ -311,10 +311,10 @@ fun DriveBackup(
             ProfileItem(profile = profile, lastTimeBackupSaved = lastTimeBackupSaved)
             Spacer(modifier = Modifier.height(16.dp))
             ButtonWithLoading(
-                title = "Create Backup on Google Drive",
+                title = stringResource(R.string.create_backup_on_drive),
                 onClick = createBackup,
                 isLoading = isBackupLoading,
-                loadingText = "Creating Backup...",
+                loadingText = stringResource(R.string.loading_backup),
             )
         }
         Spacer(modifier = Modifier.height(16.dp))
@@ -324,21 +324,21 @@ fun DriveBackup(
                 .clip(MaterialTheme.shapes.small)
         ) {
             ButtonWithLoadingFull(
-                title = "Restore",
+                title = stringResource(R.string.restore_item),
                 onClick = restoreBackup,
                 isLoading = false,
                 modifier = Modifier.fillMaxWidth(),
             )
             HorizontalDivider()
             ButtonWithLoadingFull(
-                title = "Delete Account",
+                title = stringResource(R.string.delete_account_item),
                 onClick = deleteAccount,
                 textColor = MaterialTheme.colorScheme.error,
                 modifier = Modifier.fillMaxWidth()
             )
             HorizontalDivider()
             ButtonWithLoadingFull(
-                title = "Sign Out",
+                title = stringResource(R.string.sign_out_item),
                 onClick = signOut,
                 modifier = Modifier.fillMaxWidth(),
             )
@@ -349,7 +349,9 @@ fun DriveBackup(
 @Composable
 private fun ProfileItem(profile: ProfileUi, lastTimeBackupSaved: String?) {
     Row(
-        modifier = Modifier.fillMaxWidth().animateContentSize(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .animateContentSize(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
@@ -357,7 +359,7 @@ private fun ProfileItem(profile: ProfileUi, lastTimeBackupSaved: String?) {
             model = ImageRequest.Builder(LocalContext.current)
                 .data(profile.imageUri)
                 .build(),
-            contentDescription = "",
+            contentDescription = null,
             modifier = Modifier
                 .size(60.dp)
                 .clip(CircleShape),
@@ -412,7 +414,7 @@ private fun LogInItem(
             .fillMaxWidth(),
     ) {
         Text(
-            text = "Sign in with Google to save your backup to your Google Drive",
+            text = stringResource(R.string.backup_with_google_description),
             color = MaterialTheme.colorScheme.onBackground,
             style = MaterialTheme.typography.bodySmall
         )
@@ -489,6 +491,7 @@ private fun BackupItem(
 
 @Composable
 private fun ButtonWithLoading(
+    modifier: Modifier = Modifier,
     title: String,
     onClick: () -> Unit,
     isLoading: Boolean = false,
@@ -496,7 +499,6 @@ private fun ButtonWithLoading(
     enabledColor: Color = MaterialTheme.colorScheme.primary,
     disabledColor: Color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.5f),
     textColor: Color = Color.White,
-    modifier: Modifier = Modifier,
 ) {
     val color = remember { Animatable(if (isLoading) disabledColor else enabledColor) }
     LaunchedEffect(isLoading) {

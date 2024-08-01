@@ -25,17 +25,15 @@ interface RestoreBackupResultMapper {
 
             is BackupResult.Success.FileDownloaded -> RestoreResultUi.Success.NextAction(result.file)
 
-            is BackupResult.Success.Saved -> RestoreResultUi.Empty
-
             is BackupResult.Success.Deleted -> RestoreResultUi.Success.Deleted(
                 message = BackupMessages.deleteItemSucceededMessage,
                 time = result.time?.value,
                 newData = mapper.map(result.newData.map { it.map() }, locale!!, context!!)
             )
 
-            BackupResult.Success.FileRestored -> RestoreResultUi.Success.Message(BackupMessages.importSucceededMessage)
+            BackupResult.Success.AllFilesDeleted -> RestoreResultUi.Success.AllBackupsDeleted(BackupMessages.deleteDataSucceededMessage)
 
-            is BackupResult.Success.AllFilesDeleted -> RestoreResultUi.Success.AllBackupsDeleted(BackupMessages.deleteDataSucceededMessage)
+            BackupResult.Success.FileRestored -> RestoreResultUi.Success.Message(BackupMessages.importSucceededMessage)
 
             is BackupResult.Fail -> when {
                 result.exception?.let { networkMapper.isNetworkUnavailable(it) } ?: false ->
@@ -57,6 +55,8 @@ interface RestoreBackupResultMapper {
                     )
                 )
             }
+
+            else -> RestoreResultUi.Empty
         }
 
         private fun File.map(): BackupFile = BackupFile(

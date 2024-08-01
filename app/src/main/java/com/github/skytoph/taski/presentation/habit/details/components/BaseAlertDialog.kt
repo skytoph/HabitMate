@@ -20,10 +20,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.skytoph.taski.presentation.core.component.ExportDialog
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
+
 
 @Composable
 fun BaseAlertDialog(
@@ -31,7 +33,7 @@ fun BaseAlertDialog(
     onConfirm: () -> Unit,
     dismissLabel: String,
     confirmLabel: String,
-    text: String,
+    text: AnnotatedString,
     title: String,
     confirmColor: Color = MaterialTheme.colorScheme.error,
     confirmContainerColor: Color = MaterialTheme.colorScheme.errorContainer,
@@ -107,6 +109,29 @@ fun BaseAlertDialog(
 }
 
 @Composable
+fun BaseAlertDialog(
+    onDismissRequest: () -> Unit,
+    onConfirm: () -> Unit,
+    dismissLabel: String,
+    confirmLabel: String,
+    text: String,
+    title: String,
+    confirmColor: Color = MaterialTheme.colorScheme.error,
+    confirmContainerColor: Color = MaterialTheme.colorScheme.errorContainer,
+    icon: ImageVector? = null
+) = BaseAlertDialog(
+    onDismissRequest = onDismissRequest,
+    onConfirm = onConfirm,
+    dismissLabel = dismissLabel,
+    confirmLabel = confirmLabel,
+    text = AnnotatedString(text),
+    title = title,
+    confirmColor = confirmColor,
+    confirmContainerColor = confirmContainerColor,
+    icon = icon
+)
+
+@Composable
 @Preview
 private fun DeleteDialogPreview() {
     HabitMateTheme {
@@ -121,25 +146,3 @@ private fun DarkDeleteDialogPreview() {
         ExportDialog()
     }
 }
-
-//@Composable
-//@Preview
-//private fun DeleteDialogPreview() {
-//    HabitMateTheme {
-//        DeleteDialog(
-//            text = stringResource(R.string.delete_habit_confirmation_dialog_description),
-//            title = stringResource(R.string.delete_habit_confirmation_dialog_title),
-//        )
-//    }
-//}
-//
-//@Composable
-//@Preview
-//private fun DarkDeleteDialogPreview() {
-//    HabitMateTheme(darkTheme = true) {
-//        DeleteDialog(
-//            text = stringResource(R.string.delete_habit_confirmation_dialog_description),
-//            title = stringResource(R.string.delete_habit_confirmation_dialog_title)
-//        )
-//    }
-//}

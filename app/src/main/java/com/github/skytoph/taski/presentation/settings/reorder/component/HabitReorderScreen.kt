@@ -188,7 +188,7 @@ private fun ApplyManualOrder(currentSort: String, apply: () -> Unit) {
                 .padding(horizontal = 32.dp, vertical = 8.dp)
         ) {
             Text(
-                text = stringResource(R.string.apply),
+                text = stringResource(R.string.action_apply),
                 color = MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.titleSmall,
             )

@@ -2,7 +2,6 @@ package com.github.skytoph.taski.core.backup
 
 import android.content.Context
 import android.util.Log
-import com.github.skytoph.taski.BuildConfig
 import com.github.skytoph.taski.R
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
@@ -45,7 +44,7 @@ interface BackupDatastore {
                 val mediaContent = ByteArrayContent(mime, data)
                 val file = File().apply {
                     name = filename
-                    setParents(Collections.singletonList(BuildConfig.DRIVE_FOLDER_ID))
+                    setParents(Collections.singletonList("appDataFolder"))
                 }
                 return drive.files()?.create(file, mediaContent)?.setFields("modifiedTime")?.execute()
                     ?.let { BackupResult.Success.Saved(it.modifiedTime) } ?: BackupResult.Fail.FileNotSaved()
@@ -71,12 +70,10 @@ interface BackupDatastore {
         }
 
         private fun getFiles(drive: Drive): FileList? {
-            val parentFolderId = BuildConfig.DRIVE_FOLDER_ID
-
             return drive.files()?.list()?.apply {
                 q =
-                    "'$parentFolderId' in parents and mimeType != 'application/vnd.google-apps.folder' and trashed = false"
-                spaces = parentFolderId
+                    "'appDataFolder' in parents and mimeType != 'application/vnd.google-apps.folder' and trashed = false"
+                spaces = "appDataFolder"
                 fields = "files(id, name, modifiedTime, size, parents, mimeType)"
                 orderBy = "modifiedTime desc"
             }?.execute()
@@ -100,13 +97,11 @@ interface BackupDatastore {
             return try {
                 val drive = drive() ?: return BackupResult.Fail.DriveIsNotConnected()
 
-                val parentFolderId = BuildConfig.DRIVE_FOLDER_ID
-
                 drive.files()?.delete(id)?.execute()
                 val result = drive.files()?.list()?.apply {
                     q =
-                        "'$parentFolderId' in parents and mimeType != 'application/vnd.google-apps.folder' and trashed = false"
-                    spaces = parentFolderId
+                        "'appDataFolder' in parents and mimeType != 'application/vnd.google-apps.folder' and trashed = false"
+                    spaces = "appDataFolder"
                     fields = "files(modifiedTime)"
                     orderBy = "modifiedTime desc"
                     pageSize = 1
@@ -126,11 +121,9 @@ interface BackupDatastore {
             return try {
                 val drive = drive() ?: return BackupResult.Fail.DriveIsNotConnected()
 
-                val parentFolderId = BuildConfig.DRIVE_FOLDER_ID
-
                 val result = drive.files()?.list()?.apply {
-                    q = "'$parentFolderId' in parents"
-                    spaces = parentFolderId
+                    q = "'appDataFolder' in parents"
+                    spaces = "appDataFolder"
                     fields = "files(id, parents)"
                 }?.execute()
 

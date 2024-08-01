@@ -56,7 +56,7 @@ sealed interface BackupResultUi : MapResultToListOfEvents<BackupEvent> {
     data class DeletingAccount(private val deleted: Boolean) : BackupResultUi {
         override fun apply(): List<BackupEvent> = if (deleted) listOf(
             BackupEvent.UpdateProfile(),
-            BackupEvent.UpdateBackupTime(null),
+            BackupEvent.UpdateLastBackup(null),
             BackupEvent.Message(deletingAccountSucceededMessage)
         ) else listOf(
             BackupEvent.UpdateProfile(isLoading = false),

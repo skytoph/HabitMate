@@ -249,7 +249,7 @@ fun EditBaseHabit(
                 title = stringResource(R.string.habit_label),
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                keyboardActions = KeyboardActions(onDone = { ({ focusManager.clearFocus() })() }),
+                keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
             )
             IconSelector(
                 icon = icon,

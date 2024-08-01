@@ -1,7 +1,7 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">HabitMate</string>
 
-<!--    Auth-->
+    <!--    Auth-->
     <string name="sign_in">Sign In</string>
     <string name="sign_up">Sign Up</string>
     <string name="sign_in_with_google">Sign In with Google</string>
@@ -48,13 +48,9 @@
     <string name="icons_social">social</string>
     <string name="icons_art">art</string>
 
-    <!--    Create or edit habit-->
-    <string name="create_new_habit">create new habit</string>
-    <string name="edit_habit">edit habit</string>
-    <string name="action_add">add</string>
-
     <!--    Dialog-->
     <string name="action_cancel">Cancel</string>
+    <string name="action_confirm">Confirm</string>
 
     <!--    Delete dialog-->
     <string name="delete_habit_confirmation_dialog_title">Delete the habit</string>
@@ -71,11 +67,20 @@
     <string name="restore_habit_confirmation_dialog_description">Do you want to restore this habit?</string>
     <string name="action_restore">Restore</string>
 
-    App bar titles
-    <string name="habit_details_label">habit details</string>
+    <!--    App bar titles-->
+    <string name="habit_list_title">Habits</string>
+    <string name="habit_details_label">Habit details</string>
+    <string name="edit_habit">Edit habit</string>
+    <string name="settings_title">Settings</string>
+    <string name="settings_theme_title">Theme</string>
+    <string name="settings_backup_title">Backup</string>
+    <string name="settings_general_title">General</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_archive">Archive</string>
+
+    <!--    Habit details Labels-->
     <string name="habit_label">habit</string>
     <string name="history_label">history</string>
-
     <string name="icon_label">icon</string>
     <string name="goal_label">goal</string>
     <string name="goal_in_day">/ day</string>
@@ -85,16 +90,33 @@
     <string name="color_and_icon_label">color and icon</string>
     <string name="error_habit_title_is_empty">enter a name for the habit</string>
     <string name="color">color</string>
+    <string name="ok">OK</string>
+    <string name="button_edit">Edit</string>
+    <string name="reminder_turned_off">-</string>
+    <string name="description_label">description</string>
+    <string name="overview_label">overview</string>
+    <string name="frequency_label">frequency</string>
+    <string name="create_new_habit">Create new habit</string>
+    <string name="action_add">Add</string>
 
-    <string name="habit_list_title">Habits</string>
-    <string name="settings_title">Settings</string>
-    <string name="settings_general_title">General</string>
+    <!--    Edit Habit labels-->
+    <string name="frequency_summary_custom">%1$d times in %2$d %3$s</string>
+    <string name="frequency_summary_monthly">Every month on</string>
+    <string name="frequency_summary_daily">Every week on</string>
+    <string name="everyday">Everyday</string>
+    <string name="reminder_none">None</string>
+    <string name="select_time">Select time</string>
+
+    <!--    Habit list Labels-->
     <string name="action_view">View</string>
-    <string name="action_settings">Settings</string>
-    <string name="option_calendar">calendar</string>
-    <string name="option_daily">daily</string>
+    <string name="reorder_habits">reorder habits</string>
+    <string name="filter_archived">Archived</string>
+
+    <!--    Habit list view settings-->
     <string name="view_label">view</string>
     <string name="view_layout">layout</string>
+    <string name="option_calendar">calendar</string>
+    <string name="option_daily">daily</string>
     <string name="view_sort">sort by</string>
     <string name="view_filter">filter by</string>
     <string name="sort_by_color">color</string>
@@ -102,81 +124,77 @@
     <string name="sort_manually">manually</string>
     <string name="filter_by_state">state</string>
     <string name="filter_none">none</string>
-    <string name="reorder_habits">reorder habits</string>
+    <string name="sort_by_state">state</string>
+    <string name="show_only_todays_habits">show only today\'s habits</string>
 
-    <string name="message_habit_deleted">habit deleted</string>
-    <string name="message_habit_archived">habit archived</string>
-    <string name="message_habit_unarchived">habit restored</string>
-    <string name="title_archive">Archive</string>
-    <string name="list_of_habits_is_empty_label">List of habits is empty</string>
-    <string name="list_of_habits_is_empty_create_label">There is no habit for today. Create one?</string>
-    <string name="archive_is_empty_label">Archive is empty</string>
-    <string name="frequency_summary_custom">%1$d times in %2$d %3$s</string>
-    <string name="frequency_summary_monthly">Every month on</string>
-    <string name="frequency_summary_daily">Every week on</string>
-    <string name="habit_reminder_message">It\'s time to complete the habit</string>
-    <string name="everyday">Everyday</string>
-    <string name="button_edit">Edit</string>
-    <string name="reminder_none">None</string>
-    <string name="confirm">Confirm</string>
-    <string name="select_time">Select time</string>
-    <string name="ok">OK</string>
-
-    <string name="settings">Settings</string>
-    <string name="allow_notifications_title">Enable notifications</string>
-    <string name="allow_notifications_description">To receive reminders, please enable notifications in Settings > Notifications</string>
-
-    <string name="allow_alarms_title">Enable alarms</string>
-    <string name="allow_alarm_description">To receive reminders, please enable alerts in Settings > Notifications</string>
-    <string name="theme_system">System</string>
-    <string name="theme_light">Light</string>
-    <string name="theme_dark">Dark</string>
-    <string name="settings_theme_title">Theme</string>
-    <string name="settings_backup_title">Backup</string>
-    <string name="settings_theme_mode">Mode</string>
-    <string name="week_starts_on_sunday">week starts on sunday</string>
-    <string name="highlight_current_day">highlight current day</string>
-    <string name="highlight_streaks">highlight streaks</string>
-    <string name="filter_archived">Archived</string>
-    <string name="apply_manual_sorting_description">Current order: by %1$s.\nTo apply order changes, switch to manual sorting.</string>
-    <string name="apply_manual_sorting_title">Switch to Manual Sorting?</string>
+    <!--    Habit context menu-->
     <string name="habit_menu_edit">Edit</string>
     <string name="habit_menu_archive">Archive</string>
     <string name="habit_menu_delete">Delete</string>
     <string name="habit_menu_reorder_habits">Reorder habits</string>
-    <string name="reminder_turned_off">-</string>
-    <string name="description_label">description</string>
-    <string name="overview_label">overview</string>
-    <string name="frequency_label">frequency</string>
-    <string name="show_only_todays_habits">show only today\'s habits</string>
-    <string name="error_export">Something went wrong, can\'t export the data.</string>
-    <string name="error_import">Something went wrong, can\'t import the data.</string>
-    <string name="success_import_message">The data restored successfully!</string>
-    <string name="success_import_title">Success</string>
+
+    <!--    Snackbar messages-->
+    <string name="message_habit_deleted">habit deleted</string>
+    <string name="message_habit_archived">habit archived</string>
+    <string name="message_habit_unarchived">habit restored</string>
+
+    <!--    Fullscreen messages-->
+    <string name="list_of_habits_is_empty_label">List of habits is empty</string>
+    <string name="list_of_habits_is_empty_create_label">There is no habit for today. Create one?</string>
+    <string name="archive_is_empty_label">Archive is empty</string>
+
+    <!--    Reminders-->
+    <string name="habit_reminder_message">It\'s time to complete the habit</string>
+    <string name="allow_notifications_title">Enable notifications</string>
+    <string name="allow_notifications_description">To receive reminders, please enable notifications in Settings > Notifications</string>
+    <string name="allow_alarms_title">Enable alarms</string>
+    <string name="allow_alarm_description">To receive reminders, please enable alerts in Settings > Notifications</string>
+    <string name="notification_reschedule_title">Refreshing reminders</string>
+
+    <!--    General Settings-->
+    <string name="week_starts_on_sunday">week starts on sunday</string>
+    <string name="highlight_current_day">highlight current day</string>
+    <string name="highlight_streaks">highlight streaks</string>
+
+    <!--    Theme Settings-->
+    <string name="theme_system">System</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="settings_theme_mode">Mode</string>
+
+    <!--    Reorder Habits Settings-->
+    <string name="apply_manual_sorting_description">Current order: by %1$s.\nTo apply order changes, switch to manual sorting.</string>
+    <string name="apply_manual_sorting_title">Switch to Manual Sorting?</string>
+    <string name="action_apply">Apply</string>
+
+    <!--    Restore Settings-->
     <string name="export_title">Export to file</string>
     <string name="import_title">Import from file</string>
+    <string name="success_import_title">Success</string>
+    <string name="import_error_title">Fail</string>
+    <string name="success_import_message">The data restored successfully!</string>
+    <string name="error_export_title">Failed to export</string>
+    <string name="error_export">Something went wrong, can\'t export the data.</string>
+    <string name="error_import">Something went wrong, can\'t import the data.</string>
     <string name="import_description">Restore your habit data from a previously exported file.</string>
     <string name="export_description">Export your habits to a file and restore them later.</string>
-    <string name="import_error_title">Fail</string>
-    <string name="error_export_title">Failed to export</string>
-    <string name="sort_by_state">state</string>
-    <string name="notification_reschedule_title">Refreshing reminders</string>
-    <string name="backup_filename">backup-%1$s.db</string>
-    <string name="backup_filename_date_format">dd.MM.yyyy</string>
-    <string name="backup_mimetype">application/octet-stream</string>
+    <string name="backup_with_google_description">Sign in with Google to save your backup to your Google Drive</string>
     <string name="last_time_backup_saved">last sync %1$s</string>
     <string name="no_backup_data">There is no saved backup data</string>
-    <string name="backup_date_format">dd.MM.yyyy HH:mm</string>
-    <string name="restore_dialog_description">Do you want to restore this backup? This will overwrite your current data.\n\n%1$s</string>
-    <string name="delete_backup_dialog_description">Do you want to delete the backup?\n\n%1$s</string>
-    <string name="delete_backup_title">Delete</string>
+    <string name="restore_dialog_description_confirmation">Do you want to restore this backup?</string>
+    <string name="restore_dialog_description_warning">This will overwrite your current data.</string>
+    <string name="delete_backup_dialog_description_confirmation">Do you want to delete the backup?</string>
+    <string name="delete_backup_dialog_description_warning">This action is permanent and cannot be undone.</string>
+    <string name="delete_backup_title">Delete All Backups</string>
     <string name="restore_backup_title">Restore</string>
     <string name="action_export">Export</string>
     <string name="action_import">Import</string>
     <string name="action_sign_out">Sign Out</string>
     <string name="sign_out_title">Sign Out</string>
     <string name="sign_out_description">Are you sure you want to sign out?</string>
-    <string name="delete_account_description">Are you sure you want to delete your account? This action is permantns.</string>
+    <string name="delete_account_description_confirmation">Are you sure you want to delete your account?</string>
+    <string name="delete_account_description_warning">This action is permanent and cannot be undone.</string>
+    <string name="delete_account_description_details">Deleting your account will remove all your data associated with it, including any backups stored on Google Drive. Your data stored locally on your device will remain unaffected.</string>
     <string name="delete_account_title">Delete Account</string>
     <string name="failed_to_load_account_message">Failed to load your account</string>
     <string name="fail_title">Fail</string>
@@ -190,10 +208,9 @@
     <string name="restore_title">Restore Backup</string>
     <string name="action_delete_data">Delete all backups</string>
     <string name="delete_all_data_title">Confirm deletion</string>
-    <string name="delete_all_data_description">Are you sure you want to delete all your backups? Deleting all backups is permanent. No recovery is possible.</string>
-    <string name="apply">Apply</string>
-    <string name="log_in">Log In</string>
-    <string name="signing_in">Signing In...</string>
+    <string name="delete_all_data_description_confirmation">Are you sure you want to delete all your Google Drive backups?</string>
+    <string name="delete_all_data_description_warning">This action is permanent and cannot be undone.</string>
+    <string name="delete_all_data_description_details">This action will permanently delete all backup data stored on Google Drive. Your data stored locally on your device will not be affected.</string>
     <string name="no_backup">There is no saved backup to restore</string>
     <string name="drive_unavailable">Google Drive is currently unavailable. Please try again later.</string>
     <string name="error_saving_backup">Failed to save the backup. Please try again later.</string>
@@ -205,6 +222,20 @@
     <string name="success_delete_backup">Backup successfully removed.</string>
     <string name="success_deleting_account">Your account has been deleted</string>
     <string name="backup_item_size">size: %1$s</string>
+    <string name="create_backup_on_drive">Backup to Google Drive</string>
+    <string name="restore_item">Restore</string>
+    <string name="log_in">Log In</string>
+    <string name="sign_out_item">Sign Out</string>
+    <string name="delete_account_item">Delete Account</string>
+    <string name="signing_in" tools:ignore="TypographyEllipsis">Signing In...</string>
+    <string name="loading_export" tools:ignore="TypographyEllipsis">Preparing the data...</string>
+    <string name="loading_import" tools:ignore="TypographyEllipsis">Restoring the data...</string>
+    <string name="loading_backup" tools:ignore="TypographyEllipsis">Creating Backup...</string>
+
+    <string name="backup_date_format">dd.MM.yyyy HH:mm</string>
+    <string name="backup_filename_date_format">dd.MM.yyyy</string>
+    <string name="backup_mimetype">application/octet-stream</string>
+    <string name="backup_filename">backup-%1$s.db</string>
 
     <plurals name="times_label">
         <item quantity="one">time</item>

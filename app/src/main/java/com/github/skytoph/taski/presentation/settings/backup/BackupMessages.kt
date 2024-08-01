@@ -19,17 +19,17 @@ object BackupMessages {
     val syncFailedMessage = SnackbarMessage(
         messageResource = StringResource.ResId(R.string.error_sync),
         title = StringResource.ResId(R.string.sync_title),
-        icon = IconResource.Id(id = R.drawable.refresh_cw)
+        icon = IconResource.Id(id = R.drawable.folder_x)
     )
     val exportFailedMessage = SnackbarMessage(
         messageResource = StringResource.ResId(R.string.error_export),
         title = StringResource.ResId(R.string.error_export_title),
-        icon = IconResource.Id(id = R.drawable.folder_output)
+        icon = IconResource.Id(id = R.drawable.folder_x)
     )
     val importFailedMessage = SnackbarMessage(
         messageResource = StringResource.ResId(R.string.error_import),
         title = StringResource.ResId(R.string.import_error_title),
-        icon = IconResource.Id(id = R.drawable.folder_input)
+        icon = IconResource.Id(id = R.drawable.folder_x)
     )
     val importSucceededMessage = SnackbarMessage(
         messageResource = StringResource.ResId(R.string.success_import_message),
@@ -39,11 +39,11 @@ object BackupMessages {
     val deleteItemSucceededMessage = SnackbarMessage(
         title = StringResource.ResId(R.string.success_title),
         messageResource = StringResource.ResId(R.string.success_delete_backup),
-        icon = IconResource.Id(R.drawable.folder)
+        icon = IconResource.Id(R.drawable.refresh_cw)
     )
     val deleteDataSucceededMessage = SnackbarMessage(
         title = StringResource.ResId(R.string.success_title),
         messageResource = StringResource.ResId(R.string.success_delete_backups),
-        icon = IconResource.Id(R.drawable.folder)
+        icon = IconResource.Id(R.drawable.folder_sync)
     )
 }
