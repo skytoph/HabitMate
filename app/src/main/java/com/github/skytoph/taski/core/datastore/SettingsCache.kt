@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.StateFlow
 interface SettingsCache {
     fun state(): StateFlow<Settings>
     suspend fun initialize()
+    suspend fun update(settings: Settings)
     suspend fun updateWeekStart()
     suspend fun updateCurrentDayHighlight()
     suspend fun updateStreakHighlight()
@@ -28,6 +29,10 @@ interface SettingsCache {
 
         override suspend fun initialize() {
             dataStore.data.collect { state.value = it }
+        }
+
+        override suspend fun update(settings: Settings) {
+            dataStore.updateData { settings }
         }
 
         override suspend fun updateWeekStart() {

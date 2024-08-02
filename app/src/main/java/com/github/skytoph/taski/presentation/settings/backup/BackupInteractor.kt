@@ -9,8 +9,8 @@ import android.util.Log
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.core.auth.SignInWithGoogle
 import com.github.skytoph.taski.core.backup.BackupDatastore
+import com.github.skytoph.taski.core.backup.BackupManager
 import com.github.skytoph.taski.core.backup.BackupResult
-import com.github.skytoph.taski.core.backup.DatabaseBackup
 import com.github.skytoph.taski.presentation.settings.backup.mapper.BackupFilename
 import com.github.skytoph.taski.presentation.settings.backup.mapper.BackupResultMapper
 import com.github.skytoph.taski.presentation.settings.backup.mapper.FileToUri
@@ -29,7 +29,7 @@ interface BackupInteractor {
     fun mapTime(lastBackupSaved: Long?, loading: Long, context: Context, locale: Locale): String?
 
     class Base(
-        private val backup: DatabaseBackup,
+        private val backup: BackupManager,
         private val drive: BackupDatastore,
         private val fileWriter: FileToUri,
         private val mapper: BackupResultMapper,
@@ -38,7 +38,7 @@ interface BackupInteractor {
         override suspend fun export(context: Context): BackupResultUi = try {
             val uri = fileWriter.getUriFromFile(
                 file = fileWriter.writeToFile(
-                    byteArray = backup.exportHabits(), filename = BackupFilename.generate(context), context = context
+                    byteArray = backup.export(), filename = BackupFilename.generate(context), context = context
                 ), context = context
             )
             if (uri != null) BackupResultUi.Success.BackupExported(uri)
@@ -51,7 +51,7 @@ interface BackupInteractor {
         override suspend fun import(contentResolver: ContentResolver, uri: Uri): BackupResultUi {
             return try {
                 val data = fileWriter.readFromUri(contentResolver, uri) ?: return BackupResultUi.Imported(false)
-                backup.importHabits(data)
+                backup.import(data)
                 BackupResultUi.Imported(true)
             } catch (exception: Exception) {
                 Log.e("tag", exception.stackTraceToString())
@@ -61,7 +61,7 @@ interface BackupInteractor {
 
         override suspend fun saveBackupOnDrive(context: Context): BackupResultUi {
             val result = drive.save(
-                data = backup.exportHabits(),
+                data = backup.export(),
                 filename = BackupFilename.generate(context),
                 mime = context.getString(R.string.backup_mimetype)
             )

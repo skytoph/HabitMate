@@ -3,7 +3,7 @@ package com.github.skytoph.taski.di.habit
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import com.github.skytoph.taski.core.backup.BackupDatastore
-import com.github.skytoph.taski.core.backup.DatabaseBackup
+import com.github.skytoph.taski.core.backup.BackupManager
 import com.github.skytoph.taski.presentation.core.NetworkErrorMapper
 import com.github.skytoph.taski.presentation.settings.restore.RestoreInteractor
 import com.github.skytoph.taski.presentation.settings.restore.RestoreState
@@ -22,7 +22,7 @@ object RestoreViewModelModule {
     fun state(): MutableState<RestoreState> = mutableStateOf(RestoreState())
 
     @Provides
-    fun interactor(datastore: BackupDatastore, mapper: RestoreBackupResultMapper, database: DatabaseBackup)
+    fun interactor(datastore: BackupDatastore, mapper: RestoreBackupResultMapper, database: BackupManager)
             : RestoreInteractor = RestoreInteractor.Base(datastore, mapper, database)
 
     @Provides

@@ -2,8 +2,8 @@ package com.github.skytoph.taski.presentation.settings.restore
 
 import android.content.Context
 import com.github.skytoph.taski.core.backup.BackupDatastore
+import com.github.skytoph.taski.core.backup.BackupManager
 import com.github.skytoph.taski.core.backup.BackupResult
-import com.github.skytoph.taski.core.backup.DatabaseBackup
 import com.github.skytoph.taski.presentation.settings.restore.mapper.RestoreBackupResultMapper
 import java.util.Locale
 
@@ -17,7 +17,7 @@ interface RestoreInteractor {
     class Base(
         private val datastore: BackupDatastore,
         private val resultMapper: RestoreBackupResultMapper,
-        private val database: DatabaseBackup,
+        private val database: BackupManager,
     ) : RestoreInteractor {
 
         override suspend fun backupItems(locale: Locale, context: Context): RestoreResultUi =
@@ -26,7 +26,7 @@ interface RestoreInteractor {
         override suspend fun download(id: String): RestoreResultUi = resultMapper.map(datastore.downloadFile(id))
 
         override suspend fun restore(data: ByteArray): RestoreResultUi = try {
-            database.importHabits(data)
+            database.import(data)
             resultMapper.map(BackupResult.Success.FileRestored)
         } catch (exception: Exception) {
             resultMapper.map(BackupResult.Fail.FileNotRestored(exception))

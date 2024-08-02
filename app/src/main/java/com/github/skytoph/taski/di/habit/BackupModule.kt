@@ -1,8 +1,9 @@
 package com.github.skytoph.taski.di.habit
 
 import com.github.skytoph.taski.core.backup.BackupDatastore
-import com.github.skytoph.taski.core.backup.DatabaseBackup
+import com.github.skytoph.taski.core.backup.BackupManager
 import com.github.skytoph.taski.core.backup.StringCompressor
+import com.github.skytoph.taski.core.datastore.SettingsCache
 import com.github.skytoph.taski.data.habit.database.HabitDatabase
 import com.github.skytoph.taski.presentation.core.NetworkErrorMapper
 import com.github.skytoph.taski.presentation.settings.backup.BackupInteractor
@@ -19,8 +20,8 @@ import dagger.hilt.android.components.ViewModelComponent
 object BackupModule {
 
     @Provides
-    fun databaseExporter(database: HabitDatabase, gson: Gson, compressor: StringCompressor): DatabaseBackup =
-        DatabaseBackup.Base(database, gson, compressor)
+    fun databaseExporter(database: HabitDatabase, gson: Gson, compressor: StringCompressor, settings: SettingsCache)
+            : BackupManager = BackupManager.Base(database, gson, compressor, settings)
 
     @Provides
     fun compressor(): StringCompressor = StringCompressor.Base()
@@ -33,6 +34,6 @@ object BackupModule {
 
     @Provides
     fun interactor(
-        backup: DatabaseBackup, datastore: BackupDatastore, fileWriter: FileToUri, mapper: BackupResultMapper
+        backup: BackupManager, datastore: BackupDatastore, fileWriter: FileToUri, mapper: BackupResultMapper
     ): BackupInteractor = BackupInteractor.Base(backup, datastore, fileWriter, mapper)
 }
