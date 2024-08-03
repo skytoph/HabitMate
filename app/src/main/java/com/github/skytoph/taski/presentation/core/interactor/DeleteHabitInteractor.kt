@@ -8,6 +8,7 @@ import com.github.skytoph.taski.domain.habit.HabitRepository
 import com.github.skytoph.taski.presentation.appbar.PopupMessage
 import com.github.skytoph.taski.presentation.appbar.SnackbarMessage
 import com.github.skytoph.taski.presentation.core.state.IconResource
+import com.github.skytoph.taski.presentation.core.state.StringResource
 
 interface DeleteHabitInteractor {
     suspend fun delete(id: Long, message: String, context: Context)
@@ -22,8 +23,8 @@ interface DeleteHabitInteractor {
             scheduler.cancel(context, id, habit.frequency.times)
             repository.delete(id)
             val message = SnackbarMessage(
-                message = message,
-                title = habit.title,
+                messageResource = StringResource.Value(message),
+                title = StringResource.Value(habit.title),
                 icon = IconResource.Id(R.drawable.trash),
                 duration = SnackbarDuration.Short,
                 isError = true

@@ -26,7 +26,7 @@ abstract class SettingsViewModel<E : SettingsViewModel.Event>(
 abstract class InitStateViewModel(private val settings: SettingsCache) : ViewModel(),
     ProvideState by ProvideState.Base(settings) {
 
-    fun initState() = viewModelScope.launch(Dispatchers.IO) {
+    fun initState() = viewModelScope.launch {
         settings.initialize()
     }
 }

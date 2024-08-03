@@ -71,19 +71,25 @@ fun ArchiveScreen(
     }
     state.value.deleteHabitById?.let { id ->
         DeleteDialog(
+            onDismissRequest = { viewModel.onEvent(HabitArchiveEvent.UpdateDeleteDialog(null)) },
             onConfirm = {
                 viewModel.delete(id, messageDelete, context)
                 viewModel.onEvent(HabitArchiveEvent.UpdateDeleteDialog(null))
             },
-            onDismissRequest = { viewModel.onEvent(HabitArchiveEvent.UpdateDeleteDialog(null)) })
+            text = stringResource(R.string.delete_habit_confirmation_dialog_description),
+            title = stringResource(R.string.delete_habit_confirmation_dialog_title)
+        )
     }
     state.value.restoreHabitById?.let { id ->
         RestoreDialog(
+            onDismissRequest = { viewModel.onEvent(HabitArchiveEvent.UpdateRestoreDialog(null)) },
             onConfirm = {
                 viewModel.restore(id, messageRestore)
                 viewModel.onEvent(HabitArchiveEvent.UpdateRestoreDialog(null))
             },
-            onDismissRequest = { viewModel.onEvent(HabitArchiveEvent.UpdateRestoreDialog(null)) })
+            text = stringResource(R.string.restore_habit_confirmation_dialog_description),
+            title = stringResource(R.string.restore_habit_confirmation_dialog_title)
+        )
     }
 }
 

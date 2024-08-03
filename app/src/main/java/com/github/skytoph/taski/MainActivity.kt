@@ -18,11 +18,10 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            LaunchedEffect(Unit) {
+            val theme = viewModel.settings().collectAsState().value.theme
+            LaunchedEffect(viewModel) {
                 viewModel.initState()
             }
-
-            val theme = viewModel.settings().collectAsState().value.theme
             HabitMateTheme(theme = theme) {
                 HabitMateApp()
             }

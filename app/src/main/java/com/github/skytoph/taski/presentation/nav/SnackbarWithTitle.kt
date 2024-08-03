@@ -31,6 +31,9 @@ import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
 fun SnackbarWithTitle(message: SnackbarMessage, modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+    val color = message.color?.let { Color(it) } ?: if (message.isError) MaterialTheme.colorScheme.error
+    else MaterialTheme.colorScheme.primary
     Snackbar(
         shape = MaterialTheme.shapes.medium,
         containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -45,20 +48,24 @@ fun SnackbarWithTitle(message: SnackbarMessage, modifier: Modifier = Modifier) {
         ) {
             Icon(
                 imageVector = message.icon.vector(context = LocalContext.current),
-                contentDescription = message.title,
-                modifier = Modifier.size(24.dp)
+                contentDescription = message.title.getString(context),
+                modifier = Modifier
+                    .size(34.dp)
+                    .background(color = color, shape = CircleShape)
+                    .padding(8.dp),
+                tint = Color.White
             )
             Spacer(modifier = Modifier.width(8.dp))
             Column(
                 verticalArrangement = Arrangement.spacedBy(2.dp)
             ) {
                 Text(
-                    text = message.title,
+                    text = message.title.getString(context),
                     style = MaterialTheme.typography.titleSmall,
                     color = color
                 )
                 Text(
-                    text = message.message,
+                    text = message.messageResource.getString(context),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSecondaryContainer
                 )

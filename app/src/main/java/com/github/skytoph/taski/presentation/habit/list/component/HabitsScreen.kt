@@ -141,7 +141,10 @@ fun HabitsScreen(
                 viewModel.deleteHabit(id, message, context)
                 viewModel.onEvent(HabitListEvent.ShowDeleteDialog(null))
                 viewModel.onEvent(HabitListEvent.UpdateContextMenu(null))
-            })
+            },
+            text = stringResource(R.string.delete_habit_confirmation_dialog_description),
+            title = stringResource(R.string.delete_habit_confirmation_dialog_title)
+        )
     }
 
     state.value.archiveDialogHabitId?.let { id ->

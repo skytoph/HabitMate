@@ -85,7 +85,7 @@ fun HabitDetailsScreen(
         onDeleteHabit = { onHideDialog(); onDeleteHabit() },
         onDayClick = { viewModel.habitDone(it) },
         onEditHistory = { viewModel.onEvent(HabitDetailsEvent.EditHistory) },
-        isFirstDaySunday = viewModel.settings().value.weekStartsOnSunday.value,
+        isFirstDaySunday = viewModel.settings().collectAsState().value.weekStartsOnSunday.value,
         expandSummary = { viewModel.onEvent(HabitDetailsEvent.ExpandSummary) },
         expandDescription = { viewModel.onEvent(HabitDetailsEvent.ExpandDescription) }
     )
@@ -260,7 +260,12 @@ fun HabitDetails(
     }
 
     if (state.value.isDeleteDialogShown)
-        DeleteDialog(onDismissRequest = onHideDialog, onConfirm = onDeleteHabit)
+        DeleteDialog(
+            onDismissRequest = onHideDialog,
+            onConfirm = onDeleteHabit,
+            text = stringResource(R.string.delete_habit_confirmation_dialog_description),
+            title = stringResource(R.string.delete_habit_confirmation_dialog_title)
+        )
 
     if (state.value.isHistoryEditable)
         EditHistoryDialog(

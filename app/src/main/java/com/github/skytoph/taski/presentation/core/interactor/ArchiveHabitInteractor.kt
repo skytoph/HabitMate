@@ -6,6 +6,7 @@ import com.github.skytoph.taski.domain.habit.HabitRepository
 import com.github.skytoph.taski.presentation.appbar.PopupMessage
 import com.github.skytoph.taski.presentation.appbar.SnackbarMessage
 import com.github.skytoph.taski.presentation.core.state.IconResource
+import com.github.skytoph.taski.presentation.core.state.StringResource
 
 interface ArchiveHabitInteractor {
     suspend fun archive(id: Long, archived: String, archive: Boolean = true)

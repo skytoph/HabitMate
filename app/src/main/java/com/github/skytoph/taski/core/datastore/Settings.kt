@@ -7,11 +7,12 @@ import java.util.Calendar
 
 @Stable
 data class Settings(
-    val weekStartsOnSunday: Initializable<Boolean> = Initializable(),
+    val weekStartsOnSunday: Initializable<Boolean> = Initializable(default = true),
     val currentDayHighlighted: Boolean = true,
     val streaksHighlighted: Boolean = true,
     val theme: AppTheme = AppTheme.Dark,
-    val view: HabitsView = HabitsView()
+    val view: HabitsView = HabitsView(),
+    val lastBackupSaved: Long? = null
 ) {
     companion object {
         fun default(mapper: InitializeEmptyValues): Settings = mapper.initialize(Settings())
@@ -20,11 +21,12 @@ data class Settings(
 }
 
 @Stable
-data class Initializable<T : Any>(private val initialValue: T? = null) {
+data class Initializable<T : Any>(private val initialValue: T? = null, private val default: T) {
     val value: T
-        get() = initialValue!!
+        get() = initialValue ?: default
 
-    fun initializeIfEmpty(newValue: T): Initializable<T> = if (initialValue == null) Initializable(newValue) else this
+    fun initializeIfEmpty(newValue: T): Initializable<T> =
+        if (initialValue == null) Initializable(newValue, newValue) else this
 }
 
 class InitializeEmptyValues {

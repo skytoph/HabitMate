@@ -138,7 +138,7 @@ fun EditHabitScreen(
             )
         },
         showPermissionDialog = { viewModel.onEvent(EditHabitEvent.ShowPermissionDialog(it)) },
-        isFirstDaySunday = viewModel.settings().value.weekStartsOnSunday.value
+        isFirstDaySunday = viewModel.settings().collectAsState().value.weekStartsOnSunday.value
     )
 }
 
@@ -260,7 +260,9 @@ fun EditBaseHabit(
         }
         Spacer(modifier = Modifier.height(4.dp))
         TextFieldWithError(
-            modifier = Modifier.fillMaxWidth().animateContentSize(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .animateContentSize(),
             value = description.field,
             onValueChange = onTypeDescription,
             height = minHeight,

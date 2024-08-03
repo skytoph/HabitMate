@@ -135,7 +135,7 @@ fun BaseAlertDialog(
 @Preview
 private fun DeleteDialogPreview() {
     HabitMateTheme {
-        DeleteDialog()
+        ExportDialog()
     }
 }
 

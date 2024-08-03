@@ -5,11 +5,13 @@ import com.github.skytoph.taski.presentation.habit.list.view.FilterHabits
 import com.github.skytoph.taski.presentation.habit.list.view.SortHabits
 import com.github.skytoph.taski.presentation.habit.list.view.ViewType
 import com.github.skytoph.taski.presentation.settings.theme.AppTheme
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 interface SettingsCache {
     fun state(): StateFlow<Settings>
+    suspend fun initAndGet(): Flow<Settings>
     suspend fun initialize()
     suspend fun update(settings: Settings)
     suspend fun updateWeekStart()
@@ -17,6 +19,7 @@ interface SettingsCache {
     suspend fun updateStreakHighlight()
     suspend fun updateTheme(theme: AppTheme)
     suspend fun updateViewNumberOfEntries(number: Int)
+    suspend fun updateBackupTime(time: Long?)
     suspend fun updateView(
         viewType: ViewType? = null, sortBy: SortHabits? = null, filterBy: FilterHabits? = null,
         showTodayHabitsOnly: Boolean? = null
@@ -51,6 +54,10 @@ interface SettingsCache {
             dataStore.updateData { it.copy(theme = theme) }
         }
 
+        override suspend fun updateBackupTime(time: Long?) {
+            dataStore.updateData { it.copy(lastBackupSaved = time) }
+        }
+
         override suspend fun updateView(
             viewType: ViewType?, sortBy: SortHabits?, filterBy: FilterHabits?,
             showTodayHabitsOnly: Boolean?
@@ -69,5 +76,7 @@ interface SettingsCache {
         }
 
         override fun state(): StateFlow<Settings> = state
+
+        override suspend fun initAndGet(): Flow<Settings> = dataStore.data
     }
 }

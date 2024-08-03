@@ -10,6 +10,7 @@ import com.github.skytoph.taski.domain.habit.HabitRepository
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.edit.mapper.HabitNotificationMapper
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitUiMapper
+import kotlinx.coroutines.flow.first
 
 interface NotificationInteractor {
     fun scheduleNotification(habit: HabitUi, context: Context, isFirstDaySunday: Boolean)
@@ -48,8 +49,10 @@ interface NotificationStateInteractor : CheckHabitState {
             )
         }
 
-        override suspend fun notCompleted(habitId: Long, isFirstDaySunday: Boolean): Boolean =
-            repository.notCompleted(habitId, settings.state().value.weekStartsOnSunday.value)
+        override suspend fun notCompleted(habitId: Long, isFirstDaySunday: Boolean): Boolean {
+            val isFirstDaySunday1 = settings.initAndGet().first().weekStartsOnSunday.value
+            return repository.notCompleted(habitId, isFirstDaySunday1)
+        }
 
         override suspend fun habit(id: Long): Habit = repository.habit(id)
     }
