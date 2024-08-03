@@ -1,5 +1,6 @@
 package com.github.skytoph.taski.presentation.core
 
+import com.google.firebase.FirebaseNetworkException
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -12,6 +13,7 @@ interface NetworkErrorMapper {
             is UnknownHostException -> true
             is SocketTimeoutException -> true
             is ConnectException -> true
+            is FirebaseNetworkException -> true
             else -> false
         }
     }

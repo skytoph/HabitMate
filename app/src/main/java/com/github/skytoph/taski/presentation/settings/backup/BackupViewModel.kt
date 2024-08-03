@@ -2,6 +2,7 @@ package com.github.skytoph.taski.presentation.settings.backup
 
 import android.content.ContentResolver
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
@@ -83,6 +84,10 @@ class BackupViewModel @Inject constructor(
 
     fun mapBackupTime(time: Long?, context: Context, locale: Locale): String? =
         interactor.mapTime(time, TIME_IS_LOADING_VALUE, context, locale)
+
+    fun signInWithFirebase(intent: Intent, context: Context) = actionHandler.action(
+        doAction = { interactor.signInWithFirebase(intent, context) }
+    )
 
     companion object {
         const val TIME_IS_LOADING_VALUE = -1L

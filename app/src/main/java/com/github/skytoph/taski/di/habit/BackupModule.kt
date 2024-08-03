@@ -34,6 +34,10 @@ object BackupModule {
 
     @Provides
     fun interactor(
-        backup: BackupManager, datastore: BackupDatastore, fileWriter: FileToUri, mapper: BackupResultMapper
-    ): BackupInteractor = BackupInteractor.Base(backup, datastore, fileWriter, mapper)
+        backup: BackupManager,
+        datastore: BackupDatastore,
+        fileWriter: FileToUri,
+        mapper: BackupResultMapper,
+        networkMapper: NetworkErrorMapper
+    ): BackupInteractor = BackupInteractor.Base(backup, datastore, fileWriter, mapper, networkMapper)
 }

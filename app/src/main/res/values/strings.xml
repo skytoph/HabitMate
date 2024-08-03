@@ -196,7 +196,7 @@
     <string name="delete_account_description_warning">This action is permanent and cannot be undone.</string>
     <string name="delete_account_description_details">Deleting your account will remove all your data associated with it, including any backups stored on Google Drive. Your data stored locally on your device will remain unaffected.</string>
     <string name="delete_account_title">Delete Account</string>
-    <string name="failed_to_load_account_message">Failed to load your account</string>
+    <string name="failed_to_load_account_message">Failed to sign in. Please try again later.</string>
     <string name="fail_title">Fail</string>
     <string name="error_sync">Failed to create backup</string>
     <string name="sync_title">Something went wrong, can\'t create backup.</string>

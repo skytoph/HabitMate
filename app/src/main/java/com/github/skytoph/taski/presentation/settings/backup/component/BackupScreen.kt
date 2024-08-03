@@ -66,7 +66,6 @@ import com.github.skytoph.taski.presentation.settings.backup.BackupEvent
 import com.github.skytoph.taski.presentation.settings.backup.BackupViewModel
 import com.github.skytoph.taski.presentation.settings.backup.ProfileUi
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
-import com.google.android.gms.auth.api.signin.GoogleSignIn
 import kotlinx.coroutines.launch
 
 @Composable
@@ -83,16 +82,8 @@ fun BackupScreen(viewModel: BackupViewModel = hiltViewModel(), restoreBackup: ()
     }
 
     val startForResult = rememberLauncherForActivityResult(contract) { result: ActivityResult ->
-        viewModel.onEvent(BackupEvent.IsSigningIn(false))
         if (result.resultCode == Activity.RESULT_OK) {
-            val intent = result.data
-            if (result.data != null) {
-                GoogleSignIn.getSignedInAccountFromIntent(intent).addOnSuccessListener {
-                    viewModel.loadProfile(context)
-                }.addOnFailureListener {
-
-                }
-            }
+            result.data?.let { intent -> viewModel.signInWithFirebase(intent, context) }
         }
     }
 

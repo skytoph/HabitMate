@@ -7,6 +7,7 @@ import com.github.skytoph.taski.presentation.settings.backup.BackupMessages.dele
 import com.github.skytoph.taski.presentation.settings.backup.BackupMessages.exportFailedMessage
 import com.github.skytoph.taski.presentation.settings.backup.BackupMessages.importFailedMessage
 import com.github.skytoph.taski.presentation.settings.backup.BackupMessages.importSucceededMessage
+import com.github.skytoph.taski.presentation.settings.backup.BackupMessages.loadingAccountFailedMessage
 import com.github.skytoph.taski.presentation.settings.backup.BackupMessages.syncFailedMessage
 
 sealed interface BackupResultUi : MapResultToListOfEvents<BackupEvent> {
@@ -19,6 +20,11 @@ sealed interface BackupResultUi : MapResultToListOfEvents<BackupEvent> {
 
         class ProfileLoaded(profile: ProfileUi) : Success<ProfileUi>(profile) {
             override fun apply(): List<BackupEvent> = listOf(BackupEvent.UpdateProfile(data))
+        }
+
+        class SignedIn(profile: ProfileUi) : Success<ProfileUi>(profile) {
+            override fun apply(): List<BackupEvent> =
+                listOf(BackupEvent.IsSigningIn(false), BackupEvent.UpdateProfile(data))
         }
 
         class BackupExported(uri: Uri) : Success<Uri>(uri) {
@@ -53,6 +59,14 @@ sealed interface BackupResultUi : MapResultToListOfEvents<BackupEvent> {
         override fun apply(): List<BackupEvent> = listOf(BackupEvent.UpdateProfile(null))
     }
 
+    data object SignInFailed : BackupResultUi {
+        override fun apply(): List<BackupEvent> = listOf(
+            BackupEvent.IsSigningIn(false),
+            BackupEvent.UpdateProfile(null),
+            BackupEvent.Message(loadingAccountFailedMessage)
+        )
+    }
+
     data class DeletingAccount(private val deleted: Boolean) : BackupResultUi {
         override fun apply(): List<BackupEvent> = if (deleted) listOf(
             BackupEvent.UpdateProfile(),
@@ -67,6 +81,4 @@ sealed interface BackupResultUi : MapResultToListOfEvents<BackupEvent> {
     data object Empty : BackupResultUi {
         override fun apply(): List<BackupEvent> = listOf(BackupEvent.Empty)
     }
-
-    companion object
 }

@@ -107,7 +107,7 @@ sealed interface BackupEvent {
         override fun handle(
             state: MutableState<BackupState>, showMessage: PostMessage, settingsEvent: (SettingsEvent) -> Unit
         ) {
-            state.value = state.value.copy(isInternetConnected = isConnected)
+            state.value = state.value.copy(isInternetConnected = isConnected, isSigningInLoading = false)
         }
     }
 

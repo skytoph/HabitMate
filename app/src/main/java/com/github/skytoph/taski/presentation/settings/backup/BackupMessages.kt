@@ -16,6 +16,11 @@ object BackupMessages {
         title = StringResource.ResId(R.string.success_title),
         icon = IconResource.Id(id = R.drawable.circle_user)
     )
+    val loadingAccountFailedMessage = SnackbarMessage(
+        messageResource = StringResource.ResId(R.string.failed_to_load_account_message),
+        title = StringResource.ResId(R.string.fail_title),
+        icon = IconResource.Id(id = R.drawable.circle_user)
+    )
     val syncFailedMessage = SnackbarMessage(
         messageResource = StringResource.ResId(R.string.error_sync),
         title = StringResource.ResId(R.string.sync_title),
