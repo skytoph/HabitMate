@@ -3,8 +3,8 @@ package com.github.skytoph.taski.app
 import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
-import com.github.skytoph.taski.core.alarm.CreateNotificationChannel
-import com.github.skytoph.taski.core.alarm.HabitNotificationChannel
+import com.github.skytoph.taski.core.reminder.CreateNotificationChannel
+import com.github.skytoph.taski.core.reminder.HabitNotificationChannel
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 

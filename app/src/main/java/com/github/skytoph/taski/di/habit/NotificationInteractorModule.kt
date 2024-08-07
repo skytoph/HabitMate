@@ -1,6 +1,7 @@
 package com.github.skytoph.taski.di.habit
 
-import com.github.skytoph.taski.core.alarm.ReminderScheduler
+import com.github.skytoph.taski.core.datastore.SettingsCache
+import com.github.skytoph.taski.core.reminder.ReminderScheduler
 import com.github.skytoph.taski.domain.habit.HabitRepository
 import com.github.skytoph.taski.presentation.habit.edit.NotificationInteractor
 import com.github.skytoph.taski.presentation.habit.edit.mapper.HabitNotificationMapper
@@ -19,8 +20,9 @@ object NotificationInteractorModule {
         scheduler: ReminderScheduler,
         notificationMapper: HabitNotificationMapper,
         repository: HabitRepository,
-        mapper: HabitUiMapper
-    ): NotificationInteractor = NotificationInteractor.Base(repository, scheduler, notificationMapper, mapper)
+        mapper: HabitUiMapper,
+        settings: SettingsCache
+    ): NotificationInteractor = NotificationInteractor.Base(repository, scheduler, notificationMapper, mapper, settings)
 
     @Provides
     fun uiMapper(): HabitUiMapper = HabitUiMapper.Base()

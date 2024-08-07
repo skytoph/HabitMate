@@ -1,4 +1,4 @@
-package com.github.skytoph.taski.core.alarm
+package com.github.skytoph.taski.core.reminder
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -6,8 +6,9 @@ import android.content.Intent
 import androidx.work.OneTimeWorkRequest
 import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
+import com.github.skytoph.taski.core.reminder.worker.ReminderRefreshWorker
 
-class TimeZoneChangedReceiver : BroadcastReceiver() {
+class RefreshRemindersReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent?) {
         val workManager = WorkManager.getInstance(context)

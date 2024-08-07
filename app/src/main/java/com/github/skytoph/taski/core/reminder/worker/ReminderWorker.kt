@@ -1,4 +1,4 @@
-package com.github.skytoph.taski.core.alarm
+package com.github.skytoph.taski.core.reminder.worker
 
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -9,6 +9,8 @@ import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.github.skytoph.taski.MainActivity
+import com.github.skytoph.taski.core.reminder.HabitNotificationChannel
+import com.github.skytoph.taski.core.reminder.ReminderItem
 import com.github.skytoph.taski.presentation.core.state.IconResource
 import com.github.skytoph.taski.presentation.core.state.StringResource
 import com.github.skytoph.taski.presentation.habit.edit.NotificationStateInteractor
@@ -25,14 +27,13 @@ class ReminderWorker @AssistedInject constructor(
 ) : CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
-        val item: AlarmItem = gson.fromJson(workerParams.inputData.getString(KEY_ITEM), AlarmItem::class.java)
+        val item: ReminderItem = gson.fromJson(workerParams.inputData.getString(ReminderItem.KEY_ITEM), ReminderItem::class.java)
 
         if (interactor.notCompleted(item.id)) {
             val habit = interactor.habit(item.id)
             val channelId = HabitNotificationChannel.HabitReminder.id
 
-            val notificationManager =
-                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
             val intent = Intent(context, MainActivity::class.java)
             val pendingIntent: PendingIntent =
@@ -50,9 +51,5 @@ class ReminderWorker @AssistedInject constructor(
         }
         interactor.rescheduleNotification(item, context)
         return Result.success()
-    }
-
-    companion object {
-        const val KEY_ITEM = "key_item"
     }
 }

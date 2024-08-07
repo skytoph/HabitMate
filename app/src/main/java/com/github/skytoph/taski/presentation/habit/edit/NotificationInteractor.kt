@@ -1,9 +1,9 @@
 package com.github.skytoph.taski.presentation.habit.edit
 
 import android.content.Context
-import com.github.skytoph.taski.core.alarm.AlarmItem
-import com.github.skytoph.taski.core.alarm.ReminderScheduler
 import com.github.skytoph.taski.core.datastore.SettingsCache
+import com.github.skytoph.taski.core.reminder.ReminderItem
+import com.github.skytoph.taski.core.reminder.ReminderScheduler
 import com.github.skytoph.taski.domain.habit.CheckHabitState
 import com.github.skytoph.taski.domain.habit.Habit
 import com.github.skytoph.taski.domain.habit.HabitRepository
@@ -14,13 +14,14 @@ import kotlinx.coroutines.flow.first
 
 interface NotificationInteractor {
     fun scheduleNotification(habit: HabitUi, context: Context, isFirstDaySunday: Boolean)
-    suspend fun refreshAllNotifications(context: Context, isFirstDaySunday: Boolean)
+    suspend fun refreshAllNotifications(context: Context)
 
     class Base(
         private val repository: HabitRepository,
         private val scheduler: ReminderScheduler,
         private val notificationMapper: HabitNotificationMapper,
         private val mapper: HabitUiMapper,
+        private val settings: SettingsCache
     ) : NotificationInteractor {
 
         override fun scheduleNotification(habit: HabitUi, context: Context, isFirstDaySunday: Boolean) {
@@ -28,14 +29,18 @@ interface NotificationInteractor {
                 habit.frequency.schedule(scheduler, context, notificationMapper.map(habit, context, isFirstDaySunday))
         }
 
-        override suspend fun refreshAllNotifications(context: Context, isFirstDaySunday: Boolean) {
-            repository.habits().forEach { habit -> scheduleNotification(mapper.map(habit), context, isFirstDaySunday) }
+        override suspend fun refreshAllNotifications(context: Context) {
+            val isFirstDaySunday = settings.initAndGet().first().weekStartsOnSunday.value
+            repository.habits().forEach { habit ->
+                scheduler.cancel(context, habit.id, habit.frequency.times)
+                scheduleNotification(mapper.map(habit), context, isFirstDaySunday)
+            }
         }
     }
 }
 
 interface NotificationStateInteractor : CheckHabitState {
-    fun rescheduleNotification(item: AlarmItem, context: Context)
+    fun rescheduleNotification(item: ReminderItem, context: Context)
 
     class Base(
         private val repository: HabitRepository,
@@ -43,11 +48,11 @@ interface NotificationStateInteractor : CheckHabitState {
         private val settings: SettingsCache,
     ) : NotificationStateInteractor {
 
-        override fun rescheduleNotification(item: AlarmItem, context: Context) {
-            if (item.interval.reschedule) scheduler.schedule(
-                context = context, items = listOf(item.copy(timeMillis = item.interval.next(item.timeMillis, item.day)))
+        override fun rescheduleNotification(item: ReminderItem, context: Context) =
+            scheduler.reschedule(
+                context = context,
+                item = item
             )
-        }
 
         override suspend fun notCompleted(habitId: Long, isFirstDaySunday: Boolean): Boolean {
             val isFirstDaySunday1 = settings.initAndGet().first().weekStartsOnSunday.value

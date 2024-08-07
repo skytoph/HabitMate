@@ -3,9 +3,10 @@ package com.github.skytoph.taski.di.habit
 import android.content.Context
 import androidx.work.WorkManager
 import com.github.skytoph.taski.core.adapter.GeneralTypeAdapterFactory
-import com.github.skytoph.taski.core.alarm.HabitUriConverter
-import com.github.skytoph.taski.core.alarm.ReminderScheduler
-import com.github.skytoph.taski.core.alarm.WorkScheduler
+import com.github.skytoph.taski.core.reminder.HabitUriConverter
+import com.github.skytoph.taski.core.reminder.ReminderScheduler
+import com.github.skytoph.taski.core.reminder.alarm.AlarmProvider
+import com.github.skytoph.taski.core.reminder.alarm.AlarmScheduler
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
@@ -22,8 +23,13 @@ object WorkManagerModule {
     @Provides
     @Singleton
     fun scheduler(
-        workManager: WorkManager, gson: Gson, uriConverter: HabitUriConverter
-    ): ReminderScheduler = WorkScheduler(workManager, uriConverter, gson)
+        alarmProvider: AlarmProvider, uriConverter: HabitUriConverter, gson: Gson
+    ): ReminderScheduler = AlarmScheduler(alarmProvider, uriConverter, gson)
+//    @Provides
+//    @Singleton
+//    fun scheduler(
+//        workManager: WorkManager, gson: Gson, uriConverter: HabitUriConverter
+//    ): ReminderScheduler = WorkScheduler(workManager, uriConverter, gson)
 
     @Provides
     @Singleton

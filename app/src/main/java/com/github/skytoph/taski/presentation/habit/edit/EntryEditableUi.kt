@@ -29,6 +29,7 @@ data class EntryEditableUi(
 data class MonthUi(
     val timestamp: Long = 0,
     val weeks: Int,
+    val index: Int,
     val alignment: TextAlign = TextAlign.Start
 ) : HabitEntryUi {
     fun getDisplayName(locale: Locale): String =

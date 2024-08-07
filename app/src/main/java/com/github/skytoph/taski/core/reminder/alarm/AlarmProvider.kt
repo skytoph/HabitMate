@@ -1,4 +1,4 @@
-package com.github.skytoph.taski.core.alarm
+package com.github.skytoph.taski.core.reminder.alarm
 
 import android.app.AlarmManager
 import android.app.PendingIntent
@@ -21,11 +21,10 @@ interface AlarmProvider {
                 /* context = */ context,
                 /* requestCode = */ code,
                 /* intent = */ intent,
-                /* flags = */ PendingIntent.FLAG_IMMUTABLE
+                /* flags = */ PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
             )
 
         override fun canScheduleAlarms(context: Context): Boolean =
             Build.VERSION.SDK_INT < Build.VERSION_CODES.S || alarmManager(context).canScheduleExactAlarms()
-
     }
 }

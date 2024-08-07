@@ -44,7 +44,7 @@ class HabitsEditableProvider : PreviewParameterProvider<List<EditableHistoryUi>>
                 daysAgo = day * month,
                 hasBorder = day % 7 == 0
             )
-        }, MonthUi(timestamp = month.toLong(), weeks = 4))
+        }, MonthUi(timestamp = month.toLong(), weeks = 4, index = 1))
     }
 
     override val values: Sequence<List<EditableHistoryUi>> = sequenceOf(history)

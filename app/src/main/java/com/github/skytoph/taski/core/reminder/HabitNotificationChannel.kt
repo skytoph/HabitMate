@@ -1,4 +1,4 @@
-package com.github.skytoph.taski.core.alarm
+package com.github.skytoph.taski.core.reminder
 
 import android.app.NotificationManager
 

@@ -1,6 +1,6 @@
 package com.github.skytoph.taski.presentation.habit.list
 
-import com.github.skytoph.taski.core.alarm.ReminderScheduler
+import com.github.skytoph.taski.core.reminder.ReminderScheduler
 import com.github.skytoph.taski.domain.habit.HabitRepository
 import com.github.skytoph.taski.domain.habit.HabitWithEntries
 import com.github.skytoph.taski.presentation.appbar.PopupMessage

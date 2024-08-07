@@ -20,7 +20,7 @@ import androidx.compose.runtime.State
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
-import com.github.skytoph.taski.core.alarm.HabitNotificationChannel
+import com.github.skytoph.taski.core.reminder.HabitNotificationChannel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

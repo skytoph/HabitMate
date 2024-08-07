@@ -3,7 +3,7 @@ package com.github.skytoph.taski.presentation.core.interactor
 import android.content.Context
 import androidx.compose.material3.SnackbarDuration
 import com.github.skytoph.taski.R
-import com.github.skytoph.taski.core.alarm.ReminderScheduler
+import com.github.skytoph.taski.core.reminder.ReminderScheduler
 import com.github.skytoph.taski.domain.habit.HabitRepository
 import com.github.skytoph.taski.presentation.appbar.PopupMessage
 import com.github.skytoph.taski.presentation.appbar.SnackbarMessage

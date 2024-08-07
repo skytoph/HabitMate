@@ -5,9 +5,9 @@ import android.content.res.Resources
 import androidx.compose.ui.text.AnnotatedString
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.core.SortCalendarDays
-import com.github.skytoph.taski.core.alarm.AlarmItem
-import com.github.skytoph.taski.core.alarm.ReminderScheduler
-import com.github.skytoph.taski.core.alarm.ScheduleReminder
+import com.github.skytoph.taski.core.reminder.ReminderItem
+import com.github.skytoph.taski.core.reminder.ReminderScheduler
+import com.github.skytoph.taski.core.reminder.ScheduleReminder
 import com.github.skytoph.taski.domain.habit.Frequency
 import com.github.skytoph.taski.presentation.core.format.annotate
 import com.github.skytoph.taski.presentation.core.format.getWeekDisplayName
@@ -67,7 +67,7 @@ sealed interface FrequencyUi : MapToDates, ScheduleReminder {
         override fun dates(mapper: HabitDateMapper, isFirstDaySunday: Boolean): Map<Int, Calendar> =
             frequencyType.dates(mapper, isFirstDaySunday, timesCount.value, typeCount.value)
 
-        override fun schedule(scheduler: ReminderScheduler, context: Context, items: List<AlarmItem>) =
+        override fun schedule(scheduler: ReminderScheduler, context: Context, items: List<ReminderItem>) =
             frequencyType.schedule(scheduler, context, items)
 
         override fun map(): Frequency =
@@ -93,7 +93,7 @@ sealed interface FrequencyUi : MapToDates, ScheduleReminder {
             if (days.contains(day) && days.size > 1) remove(day) else add(day)
         }).let { if (it.isEveryday()) Everyday(it) else it }
 
-        override fun schedule(scheduler: ReminderScheduler, context: Context, items: List<AlarmItem>) =
+        override fun schedule(scheduler: ReminderScheduler, context: Context, items: List<ReminderItem>) =
             scheduler.scheduleRepeating(context, items)
 
         override fun map(): Frequency = Frequency.Daily(days)
@@ -121,7 +121,7 @@ sealed interface FrequencyUi : MapToDates, ScheduleReminder {
         override fun dates(mapper: HabitDateMapper, isFirstDaySunday: Boolean): Map<Int, Calendar> =
             mapper.mapMonthly(days)
 
-        override fun schedule(scheduler: ReminderScheduler, context: Context, items: List<AlarmItem>) =
+        override fun schedule(scheduler: ReminderScheduler, context: Context, items: List<ReminderItem>) =
             scheduler.schedule(context, items)
 
         override fun map(): Frequency = Frequency.Monthly(days)
@@ -144,7 +144,7 @@ sealed interface FrequencyUi : MapToDates, ScheduleReminder {
         override fun dates(mapper: HabitDateMapper, isFirstDaySunday: Boolean): Map<Int, Calendar> =
             mapper.mapEveryday()
 
-        override fun schedule(scheduler: ReminderScheduler, context: Context, items: List<AlarmItem>) =
+        override fun schedule(scheduler: ReminderScheduler, context: Context, items: List<ReminderItem>) =
             scheduler.scheduleRepeating(context, items)
 
         override fun map(): Frequency = frequency.map()

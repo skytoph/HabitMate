@@ -1,4 +1,4 @@
-package com.github.skytoph.taski.core.alarm
+package com.github.skytoph.taski.core.reminder.alarm
 
 import android.app.AlarmManager
 import android.app.PendingIntent
@@ -6,29 +6,22 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import com.github.skytoph.taski.core.reminder.HabitUriConverter
+import com.github.skytoph.taski.core.reminder.ReminderItem
+import com.github.skytoph.taski.core.reminder.ReminderScheduler
+import com.google.gson.Gson
 
 class AlarmScheduler(
     private val alarm: AlarmProvider,
     private val uriConverter: HabitUriConverter,
+    private val gson: Gson
 ) : ReminderScheduler {
 
-    override fun scheduleRepeating(context: Context, items: List<AlarmItem>) {
-        if (!alarm.canScheduleAlarms(context)) return
-        items.forEach { item ->
-            alarm.alarmManager(context).setRepeating(
-                /* type = */ AlarmManager.RTC_WAKEUP,
-                /* triggerAtMillis = */ item.timeMillis,
-                /* intervalMillis = */ item.interval.interval * AlarmManager.INTERVAL_DAY,
-                /* operation = */ alarmIntent(context, item)
-            )
-        }
-    }
+    override fun scheduleRepeating(context: Context, items: List<ReminderItem>) = schedule(context, items)
 
-    override fun schedule(context: Context, items: List<AlarmItem>) {
+    override fun schedule(context: Context, items: List<ReminderItem>) {
         val alarmManager = alarm.alarmManager(context)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
-            !alarmManager.canScheduleExactAlarms()
-        ) return
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) return
         items.forEach { item ->
             alarmManager.setExactAndAllowWhileIdle(
                 /* type = */ AlarmManager.RTC_WAKEUP,
@@ -38,26 +31,25 @@ class AlarmScheduler(
         }
     }
 
+    override fun reschedule(context: Context, item: ReminderItem) = schedule(
+        context = context,
+        items = listOf(item.copy(timeMillis = item.interval.next(item.timeMillis, item.day)))
+    )
+
     override fun cancel(context: Context, id: Long, times: Int) =
         (0 until times).forEach { index ->
             cancel(context, uriConverter.uri(id, index))
         }
 
     override fun cancel(context: Context, uri: Uri) {
-        val pendingIntent = alarmIntent(context, uri)
+        val pendingIntent = cancelAlarmIntent(context, uri)
         alarm.alarmManager(context).cancel(pendingIntent)
     }
 
-    private fun alarmIntent(context: Context, item: AlarmItem): PendingIntent {
+    private fun alarmIntent(context: Context, item: ReminderItem): PendingIntent {
         val intent = intent(context, uriConverter.uri(item.uri))
-        intent.putExtra(AlarmItem.KEY_ITEM, item)
+        intent.putExtra(ReminderItem.KEY_ITEM, gson.toJson(item))
         return alarm.alarmIntent(context, intent, item.id.toInt())
-    }
-
-    private fun alarmIntent(context: Context, uri: Uri): PendingIntent {
-        val intent = intent(context, uri)
-        val code = uriConverter.id(uri).toInt()
-        return alarm.alarmIntent(context, intent, code)
     }
 
     private fun intent(context: Context, uri: Uri): Intent {
@@ -65,5 +57,11 @@ class AlarmScheduler(
         intent.setAction(AlarmReceiver.ACTION)
         intent.setData(uri)
         return intent
+    }
+
+    private fun cancelAlarmIntent(context: Context, uri: Uri): PendingIntent {
+        val intent = intent(context, uri)
+        val code = uriConverter.id(uri).toInt()
+        return alarm.alarmIntent(context, intent, code)
     }
 }

@@ -18,12 +18,8 @@ class EditableEntryUiMapper(
 ) : HabitHistoryUiMapper<EditableHistoryUi, ViewType> {
 
     override fun map(
-        page: Int,
-        goal: Int,
-        history: EntryList,
-        stats: HabitStatisticsUi,
-        isBorderOn: Boolean,
-        isFirstDaySunday: Boolean
+        page: Int, goal: Int, history: EntryList, stats: HabitStatisticsUi,
+        isBorderOn: Boolean, isFirstDaySunday: Boolean
     ): EditableHistoryUi {
         val weeksAgoStart = cache.get()
         val weeks = weeksInMonth(isFirstDaySunday, weeksAgoStart)
@@ -36,10 +32,11 @@ class EditableEntryUiMapper(
 
     private fun weeksInMonth(isFirstDaySunday: Boolean, weeksAgo: Int): Int =
         ceil(now.lastDayOfWeekDate(isFirstDaySunday).toFloat().div(ROWS)).toInt()
-            .let { if (it > 0) it else if (weeksAgo == 0) 2 else weeksInMonth(isFirstDaySunday,weeksAgo + 1) }
+            .let { if (it > 0) it else if (weeksAgo == 0) 2 else weeksInMonth(isFirstDaySunday, weeksAgo + 1) }
 
     private fun entries(
-        weeksAgo: Int, weeks: Int, history: Map<Int, Entry>, goal: Int, stats: HabitStatisticsUi, isBorderOn: Boolean, isFirstDaySunday: Boolean
+        weeksAgo: Int, weeks: Int, history: Map<Int, Entry>, goal: Int,
+        stats: HabitStatisticsUi, isBorderOn: Boolean, isFirstDaySunday: Boolean
     ): Map<Int, EntryEditableUi> =
         (weeksAgo * ROWS until weeksAgo * ROWS + weeks * ROWS).associate { index ->
             val daysAgo =
@@ -50,7 +47,7 @@ class EditableEntryUiMapper(
         }
 
     private fun month(monthsAgo: Int, weeks: Int): MonthUi =
-        MonthUi(now.monthMillis(monthsAgo), weeks)
+        MonthUi(now.monthMillis(monthsAgo), weeks, now.numberOfMonth(monthsAgo))
 
     private companion object {
         const val ROWS = 7

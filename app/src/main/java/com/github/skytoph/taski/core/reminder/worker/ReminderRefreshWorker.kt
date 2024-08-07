@@ -1,4 +1,4 @@
-package com.github.skytoph.taski.core.alarm
+package com.github.skytoph.taski.core.reminder.worker
 
 import android.content.Context
 import android.content.pm.ServiceInfo
@@ -10,7 +10,8 @@ import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
 import com.github.skytoph.taski.R
-import com.github.skytoph.taski.core.datastore.SettingsCache
+import com.github.skytoph.taski.core.reminder.CreateNotificationChannel
+import com.github.skytoph.taski.core.reminder.HabitNotificationChannel
 import com.github.skytoph.taski.presentation.habit.edit.NotificationInteractor
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -18,14 +19,13 @@ import dagger.assisted.AssistedInject
 @HiltWorker
 class ReminderRefreshWorker @AssistedInject constructor(
     private val interactor: NotificationInteractor,
-    private val settings: SettingsCache,
     @Assisted private val context: Context,
     @Assisted private val workerParams: WorkerParameters
 ) : CoroutineWorker(context, workerParams), CreateNotificationChannel by CreateNotificationChannel.Base() {
 
     override suspend fun doWork(): Result {
         setForeground(createForegroundInfo())
-        interactor.refreshAllNotifications(context, settings.state().value.weekStartsOnSunday.value)
+        interactor.refreshAllNotifications(context)
         return Result.success()
     }
 

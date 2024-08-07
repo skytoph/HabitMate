@@ -35,11 +35,20 @@
         </activity>
 
         <receiver
-            android:name=".core.alarm.TimeZoneChangedReceiver"
+            android:name=".core.reminder.RefreshRemindersReceiver"
             android:enabled="true"
-            android:exported="true">
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".core.reminder.alarm.AlarmReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.github.skytoph.habitmate.NOTIFY" />
             </intent-filter>
         </receiver>
 

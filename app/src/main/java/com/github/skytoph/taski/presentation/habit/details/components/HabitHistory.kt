@@ -41,7 +41,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -71,6 +70,7 @@ import com.github.skytoph.taski.presentation.habit.list.mapper.ColorPercentMappe
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
+import java.util.Calendar
 
 @Composable
 fun HabitHistory(
@@ -118,17 +118,12 @@ fun HabitHistoryGrid(
 ) {
     val items = entries.collectAsLazyPagingItems()
 
-    val fadingBrushHeader =
-        remember { Brush.horizontalGradient(0f to Color.Transparent, 0.05f to Color.Red) }
-
-    val minHeight = 8 * squareDp
-
     Column(
         modifier = Modifier
             .padding(initialOffsetDp)
             .fillMaxWidth()
             .wrapContentHeight()
-            .defaultMinSize(minHeight = minHeight)
+            .defaultMinSize(minHeight = 8 * squareDp)
     ) {
         LazyRow(
             modifier = Modifier
@@ -317,15 +312,17 @@ private fun MonthLabel(
             textAlign = month.alignment,
             maxLines = 1,
         )
-        Spacer(modifier = Modifier.width(2.dp))
-        if (month.weeks > 1) Text(
-            text = month.getDisplayYear(getLocale()),
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onBackground,
-            overflow = TextOverflow.Ellipsis,
-            textAlign = month.alignment,
-            maxLines = 1
-        )
+        if ((month.index == Calendar.JANUARY || month.index == Calendar.JUNE) && month.weeks > 1) {
+            Spacer(modifier = Modifier.width(2.dp))
+            Text(
+                text = month.getDisplayYear(getLocale()),
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onBackground,
+                overflow = TextOverflow.Ellipsis,
+                textAlign = month.alignment,
+                maxLines = 1
+            )
+        }
     }
 }
 

@@ -1,7 +1,7 @@
 package com.github.skytoph.taski.presentation.habit.edit
 
 import android.content.Context
-import com.github.skytoph.taski.core.alarm.ReminderScheduler
+import com.github.skytoph.taski.core.reminder.ReminderScheduler
 import com.github.skytoph.taski.domain.habit.Habit
 import com.github.skytoph.taski.domain.habit.HabitRepository
 import com.github.skytoph.taski.presentation.core.interactor.HabitDoneInteractor

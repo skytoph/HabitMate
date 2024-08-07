@@ -3,9 +3,9 @@ package com.github.skytoph.taski.presentation.habit.edit.frequency
 import android.content.Context
 import androidx.annotation.PluralsRes
 import com.github.skytoph.taski.R
-import com.github.skytoph.taski.core.alarm.AlarmItem
-import com.github.skytoph.taski.core.alarm.ReminderScheduler
-import com.github.skytoph.taski.core.alarm.ScheduleReminder
+import com.github.skytoph.taski.core.reminder.ReminderItem
+import com.github.skytoph.taski.core.reminder.ReminderScheduler
+import com.github.skytoph.taski.core.reminder.ScheduleReminder
 import com.github.skytoph.taski.domain.habit.Frequency
 import com.github.skytoph.taski.presentation.habit.create.GoalState
 import com.github.skytoph.taski.presentation.habit.edit.mapper.FrequencyInterval
@@ -36,7 +36,7 @@ sealed class FrequencyCustomType : MapToDatesCustom, ScheduleReminder {
         )
     }
 
-    override fun schedule(scheduler: ReminderScheduler, context: Context, items: List<AlarmItem>) =
+    override fun schedule(scheduler: ReminderScheduler, context: Context, items: List<ReminderItem>) =
         scheduler.scheduleRepeating(context, items)
 
     abstract fun map(): Frequency.Custom.Type
@@ -76,7 +76,7 @@ sealed class FrequencyCustomType : MapToDatesCustom, ScheduleReminder {
         override fun dates(mapper: HabitDateMapper, isFirstDaySunday: Boolean, timesCount: Int, typeCount: Int) =
             mapper.mapCustomMonth(timesCount, typeCount)
 
-        override fun schedule(scheduler: ReminderScheduler, context: Context, items: List<AlarmItem>) =
+        override fun schedule(scheduler: ReminderScheduler, context: Context, items: List<ReminderItem>) =
             scheduler.schedule(context, items)
     }
 }

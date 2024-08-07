@@ -20,6 +20,8 @@ interface Now {
     fun monthsAgo(daysAgo: Int): Int
     fun lastDayOfMonthDaysAgo(monthsAgo: Int): Int
     fun firstDayOfMonthDaysAgo(monthsAgo: Int): Int
+    fun numberOfMonth(monthsAgo: Int): Int
+
     val default: Boolean
 
     class Base(override val default: Boolean = false) : Now {
@@ -85,6 +87,8 @@ interface Now {
             TimeUnit.MILLISECONDS.toDays(dayInMillis() - startOfTheMonth(monthsAgo).timeInMillis).toInt()
 
         override fun monthMillis(monthsAgo: Int): Long = month(monthsAgo).timeInMillis
+
+        override fun numberOfMonth(monthsAgo: Int): Int = month(monthsAgo).get(Calendar.MONTH)
 
         private fun startOfTheDay(daysAgo: Int = 0, calendar: Calendar = calendar()): Calendar = calendar.also {
             it.set(Calendar.HOUR_OF_DAY, 0)
