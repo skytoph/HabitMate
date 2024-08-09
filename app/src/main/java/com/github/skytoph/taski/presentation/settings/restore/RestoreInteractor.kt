@@ -4,6 +4,8 @@ import android.content.Context
 import com.github.skytoph.taski.core.backup.BackupDatastore
 import com.github.skytoph.taski.core.backup.BackupManager
 import com.github.skytoph.taski.core.backup.BackupResult
+import com.github.skytoph.taski.domain.habit.HabitRepository
+import com.github.skytoph.taski.domain.habit.Reminder
 import com.github.skytoph.taski.presentation.settings.restore.mapper.RestoreBackupResultMapper
 import java.util.Locale
 
@@ -15,6 +17,7 @@ interface RestoreInteractor {
     suspend fun deleteAllData(): RestoreResultUi
 
     class Base(
+        private val repository: HabitRepository,
         private val datastore: BackupDatastore,
         private val resultMapper: RestoreBackupResultMapper,
         private val database: BackupManager,
@@ -23,11 +26,13 @@ interface RestoreInteractor {
         override suspend fun backupItems(locale: Locale, context: Context): RestoreResultUi =
             resultMapper.map(datastore.getFilesList(), locale, context)
 
-        override suspend fun download(id: String): RestoreResultUi = resultMapper.map(datastore.downloadFile(id))
+        override suspend fun download(id: String): RestoreResultUi =
+            resultMapper.map(datastore.downloadFile(id))
 
         override suspend fun restore(data: ByteArray): RestoreResultUi = try {
             database.import(data)
-            resultMapper.map(BackupResult.Success.FileRestored)
+            val containsReminders = repository.habits().find { it.reminder != Reminder.None } != null
+            resultMapper.map(BackupResult.Success.FileRestored(containsReminders))
         } catch (exception: Exception) {
             resultMapper.map(BackupResult.Fail.FileNotRestored(exception))
         }

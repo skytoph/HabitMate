@@ -2,6 +2,7 @@
 
 package com.github.skytoph.taski.presentation.habit.edit.component
 
+import android.content.Context
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.compose.animation.AnimatedContent
@@ -64,6 +65,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.currentStateAsState
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.component.AppBarAction
@@ -388,9 +390,73 @@ private fun EditReminder(
     showTimeDialog: (Boolean) -> Unit,
     requestPermissionDialog: (DialogItem?) -> Unit,
 ) {
+    RequestNotificationPermission(
+        requestPermissionDialog = requestPermissionDialog,
+        permissionGranted = switchOn,
+        content = { checkPermission ->
+            Row(
+                modifier = Modifier
+                    .background(
+                        color = MaterialTheme.colorScheme.surfaceVariant,
+                        shape = MaterialTheme.shapes.extraSmall
+                    )
+                    .padding(end = 16.dp)
+                    .height(minHeight)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Crossfade(
+                    targetState = reminder.switchedOn,
+                    label = "reminder_crossfade",
+                ) { isReminderOn ->
+                    Box(
+                        modifier = Modifier
+                            .clip(MaterialTheme.shapes.extraSmall)
+                            .clickable(
+                                enabled = isReminderOn,
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null,
+                                onClick = { showTimeDialog(true) })
+                            .fillMaxHeight(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = reminder.formatted(getLocale(), stringResource(R.string.reminder_none)),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = if (isReminderOn) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground,
+                            modifier = Modifier.padding(horizontal = 16.dp),
+                        )
+                    }
+                }
+                Switch(
+                    colors = SwitchDefaults.colors(
+                        uncheckedBorderColor = Color.Transparent,
+                        uncheckedTrackColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f),
+                        uncheckedThumbColor = MaterialTheme.colorScheme.primaryContainer
+                    ),
+                    checked = reminder.switchedOn,
+                    onCheckedChange = {
+                        if (!reminder.switchedOn)
+                            checkPermission()
+                        else
+                            switchOn(false)
+                    },
+                )
+            }
+        }
+    )
+}
+
+@Composable
+fun RequestNotificationPermission(
+    requestPermissionDialog: (DialogItem?) -> Unit,
+    permissionGranted: (Boolean) -> Unit,
+    content: @Composable (requestPermission: () -> Unit) -> Unit
+) {
     val context = LocalContext.current
     val lifecycleState: State<Lifecycle.State> =
-        androidx.lifecycle.compose.LocalLifecycleOwner.current.lifecycle.currentStateAsState()
+        LocalLifecycleOwner.current.lifecycle.currentStateAsState()
     val lifecycleScope = rememberCoroutineScope()
     var notificationEnabled: Boolean? by remember { mutableStateOf(null) }
     var alarmEnabled: Boolean? by remember { mutableStateOf(null) }
@@ -443,71 +509,26 @@ private fun EditReminder(
     }
     LaunchedEffect(Unit) {
         if (!areNotificationsEnabled(context) || !areAlarmsEnabled(context))
-            switchOn(false)
+            permissionGranted(false)
     }
     LaunchedEffect(notificationEnabled, alarmEnabled) {
         when {
             notificationEnabled == false -> askForNotificationPermission()
             alarmEnabled == false -> requestPermissionDialog(alarmDialog)
-            alarmEnabled == true && notificationEnabled == true -> switchOn(true)
+            alarmEnabled == true && notificationEnabled == true -> permissionGranted(true)
         }
     }
-    Row(
-        modifier = Modifier
-            .background(
-                color = MaterialTheme.colorScheme.surfaceVariant,
-                shape = MaterialTheme.shapes.extraSmall
-            )
-            .padding(end = 16.dp)
-            .height(minHeight)
-            .fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Crossfade(
-            targetState = reminder.switchedOn,
-            label = "reminder_crossfade",
-        ) { isReminderOn ->
-            Box(
-                modifier = Modifier
-                    .clip(MaterialTheme.shapes.extraSmall)
-                    .clickable(
-                        enabled = isReminderOn,
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                        onClick = { showTimeDialog(true) })
-                    .fillMaxHeight(),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = reminder.formatted(getLocale(), stringResource(R.string.reminder_none)),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = if (isReminderOn) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                )
-            }
-        }
-        Switch(
-            colors = SwitchDefaults.colors(
-                uncheckedBorderColor = Color.Transparent,
-                uncheckedTrackColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f),
-                uncheckedThumbColor = MaterialTheme.colorScheme.primaryContainer
-            ),
-            checked = reminder.switchedOn,
-            onCheckedChange = {
-                if (!reminder.switchedOn)
-                    checkPermission(
-                        context = context,
-                        requestAlarmPermission = { requestPermissionDialog(alarmDialog) },
-                        requestNotificationPermission = { askForNotificationPermission() },
-                        onGranted = { switchOn(true) })
-                else
-                    switchOn(false)
-            },
-        )
-    }
+
+    content(requestPermission = {
+        checkPermission(
+            context = context,
+            requestAlarmPermission = { requestPermissionDialog(alarmDialog) },
+            requestNotificationPermission = { askForNotificationPermission() },
+            onGranted = { permissionGranted(true) })
+    })
 }
 
+fun isPermissionNeeded(context: Context): Boolean = !areNotificationsEnabled(context) || !areAlarmsEnabled(context)
 
 @Composable
 fun IconSelector(

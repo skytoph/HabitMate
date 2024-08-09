@@ -5,6 +5,7 @@ import androidx.compose.runtime.MutableState
 import com.github.skytoph.taski.core.datastore.SettingsCache
 import com.github.skytoph.taski.presentation.appbar.SnackbarMessage
 import com.github.skytoph.taski.presentation.core.PostMessage
+import com.github.skytoph.taski.presentation.habit.list.component.DialogItem
 import com.github.skytoph.taski.presentation.settings.SettingsViewModel
 
 sealed interface BackupEvent {
@@ -80,6 +81,30 @@ sealed interface BackupEvent {
             state: MutableState<BackupState>, showMessage: PostMessage, settingsEvent: (SettingsEvent) -> Unit
         ) {
             state.value = state.value.copy(lastBackupSavedTime = lastBackupSaved)
+        }
+    }
+
+    data object PermissionNeeded : BackupEvent {
+        override fun handle(
+            state: MutableState<BackupState>, showMessage: PostMessage, settingsEvent: (SettingsEvent) -> Unit
+        ) {
+            state.value = state.value.copy(isImportLoading = false, dialog = BackupDialogUi.RequestPermissions)
+        }
+    }
+
+    class RequestPermissions(private val request: Boolean) : BackupEvent {
+        override fun handle(
+            state: MutableState<BackupState>, showMessage: PostMessage, settingsEvent: (SettingsEvent) -> Unit
+        ) {
+            state.value = state.value.copy(dialog = null, requestingPermission = request)
+        }
+    }
+
+    class UpdatePermissionDialog(private val dialog: DialogItem? = null) : BackupEvent {
+        override fun handle(
+            state: MutableState<BackupState>, showMessage: PostMessage, settingsEvent: (SettingsEvent) -> Unit
+        ) {
+            state.value = state.value.copy(permissionDialog = dialog)
         }
     }
 

@@ -8,6 +8,7 @@ import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccoun
 import com.google.api.client.http.ByteArrayContent
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.jackson2.JacksonFactory
+import com.google.api.client.util.DateTime
 import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
 import com.google.api.services.drive.model.File
@@ -25,6 +26,7 @@ interface BackupDatastore {
     suspend fun downloadFile(id: String): BackupResult
     suspend fun delete(id: String): BackupResult
     suspend fun deleteAllFiles(): BackupResult
+    suspend fun lastSync(): DateTime?
 
     class Base(private val context: Context) : BackupDatastore {
         private fun drive(): Drive? = GoogleSignIn.getLastSignedInAccount(context)?.let { googleAccount ->
@@ -69,16 +71,6 @@ interface BackupDatastore {
             }
         }
 
-        private fun getFiles(drive: Drive): FileList? {
-            return drive.files()?.list()?.apply {
-                q =
-                    "'appDataFolder' in parents and mimeType != 'application/vnd.google-apps.folder' and trashed = false"
-                spaces = "appDataFolder"
-                fields = "files(id, name, modifiedTime, size, parents, mimeType)"
-                orderBy = "modifiedTime desc"
-            }?.execute()
-        }
-
         override suspend fun downloadFile(id: String): BackupResult {
             return try {
                 val drive = drive() ?: return BackupResult.Fail.DriveIsNotConnected()
@@ -105,15 +97,24 @@ interface BackupDatastore {
                     fields = "files(modifiedTime)"
                     orderBy = "modifiedTime desc"
                     pageSize = 1
-                }?.execute()
+                }?.execute()?.files?.firstOrNull()?.modifiedTime
 
                 BackupResult.Success.Deleted(
-                    time = result?.files?.firstOrNull()?.modifiedTime,
+                    time = result,
                     newData = getFiles(drive)?.files ?: emptyList()
                 )
             } catch (exception: Exception) {
                 Log.e(BackupDatastore::class.simpleName, exception.stackTraceToString())
                 BackupResult.Fail.FileNotDownloaded(exception)
+            }
+        }
+
+        override suspend fun lastSync(): DateTime? {
+            return try {
+                lastSync(drive() ?: return null)
+            } catch (exception: Exception) {
+                Log.e(BackupDatastore::class.simpleName, exception.stackTraceToString())
+                null
             }
         }
 
@@ -137,5 +138,23 @@ interface BackupDatastore {
                 BackupResult.Fail.FileNotDeleted(exception)
             }
         }
+
+        private fun getFiles(drive: Drive): FileList? {
+            return drive.files()?.list()?.apply {
+                q =
+                    "'appDataFolder' in parents and mimeType != 'application/vnd.google-apps.folder' and trashed = false"
+                spaces = "appDataFolder"
+                fields = "files(id, name, modifiedTime, size, parents, mimeType)"
+                orderBy = "modifiedTime desc"
+            }?.execute()
+        }
+
+        private fun lastSync(drive: Drive): DateTime? = drive.files()?.list()?.apply {
+            q = "'appDataFolder' in parents and mimeType != 'application/vnd.google-apps.folder' and trashed = false"
+            spaces = "appDataFolder"
+            fields = "files(modifiedTime)"
+            orderBy = "modifiedTime desc"
+            pageSize = 1
+        }?.execute()?.files?.firstOrNull()?.modifiedTime
     }
 }

@@ -227,6 +227,11 @@
     <string name="log_in">Log In</string>
     <string name="sign_out_item">Sign Out</string>
     <string name="delete_account_item">Delete Account</string>
+    <string name="request_permissions_title">Enable notifications</string>
+    <string name="action_enable">Enable</string>
+    <string name="action_cancel_later">Maybe later</string>
+    <string name="request_permissions_dialog_description">Your data has been successfully recovered!</string>
+    <string name="request_permissions_dialog_warning">To use reminders please enable notifications for this app.</string>
     <string name="signing_in" tools:ignore="TypographyEllipsis">Signing In...</string>
     <string name="loading_export" tools:ignore="TypographyEllipsis">Preparing the data...</string>
     <string name="loading_import" tools:ignore="TypographyEllipsis">Restoring the data...</string>

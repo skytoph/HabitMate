@@ -17,4 +17,8 @@ class RefreshRemindersReceiver : BroadcastReceiver() {
             .build()
         workManager.enqueue(request)
     }
+
+    companion object {
+        const val ACTION = "com.github.skytoph.habitmate.REFRESH_REMINDERS"
+    }
 }

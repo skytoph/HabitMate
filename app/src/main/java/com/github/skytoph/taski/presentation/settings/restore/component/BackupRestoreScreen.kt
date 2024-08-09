@@ -2,6 +2,7 @@
 
 package com.github.skytoph.taski.presentation.settings.restore.component
 
+import android.content.Intent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.fadeIn
@@ -38,15 +39,21 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.skytoph.taski.R
+import com.github.skytoph.taski.core.reminder.RefreshRemindersReceiver
 import com.github.skytoph.taski.presentation.core.component.AppBarAction
 import com.github.skytoph.taski.presentation.core.component.DeleteAllBackupsDialog
 import com.github.skytoph.taski.presentation.core.component.DeleteBackupDialog
 import com.github.skytoph.taski.presentation.core.component.EmptyScreen
 import com.github.skytoph.taski.presentation.core.component.LoadingFullscreen
+import com.github.skytoph.taski.presentation.core.component.NotificationPermissionDialog
+import com.github.skytoph.taski.presentation.core.component.RequestPermissionsBackupDialog
 import com.github.skytoph.taski.presentation.core.component.RestoreBackupDialog
 import com.github.skytoph.taski.presentation.core.component.getLocale
 import com.github.skytoph.taski.presentation.core.preview.BackupItemsProvider
 import com.github.skytoph.taski.presentation.core.state.StringResource
+import com.github.skytoph.taski.presentation.habit.edit.component.RequestNotificationPermission
+import com.github.skytoph.taski.presentation.habit.edit.component.isPermissionNeeded
+import com.github.skytoph.taski.presentation.settings.backup.BackupMessages
 import com.github.skytoph.taski.presentation.settings.restore.BackupItemUi
 import com.github.skytoph.taski.presentation.settings.restore.RestoreDialogUi
 import com.github.skytoph.taski.presentation.settings.restore.RestoreEvent
@@ -115,8 +122,31 @@ fun BackupRestoreScreen(viewModel: RestoreViewModel = hiltViewModel()) {
             restore = { viewModel.onEvent(RestoreEvent.ShowContextMenu()); viewModel.downloadBackup(it.id) },
             delete = { viewModel.onEvent(RestoreEvent.ShowContextMenu()); viewModel.delete(it.id, locale, context) },
             deleteAllData = { viewModel.deleteAllData() },
+            requestPermissions = { viewModel.onEvent(RestoreEvent.RequestPermissions(true)) },
             dismiss = { viewModel.onEvent(RestoreEvent.UpdateDialog()) })
     }
+
+    state.value.permissionDialog?.let { dialog ->
+        NotificationPermissionDialog(dialog)
+    }
+
+    RequestNotificationPermission(
+        requestPermissionDialog = { viewModel.onEvent(RestoreEvent.UpdatePermissionDialog(it)) },
+        permissionGranted = { isGranted ->
+            if (isGranted) {
+                context.sendBroadcast(Intent(RefreshRemindersReceiver.ACTION))
+                viewModel.showMessage(BackupMessages.importSucceededMessage)
+            }
+        },
+        content = { requestPermission ->
+            if (state.value.requestingPermission) {
+                viewModel.onEvent(RestoreEvent.RequestPermissions(false))
+                if (isPermissionNeeded(context))
+                    requestPermission()
+                else viewModel.showMessage(BackupMessages.importSucceededMessage)
+            }
+        }
+    )
 }
 
 @Composable
@@ -182,6 +212,7 @@ fun DialogItem(
     restore: (BackupItemUi) -> Unit,
     delete: (BackupItemUi) -> Unit,
     deleteAllData: () -> Unit,
+    requestPermissions: () -> Unit,
     dismiss: () -> Unit
 ) = when (dialog) {
     is RestoreDialogUi.Restore -> RestoreBackupDialog(
@@ -198,6 +229,11 @@ fun DialogItem(
 
     is RestoreDialogUi.DeleteAllData -> DeleteAllBackupsDialog(
         onConfirm = deleteAllData,
+        onDismissRequest = dismiss
+    )
+
+    is RestoreDialogUi.RequestPermissions -> RequestPermissionsBackupDialog(
+        onConfirm = requestPermissions,
         onDismissRequest = dismiss
     )
 }

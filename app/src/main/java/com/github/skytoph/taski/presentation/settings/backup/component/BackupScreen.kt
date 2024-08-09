@@ -54,15 +54,21 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.core.auth.SignInWithGoogle
+import com.github.skytoph.taski.core.reminder.RefreshRemindersReceiver
 import com.github.skytoph.taski.presentation.core.component.DeleteAccountDialog
 import com.github.skytoph.taski.presentation.core.component.ExportDialog
 import com.github.skytoph.taski.presentation.core.component.ImportDialog
 import com.github.skytoph.taski.presentation.core.component.LoadingFullscreen
 import com.github.skytoph.taski.presentation.core.component.LoadingItems
+import com.github.skytoph.taski.presentation.core.component.NotificationPermissionDialog
+import com.github.skytoph.taski.presentation.core.component.RequestPermissionsBackupDialog
 import com.github.skytoph.taski.presentation.core.component.SignOutDialog
 import com.github.skytoph.taski.presentation.core.component.getLocale
+import com.github.skytoph.taski.presentation.habit.edit.component.RequestNotificationPermission
+import com.github.skytoph.taski.presentation.habit.edit.component.isPermissionNeeded
 import com.github.skytoph.taski.presentation.settings.backup.BackupDialogUi
 import com.github.skytoph.taski.presentation.settings.backup.BackupEvent
+import com.github.skytoph.taski.presentation.settings.backup.BackupMessages
 import com.github.skytoph.taski.presentation.settings.backup.BackupViewModel
 import com.github.skytoph.taski.presentation.settings.backup.ProfileUi
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
@@ -138,8 +144,31 @@ fun BackupScreen(viewModel: BackupViewModel = hiltViewModel(), restoreBackup: ()
             import = { launcherImport.launch(Intent(Intent.ACTION_GET_CONTENT).apply { type = "*/*" }) },
             signOut = { viewModel.signOut(context) },
             deleteAccount = { viewModel.deleteAccount(context) },
+            requestPermissions = { viewModel.onEvent(BackupEvent.RequestPermissions(true)) },
             dismiss = { viewModel.onEvent(BackupEvent.UpdateDialog()) })
     }
+
+    state.value.permissionDialog?.let { dialog ->
+        NotificationPermissionDialog(dialog)
+    }
+
+    RequestNotificationPermission(
+        requestPermissionDialog = { viewModel.onEvent(BackupEvent.UpdatePermissionDialog(it)) },
+        permissionGranted = { isGranted ->
+            if (isGranted) {
+                context.sendBroadcast(Intent(RefreshRemindersReceiver.ACTION))
+                viewModel.showMessage(BackupMessages.importSucceededMessage)
+            }
+        },
+        content = { requestPermission ->
+            if (state.value.requestingPermission) {
+                viewModel.onEvent(BackupEvent.RequestPermissions(false))
+                if (isPermissionNeeded(context))
+                    requestPermission()
+                else viewModel.showMessage(BackupMessages.importSucceededMessage)
+            }
+        }
+    )
 }
 
 @Composable
@@ -242,12 +271,15 @@ private fun BackupDialog(
     import: () -> Unit,
     signOut: () -> Unit,
     deleteAccount: () -> Unit,
+    requestPermissions: () -> Unit,
     dismiss: () -> Unit
 ) = when (dialog) {
     BackupDialogUi.Export -> ExportDialog(onConfirm = export, onDismissRequest = dismiss)
     BackupDialogUi.Import -> ImportDialog(onConfirm = import, onDismissRequest = dismiss)
     BackupDialogUi.SignOut -> SignOutDialog(onConfirm = signOut, onDismissRequest = dismiss)
     BackupDialogUi.DeleteAccount -> DeleteAccountDialog(onConfirm = deleteAccount, onDismissRequest = dismiss)
+    BackupDialogUi.RequestPermissions ->
+        RequestPermissionsBackupDialog(onConfirm = requestPermissions, onDismissRequest = dismiss)
 }
 
 @Composable

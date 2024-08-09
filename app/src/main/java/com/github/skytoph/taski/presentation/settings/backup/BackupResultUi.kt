@@ -9,6 +9,7 @@ import com.github.skytoph.taski.presentation.settings.backup.BackupMessages.impo
 import com.github.skytoph.taski.presentation.settings.backup.BackupMessages.importSucceededMessage
 import com.github.skytoph.taski.presentation.settings.backup.BackupMessages.loadingAccountFailedMessage
 import com.github.skytoph.taski.presentation.settings.backup.BackupMessages.syncFailedMessage
+import com.google.api.client.util.DateTime
 
 sealed interface BackupResultUi : MapResultToListOfEvents<BackupEvent> {
 
@@ -22,9 +23,12 @@ sealed interface BackupResultUi : MapResultToListOfEvents<BackupEvent> {
             override fun apply(): List<BackupEvent> = listOf(BackupEvent.UpdateProfile(data))
         }
 
-        class SignedIn(profile: ProfileUi) : Success<ProfileUi>(profile) {
-            override fun apply(): List<BackupEvent> =
-                listOf(BackupEvent.IsSigningIn(false), BackupEvent.UpdateProfile(data))
+        class SignedIn(profile: ProfileUi, private val sync: DateTime?) : Success<ProfileUi>(profile) {
+            override fun apply(): List<BackupEvent> = listOf(
+                BackupEvent.UpdateLastBackup(sync?.value),
+                BackupEvent.IsSigningIn(false),
+                BackupEvent.UpdateProfile(data)
+            )
         }
 
         class BackupExported(uri: Uri) : Success<Uri>(uri) {
@@ -32,11 +36,13 @@ sealed interface BackupResultUi : MapResultToListOfEvents<BackupEvent> {
         }
     }
 
-    class Imported(private val successful: Boolean) : BackupResultUi {
-        override fun apply(): List<BackupEvent> = listOf(
-            BackupEvent.ImportLoading(false),
-            BackupEvent.Message(if (successful) importSucceededMessage else importFailedMessage)
-        )
+    class Imported(private val successful: Boolean, private val containsReminders: Boolean = false) : BackupResultUi {
+        override fun apply(): List<BackupEvent> = ArrayList<BackupEvent>(3).apply {
+            add(BackupEvent.ImportLoading(false))
+            if (!successful) add(BackupEvent.Message(importFailedMessage))
+            else if (!containsReminders) add(BackupEvent.Message(importSucceededMessage))
+            else add(BackupEvent.PermissionNeeded)
+        }
     }
 
     data object ExportFailed : BackupResultUi {

@@ -41,6 +41,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.TIMEZONE_CHANGED" />
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="com.github.skytoph.habitmate.REFRESH_REMINDERS" />
             </intent-filter>
         </receiver>
 

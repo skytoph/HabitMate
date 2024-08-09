@@ -31,9 +31,10 @@ interface RestoreBackupResultMapper {
                 newData = mapper.map(result.newData.map { it.map() }, locale!!, context!!)
             )
 
-            BackupResult.Success.AllFilesDeleted -> RestoreResultUi.Success.AllBackupsDeleted(BackupMessages.deleteDataSucceededMessage)
+            is BackupResult.Success.FileRestored ->
+                RestoreResultUi.Success.Restored(result.containsReminders, BackupMessages.importSucceededMessage)
 
-            BackupResult.Success.FileRestored -> RestoreResultUi.Success.Message(BackupMessages.importSucceededMessage)
+            BackupResult.Success.AllFilesDeleted -> RestoreResultUi.Success.AllBackupsDeleted(BackupMessages.deleteDataSucceededMessage)
 
             is BackupResult.Fail -> when {
                 result.exception?.let { networkMapper.isNetworkUnavailable(it) } ?: false ->

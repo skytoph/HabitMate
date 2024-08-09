@@ -12,6 +12,8 @@ import com.github.skytoph.taski.core.auth.SignInWithGoogle
 import com.github.skytoph.taski.core.backup.BackupDatastore
 import com.github.skytoph.taski.core.backup.BackupManager
 import com.github.skytoph.taski.core.backup.BackupResult
+import com.github.skytoph.taski.domain.habit.HabitRepository
+import com.github.skytoph.taski.domain.habit.Reminder
 import com.github.skytoph.taski.presentation.core.NetworkErrorMapper
 import com.github.skytoph.taski.presentation.settings.backup.mapper.BackupFilename
 import com.github.skytoph.taski.presentation.settings.backup.mapper.BackupResultMapper
@@ -32,6 +34,7 @@ interface BackupInteractor {
     fun mapTime(lastBackupSaved: Long?, loading: Long, context: Context, locale: Locale): String?
 
     class Base(
+        private val repository: HabitRepository,
         private val backup: BackupManager,
         private val drive: BackupDatastore,
         private val fileWriter: FileToUri,
@@ -56,7 +59,8 @@ interface BackupInteractor {
             return try {
                 val data = fileWriter.readFromUri(contentResolver, uri) ?: return BackupResultUi.Imported(false)
                 backup.import(data)
-                BackupResultUi.Imported(true)
+                val containsReminders = repository.habits().find { it.reminder != Reminder.None } != null
+                BackupResultUi.Imported(true, containsReminders)
             } catch (exception: Exception) {
                 Log.e("tag", exception.stackTraceToString())
                 BackupResultUi.Imported(false)
@@ -76,7 +80,7 @@ interface BackupInteractor {
             SignInWithGoogle.DriveScope.signInWithFirebase(intent)
             val profile = SignInWithGoogle.DriveScope.profile(context)
             if (profile == null) BackupResultUi.SignInFailed
-            else BackupResultUi.Success.SignedIn(profile)
+            else BackupResultUi.Success.SignedIn(profile, drive.lastSync())
         } catch (exception: Exception) {
             if (networkMapper.isNetworkUnavailable(exception)) BackupResultUi.NoConnection
             else BackupResultUi.SignInFailed

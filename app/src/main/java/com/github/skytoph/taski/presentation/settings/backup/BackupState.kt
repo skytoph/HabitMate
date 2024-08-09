@@ -1,6 +1,7 @@
 package com.github.skytoph.taski.presentation.settings.backup
 
 import android.net.Uri
+import com.github.skytoph.taski.presentation.habit.list.component.DialogItem
 
 data class BackupState(
     val isImportLoading: Boolean = false,
@@ -13,11 +14,14 @@ data class BackupState(
     val profile: ProfileUi? = null,
     val lastBackupSavedTime: Long? = null,
     val dialog: BackupDialogUi? = null,
+    val requestingPermission: Boolean = false,
+    val permissionDialog: DialogItem? = null,
 )
 
 enum class BackupDialogUi {
     Export,
     Import,
+    RequestPermissions,
     SignOut,
     DeleteAccount,
 }

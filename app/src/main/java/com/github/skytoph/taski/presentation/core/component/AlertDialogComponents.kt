@@ -217,6 +217,27 @@ fun RestoreBackupDialog(
 }
 
 @Composable
+fun RequestPermissionsBackupDialog(
+    onDismissRequest: () -> Unit = {},
+    onConfirm: () -> Unit = {},
+) {
+    val description = buildAnnotatedBoldString(
+        stringResource(R.string.request_permissions_dialog_description) to SpanStyle(),
+        stringResource(R.string.request_permissions_dialog_warning) to SpanStyle(fontWeight = FontWeight.Bold),
+    )
+    BaseAlertDialog(
+        onDismissRequest = onDismissRequest,
+        onConfirm = onConfirm,
+        dismissLabel = stringResource(R.string.action_cancel_later),
+        confirmLabel = stringResource(R.string.action_enable),
+        text = description,
+        title = stringResource(id = R.string.request_permissions_title),
+        confirmColor = MaterialTheme.colorScheme.primary,
+        confirmContainerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.8f)
+    )
+}
+
+@Composable
 fun DeleteBackupDialog(
     date: String,
     onDismissRequest: () -> Unit = {},
@@ -271,7 +292,7 @@ fun buildAnnotatedBoldString(
 @Preview
 private fun DialogPreview() {
     HabitMateTheme(darkTheme = true) {
-        DeleteAllBackupsDialog()
+        RequestPermissionsBackupDialog()
     }
 }
 

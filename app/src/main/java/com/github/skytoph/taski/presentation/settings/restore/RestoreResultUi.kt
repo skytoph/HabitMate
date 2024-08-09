@@ -15,8 +15,10 @@ sealed interface RestoreResultUi : MapResultToEvent<RestoreEvent> {
             override fun apply(): RestoreEvent = RestoreEvent.Restore(data)
         }
 
-        class Message(message: SnackbarMessage) : Success<SnackbarMessage>(message) {
-            override fun apply(): RestoreEvent = RestoreEvent.Message(data)
+        class Restored(private val needsPermission: Boolean, message: SnackbarMessage) :
+            Success<SnackbarMessage>(message) {
+            override fun apply(): RestoreEvent =
+                if (needsPermission) RestoreEvent.PermissionNeeded else RestoreEvent.Message(data)
         }
 
         class AllBackupsDeleted(message: SnackbarMessage) : Success<SnackbarMessage>(message) {
@@ -38,7 +40,7 @@ sealed interface RestoreResultUi : MapResultToEvent<RestoreEvent> {
         override fun apply(): RestoreEvent = RestoreEvent.ErrorFullscreen(message)
     }
 
-    object Empty: RestoreResultUi{
+    data object Empty : RestoreResultUi {
         override fun apply(): RestoreEvent = RestoreEvent.Empty
     }
 }

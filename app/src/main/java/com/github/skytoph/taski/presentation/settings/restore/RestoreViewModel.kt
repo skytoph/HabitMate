@@ -32,9 +32,7 @@ class RestoreViewModel @Inject constructor(
     fun onEvent(event: RestoreEvent) =
         event.handle(state = state, postMessage = ::showMessage, restore = ::restoreBackup, updateSettings = ::onEvent)
 
-    private fun showMessage(message: SnackbarMessage) = viewModelScope.launch {
-        snackbar.show(message)
-    }
+    fun showMessage(message: SnackbarMessage) = viewModelScope.launch { snackbar.show(message) }
 
     fun loadItems(locale: Locale, context: Context) = actionHandler.action(
         doAction = { interactor.backupItems(locale, context) },
