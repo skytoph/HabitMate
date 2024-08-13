@@ -6,10 +6,10 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
 import com.github.skytoph.taski.MainActivity
+import com.github.skytoph.taski.R
 import com.github.skytoph.taski.core.AsyncBroadcastReceiver
 import com.github.skytoph.taski.core.reminder.HabitNotificationChannel
 import com.github.skytoph.taski.core.reminder.ReminderItem
-import com.github.skytoph.taski.presentation.core.state.IconResource
 import com.github.skytoph.taski.presentation.core.state.StringResource
 import com.github.skytoph.taski.presentation.habit.edit.NotificationStateInteractor
 import com.google.gson.Gson
@@ -42,7 +42,7 @@ class AlarmReceiver : AsyncBroadcastReceiver() {
                     PendingIntent.getActivity(context, 0, activityIntent, PendingIntent.FLAG_IMMUTABLE)
 
                 val builder = NotificationCompat.Builder(context, channelId)
-                    .setSmallIcon(IconResource.Name(habit.iconName).id(context))
+                    .setSmallIcon(R.drawable.sparkles)
                     .setColor(habit.color)
                     .setContentTitle(habit.title)
                     .setContentText(StringResource.Identifier(item.messageIdentifier).getString(context))

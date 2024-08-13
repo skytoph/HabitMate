@@ -223,7 +223,7 @@ fun RequestPermissionsBackupDialog(
 ) {
     val description = buildAnnotatedBoldString(
         stringResource(R.string.request_permissions_dialog_description) to SpanStyle(),
-        stringResource(R.string.request_permissions_dialog_warning) to SpanStyle(fontWeight = FontWeight.Bold),
+        "\n" + stringResource(R.string.request_permissions_dialog_warning) to SpanStyle(fontWeight = FontWeight.Bold),
     )
     BaseAlertDialog(
         onDismissRequest = onDismissRequest,

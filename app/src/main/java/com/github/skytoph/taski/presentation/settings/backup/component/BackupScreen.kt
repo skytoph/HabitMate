@@ -33,6 +33,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -125,7 +126,7 @@ fun BackupScreen(viewModel: BackupViewModel = hiltViewModel(), restoreBackup: ()
         isExportLoading = state.value.isExportLoading,
         isDriveBackupLoading = state.value.isDriveBackupLoading,
         isProfileLoading = state.value.isProfileLoading,
-        isSigningIn = state.value.isSigningInLoading,
+        isSigningInLoading = state.value.isSigningInLoading,
         isInternetConnected = state.value.isInternetConnected,
         restoreBackup = restoreBackup,
         profile = state.value.profile,
@@ -187,12 +188,20 @@ private fun Backup(
     isExportLoading: Boolean = true,
     isDriveBackupLoading: Boolean = false,
     isProfileLoading: Boolean = false,
-    isSigningIn: Boolean = true,
+    isSigningInLoading: Boolean = true,
     isLoadingFullscreen: Boolean = false,
     isInternetConnected: Boolean = true,
     profile: ProfileUi? = ProfileUi(email = "email@gmail.com", name = "Name"),
     lastTimeBackupSaved: String? = "28.09.24 12:00",
 ) {
+    val enabled =
+        remember { mutableStateOf(!(isProfileLoading || isExportLoading || isImportLoading || isSigningInLoading || isDriveBackupLoading)) }
+
+    LaunchedEffect(isProfileLoading, isExportLoading, isImportLoading, isSigningInLoading, isDriveBackupLoading) {
+        enabled.value =
+            !(isProfileLoading || isExportLoading || isImportLoading || isSigningInLoading || isDriveBackupLoading)
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier.padding(horizontal = 16.dp)
@@ -229,7 +238,8 @@ private fun Backup(
                     profile == null ->
                         LogInItem(
                             logIn = logIn,
-                            isLoading = isSigningIn
+                            isLoading = isSigningInLoading,
+                            enabled = enabled.value
                         )
 
                     else ->
@@ -240,7 +250,8 @@ private fun Backup(
                             restoreBackup = restoreBackup,
                             signOut = signOut,
                             isBackupLoading = isDriveBackupLoading,
-                            deleteAccount = deleteAccount
+                            deleteAccount = deleteAccount,
+                            enabled = enabled.value
                         )
                 }
             }
@@ -251,7 +262,7 @@ private fun Backup(
                 style = MaterialTheme.typography.titleMedium
             )
             Spacer(modifier = Modifier.height(8.dp))
-            LocalBackup(export, isExportLoading, import, isImportLoading)
+            LocalBackup(export, isExportLoading, import, isImportLoading, enabled.value)
         }
         AnimatedVisibility(visible = isLoadingFullscreen) {
             if (isLoadingFullscreen)
@@ -291,7 +302,8 @@ private fun LocalBackup(
     export: () -> Unit,
     isExportLoading: Boolean,
     import: () -> Unit,
-    isImportLoading: Boolean
+    isImportLoading: Boolean,
+    enabled: Boolean
 ) {
     Column(
         modifier = Modifier
@@ -304,6 +316,7 @@ private fun LocalBackup(
             isLoading = isExportLoading,
             loadingText = stringResource(R.string.loading_export),
             modifier = Modifier.fillMaxWidth(),
+            enabled = enabled
         )
         HorizontalDivider()
         ButtonWithLoadingFull(
@@ -312,6 +325,7 @@ private fun LocalBackup(
             isLoading = isImportLoading,
             loadingText = stringResource(R.string.loading_import),
             modifier = Modifier.fillMaxWidth(),
+            enabled = enabled
         )
     }
 }
@@ -325,6 +339,7 @@ fun DriveBackup(
     deleteAccount: () -> Unit,
     isBackupLoading: Boolean,
     lastTimeBackupSaved: String?,
+    enabled: Boolean,
 ) {
     Column(
         horizontalAlignment = Alignment.Start,
@@ -342,6 +357,7 @@ fun DriveBackup(
                 onClick = createBackup,
                 isLoading = isBackupLoading,
                 loadingText = stringResource(R.string.loading_backup),
+                enabled = enabled
             )
         }
         Spacer(modifier = Modifier.height(16.dp))
@@ -355,19 +371,22 @@ fun DriveBackup(
                 onClick = restoreBackup,
                 isLoading = false,
                 modifier = Modifier.fillMaxWidth(),
+                enabled = enabled
             )
             HorizontalDivider()
             ButtonWithLoadingFull(
                 title = stringResource(R.string.delete_account_item),
                 onClick = deleteAccount,
                 textColor = MaterialTheme.colorScheme.error,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                enabled = enabled
             )
             HorizontalDivider()
             ButtonWithLoadingFull(
                 title = stringResource(R.string.sign_out_item),
                 onClick = signOut,
                 modifier = Modifier.fillMaxWidth(),
+                enabled = enabled
             )
         }
     }
@@ -434,6 +453,7 @@ private fun ProfileItem(profile: ProfileUi, lastTimeBackupSaved: String?) {
 private fun LogInItem(
     logIn: () -> Unit,
     isLoading: Boolean,
+    enabled: Boolean,
 ) {
     Column(
         modifier = Modifier
@@ -453,6 +473,7 @@ private fun LogInItem(
             loadingText = stringResource(R.string.signing_in),
             enabledColor = MaterialTheme.colorScheme.primary,
             disabledColor = MaterialTheme.colorScheme.secondaryContainer,
+            enabled = enabled
         )
     }
 }
@@ -511,7 +532,8 @@ private fun BackupItem(
             enabledColor = MaterialTheme.colorScheme.onTertiaryContainer,
             disabledColor = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.5f),
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            enabled = !isLoading
         )
     }
 }
@@ -526,10 +548,14 @@ private fun ButtonWithLoading(
     enabledColor: Color = MaterialTheme.colorScheme.primary,
     disabledColor: Color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.5f),
     textColor: Color = Color.White,
+    enabled: Boolean
 ) {
     val color = remember { Animatable(if (isLoading) disabledColor else enabledColor) }
     LaunchedEffect(isLoading) {
-        color.animateTo(if (isLoading) disabledColor else enabledColor)
+        color.animateTo(
+            targetValue = if (isLoading) disabledColor else enabledColor,
+            animationSpec = tween(durationMillis = 400)
+        )
     }
     Box(modifier = modifier
         .background(
@@ -537,7 +563,7 @@ private fun ButtonWithLoading(
             shape = MaterialTheme.shapes.large
         )
         .clip(MaterialTheme.shapes.small)
-        .clickable(enabled = !isLoading) { onClick() }
+        .clickable(enabled = !isLoading && enabled) { onClick() }
         .padding(horizontal = 8.dp, vertical = 8.dp)
         .animateContentSize(),
         contentAlignment = Alignment.Center) {
@@ -566,22 +592,26 @@ private fun ButtonWithLoading(
 
 @Composable
 private fun ButtonWithLoadingFull(
+    modifier: Modifier = Modifier,
     title: String,
     onClick: () -> Unit,
     isLoading: Boolean = false,
     loadingText: String = "",
     textColor: Color = MaterialTheme.colorScheme.onBackground,
-    modifier: Modifier = Modifier,
+    enabled: Boolean
 ) {
     val disabled = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f)
-    val enabled = MaterialTheme.colorScheme.primaryContainer
-    val color = remember { Animatable(if (isLoading) disabled else enabled) }
+    val enabledColor = MaterialTheme.colorScheme.primaryContainer
+    val color = remember { Animatable(if (isLoading) disabled else enabledColor) }
     LaunchedEffect(isLoading) {
-        color.animateTo(targetValue = if (isLoading) disabled else enabled, animationSpec = tween(durationMillis = 400))
+        color.animateTo(
+            targetValue = if (isLoading) disabled else enabledColor,
+            animationSpec = tween(durationMillis = 400)
+        )
     }
     Box(modifier = modifier
         .background(color = color.value)
-        .clickable(enabled = !isLoading) { onClick() }
+        .clickable(enabled = !isLoading && enabled) { onClick() }
         .padding(vertical = 12.dp),
         contentAlignment = Alignment.Center) {
         Crossfade(
