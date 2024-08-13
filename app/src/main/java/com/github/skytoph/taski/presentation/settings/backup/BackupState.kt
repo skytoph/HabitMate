@@ -14,6 +14,7 @@ data class BackupState(
     val profile: ProfileUi? = null,
     val lastBackupSavedTime: Long? = null,
     val dialog: BackupDialogUi? = null,
+    val refreshingReminders: Boolean = false,
     val requestingPermission: Boolean = false,
     val permissionDialog: DialogItem? = null,
 )

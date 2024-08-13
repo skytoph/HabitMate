@@ -17,7 +17,7 @@ import com.github.skytoph.taski.presentation.settings.backup.component.BackupScr
 import com.github.skytoph.taski.presentation.settings.general.component.GeneralSettingsScreen
 import com.github.skytoph.taski.presentation.settings.menu.component.SettingsMenuScreen
 import com.github.skytoph.taski.presentation.settings.reorder.component.HabitReorderScreen
-import com.github.skytoph.taski.presentation.settings.restore.component.BackupRestoreScreen
+import com.github.skytoph.taski.presentation.settings.restore.component.RestoreScreen
 import com.github.skytoph.taski.presentation.settings.theme.component.ThemeSettingsScreen
 
 abstract class SettingsScreens(val route: String) {
@@ -107,7 +107,7 @@ fun NavGraphBuilder.settingsNavigation(
             popExitTransition = { scaleOutOfContainer(direction = ScaleTransitionDirection.INWARDS) },
             popEnterTransition = null,
         ) {
-            BackupRestoreScreen()
+            RestoreScreen()
         }
     }
 }

@@ -65,10 +65,8 @@ import com.github.skytoph.taski.presentation.core.component.RequestPermissionsBa
 import com.github.skytoph.taski.presentation.core.component.SignOutDialog
 import com.github.skytoph.taski.presentation.core.component.getLocale
 import com.github.skytoph.taski.presentation.habit.edit.component.RequestNotificationPermission
-import com.github.skytoph.taski.presentation.habit.edit.component.isPermissionNeeded
 import com.github.skytoph.taski.presentation.settings.backup.BackupDialogUi
 import com.github.skytoph.taski.presentation.settings.backup.BackupEvent
-import com.github.skytoph.taski.presentation.settings.backup.BackupMessages
 import com.github.skytoph.taski.presentation.settings.backup.BackupViewModel
 import com.github.skytoph.taski.presentation.settings.backup.ProfileUi
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
@@ -96,7 +94,8 @@ fun BackupScreen(viewModel: BackupViewModel = hiltViewModel(), restoreBackup: ()
     val launcherImport = rememberLauncherForActivityResult(contract = contract) { result ->
         if (result.resultCode == Activity.RESULT_OK)
             result.data?.data?.let { uri ->
-                viewModel.import(context.contentResolver, uri)
+                viewModel.onEvent(BackupEvent.ImportLoading(true))
+                viewModel.import(context.contentResolver, uri, context)
             }
     }
 
@@ -111,6 +110,13 @@ fun BackupScreen(viewModel: BackupViewModel = hiltViewModel(), restoreBackup: ()
             intent.putExtra(Intent.EXTRA_STREAM, state.value.uriShareFile)
             viewModel.onEvent(BackupEvent.ShareFile())
             context.startActivity(intent)
+        }
+    }
+
+    LaunchedEffect(state.value.refreshingReminders) {
+        if (state.value.refreshingReminders) {
+            viewModel.onEvent(BackupEvent.RefreshingReminders(false))
+            context.applicationContext.sendBroadcast(Intent(context, RefreshRemindersReceiver::class.java))
         }
     }
 
@@ -145,7 +151,8 @@ fun BackupScreen(viewModel: BackupViewModel = hiltViewModel(), restoreBackup: ()
             signOut = { viewModel.signOut(context) },
             deleteAccount = { viewModel.deleteAccount(context) },
             requestPermissions = { viewModel.onEvent(BackupEvent.RequestPermissions(true)) },
-            dismiss = { viewModel.onEvent(BackupEvent.UpdateDialog()) })
+            dismiss = { viewModel.onEvent(BackupEvent.UpdateDialog()) },
+            dismissPermissions = { viewModel.onEvent(BackupEvent.UpdateDialog()) })
     }
 
     state.value.permissionDialog?.let { dialog ->
@@ -155,17 +162,13 @@ fun BackupScreen(viewModel: BackupViewModel = hiltViewModel(), restoreBackup: ()
     RequestNotificationPermission(
         requestPermissionDialog = { viewModel.onEvent(BackupEvent.UpdatePermissionDialog(it)) },
         permissionGranted = { isGranted ->
-            if (isGranted) {
-                context.sendBroadcast(Intent(RefreshRemindersReceiver.ACTION))
-                viewModel.showMessage(BackupMessages.importSucceededMessage)
-            }
+            if (isGranted) viewModel.onEvent(BackupEvent.RefreshingReminders(true))
         },
+        initialize = false,
         content = { requestPermission ->
             if (state.value.requestingPermission) {
                 viewModel.onEvent(BackupEvent.RequestPermissions(false))
-                if (isPermissionNeeded(context))
-                    requestPermission()
-                else viewModel.showMessage(BackupMessages.importSucceededMessage)
+                requestPermission()
             }
         }
     )
@@ -272,14 +275,15 @@ private fun BackupDialog(
     signOut: () -> Unit,
     deleteAccount: () -> Unit,
     requestPermissions: () -> Unit,
-    dismiss: () -> Unit
+    dismiss: () -> Unit,
+    dismissPermissions: () -> Unit,
 ) = when (dialog) {
     BackupDialogUi.Export -> ExportDialog(onConfirm = export, onDismissRequest = dismiss)
     BackupDialogUi.Import -> ImportDialog(onConfirm = import, onDismissRequest = dismiss)
     BackupDialogUi.SignOut -> SignOutDialog(onConfirm = signOut, onDismissRequest = dismiss)
     BackupDialogUi.DeleteAccount -> DeleteAccountDialog(onConfirm = deleteAccount, onDismissRequest = dismiss)
     BackupDialogUi.RequestPermissions ->
-        RequestPermissionsBackupDialog(onConfirm = requestPermissions, onDismissRequest = dismiss)
+        RequestPermissionsBackupDialog(onConfirm = requestPermissions, onDismissRequest = dismissPermissions)
 }
 
 @Composable

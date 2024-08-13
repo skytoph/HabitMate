@@ -42,9 +42,9 @@ class BackupViewModel @Inject constructor(
         beforeAction = arrayOf(BackupEvent.ExportLoading(true), BackupEvent.UpdateDialog()),
         doAction = { interactor.export(context) })
 
-    fun import(contentResolver: ContentResolver, uri: Uri) = actionHandler.action(
+    fun import(contentResolver: ContentResolver, uri: Uri, context: Context) = actionHandler.action(
         beforeAction = arrayOf(BackupEvent.UpdateDialog()),
-        doAction = { interactor.import(contentResolver, uri) })
+        doAction = { interactor.import(contentResolver, uri, context) })
 
     fun saveBackupOnDrive(context: Context) = actionHandler.action(
         beforeAction = arrayOf(BackupEvent.DriveLoading(true)),

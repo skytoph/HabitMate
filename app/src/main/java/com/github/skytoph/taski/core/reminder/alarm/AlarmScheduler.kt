@@ -6,10 +6,13 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import android.util.Log
+import com.github.skytoph.taski.R
 import com.github.skytoph.taski.core.reminder.HabitUriConverter
 import com.github.skytoph.taski.core.reminder.ReminderItem
 import com.github.skytoph.taski.core.reminder.ReminderScheduler
 import com.google.gson.Gson
+import java.text.SimpleDateFormat
 
 class AlarmScheduler(
     private val alarm: AlarmProvider,
@@ -23,6 +26,10 @@ class AlarmScheduler(
         val alarmManager = alarm.alarmManager(context)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) return
         items.forEach { item ->
+            Log.e(
+                AlarmScheduler::class.simpleName,
+                "reminder scheduled: " + SimpleDateFormat(context.getString(R.string.backup_date_format)).format(item.timeMillis)
+            )
             alarmManager.setExactAndAllowWhileIdle(
                 /* type = */ AlarmManager.RTC_WAKEUP,
                 /* triggerAtMillis = */ item.timeMillis,

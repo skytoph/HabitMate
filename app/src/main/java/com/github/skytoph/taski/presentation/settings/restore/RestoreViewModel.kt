@@ -38,14 +38,14 @@ class RestoreViewModel @Inject constructor(
         doAction = { interactor.backupItems(locale, context) },
     )
 
-    fun downloadBackup(id: String) = actionHandler.action(
+    fun downloadBackup(id: String, context: Context) = actionHandler.action(
         beforeAction = arrayOf(RestoreEvent.UpdateDialog(), RestoreEvent.Loading(true)),
-        doAction = { interactor.download(id) },
+        doAction = { interactor.download(id, context) },
     )
 
-    private fun restoreBackup(data: ByteArray) = actionHandler.action(
+    private fun restoreBackup(data: ByteArray, context: Context) = actionHandler.action(
         beforeAction = emptyArray(),
-        doAction = { interactor.restore(data) },
+        doAction = { interactor.restore(data, context) },
     )
 
     fun delete(id: String, locale: Locale, context: Context) = actionHandler.action(

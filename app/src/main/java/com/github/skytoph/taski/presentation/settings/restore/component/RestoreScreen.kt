@@ -61,7 +61,7 @@ import com.github.skytoph.taski.presentation.settings.restore.RestoreViewModel
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
-fun BackupRestoreScreen(viewModel: RestoreViewModel = hiltViewModel()) {
+fun RestoreScreen(viewModel: RestoreViewModel = hiltViewModel()) {
     val state = viewModel.state()
     val locale = getLocale()
     val context = LocalContext.current
@@ -89,6 +89,14 @@ fun BackupRestoreScreen(viewModel: RestoreViewModel = hiltViewModel()) {
     LaunchedEffect(state.value.items) {
         if (state.value.items?.isEmpty() == true)
             viewModel.onEvent(RestoreEvent.ErrorFullscreen(StringResource.ResId(R.string.no_backup)))
+    }
+
+    LaunchedEffect(state.value.refreshingReminders) {
+        if (state.value.refreshingReminders) {
+            viewModel.onEvent(RestoreEvent.RefreshingReminders(false))
+            context.applicationContext.sendBroadcast(Intent(context, RefreshRemindersReceiver::class.java))
+            viewModel.showMessage(BackupMessages.importSucceededMessage)
+        }
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -119,7 +127,7 @@ fun BackupRestoreScreen(viewModel: RestoreViewModel = hiltViewModel()) {
 
     state.value.dialog?.let { dialog ->
         DialogItem(dialog = dialog,
-            restore = { viewModel.onEvent(RestoreEvent.ShowContextMenu()); viewModel.downloadBackup(it.id) },
+            restore = { viewModel.onEvent(RestoreEvent.ShowContextMenu()); viewModel.downloadBackup(it.id, context) },
             delete = { viewModel.onEvent(RestoreEvent.ShowContextMenu()); viewModel.delete(it.id, locale, context) },
             deleteAllData = { viewModel.deleteAllData() },
             requestPermissions = { viewModel.onEvent(RestoreEvent.RequestPermissions(true)) },
@@ -133,10 +141,7 @@ fun BackupRestoreScreen(viewModel: RestoreViewModel = hiltViewModel()) {
     RequestNotificationPermission(
         requestPermissionDialog = { viewModel.onEvent(RestoreEvent.UpdatePermissionDialog(it)) },
         permissionGranted = { isGranted ->
-            if (isGranted) {
-                context.sendBroadcast(Intent(RefreshRemindersReceiver.ACTION))
-                viewModel.showMessage(BackupMessages.importSucceededMessage)
-            }
+            if (isGranted) viewModel.onEvent(RestoreEvent.RefreshingReminders(true))
         },
         content = { requestPermission ->
             if (state.value.requestingPermission) {

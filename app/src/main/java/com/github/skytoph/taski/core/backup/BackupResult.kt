@@ -9,7 +9,7 @@ sealed interface BackupResult {
         class FileDownloaded(val file: ByteArray) : Success
         class Saved(val time: DateTime) : Success
         class Deleted(val time: DateTime?, val newData: List<File>) : Success
-        class FileRestored(val containsReminders: Boolean) : Success
+        class FileRestored(val containsReminders: Boolean, val needsPermission: Boolean) : Success
         data object AllFilesDeleted : Success
     }
 

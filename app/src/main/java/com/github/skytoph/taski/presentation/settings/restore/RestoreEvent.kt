@@ -1,5 +1,6 @@
 package com.github.skytoph.taski.presentation.settings.restore
 
+import android.content.Context
 import androidx.compose.runtime.MutableState
 import com.github.skytoph.taski.core.datastore.SettingsCache
 import com.github.skytoph.taski.presentation.appbar.SnackbarMessage
@@ -72,14 +73,14 @@ sealed interface RestoreEvent {
         }
     }
 
-    class Restore(private val data: ByteArray) : RestoreEvent {
+    class Restore(private val data: ByteArray, private val context: Context) : RestoreEvent {
         override fun handle(
             state: MutableState<RestoreState>,
             postMessage: PostMessage,
             restore: RestoreData,
             updateSettings: (SettingsEvent) -> Unit
         ) {
-            restore.restore(data)
+            restore.restore(data, context)
         }
     }
 
@@ -102,6 +103,17 @@ sealed interface RestoreEvent {
             updateSettings: (SettingsEvent) -> Unit
         ) {
             state.value = state.value.copy(isLoading = false, dialog = RestoreDialogUi.RequestPermissions)
+        }
+    }
+
+    class RefreshingReminders(private val isRefreshing: Boolean) : RestoreEvent {
+        override fun handle(
+            state: MutableState<RestoreState>,
+            postMessage: PostMessage,
+            restore: RestoreData,
+            updateSettings: (SettingsEvent) -> Unit
+        ) {
+            state.value = state.value.copy(isLoading = false, refreshingReminders = isRefreshing)
         }
     }
 
@@ -170,7 +182,7 @@ sealed interface RestoreEvent {
     data object Empty : RestoreEvent
 
     fun interface RestoreData {
-        fun restore(data: ByteArray)
+        fun restore(data: ByteArray, context: Context)
     }
 
     interface SettingsEvent : SettingsViewModel.Event

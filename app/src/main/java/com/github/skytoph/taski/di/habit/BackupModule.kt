@@ -5,6 +5,7 @@ import com.github.skytoph.taski.core.backup.BackupManager
 import com.github.skytoph.taski.core.backup.StringCompressor
 import com.github.skytoph.taski.core.datastore.SettingsCache
 import com.github.skytoph.taski.data.habit.database.HabitDatabase
+import com.github.skytoph.taski.domain.habit.HabitRepository
 import com.github.skytoph.taski.presentation.core.NetworkErrorMapper
 import com.github.skytoph.taski.presentation.settings.backup.BackupInteractor
 import com.github.skytoph.taski.presentation.settings.backup.mapper.BackupResultMapper
@@ -38,6 +39,7 @@ object BackupModule {
         datastore: BackupDatastore,
         fileWriter: FileToUri,
         mapper: BackupResultMapper,
-        networkMapper: NetworkErrorMapper
-    ): BackupInteractor = BackupInteractor.Base(backup, datastore, fileWriter, mapper, networkMapper)
+        networkMapper: NetworkErrorMapper,
+        repository: HabitRepository
+    ): BackupInteractor = BackupInteractor.Base(repository, backup, datastore, fileWriter, mapper, networkMapper)
 }

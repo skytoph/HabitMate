@@ -23,7 +23,7 @@ interface RestoreBackupResultMapper {
             is BackupResult.Success.ListOfFiles ->
                 RestoreResultUi.Success.ListOfData(mapper.map(result.data.map { it.map() }, locale!!, context!!))
 
-            is BackupResult.Success.FileDownloaded -> RestoreResultUi.Success.NextAction(result.file)
+            is BackupResult.Success.FileDownloaded -> RestoreResultUi.Success.NextAction(result.file, context!!)
 
             is BackupResult.Success.Deleted -> RestoreResultUi.Success.Deleted(
                 message = BackupMessages.deleteItemSucceededMessage,
@@ -31,8 +31,11 @@ interface RestoreBackupResultMapper {
                 newData = mapper.map(result.newData.map { it.map() }, locale!!, context!!)
             )
 
-            is BackupResult.Success.FileRestored ->
-                RestoreResultUi.Success.Restored(result.containsReminders, BackupMessages.importSucceededMessage)
+            is BackupResult.Success.FileRestored -> RestoreResultUi.Success.Restored(
+                containsReminders = result.containsReminders,
+                needsPermission = result.needsPermission,
+                message = BackupMessages.importSucceededMessage
+            )
 
             BackupResult.Success.AllFilesDeleted -> RestoreResultUi.Success.AllBackupsDeleted(BackupMessages.deleteDataSucceededMessage)
 

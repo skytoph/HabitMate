@@ -36,12 +36,23 @@ sealed interface BackupResultUi : MapResultToListOfEvents<BackupEvent> {
         }
     }
 
-    class Imported(private val successful: Boolean, private val containsReminders: Boolean = false) : BackupResultUi {
+    class Imported(
+        private val successful: Boolean,
+        private val containsReminders: Boolean = false,
+        private val needsPermission: Boolean = false
+    ) : BackupResultUi {
         override fun apply(): List<BackupEvent> = ArrayList<BackupEvent>(3).apply {
             add(BackupEvent.ImportLoading(false))
-            if (!successful) add(BackupEvent.Message(importFailedMessage))
-            else if (!containsReminders) add(BackupEvent.Message(importSucceededMessage))
-            else add(BackupEvent.PermissionNeeded)
+            when {
+                !successful -> add(BackupEvent.Message(importFailedMessage))
+                containsReminders && needsPermission -> add(BackupEvent.PermissionNeeded)
+                containsReminders -> {
+                    add(BackupEvent.RefreshingReminders(true))
+                    add(BackupEvent.Message(importSucceededMessage))
+                }
+
+                else -> add(BackupEvent.Message(importSucceededMessage))
+            }
         }
     }
 

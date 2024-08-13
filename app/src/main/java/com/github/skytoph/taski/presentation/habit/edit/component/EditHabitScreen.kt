@@ -451,7 +451,8 @@ private fun EditReminder(
 @Composable
 fun RequestNotificationPermission(
     requestPermissionDialog: (DialogItem?) -> Unit,
-    permissionGranted: (Boolean) -> Unit,
+    permissionGranted: (Boolean) -> Unit = {},
+    initialize: Boolean = true,
     content: @Composable (requestPermission: () -> Unit) -> Unit
 ) {
     val context = LocalContext.current
@@ -507,7 +508,7 @@ fun RequestNotificationPermission(
             lifecycleState = lifecycleState
         )
     }
-    LaunchedEffect(Unit) {
+    if (initialize) LaunchedEffect(Unit) {
         if (!areNotificationsEnabled(context) || !areAlarmsEnabled(context))
             permissionGranted(false)
     }

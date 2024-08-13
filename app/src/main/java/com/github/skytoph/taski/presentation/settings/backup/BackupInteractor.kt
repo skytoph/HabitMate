@@ -15,6 +15,7 @@ import com.github.skytoph.taski.core.backup.BackupResult
 import com.github.skytoph.taski.domain.habit.HabitRepository
 import com.github.skytoph.taski.domain.habit.Reminder
 import com.github.skytoph.taski.presentation.core.NetworkErrorMapper
+import com.github.skytoph.taski.presentation.habit.edit.component.isPermissionNeeded
 import com.github.skytoph.taski.presentation.settings.backup.mapper.BackupFilename
 import com.github.skytoph.taski.presentation.settings.backup.mapper.BackupResultMapper
 import com.github.skytoph.taski.presentation.settings.backup.mapper.FileToUri
@@ -24,7 +25,7 @@ import java.util.Locale
 
 interface BackupInteractor {
     suspend fun export(context: Context): BackupResultUi
-    suspend fun import(contentResolver: ContentResolver, uri: Uri): BackupResultUi
+    suspend fun import(contentResolver: ContentResolver, uri: Uri, context: Context): BackupResultUi
     suspend fun saveBackupOnDrive(context: Context): BackupResultUi
     suspend fun profile(context: Context): BackupResultUi
     suspend fun signOut(context: Context)
@@ -55,12 +56,13 @@ interface BackupInteractor {
             BackupResultUi.ExportFailed
         }
 
-        override suspend fun import(contentResolver: ContentResolver, uri: Uri): BackupResultUi {
+        override suspend fun import(contentResolver: ContentResolver, uri: Uri, context: Context): BackupResultUi {
             return try {
                 val data = fileWriter.readFromUri(contentResolver, uri) ?: return BackupResultUi.Imported(false)
                 backup.import(data)
                 val containsReminders = repository.habits().find { it.reminder != Reminder.None } != null
-                BackupResultUi.Imported(true, containsReminders)
+                val needsPermission = isPermissionNeeded(context)
+                BackupResultUi.Imported(true, containsReminders, needsPermission)
             } catch (exception: Exception) {
                 Log.e("tag", exception.stackTraceToString())
                 BackupResultUi.Imported(false)

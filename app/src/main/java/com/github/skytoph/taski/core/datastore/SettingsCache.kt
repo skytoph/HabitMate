@@ -35,7 +35,7 @@ interface SettingsCache {
         }
 
         override suspend fun update(settings: Settings) {
-            dataStore.updateData { settings }
+            dataStore.updateData { settings.copy(lastBackupSaved = it.lastBackupSaved) }
         }
 
         override suspend fun updateWeekStart() {

@@ -88,7 +88,7 @@ sealed interface BackupEvent {
         override fun handle(
             state: MutableState<BackupState>, showMessage: PostMessage, settingsEvent: (SettingsEvent) -> Unit
         ) {
-            state.value = state.value.copy(isImportLoading = false, dialog = BackupDialogUi.RequestPermissions)
+            state.value = state.value.copy(dialog = BackupDialogUi.RequestPermissions)
         }
     }
 
@@ -96,7 +96,15 @@ sealed interface BackupEvent {
         override fun handle(
             state: MutableState<BackupState>, showMessage: PostMessage, settingsEvent: (SettingsEvent) -> Unit
         ) {
-            state.value = state.value.copy(dialog = null, requestingPermission = request)
+            state.value = state.value.copy(isImportLoading = false, dialog = null, requestingPermission = request)
+        }
+    }
+
+    class RefreshingReminders(private val isRefreshing: Boolean) : BackupEvent {
+        override fun handle(
+            state: MutableState<BackupState>, showMessage: PostMessage, settingsEvent: (SettingsEvent) -> Unit
+        ) {
+            state.value = state.value.copy(isImportLoading = false, refreshingReminders = isRefreshing)
         }
     }
 

@@ -10,7 +10,8 @@ data class RestoreState(
     val errorStateMessage: StringResource? = null,
     val dialog: RestoreDialogUi? = null,
     val permissionDialog: DialogItem? = null,
-    val requestingPermission: Boolean = false
+    val refreshingReminders: Boolean = false,
+    val requestingPermission: Boolean = false,
 )
 
 sealed class RestoreDialogUi {
