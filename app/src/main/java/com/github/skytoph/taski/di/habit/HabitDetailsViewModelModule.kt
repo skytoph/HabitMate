@@ -5,10 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import com.github.skytoph.taski.core.Now
 import com.github.skytoph.taski.domain.habit.HabitRepository
 import com.github.skytoph.taski.presentation.core.interactor.HabitDoneInteractor
-import com.github.skytoph.taski.presentation.habit.EntityPagerProvider
 import com.github.skytoph.taski.presentation.habit.details.HabitDetailsInteractor
 import com.github.skytoph.taski.presentation.habit.details.HabitDetailsState
 import com.github.skytoph.taski.presentation.habit.details.mapper.EditableEntryDomainToUiMapper
+import com.github.skytoph.taski.presentation.habit.list.EntityPagerProvider
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

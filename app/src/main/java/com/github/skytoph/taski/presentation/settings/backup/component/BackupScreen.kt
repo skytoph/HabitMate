@@ -40,15 +40,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
@@ -56,14 +59,9 @@ import coil.request.ImageRequest
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.core.auth.SignInWithGoogle
 import com.github.skytoph.taski.core.reminder.RefreshRemindersReceiver
-import com.github.skytoph.taski.presentation.core.component.DeleteAccountDialog
-import com.github.skytoph.taski.presentation.core.component.ExportDialog
-import com.github.skytoph.taski.presentation.core.component.ImportDialog
 import com.github.skytoph.taski.presentation.core.component.LoadingFullscreen
 import com.github.skytoph.taski.presentation.core.component.LoadingItems
 import com.github.skytoph.taski.presentation.core.component.NotificationPermissionDialog
-import com.github.skytoph.taski.presentation.core.component.RequestPermissionsBackupDialog
-import com.github.skytoph.taski.presentation.core.component.SignOutDialog
 import com.github.skytoph.taski.presentation.core.component.getLocale
 import com.github.skytoph.taski.presentation.habit.edit.component.RequestNotificationPermission
 import com.github.skytoph.taski.presentation.settings.backup.BackupDialogUi
@@ -86,10 +84,11 @@ fun BackupScreen(viewModel: BackupViewModel = hiltViewModel(), restoreBackup: ()
         viewModel.loadProfile(context)
     }
 
-    val startForResult = rememberLauncherForActivityResult(contract) { result: ActivityResult ->
-        if (result.resultCode == Activity.RESULT_OK) {
+    val launcherSignIn = rememberLauncherForActivityResult(contract) { result: ActivityResult ->
+        if (result.resultCode == Activity.RESULT_OK)
             result.data?.let { intent -> viewModel.signInWithFirebase(intent, context) }
-        }
+        else
+            viewModel.onEvent(BackupEvent.IsSigningIn(false))
     }
 
     val launcherImport = rememberLauncherForActivityResult(contract = contract) { result ->
@@ -134,7 +133,7 @@ fun BackupScreen(viewModel: BackupViewModel = hiltViewModel(), restoreBackup: ()
         logIn = {
             viewModel.onEvent(BackupEvent.IsSigningIn(true))
             coroutineScope.launch {
-                startForResult.launch(SignInWithGoogle.DriveScope.getClient(context).signInIntent)
+                launcherSignIn.launch(SignInWithGoogle.DriveScope.getClient(context).signInIntent)
             }
         },
         saveBackup = { viewModel.saveBackupOnDrive(context) },
@@ -188,10 +187,11 @@ private fun Backup(
     isExportLoading: Boolean = true,
     isDriveBackupLoading: Boolean = false,
     isProfileLoading: Boolean = false,
-    isSigningInLoading: Boolean = true,
+    isSigningInLoading: Boolean = false,
     isLoadingFullscreen: Boolean = false,
-    isInternetConnected: Boolean = true,
-    profile: ProfileUi? = ProfileUi(email = "email@gmail.com", name = "Name"),
+    isInternetConnected: Boolean = false,
+    profile: ProfileUi? = null,
+//    profile: ProfileUi? = ProfileUi(email = "email@gmail.com", name = "Name"),
     lastTimeBackupSaved: String? = "28.09.24 12:00",
 ) {
     val enabled =
@@ -235,7 +235,7 @@ private fun Backup(
                             LoadingItems()
                         }
 
-                    profile == null ->
+                    profile == null || profile.isAnonymous ->
                         LogInItem(
                             logIn = logIn,
                             isLoading = isSigningInLoading,
@@ -265,36 +265,16 @@ private fun Backup(
             LocalBackup(export, isExportLoading, import, isImportLoading, enabled.value)
         }
         AnimatedVisibility(visible = isLoadingFullscreen) {
-            if (isLoadingFullscreen)
-                Box(
-                    modifier = Modifier
-                        .matchParentSize()
-                        .background(color = MaterialTheme.colorScheme.background.copy(alpha = 0.7f)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    LoadingFullscreen()
-                }
+            Box(
+                modifier = Modifier
+                    .matchParentSize()
+                    .background(color = MaterialTheme.colorScheme.background.copy(alpha = 0.7f)),
+                contentAlignment = Alignment.Center
+            ) {
+                LoadingFullscreen()
+            }
         }
     }
-}
-
-@Composable
-private fun BackupDialog(
-    dialog: BackupDialogUi,
-    export: () -> Unit,
-    import: () -> Unit,
-    signOut: () -> Unit,
-    deleteAccount: () -> Unit,
-    requestPermissions: () -> Unit,
-    dismiss: () -> Unit,
-    dismissPermissions: () -> Unit,
-) = when (dialog) {
-    BackupDialogUi.Export -> ExportDialog(onConfirm = export, onDismissRequest = dismiss)
-    BackupDialogUi.Import -> ImportDialog(onConfirm = import, onDismissRequest = dismiss)
-    BackupDialogUi.SignOut -> SignOutDialog(onConfirm = signOut, onDismissRequest = dismiss)
-    BackupDialogUi.DeleteAccount -> DeleteAccountDialog(onConfirm = deleteAccount, onDismissRequest = dismiss)
-    BackupDialogUi.RequestPermissions ->
-        RequestPermissionsBackupDialog(onConfirm = requestPermissions, onDismissRequest = dismissPermissions)
 }
 
 @Composable
@@ -349,18 +329,31 @@ fun DriveBackup(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(16.dp))
-            ProfileItem(profile = profile, lastTimeBackupSaved = lastTimeBackupSaved)
-            Spacer(modifier = Modifier.height(16.dp))
-            ButtonWithLoading(
-                title = stringResource(R.string.create_backup_on_drive),
-                onClick = createBackup,
-                isLoading = isBackupLoading,
-                loadingText = stringResource(R.string.loading_backup),
-                enabled = enabled
-            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f),
+                        MaterialTheme.shapes.small
+                    ),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Spacer(modifier = Modifier.height(8.dp))
+                ProfileItem(profile = profile, lastTimeBackupSaved = lastTimeBackupSaved)
+                Spacer(modifier = Modifier.height(8.dp))
+                ButtonWithLoading(
+                    title = stringResource(R.string.create_backup_on_drive),
+                    onClick = createBackup,
+                    isLoading = isBackupLoading,
+                    loadingText = stringResource(R.string.loading_backup),
+                    enabled = enabled,
+                    textPadding = 64.dp
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+            Spacer(modifier = Modifier.height(8.dp))
         }
-        Spacer(modifier = Modifier.height(16.dp))
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -450,7 +443,7 @@ private fun ProfileItem(profile: ProfileUi, lastTimeBackupSaved: String?) {
 }
 
 @Composable
-private fun LogInItem(
+fun LogInItem(
     logIn: () -> Unit,
     isLoading: Boolean,
     enabled: Boolean,
@@ -459,8 +452,10 @@ private fun LogInItem(
         modifier = Modifier
             .padding(vertical = 8.dp)
             .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
+            modifier = Modifier.fillMaxWidth(),
             text = stringResource(R.string.backup_with_google_description),
             color = MaterialTheme.colorScheme.onBackground,
             style = MaterialTheme.typography.bodySmall
@@ -473,7 +468,8 @@ private fun LogInItem(
             loadingText = stringResource(R.string.signing_in),
             enabledColor = MaterialTheme.colorScheme.primary,
             disabledColor = MaterialTheme.colorScheme.secondaryContainer,
-            enabled = enabled
+            enabled = enabled,
+            textPadding = 64.dp
         )
     }
 }
@@ -531,15 +527,14 @@ private fun BackupItem(
             loadingText = loadingText,
             enabledColor = MaterialTheme.colorScheme.onTertiaryContainer,
             disabledColor = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.5f),
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             enabled = !isLoading
         )
     }
 }
 
 @Composable
-private fun ButtonWithLoading(
+fun ButtonWithLoading(
     modifier: Modifier = Modifier,
     title: String,
     onClick: () -> Unit,
@@ -547,8 +542,11 @@ private fun ButtonWithLoading(
     loadingText: String = "",
     enabledColor: Color = MaterialTheme.colorScheme.primary,
     disabledColor: Color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.5f),
+    style: TextStyle = MaterialTheme.typography.titleSmall,
+    shape: Shape = MaterialTheme.shapes.large,
     textColor: Color = Color.White,
-    enabled: Boolean
+    enabled: Boolean,
+    textPadding: Dp = 8.dp
 ) {
     val color = remember { Animatable(if (isLoading) disabledColor else enabledColor) }
     LaunchedEffect(isLoading) {
@@ -558,10 +556,7 @@ private fun ButtonWithLoading(
         )
     }
     Box(modifier = modifier
-        .background(
-            color = color.value,
-            shape = MaterialTheme.shapes.large
-        )
+        .background(color = color.value, shape = shape)
         .clip(MaterialTheme.shapes.small)
         .clickable(enabled = !isLoading && enabled) { onClick() }
         .padding(horizontal = 8.dp, vertical = 8.dp)
@@ -573,16 +568,15 @@ private fun ButtonWithLoading(
             animationSpec = tween(durationMillis = 150)
         ) {
             Box(
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = modifier,
                 contentAlignment = Alignment.CenterEnd
             ) {
                 Text(
                     text = if (it) loadingText else title,
-                    style = MaterialTheme.typography.titleSmall,
+                    style = style,
                     color = textColor,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = modifier.padding(horizontal = textPadding)
                 )
                 if (it) LoadingItems(spaceSize = 4.dp)
             }

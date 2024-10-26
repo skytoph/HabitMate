@@ -25,7 +25,7 @@ interface EditHabitInteractor : HabitDoneInteractor, NotificationInteractor, Cre
 
         override suspend fun insert(habit: HabitUi, context: Context, isFirstDaySunday: Boolean) {
             val oldHabit = repository.habit(habit.id)
-            scheduler.cancel(context, oldHabit.id, oldHabit.frequency.times)
+            scheduler.cancel(oldHabit.id, oldHabit.frequency.times)
             repository.update(habit.map(mapper, context))
             scheduleNotification(habit, context, isFirstDaySunday)
         }

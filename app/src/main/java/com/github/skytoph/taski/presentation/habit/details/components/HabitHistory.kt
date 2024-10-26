@@ -226,9 +226,6 @@ private fun DailyEntry(
 ) {
     val defaultColor = Color.White
     val color = remember { Animatable(entryColor(entry, habitColor, defaultColor, isEditable, goal)) }
-//    val background = if (entry.hasBorder) habitColor.applyColor(defaultColor, 0.3f)
-//    else if (isEditable && entry.daysAgo < 0) Color.Gray.applyColor(defaultColor, 0.3f)
-//    else color.value
     LaunchedEffect(entry.timesDone, entry.hasBorder) {
         color.animateTo(
             targetValue = entryColor(entry, habitColor, defaultColor, isEditable, goal),

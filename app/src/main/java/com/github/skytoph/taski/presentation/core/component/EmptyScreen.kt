@@ -1,5 +1,6 @@
 package com.github.skytoph.taski.presentation.core.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,7 +38,7 @@ fun EmptyScreen(
             Icon(
                 imageVector = icon,
                 contentDescription = title,
-                tint = MaterialTheme.colorScheme.primary,
+                tint = Color.Unspecified,
                 modifier = Modifier.size(40.dp)
             )
             Text(
@@ -51,10 +52,10 @@ fun EmptyScreen(
 }
 
 @Composable
-@Preview
+@Preview(showBackground = true)
 fun EmptyScreenPreview() {
     HabitMateTheme(darkTheme = true) {
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
             EmptyScreen(
                 title = stringResource(R.string.list_of_habits_is_empty_create_label),
                 icon = ImageVector.vectorResource(R.drawable.sparkles_large),

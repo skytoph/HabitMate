@@ -128,7 +128,7 @@ fun HabitDetails(
                     contentDescription = habit.icon.name(context.resources),
                     modifier = Modifier
                         .size(32.dp)
-                        .padding(6.dp),
+                        .padding(2.dp),
                     tint = Color.White
                 )
             }

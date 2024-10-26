@@ -17,9 +17,11 @@ interface SettingsCache {
     suspend fun updateWeekStart()
     suspend fun updateCurrentDayHighlight()
     suspend fun updateStreakHighlight()
+    suspend fun updateIconsSort()
     suspend fun updateTheme(theme: AppTheme)
     suspend fun updateViewNumberOfEntries(number: Int)
     suspend fun updateBackupTime(time: Long?)
+    suspend fun updateIconWarning(show: Boolean? = null)
     suspend fun updateView(
         viewType: ViewType? = null, sortBy: SortHabits? = null, filterBy: FilterHabits? = null,
         showTodayHabitsOnly: Boolean? = null
@@ -50,12 +52,21 @@ interface SettingsCache {
             dataStore.updateData { it.copy(streaksHighlighted = !it.streaksHighlighted) }
         }
 
+        override suspend fun updateIconsSort() {
+            dataStore.updateData { it.copy(sortIcons = !it.sortIcons) }
+        }
+
         override suspend fun updateTheme(theme: AppTheme) {
             dataStore.updateData { it.copy(theme = theme) }
         }
 
         override suspend fun updateBackupTime(time: Long?) {
             dataStore.updateData { it.copy(lastBackupSaved = time) }
+        }
+
+        override suspend fun updateIconWarning(show: Boolean?) {
+            if (show == null) dataStore.updateData { it.copy(showIconWarning = !it.showIconWarning) }
+            else dataStore.updateData { it.copy(showIconWarning = show) }
         }
 
         override suspend fun updateView(

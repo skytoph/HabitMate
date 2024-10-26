@@ -23,8 +23,9 @@ object WorkManagerModule {
     @Provides
     @Singleton
     fun scheduler(
-        alarmProvider: AlarmProvider, uriConverter: HabitUriConverter, gson: Gson
-    ): ReminderScheduler = AlarmScheduler(alarmProvider, uriConverter, gson)
+        alarmProvider: AlarmProvider, uriConverter: HabitUriConverter, gson: Gson, @ApplicationContext context: Context
+    ): ReminderScheduler = AlarmScheduler(alarmProvider, uriConverter, gson, context)
+
 //    @Provides
 //    @Singleton
 //    fun scheduler(

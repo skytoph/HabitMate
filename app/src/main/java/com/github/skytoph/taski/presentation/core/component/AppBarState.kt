@@ -1,8 +1,8 @@
 package com.github.skytoph.taski.presentation.core.component
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBackIos
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.ui.graphics.Color
 import com.github.skytoph.taski.R
@@ -24,13 +24,14 @@ data class NavigateUp(
 
 data class AppBarAction(
     val title: StringResource = StringResource.Value(""),
-    val icon: IconResource,
+    val icon: IconResource? = null,
     val color: Color = Color.Black,
     val onClick: () -> Unit = {},
+    val checked: Boolean? = null
 ) {
     companion object {
         val navigateUp = AppBarAction(
-            StringResource.ResId(R.string.action_navigate_up), IconResource.Vector(Icons.Filled.ArrowBackIos),
+            StringResource.ResId(R.string.action_navigate_up), IconResource.Vector(Icons.AutoMirrored.Filled.ArrowBackIos),
         )
 
         val save = AppBarAction(

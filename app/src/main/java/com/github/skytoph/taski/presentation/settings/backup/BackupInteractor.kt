@@ -2,9 +2,6 @@ package com.github.skytoph.taski.presentation.settings.backup
 
 import android.content.ContentResolver
 import android.content.Context
-import android.content.Intent
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 import android.net.Uri
 import android.util.Log
 import com.github.skytoph.taski.R
@@ -16,6 +13,7 @@ import com.github.skytoph.taski.domain.habit.HabitRepository
 import com.github.skytoph.taski.domain.habit.Reminder
 import com.github.skytoph.taski.presentation.core.NetworkErrorMapper
 import com.github.skytoph.taski.presentation.habit.edit.component.isPermissionNeeded
+import com.github.skytoph.taski.presentation.habit.icon.IconsDatastore
 import com.github.skytoph.taski.presentation.settings.backup.mapper.BackupFilename
 import com.github.skytoph.taski.presentation.settings.backup.mapper.BackupResultMapper
 import com.github.skytoph.taski.presentation.settings.backup.mapper.FileToUri
@@ -23,15 +21,13 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 
-interface BackupInteractor {
+interface BackupInteractor : SignInInteractor<BackupResultUi> {
     suspend fun export(context: Context): BackupResultUi
     suspend fun import(contentResolver: ContentResolver, uri: Uri, context: Context): BackupResultUi
     suspend fun saveBackupOnDrive(context: Context): BackupResultUi
     suspend fun profile(context: Context): BackupResultUi
-    suspend fun signOut(context: Context)
+    suspend fun signOut(context: Context): BackupResultUi
     suspend fun deleteAccount(context: Context): BackupResultUi
-    suspend fun signInWithFirebase(intent: Intent, context: Context): BackupResultUi
-    fun checkConnection(context: Context): BackupResultUi
     fun mapTime(lastBackupSaved: Long?, loading: Long, context: Context, locale: Locale): String?
 
     class Base(
@@ -40,8 +36,9 @@ interface BackupInteractor {
         private val drive: BackupDatastore,
         private val fileWriter: FileToUri,
         private val mapper: BackupResultMapper,
-        private val networkMapper: NetworkErrorMapper
-    ) : BackupInteractor {
+        private val iconsDatastore: IconsDatastore,
+        private val networkMapper: NetworkErrorMapper,
+    ) : BackupInteractor, SignInInteractor.Base<BackupResultUi>(iconsDatastore) {
 
         override suspend fun export(context: Context): BackupResultUi = try {
             val uri = fileWriter.getUriFromFile(
@@ -78,28 +75,28 @@ interface BackupInteractor {
             return mapper.map(result)
         }
 
-        override suspend fun signInWithFirebase(intent: Intent, context: Context): BackupResultUi = try {
-            SignInWithGoogle.DriveScope.signInWithFirebase(intent)
-            val profile = SignInWithGoogle.DriveScope.profile(context)
-            if (profile == null) BackupResultUi.SignInFailed
-            else BackupResultUi.Success.SignedIn(profile, drive.lastSync())
-        } catch (exception: Exception) {
-            if (networkMapper.isNetworkUnavailable(exception)) BackupResultUi.NoConnection
-            else BackupResultUi.SignInFailed
-        }
-
         override suspend fun profile(context: Context): BackupResultUi =
-            SignInWithGoogle.DriveScope.profile(context).let {
+            SignInWithGoogle.DriveScope.profile().let {
                 if (it != null) BackupResultUi.Success.ProfileLoaded(it)
                 else BackupResultUi.ProfileLoadingFailed
             }
 
-        override suspend fun signOut(context: Context) = SignInWithGoogle.DriveScope.signOut(context)
-
-        override suspend fun deleteAccount(context: Context): BackupResultUi {
-            val result = drive.deleteAllFiles()
+        override suspend fun signOut(context: Context): BackupResultUi = try {
             SignInWithGoogle.DriveScope.signOut(context)
-            return BackupResultUi.DeletingAccount(deleted = result is BackupResult.Success)
+            iconsDatastore.create()
+            profile(context)
+        } catch (exception: Exception) {
+            mapResult(exception, BackupResultUi.SignOutFailed)
+        }
+
+        override suspend fun deleteAccount(context: Context): BackupResultUi = try {
+            val result = drive.deleteAllFiles()
+            iconsDatastore.delete()
+            SignInWithGoogle.DriveScope.deleteAccount(context)
+            iconsDatastore.create()
+            BackupResultUi.DeletingAccount(deleted = result is BackupResult.Success)
+        } catch (exception: Exception) {
+            mapResult(exception, BackupResultUi.DeletingAccount(deleted = false))
         }
 
         override fun mapTime(lastBackupSaved: Long?, loading: Long, context: Context, locale: Locale): String? =
@@ -112,14 +109,16 @@ interface BackupInteractor {
                 )
             }
 
-        override fun checkConnection(context: Context): BackupResultUi {
-            val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            val capabilities = connectivityManager.activeNetwork?.let { connectivityManager.getNetworkCapabilities(it) }
-            return if (capabilities != null && (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
-                        || capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
-                        || capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET))
-            ) BackupResultUi.Empty
-            else BackupResultUi.NoConnection
+        override suspend fun mapResult(profile: ProfileUi, synchronized: Boolean?): BackupResultUi =
+            BackupResultUi.Success.SignedIn(profile, drive.lastSync(), synchronized)
+
+        override fun mapResult(exception: Exception?, default: BackupResultUi): BackupResultUi = when {
+            exception != null && networkMapper.isNetworkUnavailable(exception) -> BackupResultUi.NoConnection
+            else -> default
         }
+
+        override val defaultSigningInResult: BackupResultUi = BackupResultUi.SignInFailed
+        override val noConnectionResult: BackupResultUi = BackupResultUi.NoConnection
+        override val connectedResult: BackupResultUi = BackupResultUi.Empty
     }
 }

@@ -5,9 +5,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
@@ -46,6 +48,7 @@ fun GeneralSettingsScreen(
         weekStartChange = { viewModel.onEvent(GeneralSettingsEvent.ToggleWeekStart) },
         currentDayHighlightChange = { viewModel.onEvent(GeneralSettingsEvent.ToggleCurrentDayHighlight) },
         streakHighlightChange = { viewModel.onEvent(GeneralSettingsEvent.ToggleStreakHighlight) },
+        iconWarningChange = { viewModel.onEvent(GeneralSettingsEvent.ToggleIconWarning) }
     )
 }
 
@@ -54,7 +57,8 @@ private fun GeneralContent(
     state: State<Settings>,
     weekStartChange: (Boolean) -> Unit = {},
     currentDayHighlightChange: (Boolean) -> Unit = {},
-    streakHighlightChange: (Boolean) -> Unit = {}
+    streakHighlightChange: (Boolean) -> Unit = {},
+    iconWarningChange: (Boolean) -> Unit = {},
 ) {
     Box(
         modifier = Modifier
@@ -65,18 +69,27 @@ private fun GeneralContent(
             modifier = Modifier.clip(MaterialTheme.shapes.small)
         ) {
             SwitchSetting(
-                weekStartChange,
-                stringResource(R.string.week_starts_on_sunday), state.value.weekStartsOnSunday.value
+                onChange = weekStartChange,
+                title = stringResource(R.string.week_starts_on_sunday),
+                isChecked = state.value.weekStartsOnSunday.value
             )
             HorizontalDivider()
             SwitchSetting(
-                currentDayHighlightChange,
-                stringResource(R.string.highlight_current_day), state.value.currentDayHighlighted
+                onChange = currentDayHighlightChange,
+                title = stringResource(R.string.highlight_current_day),
+                isChecked = state.value.currentDayHighlighted
             )
             HorizontalDivider()
             SwitchSetting(
-                streakHighlightChange,
-                stringResource(R.string.highlight_streaks), state.value.streaksHighlighted
+                onChange = streakHighlightChange,
+                title = stringResource(R.string.highlight_streaks),
+                isChecked = state.value.streaksHighlighted
+            )
+            HorizontalDivider()
+            SwitchSetting(
+                onChange = iconWarningChange,
+                title = stringResource(R.string.show_icon_warning),
+                isChecked = state.value.showIconWarning
             )
         }
     }
@@ -94,8 +107,9 @@ private fun SwitchSetting(onChange: (Boolean) -> Unit, title: String, isChecked:
     ) {
         MenuItemText(
             text = title,
-            modifier = Modifier.padding(vertical = 12.dp)
+            modifier = Modifier.padding(vertical = 12.dp).weight(1f)
         )
+        Spacer(modifier = Modifier.width(8.dp))
         Switch(
             checked = isChecked,
             onCheckedChange = onChange,
@@ -109,7 +123,7 @@ private fun SwitchSetting(onChange: (Boolean) -> Unit, title: String, isChecked:
 }
 
 @Composable
-@Preview
+@Preview(locale = "uk")
 private fun GeneralSettingsScreenPreview() {
     HabitMateTheme(darkTheme = true) {
         GeneralContent(state = remember { mutableStateOf(Settings()) })

@@ -46,12 +46,14 @@ fun TextFieldWithError(
     keyboardActions: KeyboardActions = KeyboardActions(onDone = { clearFocus() })
 ) {
     Column(modifier = modifier) {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.titleSmall,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-        Spacer(modifier = Modifier.height(4.dp))
+        if (title.isNotBlank()) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+        }
         BasicTextField(
             modifier = Modifier
                 .fillMaxWidth()

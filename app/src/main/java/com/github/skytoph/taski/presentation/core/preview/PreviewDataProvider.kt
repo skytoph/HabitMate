@@ -8,6 +8,7 @@ import com.github.skytoph.taski.presentation.habit.edit.EntryEditableUi
 import com.github.skytoph.taski.presentation.habit.edit.MonthUi
 import com.github.skytoph.taski.presentation.habit.icon.IconsColors
 import com.github.skytoph.taski.presentation.habit.icon.IconsGroup
+import com.github.skytoph.taski.presentation.habit.icon.IconsLockedGroup
 import com.github.skytoph.taski.presentation.habit.list.EntryUi
 import com.github.skytoph.taski.presentation.habit.list.HistoryUi
 import com.github.skytoph.taski.presentation.settings.restore.BackupItemUi
@@ -50,8 +51,16 @@ class HabitsEditableProvider : PreviewParameterProvider<List<EditableHistoryUi>>
     override val values: Sequence<List<EditableHistoryUi>> = sequenceOf(history)
 }
 
-class IconProvider : PreviewParameterProvider<IconsGroup> {
-    override val values: Sequence<IconsGroup> = IconsGroup.allGroups.asSequence()
+class IconProvider : PreviewParameterProvider<IconsGroup<Int>> {
+    override val values: Sequence<IconsGroup<Int>> = IconsGroup.allGroups.asSequence()
+}
+
+class IconLockedProvider : PreviewParameterProvider<List<IconsLockedGroup>> {
+    override val values: Sequence<List<IconsLockedGroup>> = sequenceOf(IconsGroup.allGroups.map { group ->
+        IconsLockedGroup(
+            titleResId = group.title,
+            icons = group.icons.mapIndexed { index, icon -> icon to (index % 5 == 0) })
+    })
 }
 
 class BackupItemsProvider : PreviewParameterProvider<List<BackupItemUi>> {

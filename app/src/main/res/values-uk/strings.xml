@@ -57,4 +57,12 @@
 
     <string name="habit_reminder_message">Час виконати звичку!</string>
 
+    <string name="unlock_icon_title">Розблокувати іконку</string>
+    <string name="unlock_icon_description">Перегляньте рекламу щоб розблокувати іконку.</string>
+    <string name="icons_warning">Розблоковані іконки не синхронізовано.\nУвійдіть за допомогою Google щоб зберегти ваші розблоковані іконки.</string>
+    <string name="log_in">Увійти</string>
+    <string name="action_dismiss">Відхилити</string>
+    <string name="do_not_show_again">Більше не показувати</string>
+    <string name="show_icon_warning">нагадувати синхронізувати розблоковані іконки</string>
+
 </resources>

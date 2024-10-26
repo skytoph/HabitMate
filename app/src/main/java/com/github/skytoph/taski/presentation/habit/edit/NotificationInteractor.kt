@@ -26,13 +26,13 @@ interface NotificationInteractor {
 
         override fun scheduleNotification(habit: HabitUi, context: Context, isFirstDaySunday: Boolean) {
             if (habit.reminder.switchedOn)
-                habit.frequency.schedule(scheduler, context, notificationMapper.map(habit, context, isFirstDaySunday))
+                habit.frequency.schedule(scheduler, notificationMapper.map(habit, context, isFirstDaySunday))
         }
 
         override suspend fun refreshAllNotifications(context: Context) {
             val isFirstDaySunday = settings.initAndGet().first().weekStartsOnSunday.value
             repository.habits().forEach { habit ->
-                scheduler.cancel(context, habit.id, habit.frequency.times)
+                scheduler.cancel(habit.id, habit.frequency.times)
                 scheduleNotification(mapper.map(habit), context, isFirstDaySunday)
             }
         }
@@ -49,10 +49,7 @@ interface NotificationStateInteractor : CheckHabitState {
     ) : NotificationStateInteractor {
 
         override fun rescheduleNotification(item: ReminderItem, context: Context) =
-            scheduler.reschedule(
-                context = context,
-                item = item
-            )
+            scheduler.reschedule(item = item)
 
         override suspend fun notCompleted(habitId: Long, isFirstDaySunday: Boolean): Boolean {
             val isFirstDaySunday1 = settings.initAndGet().first().weekStartsOnSunday.value

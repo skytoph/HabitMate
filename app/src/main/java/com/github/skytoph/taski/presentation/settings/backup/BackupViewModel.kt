@@ -55,13 +55,11 @@ class BackupViewModel @Inject constructor(
         doAction = { interactor.profile(context) }
     )
 
-    fun signOut(context: Context) = actionHandler.action(
-        beforeAction = arrayOf(BackupEvent.UpdateDialog(), BackupEvent.UpdateLastBackup()),
-        doAction = {
+    fun signOut(context: Context) = actionHandler.action(beforeAction = arrayOf(
+            BackupEvent.UpdateDialog(), BackupEvent.UpdateProfile(isLoading = true), BackupEvent.UpdateLastBackup()
+        ), doAction = {
             interactor.signOut(context)
-            interactor.profile(context)
-        }
-    )
+        },)
 
     fun checkConnection(context: Context) = actionHandler.action(
         beforeAction = arrayOf(BackupEvent.UpdateDialog()),
@@ -76,7 +74,7 @@ class BackupViewModel @Inject constructor(
     fun onEvent(event: BackupEvent) =
         event.handle(state = state, showMessage = ::showMessage, settingsEvent = ::onEvent)
 
-    fun showMessage(message: SnackbarMessage) = viewModelScope.launch { snackbar.show(message) }
+    private fun showMessage(message: SnackbarMessage) = viewModelScope.launch { snackbar.show(message) }
 
     fun state(): State<BackupState> = state
 

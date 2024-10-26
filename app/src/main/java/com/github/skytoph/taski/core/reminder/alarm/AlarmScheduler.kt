@@ -17,12 +17,13 @@ import java.text.SimpleDateFormat
 class AlarmScheduler(
     private val alarm: AlarmProvider,
     private val uriConverter: HabitUriConverter,
-    private val gson: Gson
+    private val gson: Gson,
+    private val context: Context
 ) : ReminderScheduler {
 
-    override fun scheduleRepeating(context: Context, items: List<ReminderItem>) = schedule(context, items)
+    override fun scheduleRepeating(items: List<ReminderItem>) = schedule(items)
 
-    override fun schedule(context: Context, items: List<ReminderItem>) {
+    override fun schedule(items: List<ReminderItem>) {
         val alarmManager = alarm.alarmManager(context)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) return
         items.forEach { item ->
@@ -33,41 +34,39 @@ class AlarmScheduler(
             alarmManager.setExactAndAllowWhileIdle(
                 /* type = */ AlarmManager.RTC_WAKEUP,
                 /* triggerAtMillis = */ item.timeMillis,
-                /* operation = */ alarmIntent(context, item)
+                /* operation = */ alarmIntent(item)
             )
         }
     }
 
-    override fun reschedule(context: Context, item: ReminderItem) = schedule(
-        context = context,
-        items = listOf(item.copy(timeMillis = item.interval.next(item.timeMillis, item.day)))
-    )
+    override fun reschedule(item: ReminderItem) =
+        schedule(items = listOf(item.copy(timeMillis = item.interval.next(item.timeMillis, item.day))))
 
-    override fun cancel(context: Context, id: Long, times: Int) =
+    override fun cancel(id: Long, times: Int) =
         (0 until times).forEach { index ->
-            cancel(context, uriConverter.uri(id, index))
+            cancel(uriConverter.uri(id, index))
         }
 
-    override fun cancel(context: Context, uri: Uri) {
-        val pendingIntent = cancelAlarmIntent(context, uri)
+    override fun cancel(uri: Uri) {
+        val pendingIntent = cancelAlarmIntent(uri)
         alarm.alarmManager(context).cancel(pendingIntent)
     }
 
-    private fun alarmIntent(context: Context, item: ReminderItem): PendingIntent {
-        val intent = intent(context, uriConverter.uri(item.uri))
+    private fun alarmIntent(item: ReminderItem): PendingIntent {
+        val intent = intent(uriConverter.uri(item.uri))
         intent.putExtra(ReminderItem.KEY_ITEM, gson.toJson(item))
         return alarm.alarmIntent(context, intent, item.id.toInt())
     }
 
-    private fun intent(context: Context, uri: Uri): Intent {
+    private fun intent(uri: Uri): Intent {
         val intent = Intent(context, AlarmReceiver::class.java)
         intent.setAction(AlarmReceiver.ACTION)
         intent.setData(uri)
         return intent
     }
 
-    private fun cancelAlarmIntent(context: Context, uri: Uri): PendingIntent {
-        val intent = intent(context, uri)
+    private fun cancelAlarmIntent(uri: Uri): PendingIntent {
+        val intent = intent( uri)
         val code = uriConverter.id(uri).toInt()
         return alarm.alarmIntent(context, intent, code)
     }

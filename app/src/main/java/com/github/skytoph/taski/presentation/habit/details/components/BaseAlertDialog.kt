@@ -4,6 +4,7 @@ package com.github.skytoph.taski.presentation.habit.details.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
@@ -21,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.skytoph.taski.presentation.core.component.ExportDialog
@@ -37,29 +39,36 @@ fun BaseAlertDialog(
     title: String,
     confirmColor: Color = MaterialTheme.colorScheme.error,
     confirmContainerColor: Color = MaterialTheme.colorScheme.errorContainer,
-    icon: ImageVector? = null
+    icon: ImageVector? = null,
+    content: @Composable() (() -> Unit)? = null
 ) {
     AlertDialog(
         text = {
-            Row(
+            Column(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                icon?.let {
-                    Icon(
-                        imageVector = icon,
-                        contentDescription = title,
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(24.dp)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    icon?.let {
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = title,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                    Text(
+                        text = text,
+                        modifier = Modifier.fillMaxWidth(),
+                        color = MaterialTheme.colorScheme.onBackground,
+                        style = MaterialTheme.typography.bodyMedium
                     )
                 }
-                Text(
-                    text = text,
-                    modifier = Modifier.fillMaxWidth(),
-                    color = MaterialTheme.colorScheme.onBackground,
-                    style = MaterialTheme.typography.bodyMedium
-                )
+                content?.invoke()
             }
         },
         title = {
@@ -86,7 +95,7 @@ fun BaseAlertDialog(
                     Text(
                         text = confirmLabel,
                         color = confirmColor,
-                        style = MaterialTheme.typography.labelLarge
+                        style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold)
                     )
                 }
             }
@@ -118,7 +127,8 @@ fun BaseAlertDialog(
     title: String,
     confirmColor: Color = MaterialTheme.colorScheme.error,
     confirmContainerColor: Color = MaterialTheme.colorScheme.errorContainer,
-    icon: ImageVector? = null
+    icon: ImageVector? = null,
+    content: @Composable() (() -> Unit)? = null
 ) = BaseAlertDialog(
     onDismissRequest = onDismissRequest,
     onConfirm = onConfirm,
@@ -128,7 +138,8 @@ fun BaseAlertDialog(
     title = title,
     confirmColor = confirmColor,
     confirmContainerColor = confirmContainerColor,
-    icon = icon
+    icon = icon,
+    content = content
 )
 
 @Composable

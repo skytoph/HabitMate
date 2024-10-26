@@ -55,7 +55,7 @@ private val LightColorScheme = lightColorScheme(
     secondary = PurpleGrey40,
     onSecondary = PurpleDark,
 
-    tertiary = PurpleGrey40,
+    tertiary = BlueLightGray,
 
     primaryContainer = Color.White,
     onPrimaryContainer = PurpleDark,
@@ -74,12 +74,12 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun HabitMateTheme(
-    theme: AppTheme = AppTheme.System,
+    theme: AppTheme? = AppTheme.System,
     darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
-    val isDark = theme == AppTheme.Dark || (theme == AppTheme.System && darkTheme)
+    val isDark = theme == null || theme == AppTheme.Dark || (theme == AppTheme.System && darkTheme)
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current

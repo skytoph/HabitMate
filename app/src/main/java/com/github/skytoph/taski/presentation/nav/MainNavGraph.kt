@@ -104,7 +104,7 @@ fun MainNavGraph(controller: NavHostController) {
             popExitTransition = { scaleOutOfContainer(direction = ScaleTransitionDirection.INWARDS) },
             popEnterTransition = null,
         ) {
-            SelectIconScreen(navigateUp = controller::navigateUp)
+            SelectIconScreen()
         }
 
         settingsNavigation(controller)

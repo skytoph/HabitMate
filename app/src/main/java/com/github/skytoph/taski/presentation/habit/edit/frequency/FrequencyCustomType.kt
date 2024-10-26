@@ -1,6 +1,5 @@
 package com.github.skytoph.taski.presentation.habit.edit.frequency
 
-import android.content.Context
 import androidx.annotation.PluralsRes
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.core.reminder.ReminderItem
@@ -36,8 +35,8 @@ sealed class FrequencyCustomType : MapToDatesCustom, ScheduleReminder {
         )
     }
 
-    override fun schedule(scheduler: ReminderScheduler, context: Context, items: List<ReminderItem>) =
-        scheduler.scheduleRepeating(context, items)
+    override fun schedule(scheduler: ReminderScheduler, items: List<ReminderItem>) =
+        scheduler.scheduleRepeating(items)
 
     abstract fun map(): Frequency.Custom.Type
 
@@ -76,7 +75,7 @@ sealed class FrequencyCustomType : MapToDatesCustom, ScheduleReminder {
         override fun dates(mapper: HabitDateMapper, isFirstDaySunday: Boolean, timesCount: Int, typeCount: Int) =
             mapper.mapCustomMonth(timesCount, typeCount)
 
-        override fun schedule(scheduler: ReminderScheduler, context: Context, items: List<ReminderItem>) =
-            scheduler.schedule(context, items)
+        override fun schedule(scheduler: ReminderScheduler, items: List<ReminderItem>) =
+            scheduler.schedule(items)
     }
 }

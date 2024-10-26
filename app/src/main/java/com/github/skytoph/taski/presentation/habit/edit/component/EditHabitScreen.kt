@@ -27,6 +27,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
@@ -240,6 +242,19 @@ fun EditBaseHabit(
             .padding(horizontal = 16.dp)
             .verticalScroll(rememberScrollState())
     ) {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            Text(
+                text = stringResource(R.string.habit_label),
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            Text(
+                text = stringResource(R.string.icon_label),
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.widthIn(min = minHeight)
+            )
+        }
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             TextFieldWithError(
                 modifier = Modifier.weight(1f),
@@ -248,7 +263,7 @@ fun EditBaseHabit(
                 error = title.error?.getString(context),
                 height = minHeight,
                 clearFocus = { focusManager.clearFocus() },
-                title = stringResource(R.string.habit_label),
+                title = "",
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                 keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
@@ -540,13 +555,7 @@ fun IconSelector(
     onClick: () -> Unit
 ) {
     val context = LocalContext.current
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(
-            modifier = modifier,
-            text = stringResource(R.string.icon_label),
-            style = MaterialTheme.typography.titleSmall
-        )
-        Spacer(modifier = Modifier.height(4.dp))
+    Column(modifier = Modifier.width(size)) {
         TextButton(
             onClick = onClick,
             modifier = Modifier

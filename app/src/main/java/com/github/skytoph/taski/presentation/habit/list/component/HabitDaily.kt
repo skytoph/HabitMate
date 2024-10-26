@@ -19,8 +19,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -34,8 +32,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
@@ -91,16 +91,16 @@ fun HabitDaily(
                     title = habit.title
                 )
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.entries_daily_spaced_by))) {
-                    if (entries == history.entries.size)
-                        items(items = history.entries, key = { it.daysAgo }) { entry ->
-                            CheckIcon(
-                                onDone = onDone,
-                                habit = habit,
-                                percentDone = entry.percentDone,
-                                daysAgo = entry.daysAgo,
-                                timesDone = entry.timesDone
-                            )
-                        }
+//                    if (entries == history.entries.size)
+                    items(items = history.entries, key = { it.daysAgo }) { entry ->
+                        CheckIcon(
+                            onDone = onDone,
+                            habit = habit,
+                            percentDone = entry.percentDone,
+                            daysAgo = entry.daysAgo,
+                            timesDone = entry.timesDone
+                        )
+                    }
                 }
             }
         }
@@ -115,7 +115,7 @@ private fun CheckIcon(
     daysAgo: Int,
     timesDone: Int
 ) {
-    val defaultColor = MaterialTheme.colorScheme.secondaryContainer
+    val defaultColor = MaterialTheme.colorScheme.tertiary
     val color =
         remember { Animatable(if (percentDone >= 1f) habit.color else defaultColor) }
     LaunchedEffect(timesDone) {
@@ -130,7 +130,7 @@ private fun CheckIcon(
     IconButton(onClick = { onDone(habit, daysAgo) }) {
         Box {
             Icon(
-                imageVector = Icons.Outlined.Check,
+                imageVector = ImageVector.vectorResource(R.drawable.check),
                 contentDescription = null,
                 modifier = Modifier
                     .background(color = color.value, shape = CircleShape)
@@ -149,11 +149,21 @@ private fun CheckIcon(
 }
 
 @Composable
-@Preview(showBackground = true, showSystemUi = true)
+@Preview
 fun DarkHabitDailyPreview(
     @PreviewParameter(HabitProvider::class, limit = 1) habit: HabitWithHistoryUi<HistoryUi>
 ) {
     HabitMateTheme(darkTheme = true) {
-        HabitDaily(habit = habit.habit, history = HistoryUi(entries = listOf(EntryUi())))
+        HabitDaily(habit = habit.habit, history = HistoryUi(entries = MutableList(5) { EntryUi(daysAgo = it) }))
+    }
+}
+
+@Composable
+@Preview
+fun HabitDailyPreview(
+    @PreviewParameter(HabitProvider::class, limit = 1) habit: HabitWithHistoryUi<HistoryUi>
+) {
+    HabitMateTheme(darkTheme = false) {
+        HabitDaily(habit = habit.habit, history = HistoryUi(entries = MutableList(5) { EntryUi(daysAgo = it) }))
     }
 }

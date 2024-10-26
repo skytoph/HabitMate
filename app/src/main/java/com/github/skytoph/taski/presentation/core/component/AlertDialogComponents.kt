@@ -128,12 +128,18 @@ fun ExportDialog(
     onDismissRequest: () -> Unit = {},
     onConfirm: () -> Unit = {},
 ) {
+    val description = buildAnnotatedBoldString(
+        stringResource(R.string.export_description) to SpanStyle(),
+        stringResource(R.string.new_line) + stringResource(R.string.export_description_icons_warning) to
+                SpanStyle(fontWeight = FontWeight.Bold, fontSize = 10.sp),
+        stringResource(R.string.export_description_icons_warning_details) to SpanStyle(fontSize = 10.sp),
+    )
     BaseAlertDialog(
         onDismissRequest = onDismissRequest,
         onConfirm = onConfirm,
         dismissLabel = stringResource(R.string.action_cancel),
         confirmLabel = stringResource(R.string.action_export),
-        text = stringResource(id = R.string.export_description),
+        text = description,
         title = stringResource(id = R.string.export_title),
         confirmColor = MaterialTheme.colorScheme.primary,
         confirmContainerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),
@@ -146,12 +152,18 @@ fun ImportDialog(
     onDismissRequest: () -> Unit = {},
     onConfirm: () -> Unit = {},
 ) {
+    val description = buildAnnotatedBoldString(
+        stringResource(R.string.import_description) to SpanStyle(),
+        stringResource(R.string.new_line) + stringResource(R.string.import_description_icon_warning) to
+                SpanStyle(fontWeight = FontWeight.Bold, fontSize = 10.sp),
+        stringResource(R.string.import_description_icon_warning_details) to SpanStyle(fontSize = 10.sp),
+    )
     BaseAlertDialog(
         onDismissRequest = onDismissRequest,
         onConfirm = onConfirm,
         dismissLabel = stringResource(R.string.action_cancel),
         confirmLabel = stringResource(R.string.action_import),
-        text = stringResource(id = R.string.import_description),
+        text = description,
         title = stringResource(id = R.string.import_title),
         confirmColor = MaterialTheme.colorScheme.primary,
         confirmContainerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),
@@ -164,12 +176,19 @@ fun SignOutDialog(
     onDismissRequest: () -> Unit = {},
     onConfirm: () -> Unit = {},
 ) {
+    val description = buildAnnotatedBoldString(
+        stringResource(R.string.sign_out_description) + "\n\n" to SpanStyle(),
+        stringResource(R.string.sign_out_description_icon_warning) + stringResource(R.string.new_line) to SpanStyle(),
+        stringResource(R.string.sign_out_description_icon_warning_important) to
+                SpanStyle(color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold),
+        divider = ""
+    )
     BaseAlertDialog(
         onDismissRequest = onDismissRequest,
         onConfirm = onConfirm,
         dismissLabel = stringResource(R.string.action_cancel),
         confirmLabel = stringResource(R.string.action_sign_out),
-        text = stringResource(id = R.string.sign_out_description),
+        text = description,
         title = stringResource(id = R.string.sign_out_title),
         confirmColor = MaterialTheme.colorScheme.primary,
         confirmContainerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),
@@ -183,7 +202,8 @@ fun DeleteAccountDialog(
 ) {
     val description = buildAnnotatedBoldString(
         stringResource(id = R.string.delete_account_description_confirmation) to SpanStyle(),
-        " " + stringResource(id = R.string.delete_account_description_warning) to SpanStyle(fontWeight = FontWeight.Bold),
+        " " + stringResource(id = R.string.delete_account_description_warning) to
+                SpanStyle(color = MaterialTheme.colorScheme.error, fontWeight = FontWeight.Bold),
         "\n\n" + stringResource(id = R.string.delete_account_description_details) to SpanStyle(fontSize = 10.sp),
         divider = ""
     )
@@ -205,8 +225,9 @@ fun RestoreBackupDialog(
 ) {
     val description = buildAnnotatedBoldString(
         date to SpanStyle(),
-        "\n" + stringResource(id = R.string.restore_dialog_description_confirmation) to SpanStyle(),
-        stringResource(id = R.string.restore_dialog_description_warning) to SpanStyle(fontWeight = FontWeight.Bold)
+        stringResource(R.string.new_line) + stringResource(id = R.string.restore_dialog_description_confirmation) to SpanStyle(),
+        stringResource(id = R.string.restore_dialog_description_warning) to
+                SpanStyle(color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
     )
     RestoreDialog(
         onDismissRequest = onDismissRequest,
@@ -223,7 +244,8 @@ fun RequestPermissionsBackupDialog(
 ) {
     val description = buildAnnotatedBoldString(
         stringResource(R.string.request_permissions_dialog_description) to SpanStyle(),
-        "\n" + stringResource(R.string.request_permissions_dialog_warning) to SpanStyle(fontWeight = FontWeight.Bold),
+        stringResource(R.string.new_line) + stringResource(R.string.request_permissions_dialog_warning) to
+                SpanStyle(fontWeight = FontWeight.Bold),
     )
     BaseAlertDialog(
         onDismissRequest = onDismissRequest,
@@ -245,8 +267,9 @@ fun DeleteBackupDialog(
 ) {
     val description = buildAnnotatedBoldString(
         date to SpanStyle(fontWeight = FontWeight.Bold),
-        "\n" + stringResource(id = R.string.delete_backup_dialog_description_confirmation) to SpanStyle(),
-        stringResource(id = R.string.delete_backup_dialog_description_warning) to SpanStyle(fontWeight = FontWeight.Bold)
+        stringResource(R.string.new_line) + stringResource(id = R.string.delete_backup_dialog_description_confirmation) to SpanStyle(),
+        stringResource(id = R.string.delete_backup_dialog_description_warning) to
+                SpanStyle(color = MaterialTheme.colorScheme.error, fontWeight = FontWeight.Bold)
     )
     DeleteDialog(
         title = stringResource(R.string.delete_backup_title),
@@ -263,43 +286,34 @@ fun DeleteAllBackupsDialog(
 ) {
     val description = buildAnnotatedBoldString(
         stringResource(id = R.string.delete_all_data_description_confirmation) to SpanStyle(),
-        " " + stringResource(id = R.string.delete_all_data_description_warning) to SpanStyle(fontWeight = FontWeight.Bold),
+        " " + stringResource(id = R.string.delete_all_data_description_warning) to
+                SpanStyle(color = MaterialTheme.colorScheme.error, fontWeight = FontWeight.Bold),
         "\n\n" + stringResource(id = R.string.delete_all_data_description_details) to SpanStyle(fontSize = 10.sp),
         divider = ""
     )
     DeleteDialog(
-        title = stringResource(R.string.delete_backup_title),
+        title = stringResource(R.string.delete_backups_title),
         text = description,
         onConfirm = onConfirm,
         onDismissRequest = onDismissRequest
     )
 }
 
-fun buildAnnotatedBoldString(
-    vararg textToBold: Pair<String, SpanStyle?>,
-    divider: String = "\n"
-): AnnotatedString = buildAnnotatedString {
-    textToBold.forEachIndexed { index, item ->
-        item.second?.let { style ->
-            withStyle(style = style) { append(item.first) }
-        } ?: append(item.first)
-        if (index < textToBold.lastIndex)
-            append(divider)
+fun buildAnnotatedBoldString(vararg textToBold: Pair<String, SpanStyle?>, divider: String = "\n"): AnnotatedString =
+    buildAnnotatedString {
+        textToBold.forEachIndexed { index, item ->
+            item.second?.let { style ->
+                withStyle(style = style) { append(item.first) }
+            } ?: append(item.first)
+            if (index < textToBold.lastIndex)
+                append(divider)
+        }
     }
-}
 
 @Composable
 @Preview
 private fun DialogPreview() {
     HabitMateTheme(darkTheme = true) {
-        RequestPermissionsBackupDialog()
-    }
-}
-
-@Composable
-@Preview
-private fun DialogPreviewa() {
-    HabitMateTheme(darkTheme = true) {
-        DeleteAccountDialog()
+        SignOutDialog()
     }
 }

@@ -49,7 +49,6 @@ private fun ThemeSettings(
     state: State<Settings>,
     selectTheme: (AppTheme) -> Unit = {}
 ) {
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -80,6 +79,6 @@ private fun ThemeSettings(
 @Preview
 private fun ThemeSettingsScreenPreview() {
     HabitMateTheme(darkTheme = true) {
-        ThemeSettings(state = remember { mutableStateOf(Settings()) })
+        ThemeSettings(state = remember { mutableStateOf(Settings(theme = AppTheme.Dark)) })
     }
 }

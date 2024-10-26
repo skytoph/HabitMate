@@ -16,8 +16,13 @@ object BackupMessages {
         title = StringResource.ResId(R.string.success_title),
         icon = IconResource.Id(id = R.drawable.circle_user)
     )
-    val loadingAccountFailedMessage = SnackbarMessage(
-        messageResource = StringResource.ResId(R.string.failed_to_load_account_message),
+    val signInFailedMessage = SnackbarMessage(
+        messageResource = StringResource.ResId(R.string.failed_to_sign_in_message),
+        title = StringResource.ResId(R.string.fail_title),
+        icon = IconResource.Id(id = R.drawable.circle_user)
+    )
+    val signOutFailedMessage = SnackbarMessage(
+        messageResource = StringResource.ResId(R.string.failed_to_sign_out),
         title = StringResource.ResId(R.string.fail_title),
         icon = IconResource.Id(id = R.drawable.circle_user)
     )
@@ -50,5 +55,15 @@ object BackupMessages {
         title = StringResource.ResId(R.string.success_title),
         messageResource = StringResource.ResId(R.string.success_delete_backups),
         icon = IconResource.Id(R.drawable.folder_sync)
+    )
+    val iconsSynchronizeSuccessMessage = SnackbarMessage(
+        title = StringResource.ResId(R.string.success_title),
+        messageResource = StringResource.ResId(R.string.success_synchronizing_icons),
+        icon = IconResource.Id(R.drawable.sparkle)
+    )
+    val iconsSynchronizeErrorMessage = SnackbarMessage(
+        title = StringResource.ResId(R.string.fail_title),
+        messageResource = StringResource.ResId(R.string.error_synchronizing_icons),
+        icon = IconResource.Id(R.drawable.sparkle)
     )
 }

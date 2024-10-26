@@ -1,4 +1,4 @@
-package com.github.skytoph.taski.presentation.habit
+package com.github.skytoph.taski.presentation.habit.list
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig

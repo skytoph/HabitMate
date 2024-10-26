@@ -20,7 +20,7 @@ interface DeleteHabitInteractor {
     ) : DeleteHabitInteractor {
         override suspend fun delete(id: Long, message: String, context: Context) {
             val habit = repository.habit(id)
-            scheduler.cancel(context, id, habit.frequency.times)
+            scheduler.cancel(id, habit.frequency.times)
             repository.delete(id)
             val message = SnackbarMessage(
                 messageResource = StringResource.Value(message),

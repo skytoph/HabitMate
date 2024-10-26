@@ -3,5 +3,7 @@
 
     <style name="Theme.Taski" parent="android:Theme.Material.NoActionBar">
         <item name="android:windowBackground">@color/dark_background</item>
+        <item name="android:statusBarColor">@color/dark_background</item>
+        <item name="android:navigationBarColor">@color/dark_background</item>
     </style>
 </resources>

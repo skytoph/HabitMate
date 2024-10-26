@@ -159,8 +159,10 @@ private fun ApplyManualOrder(currentSort: String, apply: () -> Unit) {
             .animateContentSize(),
         horizontalAlignment = Alignment.End
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
             Icon(
                 imageVector = ImageVector.vectorResource(id = R.drawable.arrow_up_down),
                 contentDescription = null,
@@ -181,17 +183,31 @@ private fun ApplyManualOrder(currentSort: String, apply: () -> Unit) {
                 )
             }
         }
-        Box(
-            modifier = Modifier
-                .clip(MaterialTheme.shapes.small)
-                .clickable { apply() }
-                .padding(horizontal = 32.dp, vertical = 8.dp)
-        ) {
-            Text(
-                text = stringResource(R.string.action_apply),
-                color = MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.titleSmall,
-            )
+        Row(modifier = Modifier.padding(vertical = 4.dp)) {
+            Box(
+                modifier = Modifier
+                    .clip(MaterialTheme.shapes.small)
+                    .clickable { apply() }
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.action_dismiss),
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
+                    style = MaterialTheme.typography.titleSmall,
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .clip(MaterialTheme.shapes.small)
+                    .clickable { apply() }
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.action_apply),
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.titleSmall,
+                )
+            }
         }
     }
 }
@@ -244,7 +260,7 @@ private fun DarkHabitReorderingPreview(@PreviewParameter(HabitsProvider::class) 
         Box(modifier = Modifier
             .fillMaxSize()
             .clickable { state.value = !state.value }) {
-            HabitsReorder(habits = habits.map { it.habit },)
+            HabitsReorder(habits = habits.map { it.habit })
         }
     }
 }

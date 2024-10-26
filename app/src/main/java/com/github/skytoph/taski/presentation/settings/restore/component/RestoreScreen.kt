@@ -78,7 +78,9 @@ fun RestoreScreen(viewModel: RestoreViewModel = hiltViewModel()) {
     LaunchedEffect(state.value.items) {
         viewModel.initAppBar(
             title = R.string.restore_title,
-            dropDownItems = if (state.value.items?.isNotEmpty() == true) listOf(actionDeleteData) else emptyList()
+            dropDownItems = if (state.value.errorStateMessage == null && state.value.items?.isNotEmpty() == true)
+                listOf(actionDeleteData)
+            else emptyList()
         )
     }
 

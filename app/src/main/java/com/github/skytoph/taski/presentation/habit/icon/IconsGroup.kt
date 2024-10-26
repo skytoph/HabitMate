@@ -20,23 +20,25 @@ import com.github.skytoph.taski.presentation.habit.icon.component.IconItem
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Immutable
-abstract class IconsGroup(@StringRes val title: Int) {
-    abstract val icons: List<Int>
+abstract class IconsGroup<T>(@StringRes val title: Int) {
+    abstract val icons: List<T>
 
     @Immutable
-    object NotesIcons : IconsGroup(title = R.string.icons_notes) {
+    object NotesIcons : IconsGroup<Int>(title = R.string.icons_notes) {
 
         override val icons by lazy {
             listOf(
-                R.drawable.album,
+                R.drawable.book_open_text,
+                R.drawable.file,
                 R.drawable.book,
+
+                R.drawable.album,
                 R.drawable.book_a,
                 R.drawable.book_copy,
                 R.drawable.library_big,
                 R.drawable.book_marked,
                 R.drawable.book_open,
                 R.drawable.book_open_check,
-                R.drawable.book_open_text,
                 R.drawable.file_text,
                 R.drawable.menu_square,
                 R.drawable.gantt_chart_square,
@@ -46,7 +48,6 @@ abstract class IconsGroup(@StringRes val title: Int) {
                 R.drawable.notepad_text,
                 R.drawable.scroll,
                 R.drawable.scroll_text,
-                R.drawable.file,
                 R.drawable.sticky_note,
                 R.drawable.files,
                 R.drawable.file_stack,
@@ -69,7 +70,7 @@ abstract class IconsGroup(@StringRes val title: Int) {
     }
 
     @Immutable
-    object FinancesIcons : IconsGroup(title = R.string.icons_finances) {
+    object FinancesIcons : IconsGroup<Int>(title = R.string.icons_finances) {
         override val icons by lazy {
             listOf(
                 R.drawable.circle_dollar_sign,
@@ -94,9 +95,11 @@ abstract class IconsGroup(@StringRes val title: Int) {
     }
 
     @Immutable
-    object FoodIcons : IconsGroup(title = R.string.icons_food) {
+    object FoodIcons : IconsGroup<Int>(title = R.string.icons_food) {
         override val icons by lazy {
             listOf(
+                R.drawable.utensils,
+
                 R.drawable.apple,
                 R.drawable.banana,
                 R.drawable.carrot,
@@ -125,7 +128,6 @@ abstract class IconsGroup(@StringRes val title: Int) {
                 R.drawable.fish,
                 R.drawable.fish_off,
                 R.drawable.drumstick,
-                R.drawable.utensils,
                 R.drawable.utensils_crossed,
                 R.drawable.cooking_pot,
                 R.drawable.chef_hat,
@@ -150,7 +152,7 @@ abstract class IconsGroup(@StringRes val title: Int) {
     }
 
     @Immutable
-    object HouseholdIcons : IconsGroup(title = R.string.icons_household) {
+    object HouseholdIcons : IconsGroup<Int>(title = R.string.icons_household) {
         override val icons by lazy {
             listOf(
                 R.drawable.bed_double,
@@ -180,10 +182,14 @@ abstract class IconsGroup(@StringRes val title: Int) {
     }
 
     @Immutable
-    object ArtIcons : IconsGroup(title = R.string.icons_art) {
+    object ArtIcons : IconsGroup<Int>(title = R.string.icons_art) {
         override val icons by lazy {
             listOf(
+                R.drawable.image,
+                R.drawable.film,
+                R.drawable.headphones,
                 R.drawable.brush,
+
                 R.drawable.paintbrush,
                 R.drawable.paintbrush_2,
                 R.drawable.paint_bucket,
@@ -193,7 +199,6 @@ abstract class IconsGroup(@StringRes val title: Int) {
                 R.drawable.drama,
                 R.drawable.venetian_mask,
 
-                R.drawable.headphones,
                 R.drawable.music,
                 R.drawable.music_4,
                 R.drawable.music_2,
@@ -213,18 +218,19 @@ abstract class IconsGroup(@StringRes val title: Int) {
                 R.drawable.video,
                 R.drawable.aperture,
                 R.drawable.clapperboard,
-                R.drawable.film,
-                R.drawable.image,
                 R.drawable.images,
             )
         }
     }
 
     @Immutable
-    object NatureIcons : IconsGroup(title = R.string.icons_nature) {
+    object NatureIcons : IconsGroup<Int>(title = R.string.icons_nature) {
         override val icons by lazy {
             listOf(
                 R.drawable.shrub,
+                R.drawable.tree_deciduous,
+                R.drawable.tree_pine,
+
                 R.drawable.leaf,
                 R.drawable.clover,
                 R.drawable.flower,
@@ -233,8 +239,6 @@ abstract class IconsGroup(@StringRes val title: Int) {
                 R.drawable.nut,
                 R.drawable.palmtree,
                 R.drawable.sprout,
-                R.drawable.tree_deciduous,
-                R.drawable.tree_pine,
                 R.drawable.trees,
                 R.drawable.tent_tree,
                 R.drawable.tent,
@@ -271,9 +275,12 @@ abstract class IconsGroup(@StringRes val title: Int) {
     }
 
     @Immutable
-    object OrganizingIcons : IconsGroup(title = R.string.icons_organizing) {
+    object OrganizingIcons : IconsGroup<Int>(title = R.string.icons_organizing) {
         override val icons by lazy {
             listOf(
+                R.drawable.calendar,
+                R.drawable.line_chart,
+
                 R.drawable.align_justify,
                 R.drawable.align_center,
                 R.drawable.barcode,
@@ -283,11 +290,9 @@ abstract class IconsGroup(@StringRes val title: Int) {
                 R.drawable.bar_chart_big,
                 R.drawable.bar_chart_horizontal_big,
                 R.drawable.area_chart,
-                R.drawable.line_chart,
                 R.drawable.timer,
                 R.drawable.alarm_clock_check,
                 R.drawable.clock,
-                R.drawable.calendar,
                 R.drawable.calendar_clock,
                 R.drawable.calendar_days,
                 R.drawable.calendar_fold,
@@ -316,12 +321,14 @@ abstract class IconsGroup(@StringRes val title: Int) {
     }
 
     @Immutable
-    object MiscellaneousIcons : IconsGroup(title = R.string.icons_miscellaneous) {
+    object MiscellaneousIcons : IconsGroup<Int>(title = R.string.icons_miscellaneous) {
         override val icons by lazy {
             listOf(
                 R.drawable.sparkle,
                 R.drawable.sparkles,
                 R.drawable.star,
+                R.drawable.cross,
+                R.drawable.heart_pulse,
                 R.drawable.loader,
                 R.drawable.wand,
                 R.drawable.wand_2,
@@ -348,22 +355,23 @@ abstract class IconsGroup(@StringRes val title: Int) {
                 R.drawable.package_2,
                 R.drawable.package_open,
                 R.drawable.activity,
-                R.drawable.cross,
                 R.drawable.healing,
                 R.drawable.pill,
                 R.drawable.ambulance,
                 R.drawable.stethoscope,
                 R.drawable.eye,
-                R.drawable.heart_pulse,
             )
         }
     }
 
     @Immutable
-    object SocialIcons : IconsGroup(title = R.string.icons_social) {
+    object SocialIcons : IconsGroup<Int>(title = R.string.icons_social) {
         override val icons by lazy {
             listOf(
+                R.drawable.messages_square,
+                R.drawable.circle_user,
                 R.drawable.user,
+
                 R.drawable.users,
                 R.drawable.speech,
                 R.drawable.groups,
@@ -381,7 +389,6 @@ abstract class IconsGroup(@StringRes val title: Int) {
                 R.drawable.annoyed,
                 R.drawable.frown,
                 R.drawable.angry,
-                R.drawable.circle_user,
                 R.drawable.circle_user_round,
                 R.drawable.square_user_round,
                 R.drawable.baby,
@@ -394,7 +401,6 @@ abstract class IconsGroup(@StringRes val title: Int) {
                 R.drawable.mail_open,
                 R.drawable.message_square,
                 R.drawable.message_square_text,
-                R.drawable.messages_square,
                 R.drawable.thumbs_up,
                 R.drawable.thumbs_down,
             )
@@ -402,15 +408,16 @@ abstract class IconsGroup(@StringRes val title: Int) {
     }
 
     @Immutable
-    object SportsIcons : IconsGroup(title = R.string.icons_sports) {
+    object SportsIcons : IconsGroup<Int>(title = R.string.icons_sports) {
         override val icons by lazy {
             listOf(
+                R.drawable.sprint,
+                R.drawable.bike,
+                R.drawable.dumbbell,
                 R.drawable.self_improvement,
                 R.drawable.gymnastics,
                 R.drawable.martial_arts,
                 R.drawable.snowshoeing,
-                R.drawable.sprint,
-                R.drawable.bike,
                 R.drawable.hiking,
                 R.drawable.nordic_walking,
                 R.drawable.handball,
@@ -420,7 +427,6 @@ abstract class IconsGroup(@StringRes val title: Int) {
                 R.drawable.snowboarding,
                 R.drawable.surfing,
 
-                R.drawable.dumbbell,
                 R.drawable.pedal_bike,
                 R.drawable.ice_skating,
                 R.drawable.roller_skating,
@@ -445,9 +451,11 @@ abstract class IconsGroup(@StringRes val title: Int) {
     }
 
     @Immutable
-    object KnowledgeIcons : IconsGroup(title = R.string.icons_knowledge) {
+    object KnowledgeIcons : IconsGroup<Int>(title = R.string.icons_knowledge) {
         override val icons by lazy {
             listOf(
+                R.drawable.pen,
+
                 R.drawable.graduation_cap,
                 R.drawable.backpack,
                 R.drawable.flask_conical,
@@ -462,7 +470,6 @@ abstract class IconsGroup(@StringRes val title: Int) {
                 R.drawable.telescope,
                 R.drawable.rocket,
 
-                R.drawable.pen,
                 R.drawable.pencil,
                 R.drawable.eraser,
                 R.drawable.highlighter,
@@ -482,16 +489,18 @@ abstract class IconsGroup(@StringRes val title: Int) {
     }
 
     @Immutable
-    object SymbolsIcons : IconsGroup(title = R.string.icons_symbols) {
+    object SymbolsIcons : IconsGroup<Int>(title = R.string.icons_symbols) {
         override val icons by lazy {
             listOf(
+                R.drawable.type,
+                R.drawable.diff,
+                R.drawable.equal,
+
                 R.drawable.audio_lines,
                 R.drawable.audio_waveform,
                 R.drawable.ship_wheel,
                 R.drawable.asterisk,
-                R.drawable.diff,
                 R.drawable.percent,
-                R.drawable.equal,
                 R.drawable.menu,
                 R.drawable.hash,
                 R.drawable.ampersand,
@@ -516,7 +525,6 @@ abstract class IconsGroup(@StringRes val title: Int) {
                 R.drawable.play,
                 R.drawable.triangle,
                 R.drawable.pyramid,
-                R.drawable.type,
                 R.drawable.baseline,
                 R.drawable.a_large_small,
                 R.drawable.whole_word,
@@ -529,15 +537,15 @@ abstract class IconsGroup(@StringRes val title: Int) {
     }
 
     @Immutable
-    object TechIcons : IconsGroup(title = R.string.icons_tech) {
+    object TechIcons : IconsGroup<Int>(title = R.string.icons_tech) {
         override val icons by lazy {
             listOf(
-                R.drawable.keyboard,
                 R.drawable.laptop,
                 R.drawable.laptop_2,
                 R.drawable.airplay,
                 R.drawable.wallpaper,
                 R.drawable.app_window,
+                R.drawable.keyboard,
                 R.drawable.mouse,
                 R.drawable.code,
                 R.drawable.code_2,
@@ -570,14 +578,14 @@ abstract class IconsGroup(@StringRes val title: Int) {
     }
 
     @Immutable
-    object TransportationIcons : IconsGroup(title = R.string.icons_transportation) {
+    object TransportationIcons : IconsGroup<Int>(title = R.string.icons_transportation) {
         override val icons by lazy {
             listOf(
-                R.drawable.bus,
-                R.drawable.bus_front,
-                R.drawable.car,
                 R.drawable.car_front,
                 R.drawable.car_taxi_front,
+                R.drawable.bus_front,
+                R.drawable.bus,
+                R.drawable.car,
                 R.drawable.truck,
                 R.drawable.ship,
             )
@@ -585,17 +593,18 @@ abstract class IconsGroup(@StringRes val title: Int) {
     }
 
     @Immutable
-    object ArrowsIcons : IconsGroup(title = R.string.icons_arrows) {
+    object ArrowsIcons : IconsGroup<Int>(title = R.string.icons_arrows) {
         override val icons by lazy {
             listOf(
-                R.drawable.arrow_big_left,
-                R.drawable.arrow_big_up,
-                R.drawable.arrow_big_right,
-                R.drawable.arrow_big_down,
                 R.drawable.arrow_left,
                 R.drawable.arrow_up,
                 R.drawable.arrow_right,
                 R.drawable.arrow_down,
+
+                R.drawable.arrow_big_left,
+                R.drawable.arrow_big_up,
+                R.drawable.arrow_big_right,
+                R.drawable.arrow_big_down,
                 R.drawable.arrow_right_left,
                 R.drawable.arrow_up_1_0,
                 R.drawable.arrow_up_down,
@@ -619,6 +628,59 @@ abstract class IconsGroup(@StringRes val title: Int) {
 
     @Immutable
     companion object {
+        val unlocked: Set<Int> = setOf(
+            R.drawable.sparkle,
+            R.drawable.sparkles,
+            R.drawable.star,
+            R.drawable.cross,
+            R.drawable.heart_pulse,
+
+            R.drawable.sprint,
+            R.drawable.bike,
+            R.drawable.dumbbell,
+
+            R.drawable.image,
+            R.drawable.film,
+            R.drawable.headphones,
+            R.drawable.brush,
+
+            R.drawable.circle_dollar_sign,
+
+            R.drawable.laptop,
+
+            R.drawable.messages_square,
+            R.drawable.circle_user,
+            R.drawable.user,
+
+            R.drawable.calendar,
+            R.drawable.line_chart,
+
+            R.drawable.utensils,
+
+            R.drawable.shrub,
+            R.drawable.tree_deciduous,
+            R.drawable.tree_pine,
+
+            R.drawable.pen,
+
+            R.drawable.bed_double,
+
+            R.drawable.car_front,
+
+            R.drawable.book_open_text,
+            R.drawable.file,
+            R.drawable.book,
+
+            R.drawable.type,
+            R.drawable.diff,
+            R.drawable.equal,
+
+            R.drawable.arrow_left,
+            R.drawable.arrow_up,
+            R.drawable.arrow_right,
+            R.drawable.arrow_down,
+        )
+
         val allGroups by lazy {
             listOf(
                 MiscellaneousIcons,
@@ -645,13 +707,21 @@ abstract class IconsGroup(@StringRes val title: Int) {
 
 @Composable
 @Preview
-fun SelectIconScreenPreview(@PreviewParameter(IconProvider::class) group: IconsGroup) {
+fun SelectIconScreenPreview(@PreviewParameter(IconProvider::class) group: IconsGroup<Int>) {
     HabitMateTheme {
         LazyVerticalGrid(columns = GridCells.Adaptive(32.dp)) {
             item(span = { GridItemSpan(maxLineSpan) }) {
                 Text(stringResource(group.title), color = Color.White)
             }
-            items(group.icons) { icon -> IconItem(IconResource.Id(icon)) }
+            items(group.icons) { icon ->
+                val isUnlocked = IconsGroup.unlocked.contains(icon)
+                IconItem(
+                    icon = IconResource.Id(icon),
+                    color = IconsColors.Default,
+                    isUnlocked = isUnlocked,
+                    isSelected = isUnlocked
+                )
+            }
         }
     }
 }

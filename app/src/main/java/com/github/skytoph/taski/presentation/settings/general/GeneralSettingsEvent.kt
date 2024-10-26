@@ -3,7 +3,7 @@ package com.github.skytoph.taski.presentation.settings.general
 import com.github.skytoph.taski.core.datastore.SettingsCache
 import com.github.skytoph.taski.presentation.settings.SettingsViewModel
 
-sealed interface GeneralSettingsEvent: SettingsViewModel.Event {
+sealed interface GeneralSettingsEvent : SettingsViewModel.Event {
 
     data object ToggleWeekStart : GeneralSettingsEvent {
         override suspend fun handle(settings: SettingsCache) {
@@ -20,6 +20,12 @@ sealed interface GeneralSettingsEvent: SettingsViewModel.Event {
     data object ToggleStreakHighlight : GeneralSettingsEvent {
         override suspend fun handle(settings: SettingsCache) {
             settings.updateStreakHighlight()
+        }
+    }
+
+    data object ToggleIconWarning : GeneralSettingsEvent {
+        override suspend fun handle(settings: SettingsCache) {
+            settings.updateIconWarning()
         }
     }
 }

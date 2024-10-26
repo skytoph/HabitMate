@@ -67,7 +67,7 @@ fun SnackbarWithTitle(message: SnackbarMessage, modifier: Modifier = Modifier) {
                 Text(
                     text = message.messageResource.getString(context),
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                    color = MaterialTheme.colorScheme.onBackground
                 )
             }
         }

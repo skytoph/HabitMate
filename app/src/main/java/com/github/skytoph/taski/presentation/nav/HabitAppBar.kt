@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -53,12 +54,14 @@ fun HabitAppBar(
         ) {
             if (state.navigateUp.canNavigateUp)
                 IconButton(onClick = navigateUp) {
-                    Icon(
-                        imageVector = state.navigateUp.action.icon.vector(context),
-                        contentDescription = state.navigateUp.action.title.getString(context),
-                        modifier = Modifier.size(24.dp),
-                        tint = MaterialTheme.colorScheme.onSurface
-                    )
+                    state.navigateUp.action.icon?.let { icon ->
+                        Icon(
+                            imageVector = icon.vector(context),
+                            contentDescription = state.navigateUp.action.title.getString(context),
+                            modifier = Modifier.size(24.dp),
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
                 }
             else
                 Spacer(modifier = Modifier.width(16.dp))
@@ -71,14 +74,16 @@ fun HabitAppBar(
                 items(state.menuItems, key = { it.title }) { button ->
                     IconButton(onClick = button.onClick) {
                         val description = button.title.getString(context)
-                        Icon(
-                            imageVector = button.icon.vector(context),
-                            contentDescription = description,
-                            modifier = Modifier
-                                .size(24.dp)
-                                .semantics { contentDescription = description },
-                            tint = button.color
-                        )
+                        button.icon?.let { icon ->
+                            Icon(
+                                imageVector = icon.vector(context),
+                                contentDescription = description,
+                                modifier = Modifier
+                                    .size(24.dp)
+                                    .semantics { contentDescription = description },
+                                tint = button.color
+                            )
+                        }
                     }
                 }
             }
@@ -97,19 +102,30 @@ fun HabitAppBar(
                             val title = item.title.getString(context)
                             DropdownMenuItem(
                                 text = {
-                                    Text(
-                                        text = title,
-                                        color = item.color,
-                                        style = MaterialTheme.typography.bodyMedium
-                                    )
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        item.checked?.let { checked ->
+                                            Checkbox(checked = checked,
+                                                onCheckedChange = {
+                                                    expandList(false)
+                                                    item.onClick()
+                                                })
+                                        }
+                                        Text(
+                                            text = title,
+                                            color = item.color,
+                                            style = MaterialTheme.typography.bodyMedium
+                                        )
+                                    }
                                 },
-                                leadingIcon = {
-                                    Icon(
-                                        imageVector = item.icon.vector(context),
-                                        contentDescription = title,
-                                        tint = item.color,
-                                        modifier = Modifier.size(20.dp)
-                                    )
+                                leadingIcon = item.icon?.let { icon ->
+                                    {
+                                        Icon(
+                                            imageVector = icon.vector(context),
+                                            contentDescription = title,
+                                            tint = item.color,
+                                            modifier = Modifier.size(20.dp)
+                                        )
+                                    }
                                 },
                                 onClick = {
                                     expandList(false)

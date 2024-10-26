@@ -10,7 +10,9 @@ data class Settings(
     val weekStartsOnSunday: Initializable<Boolean> = Initializable(default = true),
     val currentDayHighlighted: Boolean = true,
     val streaksHighlighted: Boolean = true,
-    val theme: AppTheme = AppTheme.Dark,
+    val showIconWarning: Boolean = true,
+    val sortIcons: Boolean = false,
+    val theme: AppTheme? = null,
     val view: HabitsView = HabitsView(),
     val lastBackupSaved: Long? = null
 ) {
@@ -35,6 +37,7 @@ class InitializeEmptyValues {
 
         return value.copy(
             weekStartsOnSunday = value.weekStartsOnSunday.initializeIfEmpty(weekStartDefault),
+            theme = value.theme ?: AppTheme.System,
             view = HabitsView(initialized = true)
         )
     }

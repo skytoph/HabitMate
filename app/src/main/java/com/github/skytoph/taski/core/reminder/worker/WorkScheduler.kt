@@ -19,9 +19,10 @@ class WorkScheduler(
     private val workManager: WorkManager,
     private val uriConverter: HabitUriConverter,
     private val gson: Gson,
+    private val context: Context
 ) : ReminderScheduler {
 
-    override fun scheduleRepeating(context: Context, items: List<ReminderItem>) {
+    override fun scheduleRepeating(items: List<ReminderItem>) {
         for (item in items) {
             val currentTime = System.currentTimeMillis()
             val targetTime = item.timeMillis
@@ -34,7 +35,7 @@ class WorkScheduler(
         }
     }
 
-    override fun schedule(context: Context, items: List<ReminderItem>) {
+    override fun schedule(items: List<ReminderItem>) {
         for (item in items) {
             val currentTime = System.currentTimeMillis()
             val targetTime = item.timeMillis
@@ -43,11 +44,9 @@ class WorkScheduler(
         }
     }
 
-    override fun reschedule(context: Context, item: ReminderItem) {
-        if (item.interval.reschedule) schedule(
-            context = context,
-            items = listOf(item.copy(timeMillis = item.interval.next(item.timeMillis, item.day)))
-        )
+    override fun reschedule(item: ReminderItem) {
+        if (item.interval.reschedule)
+            schedule(items = listOf(item.copy(timeMillis = item.interval.next(item.timeMillis, item.day))))
     }
 
     private fun request(item: ReminderItem, delay: Long): WorkRequest {
@@ -71,12 +70,12 @@ class WorkScheduler(
         return request
     }
 
-    override fun cancel(context: Context, uri: Uri) {
+    override fun cancel(uri: Uri) {
         workManager.cancelAllWorkByTag(uri.toString())
     }
 
-    override fun cancel(context: Context, id: Long, times: Int) =
+    override fun cancel(id: Long, times: Int) =
         (0 until times).forEach { index ->
-            cancel(context, uriConverter.uri(id, index))
+            cancel(uriConverter.uri(id, index))
         }
 }

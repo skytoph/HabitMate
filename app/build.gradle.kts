@@ -9,12 +9,12 @@ plugins {
 
 android {
     namespace = "com.github.skytoph.taski"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.github.skytoph.taski"
         minSdk = 26
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -62,6 +62,7 @@ android {
     androidResources {
         generateLocaleConfig = true
     }
+    buildToolsVersion = "35.0.0"
 }
 
 dependencies {
@@ -143,6 +144,10 @@ dependencies {
         exclude(group = "org.apache.httpcomponents")
         exclude(module = "guava-jdk5")
     }
+
+    // Firebase
+    implementation(platform("com.google.firebase:firebase-bom:33.2.0"))
+    implementation("com.google.firebase:firebase-firestore")
 
     // Coil
     implementation("io.coil-kt:coil-compose:2.7.0")
