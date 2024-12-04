@@ -15,6 +15,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimePicker
+import androidx.compose.material3.TimePickerDefaults
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -58,7 +59,13 @@ fun TimePickerDialog(
                 }
             }
         ) {
-            TimePicker(state = state)
+            TimePicker(
+                state = state,
+                colors = TimePickerDefaults.colors(
+                    timeSelectorUnselectedContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
+                    timeSelectorSelectedContainerColor = MaterialTheme.colorScheme.primary,
+                )
+            )
         }
     }
 }
