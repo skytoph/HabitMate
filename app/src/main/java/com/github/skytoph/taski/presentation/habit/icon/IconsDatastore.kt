@@ -1,5 +1,6 @@
 package com.github.skytoph.taski.presentation.habit.icon
 
+import com.github.skytoph.taski.core.NetworkManager
 import com.github.skytoph.taski.core.auth.SignInWithGoogle
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
@@ -20,7 +21,7 @@ interface IconsDatastore {
     suspend fun unlock(icons: Set<String>)
     suspend fun delete()
 
-    class Base : IconsDatastore {
+    class Base(private val networkManager: NetworkManager) : IconsDatastore {
         override fun unlockedFlow(): Flow<Set<String>> = document()
             ?.snapshots()
             ?.map { snapshot ->
@@ -36,7 +37,8 @@ interface IconsDatastore {
             .let { if (it is List<*>) it.filterIsInstance<String>().toSet() else emptySet() }
 
         override suspend fun unlock(icon: String) {
-            document()?.update(FIREBASE_FIELD, FieldValue.arrayUnion(icon))?.await()
+            document()?.update(FIREBASE_FIELD, FieldValue.arrayUnion(icon))
+                ?.let { if (networkManager.isNetworkAvailable()) it.await() }
         }
 
         override suspend fun create() {

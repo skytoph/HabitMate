@@ -1,6 +1,7 @@
 package com.github.skytoph.taski.presentation.habit.icon
 
 import android.content.res.Resources
+import com.github.skytoph.taski.core.NetworkManager
 import com.github.skytoph.taski.core.auth.SignInWithGoogle
 import com.github.skytoph.taski.presentation.core.state.IconResource
 import com.github.skytoph.taski.presentation.settings.backup.ProfileUi
@@ -10,10 +11,11 @@ import kotlinx.coroutines.flow.map
 
 interface IconsInteractor : SignInInteractor<Boolean> {
     fun icons(resources: Resources): Flow<List<IconsLockedGroup>>
-    suspend fun unlock(icon: String)
+    suspend fun unlock(icon: String): Boolean
     suspend fun shouldShowWarning(): Boolean
 
-    class Base(private val datastore: IconsDatastore) : IconsInteractor, SignInInteractor.Base<Boolean>(datastore) {
+    class Base(private val datastore: IconsDatastore, networkManager: NetworkManager) : IconsInteractor,
+        SignInInteractor.Base<Boolean>(datastore, networkManager) {
 
         override fun icons(resources: Resources): Flow<List<IconsLockedGroup>> =
             datastore.unlockedFlow().map { icons ->
@@ -28,8 +30,11 @@ interface IconsInteractor : SignInInteractor<Boolean> {
                 }
             }
 
-        override suspend fun unlock(icon: String) {
+        override suspend fun unlock(icon: String): Boolean = try {
             datastore.unlock(icon)
+            true
+        } catch (exception: Exception) {
+            false
         }
 
         override fun mapResult(exception: Exception?, default: Boolean): Boolean = false

@@ -55,9 +55,9 @@
     <string name="restore_habit_confirmation_dialog_description">Ви хочете відновити звичку?</string>
     <string name="action_restore">Відновити</string>
 
-    <string name="habit_reminder_message">Час виконати звичку!</string>
+    <string name="habit_reminder_message">Час виконати звичку &#x2728;</string>
 
-    <string name="unlock_icon_title">Розблокувати іконку</string>
+    <string name="unlock_icon_title">Розблокувати</string>
     <string name="unlock_icon_description">Перегляньте рекламу щоб розблокувати іконку.</string>
     <string name="icons_warning">Розблоковані іконки не синхронізовано.\nУвійдіть за допомогою Google щоб зберегти ваші розблоковані іконки.</string>
     <string name="log_in">Увійти</string>

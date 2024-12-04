@@ -5,6 +5,7 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import com.github.skytoph.taski.R
+import com.github.skytoph.taski.core.NetworkManager
 import com.github.skytoph.taski.core.auth.SignInWithGoogle
 import com.github.skytoph.taski.core.backup.BackupDatastore
 import com.github.skytoph.taski.core.backup.BackupManager
@@ -38,7 +39,8 @@ interface BackupInteractor : SignInInteractor<BackupResultUi> {
         private val mapper: BackupResultMapper,
         private val iconsDatastore: IconsDatastore,
         private val networkMapper: NetworkErrorMapper,
-    ) : BackupInteractor, SignInInteractor.Base<BackupResultUi>(iconsDatastore) {
+        networkManager: NetworkManager
+    ) : BackupInteractor, SignInInteractor.Base<BackupResultUi>(iconsDatastore, networkManager) {
 
         override suspend fun export(context: Context): BackupResultUi = try {
             val uri = fileWriter.getUriFromFile(

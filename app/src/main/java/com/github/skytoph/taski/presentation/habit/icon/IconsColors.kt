@@ -9,7 +9,7 @@ val BlueLight = Color(0xFF8CB4CE)
 val GreenFresh = Color(0xFF76A8AB)
 val GreenLight = Color(0xFFB0D1B9)
 val GreenBright = Color(0xFFACC77D)
-val GreenSalad = Color(0xFF74A974)
+val GreenOxley = Color(0xFF74A974)
 val GreenDark = Color(0xFF577760)
 val PinkLight = Color(0xFFF0CCD8)
 val Pink = Color(0xFFE188AE)
@@ -35,7 +35,7 @@ object IconsColors {
         GreenFresh,
         GreenLight,
         GreenBright,
-        GreenSalad,
+        GreenOxley,
         GreenDark,
         PinkLight,
         Pink,

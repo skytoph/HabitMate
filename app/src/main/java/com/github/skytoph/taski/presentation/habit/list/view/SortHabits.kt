@@ -1,5 +1,9 @@
 package com.github.skytoph.taski.presentation.habit.list.view
 
+import android.graphics.Color
+import androidx.core.graphics.blue
+import androidx.core.graphics.green
+import androidx.core.graphics.red
 import com.github.skytoph.taski.domain.habit.Habit
 
 sealed interface SortHabits : ProvideOptionUi<SortHabits> {
@@ -18,7 +22,13 @@ sealed interface SortHabits : ProvideOptionUi<SortHabits> {
     }
 
     data object ByColor : SortHabits {
-        override fun comparator(): Comparator<Pair<Int, Habit>> = compareBy { it.second.color }
+        override fun comparator(): Comparator<Pair<Int, Habit>> = compareBy {
+            val color = it.second.color
+            val hsv = FloatArray(3)
+            Color.RGBToHSV(color.red, color.green, color.blue, hsv)
+            hsv[0].toInt() - hsv[1]
+        }
+
         override fun optionUi(): OptionUi = HabitsViewTypesProvider.optionSortByColor
     }
 

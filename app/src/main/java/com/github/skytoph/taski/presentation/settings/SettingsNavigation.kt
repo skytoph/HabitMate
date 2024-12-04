@@ -14,6 +14,7 @@ import com.github.skytoph.taski.presentation.core.nav.scaleIntoContainer
 import com.github.skytoph.taski.presentation.core.nav.scaleOutOfContainer
 import com.github.skytoph.taski.presentation.settings.archive.component.ArchiveScreen
 import com.github.skytoph.taski.presentation.settings.backup.component.BackupScreen
+import com.github.skytoph.taski.presentation.settings.credits.CreditsScreen
 import com.github.skytoph.taski.presentation.settings.general.component.GeneralSettingsScreen
 import com.github.skytoph.taski.presentation.settings.menu.component.SettingsMenuScreen
 import com.github.skytoph.taski.presentation.settings.reorder.component.HabitReorderScreen
@@ -28,6 +29,7 @@ abstract class SettingsScreens(val route: String) {
     object Theme : SettingsScreens("theme")
     object Backup : SettingsScreens("backup")
     object BackupRestore : SettingsScreens("backup_restore")
+    object Credits : SettingsScreens("credits")
 }
 
 fun NavGraphBuilder.settingsNavigation(
@@ -58,6 +60,7 @@ fun NavGraphBuilder.settingsNavigation(
                 generalClick = { controller.navigate(SettingsScreens.General.route) },
                 themeClick = { controller.navigate(SettingsScreens.Theme.route) },
                 backupClick = { controller.navigate(SettingsScreens.Backup.route) },
+                creditsClick = { controller.navigate(SettingsScreens.Credits.route) }
             )
         }
         composable(
@@ -108,6 +111,15 @@ fun NavGraphBuilder.settingsNavigation(
             popEnterTransition = null,
         ) {
             RestoreScreen()
+        }
+        composable(
+            route = SettingsScreens.Credits.route,
+            enterTransition = { scaleIntoContainer(direction = ScaleTransitionDirection.OUTWARDS) },
+            exitTransition = { fadeOut(tween(delayMillis = 60)) },
+            popExitTransition = { scaleOutOfContainer(direction = ScaleTransitionDirection.INWARDS) },
+            popEnterTransition = null,
+        ) {
+            CreditsScreen()
         }
     }
 }

@@ -25,9 +25,11 @@ interface SelectIconEvent {
         }
     }
 
-    class UpdateDialog(private val icon: IconResource? = null) : SelectIconEvent {
+    class UpdateDialog(private val icon: IconResource? = null, private val isLoading: Boolean = false) :
+        SelectIconEvent {
         override fun handle(iconState: MutableState<IconState>, state: MutableState<SelectIconState>?) {
-            state?.let { state.value = state.value.copy(dialogIcon = icon) }
+            if (isLoading) state?.let { state.value = state.value.copy(isDialogLoading = true) }
+            else state?.let { state.value = state.value.copy(dialogIcon = icon, isDialogLoading = false) }
         }
     }
 

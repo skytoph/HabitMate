@@ -1,6 +1,5 @@
 package com.github.skytoph.taski.core.reminder.worker
 
-import android.content.Context
 import android.net.Uri
 import androidx.work.Data
 import androidx.work.ExistingPeriodicWorkPolicy
@@ -19,7 +18,6 @@ class WorkScheduler(
     private val workManager: WorkManager,
     private val uriConverter: HabitUriConverter,
     private val gson: Gson,
-    private val context: Context
 ) : ReminderScheduler {
 
     override fun scheduleRepeating(items: List<ReminderItem>) {

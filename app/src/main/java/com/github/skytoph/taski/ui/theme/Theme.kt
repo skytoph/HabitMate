@@ -35,6 +35,7 @@ private val DarkColorScheme = darkColorScheme(
     secondaryContainer = PurpleDark,
     onSecondaryContainer = PurpleLight,
 
+    surface = PurpleVeryDark,
     surfaceVariant = PurpleVeryDark,
 
     inverseSurface = Color.White,

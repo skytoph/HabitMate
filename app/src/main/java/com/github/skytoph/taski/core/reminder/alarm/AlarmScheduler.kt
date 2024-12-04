@@ -55,7 +55,7 @@ class AlarmScheduler(
     private fun alarmIntent(item: ReminderItem): PendingIntent {
         val intent = intent(uriConverter.uri(item.uri))
         intent.putExtra(ReminderItem.KEY_ITEM, gson.toJson(item))
-        return alarm.alarmIntent(context, intent, item.id.toInt())
+        return alarm.alarmIntent(context, intent, item.id.hashCode())
     }
 
     private fun intent(uri: Uri): Intent {
@@ -66,8 +66,8 @@ class AlarmScheduler(
     }
 
     private fun cancelAlarmIntent(uri: Uri): PendingIntent {
-        val intent = intent( uri)
-        val code = uriConverter.id(uri).toInt()
+        val intent = intent(uri)
+        val code = uriConverter.id(uri).hashCode()
         return alarm.alarmIntent(context, intent, code)
     }
 }

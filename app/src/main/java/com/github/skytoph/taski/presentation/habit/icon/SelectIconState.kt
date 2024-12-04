@@ -7,6 +7,7 @@ data class SelectIconState(
     val isLoading: Boolean = true,
     val isSigningIn: Boolean = false,
     val dialogIcon: IconResource? = null,
+    val isDialogLoading: Boolean = false,
     val isWarningShown: Boolean = false,
     val isWarningDialogShown: Boolean = false,
 )

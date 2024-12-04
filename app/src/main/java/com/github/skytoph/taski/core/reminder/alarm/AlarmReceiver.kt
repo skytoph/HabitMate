@@ -44,6 +44,7 @@ class AlarmReceiver : AsyncBroadcastReceiver() {
                 val builder = NotificationCompat.Builder(context, channelId)
                     .setSmallIcon(R.drawable.sparkles)
                     .setColor(habit.color)
+                    .setSilent(true)
                     .setContentTitle(habit.title)
                     .setContentText(StringResource.Identifier(item.messageIdentifier).getString(context))
                     .setPriority(NotificationCompat.PRIORITY_HIGH)

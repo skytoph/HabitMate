@@ -1,5 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name">HabitMate</string>
+    <string name="app_name">Habit Mate</string>
 
     <!--    Auth-->
     <string name="sign_in">Sign In</string>
@@ -144,7 +144,7 @@
     <string name="archive_is_empty_label">Archive is empty</string>
 
     <!--    Reminders-->
-    <string name="habit_reminder_message">It\'s time to complete the habit</string>
+    <string name="habit_reminder_message">It\'s time to complete the habit &#x2728;</string>
     <string name="allow_notifications_title">Enable notifications</string>
     <string name="allow_notifications_description">To receive reminders, please enable notifications in Settings > Notifications</string>
     <string name="allow_alarms_title">Enable alarms</string>
@@ -208,6 +208,8 @@
     <string name="fail_title">Fail</string>
     <string name="error_sync">Failed to create backup.</string>
     <string name="error_no_connection">No Internet connection.</string>
+    <string name="error_failed_to_load_reward">Something went wrong, failed to load the ad.</string>
+    <string name="reward_unlocked">The icon successfully unlocked.</string>
     <string name="sync_title">Something went wrong, can\'t create backup.</string>
     <string name="error_deleting_account">Something went wrong, can\'t delete your account. Try again later please.</string>
     <string name="backup_no_connection">Connect to the Internet to enable Google Drive Backup.</string>
@@ -248,14 +250,14 @@
     <string name="loading_import" tools:ignore="TypographyEllipsis">Restoring the data...</string>
     <string name="loading_backup" tools:ignore="TypographyEllipsis">Creating Backup...</string>
 
-    <string name="backup_date_format">dd.MM.yyyy HH:mm</string>
+    <string name="backup_date_format">dd.MM.yyyy HH:mm:ss</string>
     <string name="backup_filename_date_format">dd.MM.yyyy</string>
     <string name="backup_mimetype">application/octet-stream</string>
     <string name="backup_filename">backup-%1$s.db</string>
 
     <!--    Icons-->
     <string name="action_watch_ad">Watch ad</string>
-    <string name="unlock_icon_title">Unlock the icon</string>
+    <string name="unlock_icon_title">Unlock</string>
     <string name="unlock_icon_description">Watch the ad to unlock the icon.</string>
     <string name="icons_warning">Your icons are not synchronized.\nSign in with Google to save your unlocked icons</string>
     <string name="action_dismiss">Dismiss</string>

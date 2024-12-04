@@ -1,6 +1,9 @@
 package com.github.skytoph.taski.presentation.habit.icon.component
 
 import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -97,7 +100,7 @@ fun SelectIconScreen(viewModel: SelectIconViewModel = hiltViewModel()) {
     )
 
     LaunchedEffect(Unit) {
-        viewModel.init(context.resources)
+        viewModel.init(context.getActivity()!!)
     }
 
     LaunchedEffect(sortIcons) {
@@ -131,8 +134,11 @@ fun SelectIconScreen(viewModel: SelectIconViewModel = hiltViewModel()) {
     state.value.dialogIcon?.let { icon ->
         UnlockIconDialog(
             icon = icon.vector(context),
-            onConfirm = { viewModel.unlockIcon(icon.name(context.resources)) },
+            onConfirm = {
+                viewModel.unlockIcon(icon, context.getActivity() ?: return@UnlockIconDialog)
+            },
             onDismissRequest = { viewModel.onEvent(SelectIconEvent.UpdateDialog()) },
+            isLoading = state.value.isDialogLoading,
             color = iconState.value.color
         )
     }
@@ -142,6 +148,12 @@ fun SelectIconScreen(viewModel: SelectIconViewModel = hiltViewModel()) {
             onDismissRequest = { viewModel.onEvent(SelectIconEvent.IsWarningDialogShown(false)) },
             onConfirm = { viewModel.hideWarning() }
         )
+}
+
+fun Context.getActivity(): ComponentActivity? = when (this) {
+    is ComponentActivity -> this
+    is ContextWrapper -> baseContext.getActivity()
+    else -> null
 }
 
 @Composable

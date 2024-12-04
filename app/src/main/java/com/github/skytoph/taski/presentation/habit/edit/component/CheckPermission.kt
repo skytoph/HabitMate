@@ -94,6 +94,13 @@ fun startAlarmSettingsActivity(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
+fun alarmSettingsIntent(context: Context): Intent =
+    Intent(
+        Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
+        Uri.fromParts("package", context.packageName, null)
+    ).addFlags(Intent.FLAG_ACTIVITY_REQUIRE_DEFAULT)
+
 fun notificationSettingsIntent(context: Context): Intent =
     Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
         .putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
@@ -102,14 +109,6 @@ fun notificationSettingsIntent(context: Context): Intent =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
                 addFlags(Intent.FLAG_ACTIVITY_REQUIRE_DEFAULT)
         }
-
-@RequiresApi(Build.VERSION_CODES.S)
-fun alarmSettingsIntent(context: Context): Intent =
-    Intent(
-        Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
-        Uri.fromParts("package", context.packageName, null)
-    )
-        .addFlags(Intent.FLAG_ACTIVITY_REQUIRE_DEFAULT)
 
 @Composable
 fun LaunchNotificationSettingsScreen(

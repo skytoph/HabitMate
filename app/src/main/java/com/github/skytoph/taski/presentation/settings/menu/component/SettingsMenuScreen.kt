@@ -19,6 +19,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
@@ -39,6 +40,7 @@ fun SettingsMenuScreen(
     generalClick: () -> Unit,
     themeClick: () -> Unit,
     backupClick: () -> Unit,
+    creditsClick: () -> Unit
 ) {
     LaunchedEffect(Unit) {
         viewModel.initAppBar(title = R.string.settings_title)
@@ -49,7 +51,8 @@ fun SettingsMenuScreen(
         reorderClick = reorderClick,
         archiveClick = archiveClick,
         themeClick = themeClick,
-        backupClick = backupClick
+        backupClick = backupClick,
+        creditsClick = creditsClick
     )
 }
 
@@ -60,6 +63,7 @@ private fun SettingsMenu(
     archiveClick: () -> Unit = {},
     themeClick: () -> Unit = {},
     backupClick: () -> Unit = {},
+    creditsClick: () -> Unit = {},
 ) {
     Column(modifier = Modifier.padding(24.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         MenuTitleText(text = "App", modifier = Modifier.padding(start = 16.dp))
@@ -67,31 +71,36 @@ private fun SettingsMenu(
             SettingsMenuItem(
                 title = "General",
                 icon = ImageVector.vectorResource(id = R.drawable.wrench),
-                onClick = generalClick
+                onClick = generalClick,
+                color = Blue
             )
             HorizontalDivider()
             SettingsMenuItem(
                 title = "Theme",
                 icon = ImageVector.vectorResource(id = R.drawable.palette),
-                onClick = themeClick
+                onClick = themeClick,
+                color = Green
             )
             HorizontalDivider()
             SettingsMenuItem(
                 title = "Reorder habits",
                 icon = ImageVector.vectorResource(id = R.drawable.arrow_up_down),
-                onClick = reorderClick
+                onClick = reorderClick,
+                color = Yellow
             )
             HorizontalDivider()
             SettingsMenuItem(
                 title = "Archived habits",
                 icon = ImageVector.vectorResource(id = R.drawable.archive),
-                onClick = archiveClick
+                onClick = archiveClick,
+                color = Orange
             )
             HorizontalDivider()
             SettingsMenuItem(
                 title = "Backup",
                 icon = ImageVector.vectorResource(id = R.drawable.folder_input),
-                onClick = backupClick
+                onClick = backupClick,
+                color = Red
             )
         }
         Spacer(modifier = Modifier.height(8.dp))
@@ -100,19 +109,39 @@ private fun SettingsMenu(
             SettingsMenuItem(
                 title = "Privacy policy",
                 icon = ImageVector.vectorResource(id = R.drawable.file_lock),
-                onClick = {}
+                onClick = {},
+                color = GrayLight
             )
             HorizontalDivider()
             SettingsMenuItem(
                 title = "Terms of use",
                 icon = ImageVector.vectorResource(id = R.drawable.file_type),
-                onClick = {}
+                onClick = {},
+                color = PurpleLight
             )
             HorizontalDivider()
             SettingsMenuItem(
                 title = "Credits",
                 icon = ImageVector.vectorResource(id = R.drawable.file_heart),
-                onClick = {}
+                onClick = creditsClick,
+                color = PinkLight
+            )
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        MenuTitleText(text = "Feedback", modifier = Modifier.padding(start = 16.dp))
+        Column(modifier = Modifier.clip(MaterialTheme.shapes.small)) {
+            SettingsMenuItem(
+                title = "Rate the app",
+                icon = ImageVector.vectorResource(id = R.drawable.star),
+                onClick = {},
+                color = Peach
+            )
+            HorizontalDivider()
+            SettingsMenuItem(
+                title = "Share the app",
+                icon = ImageVector.vectorResource(id = R.drawable.share_2),
+                onClick = {},
+                color = BlueLight
             )
         }
         Spacer(modifier = Modifier.height(4.dp))
@@ -131,7 +160,8 @@ private fun SettingsMenu(
             Icon(
                 imageVector = ImageVector.vectorResource(R.drawable.heart),
                 contentDescription = null,
-                modifier = Modifier.size(16.dp)
+                modifier = Modifier.size(16.dp),
+                tint = MaterialTheme.colorScheme.onBackground
             )
         }
     }
@@ -142,20 +172,37 @@ private fun SettingsMenuItem(
     title: String,
     icon: ImageVector,
     onClick: () -> Unit,
+    color: Color,
 ) {
     TitleWithIconMenuItem(
         modifier = Modifier.background(MaterialTheme.colorScheme.primaryContainer),
         title = title,
         icon = icon,
         onClick = onClick,
-        tint = MaterialTheme.colorScheme.primary,
+        tint = color,
     )
 }
 
 @Composable
 @Preview(showBackground = true)
-private fun SettingsPreview() {
+private fun DarkSettingsPreview() {
     HabitMateTheme(darkTheme = true) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(16.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            SettingsMenu()
+        }
+    }
+}
+
+@Composable
+@Preview(showBackground = true)
+private fun SettingsPreview() {
+    HabitMateTheme(darkTheme = false) {
         Box(
             modifier = Modifier
                 .fillMaxSize()

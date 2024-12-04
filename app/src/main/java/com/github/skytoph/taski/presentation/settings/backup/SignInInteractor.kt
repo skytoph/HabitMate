@@ -2,9 +2,8 @@ package com.github.skytoph.taski.presentation.settings.backup
 
 import android.content.Context
 import android.content.Intent
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 import android.util.Log
+import com.github.skytoph.taski.core.NetworkManager
 import com.github.skytoph.taski.core.auth.SignInWithGoogle
 import com.github.skytoph.taski.presentation.habit.icon.IconsDatastore
 
@@ -14,6 +13,7 @@ interface SignInInteractor<R> {
 
     abstract class Base<R>(
         private val iconsDatastore: IconsDatastore,
+        private val networkManager: NetworkManager
     ) : SignInInteractor<R> {
 
         abstract val defaultSigningInResult: R
@@ -43,15 +43,8 @@ interface SignInInteractor<R> {
             mapResult(exception, defaultSigningInResult)
         }
 
-        override fun checkConnection(context: Context): R {
-            val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            val capabilities = connectivityManager.activeNetwork?.let { connectivityManager.getNetworkCapabilities(it) }
-            return if (capabilities != null && (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
-                        || capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
-                        || capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET))
-            ) connectedResult
-            else noConnectionResult
-        }
+        override fun checkConnection(context: Context): R = if (networkManager.isNetworkAvailable()) connectedResult
+        else noConnectionResult
 
         abstract fun mapResult(exception: Exception?, default: R): R
 

@@ -17,6 +17,9 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        viewModel.init(this)
+
         setContent {
             val theme = viewModel.settings().collectAsState().value.theme
             LaunchedEffect(viewModel) {

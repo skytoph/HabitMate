@@ -1,5 +1,6 @@
 package com.github.skytoph.taski.di.habit
 
+import com.github.skytoph.taski.core.NetworkManager
 import com.github.skytoph.taski.core.backup.BackupDatastore
 import com.github.skytoph.taski.core.backup.BackupManager
 import com.github.skytoph.taski.core.backup.StringCompressor
@@ -42,6 +43,8 @@ object BackupModule {
         mapper: BackupResultMapper,
         networkMapper: NetworkErrorMapper,
         repository: HabitRepository,
-        icons: IconsDatastore
-    ): BackupInteractor = BackupInteractor.Base(repository, backup, datastore, fileWriter, mapper, icons, networkMapper)
+        icons: IconsDatastore,
+        networkManager: NetworkManager
+    ): BackupInteractor =
+        BackupInteractor.Base(repository, backup, datastore, fileWriter, mapper, icons, networkMapper, networkManager)
 }

@@ -51,10 +51,8 @@ interface NotificationStateInteractor : CheckHabitState {
         override fun rescheduleNotification(item: ReminderItem, context: Context) =
             scheduler.reschedule(item = item)
 
-        override suspend fun notCompleted(habitId: Long, isFirstDaySunday: Boolean): Boolean {
-            val isFirstDaySunday1 = settings.initAndGet().first().weekStartsOnSunday.value
-            return repository.notCompleted(habitId, isFirstDaySunday1)
-        }
+        override suspend fun notCompleted(habitId: Long, isFirstDaySunday: Boolean): Boolean =
+            repository.notCompleted(habitId, settings.initAndGet().first().weekStartsOnSunday.value)
 
         override suspend fun habit(id: Long): Habit = repository.habit(id)
     }
