@@ -267,6 +267,18 @@
     <string name="hide_reminder_confirmation_description">Do you want to permanently hide this reminder?\nYou can always turn it back on in settings.</string>
     <string name="new_line">\n</string>
 
+    <!--    Credits-->
+    <string name="credit_author">by %1$s</string>
+    <string name="material_icons_url" translatable="false">https://fonts.google.com/icons</string>
+    <string name="lucide_icons_url" translatable="false">https://github.com/lucide-icons/lucide</string>
+    <string name="reorderable_library_url" translatable="false">https://github.com/Calvin-LL/Reorderable/tree/main</string>
+    <string name="credits_icons">Lucide Icons</string>
+    <string name="credits_material_icons">Material Icons</string>
+    <string name="credits_reorderable">Reorderable</string>
+    <string name="license_isc">ISC License</string>
+    <string name="license_apache_2">Apache License 2.0</string>
+    <string name="credits_reorderable_author">Calvin Liang</string>
+
     <plurals name="times_label">
         <item quantity="one">time</item>
         <item quantity="other">times</item>

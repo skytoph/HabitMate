@@ -14,7 +14,7 @@ import com.github.skytoph.taski.presentation.core.nav.scaleIntoContainer
 import com.github.skytoph.taski.presentation.core.nav.scaleOutOfContainer
 import com.github.skytoph.taski.presentation.settings.archive.component.ArchiveScreen
 import com.github.skytoph.taski.presentation.settings.backup.component.BackupScreen
-import com.github.skytoph.taski.presentation.settings.credits.CreditsScreen
+import com.github.skytoph.taski.presentation.settings.credits.component.CreditsScreen
 import com.github.skytoph.taski.presentation.settings.general.component.GeneralSettingsScreen
 import com.github.skytoph.taski.presentation.settings.menu.component.SettingsMenuScreen
 import com.github.skytoph.taski.presentation.settings.reorder.component.HabitReorderScreen
