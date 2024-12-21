@@ -18,6 +18,7 @@ interface SettingsCache {
     suspend fun updateCurrentDayHighlight()
     suspend fun updateStreakHighlight()
     suspend fun updateIconsSort()
+    suspend fun updateCrashlytics()
     suspend fun updateTheme(theme: AppTheme)
     suspend fun updateViewNumberOfEntries(number: Int)
     suspend fun updateBackupTime(time: Long?)
@@ -54,6 +55,10 @@ interface SettingsCache {
 
         override suspend fun updateIconsSort() {
             dataStore.updateData { it.copy(sortIcons = !it.sortIcons) }
+        }
+
+        override suspend fun updateCrashlytics() {
+            dataStore.updateData { it.copy(allowCrashlytics = it.allowCrashlytics?.not() ?: true) }
         }
 
         override suspend fun updateTheme(theme: AppTheme) {

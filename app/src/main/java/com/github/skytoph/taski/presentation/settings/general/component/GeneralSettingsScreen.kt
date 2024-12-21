@@ -48,7 +48,8 @@ fun GeneralSettingsScreen(
         weekStartChange = { viewModel.onEvent(GeneralSettingsEvent.ToggleWeekStart) },
         currentDayHighlightChange = { viewModel.onEvent(GeneralSettingsEvent.ToggleCurrentDayHighlight) },
         streakHighlightChange = { viewModel.onEvent(GeneralSettingsEvent.ToggleStreakHighlight) },
-        iconWarningChange = { viewModel.onEvent(GeneralSettingsEvent.ToggleIconWarning) }
+        iconWarningChange = { viewModel.onEvent(GeneralSettingsEvent.ToggleIconWarning) },
+        allowCrashlytics = { viewModel.onEvent(GeneralSettingsEvent.ToggleAllowCrashlytics) }
     )
 }
 
@@ -59,6 +60,7 @@ private fun GeneralContent(
     currentDayHighlightChange: (Boolean) -> Unit = {},
     streakHighlightChange: (Boolean) -> Unit = {},
     iconWarningChange: (Boolean) -> Unit = {},
+    allowCrashlytics: (Boolean) -> Unit = {},
 ) {
     Box(
         modifier = Modifier
@@ -91,6 +93,12 @@ private fun GeneralContent(
                 title = stringResource(R.string.show_icon_warning),
                 isChecked = state.value.showIconWarning
             )
+            HorizontalDivider()
+            SwitchSetting(
+                onChange = allowCrashlytics,
+                title = stringResource(R.string.allow_crashlytics),
+                isChecked = state.value.allowCrashlytics ?: false
+            )
         }
     }
 }
@@ -107,7 +115,9 @@ private fun SwitchSetting(onChange: (Boolean) -> Unit, title: String, isChecked:
     ) {
         MenuItemText(
             text = title,
-            modifier = Modifier.padding(vertical = 12.dp).weight(1f)
+            modifier = Modifier
+                .padding(vertical = 12.dp)
+                .weight(1f)
         )
         Spacer(modifier = Modifier.width(8.dp))
         Switch(

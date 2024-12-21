@@ -155,6 +155,8 @@
     <string name="week_starts_on_sunday">week starts on sunday</string>
     <string name="highlight_current_day">highlight current day</string>
     <string name="highlight_streaks">highlight streaks</string>
+    <string name="show_icon_warning">remind me to sign in for icon syncing</string>
+    <string name="allow_crashlytics">allow crash report collection</string>
 
     <!--    Theme Settings-->
     <string name="theme_system">System</string>
@@ -262,7 +264,6 @@
     <string name="icons_warning">Your icons are not synchronized.\nSign in with Google to save your unlocked icons</string>
     <string name="action_dismiss">Dismiss</string>
     <string name="do_not_show_again">Don\'t show again</string>
-    <string name="show_icon_warning">remind me to sign in for icon syncing</string>
     <string name="hide_reminder">Hide reminder</string>
     <string name="hide_reminder_confirmation_description">Do you want to permanently hide this reminder?\nYou can always turn it back on in settings.</string>
     <string name="new_line">\n</string>
@@ -278,6 +279,9 @@
     <string name="license_isc">ISC License</string>
     <string name="license_apache_2">Apache License 2.0</string>
     <string name="credits_reorderable_author">Calvin Liang</string>
+
+    <!--    Share-->
+    <string name="share_app_message">Check out this handy habit-tracking app I\'ve been using! Download it here: </string>
 
     <plurals name="times_label">
         <item quantity="one">time</item>

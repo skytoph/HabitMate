@@ -80,7 +80,7 @@ private fun HabitCard(
 }
 
 @Composable
-@Preview(showSystemUi = true)
+@Preview(showBackground = true)
 fun HabitListPreview(@PreviewParameter(HabitsProvider::class) habits: List<HabitWithHistoryUi<HistoryUi>>) {
     HabitMateTheme {
         HabitList(habits = habits)
@@ -91,6 +91,9 @@ fun HabitListPreview(@PreviewParameter(HabitsProvider::class) habits: List<Habit
 @Preview(showBackground = true)
 fun DarkHabitListPreview(@PreviewParameter(HabitsProvider::class) habits: List<HabitWithHistoryUi<HistoryUi>>) {
     HabitMateTheme(darkTheme = true) {
-        Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)){HabitList(habits = habits)}
+        Box(
+            Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)) { HabitList(habits = habits) }
     }
 }

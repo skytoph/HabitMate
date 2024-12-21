@@ -28,4 +28,10 @@ sealed interface GeneralSettingsEvent : SettingsViewModel.Event {
             settings.updateIconWarning()
         }
     }
+
+    data object ToggleAllowCrashlytics : GeneralSettingsEvent {
+        override suspend fun handle(settings: SettingsCache) {
+            settings.updateCrashlytics()
+        }
+    }
 }

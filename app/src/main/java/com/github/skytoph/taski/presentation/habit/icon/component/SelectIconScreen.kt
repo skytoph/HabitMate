@@ -8,7 +8,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -20,13 +19,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -50,8 +45,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
@@ -71,7 +64,6 @@ import com.github.skytoph.taski.presentation.habit.icon.IconsColors
 import com.github.skytoph.taski.presentation.habit.icon.IconsLockedGroup
 import com.github.skytoph.taski.presentation.habit.icon.SelectIconEvent
 import com.github.skytoph.taski.presentation.habit.icon.SelectIconViewModel
-import com.github.skytoph.taski.presentation.settings.backup.component.ButtonWithLoading
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 import kotlinx.coroutines.launch
 
@@ -229,90 +221,6 @@ private fun SelectIcon(
                     isSelected = state.value.icon.matches(iconResource, LocalContext.current),
                     isUnlocked = icon.second,
                     color = state.value.color
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun IconsWarning(
-    modifier: Modifier,
-    logIn: () -> Unit,
-    dismiss: () -> Unit,
-    doNotShowAgain: () -> Unit,
-    isLoading: Boolean,
-) {
-    Column(
-        modifier = modifier
-            .background(color = MaterialTheme.colorScheme.primaryContainer, shape = MaterialTheme.shapes.small)
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-            .animateContentSize()
-    ) {
-        Row(
-            modifier = modifier,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = ImageVector.vectorResource(R.drawable.sparkles_medium),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.size(24.dp)
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = stringResource(R.string.icons_warning),
-                color = MaterialTheme.colorScheme.onBackground,
-                style = MaterialTheme.typography.bodySmall
-            )
-        }
-        Spacer(modifier = Modifier.height(8.dp))
-        Row(
-            modifier = modifier,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            ButtonWithLoading(
-                title = stringResource(R.string.log_in),
-                onClick = logIn,
-                isLoading = isLoading,
-                enabledColor = MaterialTheme.colorScheme.primary,
-                disabledColor = MaterialTheme.colorScheme.secondaryContainer,
-                shape = MaterialTheme.shapes.medium,
-                style = MaterialTheme.typography.bodySmall,
-                enabled = !isLoading,
-                textPadding = 16.dp
-            )
-            Spacer(modifier = Modifier.width(4.dp))
-            Box(
-                modifier = Modifier
-                    .clip(MaterialTheme.shapes.medium)
-                    .clickable(enabled = !isLoading, onClick = dismiss)
-                    .padding(horizontal = 8.dp, vertical = 8.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    modifier = Modifier.padding(horizontal = 8.dp),
-                    text = stringResource(R.string.action_dismiss),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-            Box(
-                modifier = Modifier
-                    .clip(MaterialTheme.shapes.medium)
-                    .clickable(enabled = !isLoading, onClick = doNotShowAgain)
-                    .padding(horizontal = 8.dp, vertical = 8.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    modifier = Modifier.padding(horizontal = 8.dp),
-                    text = stringResource(R.string.do_not_show_again),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Bold
                 )
             }
         }

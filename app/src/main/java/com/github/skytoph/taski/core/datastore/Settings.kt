@@ -11,6 +11,7 @@ data class Settings(
     val currentDayHighlighted: Boolean = true,
     val streaksHighlighted: Boolean = true,
     val showIconWarning: Boolean = true,
+    val allowCrashlytics: Boolean? = null,
     val sortIcons: Boolean = false,
     val theme: AppTheme? = null,
     val view: HabitsView = HabitsView(),

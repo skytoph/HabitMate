@@ -3,7 +3,10 @@
 package com.github.skytoph.taski.presentation.habit.list.component
 
 import androidx.compose.animation.Animatable
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
@@ -90,16 +93,21 @@ fun HabitDaily(
                     color = habit.color,
                     title = habit.title
                 )
-                LazyRow(horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.entries_daily_spaced_by))) {
-//                    if (entries == history.entries.size)
-                    items(items = history.entries, key = { it.daysAgo }) { entry ->
-                        CheckIcon(
-                            onDone = onDone,
-                            habit = habit,
-                            percentDone = entry.percentDone,
-                            daysAgo = entry.daysAgo,
-                            timesDone = entry.timesDone
-                        )
+                AnimatedVisibility(
+                    visible = entries == history.entries.size,
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
+                    LazyRow(horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.entries_daily_spaced_by))) {
+                        items(items = history.entries, key = { it.daysAgo }) { entry ->
+                            CheckIcon(
+                                onDone = onDone,
+                                habit = habit,
+                                percentDone = entry.percentDone,
+                                daysAgo = entry.daysAgo,
+                                timesDone = entry.timesDone
+                            )
+                        }
                     }
                 }
             }
