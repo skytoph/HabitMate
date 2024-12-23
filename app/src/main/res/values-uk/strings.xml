@@ -65,5 +65,7 @@
     <string name="do_not_show_again">Більше не показувати</string>
     <string name="show_icon_warning">нагадувати синхронізувати розблоковані іконки</string>
     <string name="allow_crashlytics">дозволити збір звітів про збої</string>
+    <string name="allow_crashlytics_title">Звіти про збої</string>
+    <string name="allow_crashlytics_description">Увімкнути збір звітів про збої? Це допоможе нам покращувати додаток.</string>
 
 </resources>

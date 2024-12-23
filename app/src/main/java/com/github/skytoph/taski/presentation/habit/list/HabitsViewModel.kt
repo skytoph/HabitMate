@@ -37,13 +37,15 @@ class HabitsViewModel @Inject constructor(
         interactor.habits()
             .combine(view) { habits, viewState -> applyViewState(habits, viewState.view) }
             .flowOn(Dispatchers.IO)
-            .onEach { habits -> habits?.let { onEvent(HabitListEvent.UpdateList(habits)) } }
-            .launchIn(viewModelScope)
+            .onEach { habits ->
+                habits?.let {
+                    onEvent(HabitListEvent.UpdateList(habits, settings().value.allowCrashlytics))
+                }
+            }.launchIn(viewModelScope)
     }
 
-    private fun applyViewState(
-        habits: List<HabitWithEntries>, viewState: HabitsView
-    ): List<HabitWithHistoryUi<HistoryUi>>? = viewState.map(mapper, habits, settings().value)
+    private fun applyViewState(habits: List<HabitWithEntries>, viewState: HabitsView)
+            : List<HabitWithHistoryUi<HistoryUi>>? = viewState.map(mapper, habits, settings().value)
 
     fun habitDone(habit: HabitUi, daysAgo: Int = 0) = viewModelScope.launch(Dispatchers.IO) {
         interactor.habitDone(habit, daysAgo)
@@ -58,6 +60,6 @@ class HabitsViewModel @Inject constructor(
     }
 
     fun archiveHabit(id: Long, archived: String) = viewModelScope.launch(Dispatchers.IO) {
-        interactor.archive(id,  archived)
+        interactor.archive(id, archived)
     }
 }

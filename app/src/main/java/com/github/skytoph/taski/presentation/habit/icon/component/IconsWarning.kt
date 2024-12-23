@@ -18,13 +18,13 @@ fun IconsWarning(
 ) {
     ReminderItem(
         modifier = modifier,
-        logIn = logIn,
+        confirm = logIn,
         isLoading = isLoading,
         dismiss = dismiss,
         doNotShowAgain = doNotShowAgain,
         icon = ImageVector.vectorResource(R.drawable.sparkles_medium),
-        title = stringResource(R.string.icons_warning),
+        text = stringResource(R.string.icons_warning),
         buttonConfirm = stringResource(R.string.log_in),
-        showDoNotShowAgain = true
+        showDoNotShowAgain = true,
     )
 }

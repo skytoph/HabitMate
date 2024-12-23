@@ -51,6 +51,7 @@
     <!--    Dialog-->
     <string name="action_cancel">Cancel</string>
     <string name="action_confirm">Confirm</string>
+    <string name="action_allow">Allow</string>
 
     <!--    Delete dialog-->
     <string name="delete_habit_confirmation_dialog_title">Delete the habit</string>
@@ -282,6 +283,10 @@
 
     <!--    Share-->
     <string name="share_app_message">Check out this handy habit-tracking app I\'ve been using! Download it here: </string>
+
+    <!--    Crashlytics-->
+    <string name="allow_crashlytics_title">Crashlytics</string>
+    <string name="allow_crashlytics_description">Would you like to enable crash reporting? We use crash reports to improve the app.</string>
 
     <plurals name="times_label">
         <item quantity="one">time</item>

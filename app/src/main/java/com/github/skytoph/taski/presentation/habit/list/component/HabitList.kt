@@ -10,6 +10,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -22,6 +27,7 @@ import com.github.skytoph.taski.presentation.habit.HabitWithHistoryUi
 import com.github.skytoph.taski.presentation.habit.list.HistoryUi
 import com.github.skytoph.taski.presentation.habit.list.view.ViewType
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -34,6 +40,13 @@ fun HabitList(
     onLongClick: (HabitUi) -> Unit = {},
     updateView: (Int) -> Unit = {},
 ) {
+    var crashlyticsVisible by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        delay(1000)
+        crashlyticsVisible = true
+    }
+
     LazyColumn(
         modifier = modifier.padding(horizontal = dimensionResource(id = R.dimen.main_padding)),
         verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -83,7 +96,11 @@ private fun HabitCard(
 @Preview(showBackground = true)
 fun HabitListPreview(@PreviewParameter(HabitsProvider::class) habits: List<HabitWithHistoryUi<HistoryUi>>) {
     HabitMateTheme {
-        HabitList(habits = habits)
+        Box(
+            Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+        ) { HabitList(habits = habits) }
     }
 }
 
@@ -94,6 +111,7 @@ fun DarkHabitListPreview(@PreviewParameter(HabitsProvider::class) habits: List<H
         Box(
             Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)) { HabitList(habits = habits) }
+                .background(MaterialTheme.colorScheme.background)
+        ) { HabitList(habits = habits) }
     }
 }

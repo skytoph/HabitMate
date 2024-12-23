@@ -11,9 +11,12 @@ import com.github.skytoph.taski.presentation.settings.SettingsViewModel
 interface HabitListEvent {
     fun handle(state: MutableState<HabitListState>)
 
-    class UpdateList(private val habits: List<HabitWithHistoryUi<HistoryUi>>) : HabitListEvent {
+    class UpdateList(private val habits: List<HabitWithHistoryUi<HistoryUi>>, private val allowCrashlytics: Boolean?) :
+        HabitListEvent {
         override fun handle(state: MutableState<HabitListState>) {
-            state.value = state.value.copy(habits = habits, isLoading = false)
+            val isCrashlyticsItemShown = allowCrashlytics == null && habits.isNotEmpty()
+            state.value =
+                state.value.copy(habits = habits, isLoading = false, isCrashlyticsItemShown = isCrashlyticsItemShown)
         }
     }
 
@@ -61,6 +64,12 @@ interface HabitListEvent {
     class ShowArchiveDialog(private val id: Long? = null) : HabitListEvent {
         override fun handle(state: MutableState<HabitListState>) {
             state.value = state.value.copy(archiveDialogHabitId = id)
+        }
+    }
+
+    class AllowCrashlytics(private val allow: Boolean) : SettingsViewModel.Event {
+        override suspend fun handle(settings: SettingsCache) {
+            settings.updateCrashlytics(allow)
         }
     }
 }

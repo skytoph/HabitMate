@@ -3,10 +3,12 @@ package com.github.skytoph.taski.presentation.core
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -18,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -28,24 +31,24 @@ import com.github.skytoph.taski.presentation.settings.backup.component.ButtonWit
 
 @Composable
 fun ReminderItem(
-    modifier: Modifier,
-    logIn: () -> Unit,
+    modifier: Modifier = Modifier,
+    confirm: () -> Unit,
     isLoading: Boolean,
     dismiss: () -> Unit,
     doNotShowAgain: () -> Unit,
     icon: ImageVector,
-    title: String,
+    text: String,
     buttonConfirm: String,
-    showDoNotShowAgain: Boolean
+    showDoNotShowAgain: Boolean,
+    background: Color = MaterialTheme.colorScheme.primaryContainer
 ) {
     Column(
         modifier = modifier
-            .background(color = MaterialTheme.colorScheme.primaryContainer, shape = MaterialTheme.shapes.small)
+            .background(color = background, shape = MaterialTheme.shapes.small)
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .animateContentSize()
     ) {
         Row(
-            modifier = modifier,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
@@ -56,28 +59,17 @@ fun ReminderItem(
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = title,
+                text = text,
                 color = MaterialTheme.colorScheme.onBackground,
                 style = MaterialTheme.typography.bodySmall
             )
         }
         Spacer(modifier = Modifier.height(8.dp))
         Row(
-            modifier = modifier,
-            verticalAlignment = Alignment.CenterVertically
+            modifier = modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.End
         ) {
-            ButtonWithLoading(
-                title = buttonConfirm,
-                onClick = logIn,
-                isLoading = isLoading,
-                enabledColor = MaterialTheme.colorScheme.primary,
-                disabledColor = MaterialTheme.colorScheme.secondaryContainer,
-                shape = MaterialTheme.shapes.medium,
-                style = MaterialTheme.typography.bodySmall,
-                enabled = !isLoading,
-                textPadding = 16.dp
-            )
-            Spacer(modifier = Modifier.width(4.dp))
             Box(
                 modifier = Modifier
                     .clip(MaterialTheme.shapes.medium)
@@ -110,6 +102,18 @@ fun ReminderItem(
                     fontWeight = FontWeight.Bold
                 )
             }
+            Spacer(modifier = Modifier.width(4.dp))
+            ButtonWithLoading(
+                title = buttonConfirm,
+                onClick = confirm,
+                isLoading = isLoading,
+                enabledColor = MaterialTheme.colorScheme.primary,
+                disabledColor = MaterialTheme.colorScheme.secondaryContainer,
+                shape = MaterialTheme.shapes.medium,
+                style = MaterialTheme.typography.bodySmall,
+                enabled = !isLoading,
+                textPadding = 16.dp
+            )
         }
     }
 }

@@ -24,6 +24,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.skytoph.taski.R
+import com.github.skytoph.taski.presentation.core.component.AllowCrashlyticsDialog
 import com.github.skytoph.taski.presentation.core.component.AppBarAction
 import com.github.skytoph.taski.presentation.core.component.ArchiveDialog
 import com.github.skytoph.taski.presentation.core.component.ButtonWithIconOnBackground
@@ -112,6 +113,12 @@ fun HabitsScreen(
             onHabitDone = { habit, daysAgo -> viewModel.habitDone(habit, daysAgo) },
         )
 
+    if (state.value.isCrashlyticsItemShown)
+        AllowCrashlyticsDialog(
+            onDismissRequest = { viewModel.onEvent(HabitListEvent.AllowCrashlytics(false)) },
+            onConfirm = { viewModel.onEvent(HabitListEvent.AllowCrashlytics(true)) },
+        )
+
     if (state.value.isViewTypeVisible)
         ViewBottomSheet(
             view = settings.value.view,
@@ -119,7 +126,7 @@ fun HabitsScreen(
             selectViewType = { viewModel.onEvent(HabitListEvent.UpdateView(viewType = it)) },
             selectSorting = { viewModel.onEvent(HabitListEvent.UpdateView(sortBy = it)) },
             selectFilter = { viewModel.onEvent(HabitListEvent.UpdateView(filterBy = it)) },
-            showTodayHabitsOnly ={viewModel.onEvent(HabitListEvent.UpdateView(showTodayHabitsOnly = it))},
+            showTodayHabitsOnly = { viewModel.onEvent(HabitListEvent.UpdateView(showTodayHabitsOnly = it)) },
             reorder = onReorderHabits
         )
 
@@ -182,6 +189,6 @@ private fun Habits(
 @Preview(showSystemUi = true, showBackground = true)
 fun HabitScreenPreview(@PreviewParameter(HabitsProvider::class) habits: List<HabitWithHistoryUi<HistoryUi>>) {
     HabitMateTheme(darkTheme = true) {
-        Box(Modifier.background(MaterialTheme.colorScheme.background)){ HabitList(habits = habits) }
+        Box(Modifier.background(MaterialTheme.colorScheme.background)) { HabitList(habits = habits) }
     }
 }

@@ -9,4 +9,5 @@ data class HabitListState(
     val deleteDialogHabitId: Long? = null,
     val archiveDialogHabitId: Long? = null,
     val contextMenuHabitId: Long? = null,
+    val isCrashlyticsItemShown: Boolean = false
 )

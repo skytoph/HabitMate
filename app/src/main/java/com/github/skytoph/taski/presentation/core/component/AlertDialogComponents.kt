@@ -299,6 +299,23 @@ fun DeleteAllBackupsDialog(
     )
 }
 
+@Composable
+fun AllowCrashlyticsDialog(
+    onDismissRequest: () -> Unit = {},
+    onConfirm: () -> Unit = {},
+) {
+    BaseAlertDialog(
+        title = stringResource(R.string.allow_crashlytics_title),
+        text = stringResource(R.string.allow_crashlytics_description),
+        dismissLabel = stringResource(R.string.action_dismiss),
+        confirmLabel = stringResource(R.string.action_allow),
+        confirmColor = MaterialTheme.colorScheme.primary,
+        confirmContainerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.8f),
+        onConfirm = onConfirm,
+        onDismissRequest = onDismissRequest
+    )
+}
+
 fun buildAnnotatedBoldString(vararg textToBold: Pair<String, SpanStyle?>, divider: String = "\n"): AnnotatedString =
     buildAnnotatedString {
         textToBold.forEachIndexed { index, item ->
