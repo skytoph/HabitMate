@@ -21,11 +21,11 @@ class MainActivity : ComponentActivity() {
         viewModel.init(this)
 
         setContent {
-            val theme = viewModel.settings().collectAsState().value.theme
+            val settings = viewModel.settings().collectAsState().value
             LaunchedEffect(viewModel) {
                 viewModel.initState()
             }
-            HabitMateTheme(theme = theme) {
+            HabitMateTheme(theme = settings.theme) {
                 HabitMateApp()
             }
         }
