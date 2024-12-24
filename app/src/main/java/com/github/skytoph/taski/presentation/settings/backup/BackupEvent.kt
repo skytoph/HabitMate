@@ -60,6 +60,14 @@ sealed interface BackupEvent {
         }
     }
 
+    class IsClearingLoading(private val isLoading: Boolean) : BackupEvent {
+        override fun handle(
+            state: MutableState<BackupState>, showMessage: PostMessage, settingsEvent: (SettingsEvent) -> Unit
+        ) {
+            state.value = state.value.copy(isClearingLoading = isLoading)
+        }
+    }
+
     class UpdateDialog(private val dialog: BackupDialogUi? = null) : BackupEvent {
         override fun handle(
             state: MutableState<BackupState>, showMessage: PostMessage, settingsEvent: (SettingsEvent) -> Unit

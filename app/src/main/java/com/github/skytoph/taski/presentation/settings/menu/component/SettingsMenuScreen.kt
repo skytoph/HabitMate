@@ -97,7 +97,7 @@ private fun SettingsMenu(
             )
             HorizontalDivider()
             SettingsMenuItem(
-                title = "Backup",
+                title = "Data & Backup",
                 icon = ImageVector.vectorResource(id = R.drawable.folder_input),
                 onClick = backupClick,
                 color = Red

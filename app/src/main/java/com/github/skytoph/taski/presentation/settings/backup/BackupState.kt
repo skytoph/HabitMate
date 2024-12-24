@@ -6,6 +6,7 @@ import com.github.skytoph.taski.presentation.habit.list.component.DialogItem
 data class BackupState(
     val isImportLoading: Boolean = false,
     val isExportLoading: Boolean = false,
+    val isClearingLoading: Boolean = false,
     val isInternetConnected: Boolean = true,
     val isDriveBackupLoading: Boolean = false,
     val isProfileLoading: Boolean = true,
@@ -25,4 +26,5 @@ enum class BackupDialogUi {
     RequestPermissions,
     SignOut,
     DeleteAccount,
+    Clear,
 }

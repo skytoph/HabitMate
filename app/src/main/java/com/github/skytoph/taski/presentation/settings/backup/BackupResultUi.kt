@@ -2,6 +2,8 @@ package com.github.skytoph.taski.presentation.settings.backup
 
 import android.net.Uri
 import com.github.skytoph.taski.presentation.core.MapResultToListOfEvents
+import com.github.skytoph.taski.presentation.settings.backup.BackupMessages.clearingDataFailedMessage
+import com.github.skytoph.taski.presentation.settings.backup.BackupMessages.clearingDataSucceededMessage
 import com.github.skytoph.taski.presentation.settings.backup.BackupMessages.deletingAccountFailedMessage
 import com.github.skytoph.taski.presentation.settings.backup.BackupMessages.deletingAccountSucceededMessage
 import com.github.skytoph.taski.presentation.settings.backup.BackupMessages.exportFailedMessage
@@ -103,6 +105,16 @@ sealed interface BackupResultUi : MapResultToListOfEvents<BackupEvent> {
         ) else listOf(
             BackupEvent.UpdateProfile(isLoading = false),
             BackupEvent.Message(deletingAccountFailedMessage)
+        )
+    }
+
+    data class ClearData(private val cleared: Boolean) : BackupResultUi {
+        override fun apply(): List<BackupEvent> = if (cleared) listOf(
+            BackupEvent.IsClearingLoading(false),
+            BackupEvent.Message(clearingDataSucceededMessage)
+        ) else listOf(
+            BackupEvent.IsClearingLoading(false),
+            BackupEvent.Message(clearingDataFailedMessage)
         )
     }
 

@@ -2,6 +2,7 @@ package com.github.skytoph.taski.presentation.settings.backup.component
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import com.github.skytoph.taski.presentation.core.component.ClearDialog
 import com.github.skytoph.taski.presentation.core.component.DeleteAccountDialog
 import com.github.skytoph.taski.presentation.core.component.ExportDialog
 import com.github.skytoph.taski.presentation.core.component.ImportDialog
@@ -15,6 +16,7 @@ fun BackupDialog(
     dialog: BackupDialogUi,
     export: () -> Unit,
     import: () -> Unit,
+    clear: () -> Unit,
     signOut: () -> Unit,
     deleteAccount: () -> Unit,
     requestPermissions: () -> Unit,
@@ -25,6 +27,7 @@ fun BackupDialog(
     BackupDialogUi.Import -> ImportDialog(onConfirm = import, onDismissRequest = dismiss)
     BackupDialogUi.SignOut -> SignOutDialog(onConfirm = signOut, onDismissRequest = dismiss)
     BackupDialogUi.DeleteAccount -> DeleteAccountDialog(onConfirm = deleteAccount, onDismissRequest = dismiss)
+    BackupDialogUi.Clear -> ClearDialog(onConfirm = clear, onDismissRequest = dismiss)
     BackupDialogUi.RequestPermissions ->
         RequestPermissionsBackupDialog(onConfirm = requestPermissions, onDismissRequest = dismissPermissions)
 }

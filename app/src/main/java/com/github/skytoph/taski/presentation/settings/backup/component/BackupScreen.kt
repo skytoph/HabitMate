@@ -123,6 +123,7 @@ fun BackupScreen(viewModel: BackupViewModel = hiltViewModel(), restoreBackup: ()
     Backup(
         isImportLoading = state.value.isImportLoading,
         isExportLoading = state.value.isExportLoading,
+        isClearingLoading = state.value.isClearingLoading,
         isDriveBackupLoading = state.value.isDriveBackupLoading,
         isProfileLoading = state.value.isProfileLoading,
         isSigningInLoading = state.value.isSigningInLoading,
@@ -139,6 +140,7 @@ fun BackupScreen(viewModel: BackupViewModel = hiltViewModel(), restoreBackup: ()
         saveBackup = { viewModel.saveBackupOnDrive(context) },
         export = { viewModel.onEvent(BackupEvent.UpdateDialog(BackupDialogUi.Export)) },
         import = { viewModel.onEvent(BackupEvent.UpdateDialog(BackupDialogUi.Import)) },
+        clear = { viewModel.onEvent(BackupEvent.UpdateDialog(BackupDialogUi.Clear)) },
         signOut = { viewModel.onEvent(BackupEvent.UpdateDialog(BackupDialogUi.SignOut)) },
         deleteAccount = { viewModel.onEvent(BackupEvent.UpdateDialog(BackupDialogUi.DeleteAccount)) }
     )
@@ -148,6 +150,7 @@ fun BackupScreen(viewModel: BackupViewModel = hiltViewModel(), restoreBackup: ()
             dialog = dialog,
             export = { viewModel.export(context) },
             import = { launcherImport.launch(Intent(Intent.ACTION_GET_CONTENT).apply { type = "*/*" }) },
+            clear = { viewModel.clearLocalData() },
             signOut = { viewModel.signOut(context) },
             deleteAccount = { viewModel.deleteAccount(context) },
             requestPermissions = { viewModel.onEvent(BackupEvent.RequestPermissions(true)) },
@@ -178,6 +181,7 @@ fun BackupScreen(viewModel: BackupViewModel = hiltViewModel(), restoreBackup: ()
 private fun Backup(
     export: () -> Unit = {},
     import: () -> Unit = {},
+    clear: () -> Unit = {},
     signOut: () -> Unit = {},
     deleteAccount: () -> Unit = {},
     logIn: () -> Unit = {},
@@ -185,11 +189,12 @@ private fun Backup(
     restoreBackup: () -> Unit = {},
     isImportLoading: Boolean = false,
     isExportLoading: Boolean = true,
+    isClearingLoading: Boolean = false,
     isDriveBackupLoading: Boolean = false,
     isProfileLoading: Boolean = false,
     isSigningInLoading: Boolean = false,
     isLoadingFullscreen: Boolean = false,
-    isInternetConnected: Boolean = false,
+    isInternetConnected: Boolean = true,
     profile: ProfileUi? = null,
 //    profile: ProfileUi? = ProfileUi(email = "email@gmail.com", name = "Name"),
     lastTimeBackupSaved: String? = "28.09.24 12:00",
@@ -262,7 +267,15 @@ private fun Backup(
                 style = MaterialTheme.typography.titleMedium
             )
             Spacer(modifier = Modifier.height(8.dp))
-            LocalBackup(export, isExportLoading, import, isImportLoading, enabled.value)
+            LocalBackup(
+                enabled = enabled.value,
+                isImportLoading = isImportLoading,
+                isExportLoading = isExportLoading,
+                isClearingLoading = isClearingLoading,
+                import = import,
+                export = export,
+                clear = clear
+            )
         }
         AnimatedVisibility(visible = isLoadingFullscreen) {
             Box(
@@ -279,11 +292,13 @@ private fun Backup(
 
 @Composable
 private fun LocalBackup(
-    export: () -> Unit,
-    isExportLoading: Boolean,
-    import: () -> Unit,
+    enabled: Boolean,
     isImportLoading: Boolean,
-    enabled: Boolean
+    isExportLoading: Boolean,
+    isClearingLoading: Boolean,
+    import: () -> Unit,
+    export: () -> Unit,
+    clear: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -306,6 +321,16 @@ private fun LocalBackup(
             loadingText = stringResource(R.string.loading_import),
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled
+        )
+        HorizontalDivider()
+        ButtonWithLoadingFull(
+            title = "Clear all data",
+            onClick = clear,
+            isLoading = isClearingLoading,
+            loadingText = stringResource(R.string.loading_clearing),
+            modifier = Modifier.fillMaxWidth(),
+            enabled = enabled,
+            textColor = MaterialTheme.colorScheme.error
         )
     }
 }

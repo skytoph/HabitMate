@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.first
 interface BackupManager {
     suspend fun export(): ByteArray
     suspend fun import(byteArray: ByteArray)
+    suspend fun clear()
 
     class Base(
         private val database: HabitDatabase,
@@ -40,6 +41,10 @@ interface BackupManager {
                     }
                 }
             }
+        }
+
+        override suspend fun clear() {
+            database.habitDao().deleteAll()
         }
     }
 }

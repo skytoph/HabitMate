@@ -218,6 +218,28 @@ fun DeleteAccountDialog(
 }
 
 @Composable
+fun ClearDialog(
+    onDismissRequest: () -> Unit = {},
+    onConfirm: () -> Unit = {},
+) {
+    val description = buildAnnotatedBoldString(
+        stringResource(id = R.string.clear_data_description_confirmation) to SpanStyle(),
+        " " + stringResource(id = R.string.clear_data_description_warning) to
+                SpanStyle(color = MaterialTheme.colorScheme.error, fontWeight = FontWeight.Bold),
+        "\n\n" + stringResource(id = R.string.clear_data_description_details) to SpanStyle(fontSize = 10.sp),
+        divider = ""
+    )
+    BaseAlertDialog(
+        onDismissRequest = onDismissRequest,
+        onConfirm = onConfirm,
+        dismissLabel = stringResource(R.string.action_cancel),
+        confirmLabel = stringResource(R.string.action_clear),
+        text = description,
+        title = stringResource(id = R.string.clear_data_title),
+    )
+}
+
+@Composable
 fun RestoreBackupDialog(
     date: String,
     onDismissRequest: () -> Unit = {},
@@ -331,6 +353,6 @@ fun buildAnnotatedBoldString(vararg textToBold: Pair<String, SpanStyle?>, divide
 @Preview
 private fun DialogPreview() {
     HabitMateTheme(darkTheme = true) {
-        SignOutDialog()
+        ClearDialog()
     }
 }

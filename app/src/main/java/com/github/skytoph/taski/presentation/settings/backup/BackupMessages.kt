@@ -16,6 +16,16 @@ object BackupMessages {
         title = StringResource.ResId(R.string.success_title),
         icon = IconResource.Id(id = R.drawable.circle_user)
     )
+    val clearingDataFailedMessage = SnackbarMessage(
+        messageResource = StringResource.ResId(R.string.error_clearing_data),
+        title = StringResource.ResId(R.string.fail_title),
+        icon = IconResource.Id(id = R.drawable.trash)
+    )
+    val clearingDataSucceededMessage = SnackbarMessage(
+        messageResource = StringResource.ResId(R.string.success_clearing_data),
+        title = StringResource.ResId(R.string.success_title),
+        icon = IconResource.Id(id = R.drawable.trash)
+    )
     val signInFailedMessage = SnackbarMessage(
         messageResource = StringResource.ResId(R.string.failed_to_sign_in_message),
         title = StringResource.ResId(R.string.fail_title),

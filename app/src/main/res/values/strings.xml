@@ -52,6 +52,7 @@
     <string name="action_cancel">Cancel</string>
     <string name="action_confirm">Confirm</string>
     <string name="action_allow">Allow</string>
+    <string name="action_clear">Clear</string>
 
     <!--    Delete dialog-->
     <string name="delete_habit_confirmation_dialog_title">Delete the habit</string>
@@ -206,6 +207,10 @@
     <string name="delete_account_description_warning">This action is permanent and cannot be undone.</string>
     <string name="delete_account_description_details">Deleting your account will remove all your data associated with it, including any backups stored on Google Drive. Your data stored locally on your device will remain unaffected.</string>
     <string name="delete_account_title">Delete Account</string>
+    <string name="clear_data_description_confirmation">Are you sure you want to delete all local data?</string>
+    <string name="clear_data_description_warning">This cannot be undone.</string>
+    <string name="clear_data_description_details">This will delete all habit data stored on this device. Google Drive backups won’t be affected.</string>
+    <string name="clear_data_title">Clear local data</string>
     <string name="failed_to_sign_in_message">Failed to sign in. Please try again later.</string>
     <string name="failed_to_sign_out">Failed to sign out. Please try again later.</string>
     <string name="fail_title">Fail</string>
@@ -236,6 +241,8 @@
     <string name="success_delete_backup">Backup successfully removed.</string>
     <string name="success_deleting_account">Your account has been deleted</string>
     <string name="success_synchronizing_icons">Your icons are synchronized</string>
+    <string name="success_clearing_data">All local data has been cleared.</string>
+    <string name="error_clearing_data">Something went wrong, unable to clear local data. Please try again later.</string>
     <string name="error_synchronizing_icons">Can\'t synchronize icons</string>
     <string name="backup_item_size">size: %1$s</string>
     <string name="create_backup_on_drive">Backup to Google Drive</string>
@@ -251,6 +258,7 @@
     <string name="signing_in" tools:ignore="TypographyEllipsis">Signing In...</string>
     <string name="loading_export" tools:ignore="TypographyEllipsis">Preparing the data...</string>
     <string name="loading_import" tools:ignore="TypographyEllipsis">Restoring the data...</string>
+    <string name="loading_clearing" tools:ignore="TypographyEllipsis">Clearing the data...</string>
     <string name="loading_backup" tools:ignore="TypographyEllipsis">Creating Backup...</string>
 
     <string name="backup_date_format">dd.MM.yyyy HH:mm:ss</string>

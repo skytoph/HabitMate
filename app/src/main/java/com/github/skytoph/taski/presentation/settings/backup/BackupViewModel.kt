@@ -46,6 +46,10 @@ class BackupViewModel @Inject constructor(
         beforeAction = arrayOf(BackupEvent.UpdateDialog()),
         doAction = { interactor.import(contentResolver, uri, context) })
 
+    fun clearLocalData() = actionHandler.action(
+        beforeAction = arrayOf(BackupEvent.UpdateDialog(), BackupEvent.IsClearingLoading(true)),
+        doAction = { interactor.clear() })
+
     fun saveBackupOnDrive(context: Context) = actionHandler.action(
         beforeAction = arrayOf(BackupEvent.DriveLoading(true)),
         doAction = { interactor.saveBackupOnDrive(context) })
@@ -55,11 +59,12 @@ class BackupViewModel @Inject constructor(
         doAction = { interactor.profile(context) }
     )
 
-    fun signOut(context: Context) = actionHandler.action(beforeAction = arrayOf(
+    fun signOut(context: Context) = actionHandler.action(
+        beforeAction = arrayOf(
             BackupEvent.UpdateDialog(), BackupEvent.UpdateProfile(isLoading = true), BackupEvent.UpdateLastBackup()
-        ), doAction = {
-            interactor.signOut(context)
-        },)
+        ),
+        doAction = { interactor.signOut(context) },
+    )
 
     fun checkConnection(context: Context) = actionHandler.action(
         beforeAction = arrayOf(BackupEvent.UpdateDialog()),

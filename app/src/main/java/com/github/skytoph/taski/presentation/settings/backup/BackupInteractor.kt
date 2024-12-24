@@ -29,6 +29,7 @@ interface BackupInteractor : SignInInteractor<BackupResultUi> {
     suspend fun profile(context: Context): BackupResultUi
     suspend fun signOut(context: Context): BackupResultUi
     suspend fun deleteAccount(context: Context): BackupResultUi
+    suspend fun clear(): BackupResultUi
     fun mapTime(lastBackupSaved: Long?, loading: Long, context: Context, locale: Locale): String?
 
     class Base(
@@ -65,6 +66,16 @@ interface BackupInteractor : SignInInteractor<BackupResultUi> {
             } catch (exception: Exception) {
                 Log.e("tag", exception.stackTraceToString())
                 BackupResultUi.Imported(false)
+            }
+        }
+
+        override suspend fun clear(): BackupResultUi {
+            return try {
+                backup.clear()
+                BackupResultUi.ClearData(true)
+            } catch (exception: Exception) {
+                Log.e("tag", exception.stackTraceToString())
+                BackupResultUi.ClearData(false)
             }
         }
 
