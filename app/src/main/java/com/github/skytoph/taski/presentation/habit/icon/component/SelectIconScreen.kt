@@ -64,6 +64,7 @@ import com.github.skytoph.taski.presentation.habit.icon.IconsColors
 import com.github.skytoph.taski.presentation.habit.icon.IconsLockedGroup
 import com.github.skytoph.taski.presentation.habit.icon.SelectIconEvent
 import com.github.skytoph.taski.presentation.habit.icon.SelectIconViewModel
+import com.github.skytoph.taski.presentation.settings.backup.BackupMessages.iconsSynchronizeSuccessMessage
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 import kotlinx.coroutines.launch
 
@@ -81,7 +82,10 @@ fun SelectIconScreen(viewModel: SelectIconViewModel = hiltViewModel()) {
     val startForResult = rememberLauncherForActivityResult(contract) { result: ActivityResult ->
         if (result.resultCode == Activity.RESULT_OK)
             result.data?.let { intent -> viewModel.signInWithFirebase(intent, context) }
-        else viewModel.onEvent(SelectIconEvent.IsSigningIn(false))
+        else {
+            viewModel.onEvent(SelectIconEvent.IsSigningIn(false))
+            viewModel.showMessage(iconsSynchronizeSuccessMessage)
+        }
     }
 
     val actionSortIcons = AppBarAction(
