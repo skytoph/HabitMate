@@ -48,6 +48,20 @@ fun BaseAlertDialog(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
+                Text(
+                    text = text,
+                    modifier = Modifier.fillMaxWidth(),
+                    color = MaterialTheme.colorScheme.onBackground,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                content?.invoke()
+            }
+        },
+        title = {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
@@ -62,22 +76,13 @@ fun BaseAlertDialog(
                         )
                     }
                     Text(
-                        text = text,
+                        text = title,
                         modifier = Modifier.fillMaxWidth(),
                         color = MaterialTheme.colorScheme.onBackground,
-                        style = MaterialTheme.typography.bodyMedium
+                        style = MaterialTheme.typography.titleLarge
                     )
                 }
-                content?.invoke()
             }
-        },
-        title = {
-            Text(
-                text = title,
-                modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colorScheme.onBackground,
-                style = MaterialTheme.typography.titleLarge
-            )
         },
         onDismissRequest = {
             onDismissRequest()

@@ -71,8 +71,8 @@ class SelectIconViewModel @Inject constructor(
         }
     }
 
-    fun hideWarning() {
-        onEvent(SelectIconEvent.DoNotShowWarning)
+    fun hideWarning(neverShowAgain: Boolean) {
+        if (neverShowAgain) onEvent(SelectIconEvent.DoNotShowWarning)
         onEvent(SelectIconEvent.IsWarningDialogShown(false))
         onEvent(SelectIconEvent.IsWarningShown(false))
     }

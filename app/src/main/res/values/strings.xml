@@ -274,7 +274,8 @@
     <string name="action_dismiss">Dismiss</string>
     <string name="do_not_show_again">Don\'t show again</string>
     <string name="hide_reminder">Hide reminder</string>
-    <string name="hide_reminder_confirmation_description">Do you want to permanently hide this reminder?\nYou can always turn it back on in settings.</string>
+    <string name="hide_reminder_confirmation_description">Do you want to hide this reminder?</string>
+    <string name="hide_reminder_confirmation_description_permanently">you can always turn it back on in settings</string>
     <string name="new_line">\n</string>
 
     <!--    Credits-->

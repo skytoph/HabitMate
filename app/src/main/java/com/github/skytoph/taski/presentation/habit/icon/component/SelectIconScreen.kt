@@ -119,8 +119,7 @@ fun SelectIconScreen(viewModel: SelectIconViewModel = hiltViewModel()) {
                 }
             } else viewModel.showMessage(IconMessages.noConnectionMessage)
         },
-        dismiss = { viewModel.onEvent(SelectIconEvent.IsWarningShown(false)) },
-        doNotShowAgain = { viewModel.onEvent(SelectIconEvent.IsWarningDialogShown(true)) },
+        dismiss = { viewModel.onEvent(SelectIconEvent.IsWarningDialogShown(true)) },
     )
 
     state.value.dialogIcon?.let { icon ->
@@ -138,7 +137,7 @@ fun SelectIconScreen(viewModel: SelectIconViewModel = hiltViewModel()) {
     if (state.value.isWarningDialogShown)
         IconWarningDialog(
             onDismissRequest = { viewModel.onEvent(SelectIconEvent.IsWarningDialogShown(false)) },
-            onConfirm = { viewModel.hideWarning() }
+            onConfirm = { viewModel.hideWarning(it) },
         )
 }
 
@@ -160,7 +159,6 @@ private fun SelectIcon(
     onUnlockIcon: (IconResource) -> Unit = {},
     logIn: () -> Unit = {},
     dismiss: () -> Unit = {},
-    doNotShowAgain: () -> Unit = {},
     iconSize: Dp = 32.dp,
     iconPadding: Dp = 4.dp,
 ) {
@@ -186,7 +184,6 @@ private fun SelectIcon(
                         .animateItem(),
                     logIn = logIn,
                     dismiss = dismiss,
-                    doNotShowAgain = doNotShowAgain,
                     isLoading = isSigningIn
                 )
             }

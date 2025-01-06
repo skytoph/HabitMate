@@ -25,9 +25,15 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.github.skytoph.taski.R
+import com.github.skytoph.taski.presentation.core.preview.IconLockedProvider
+import com.github.skytoph.taski.presentation.habit.icon.IconsLockedGroup
+import com.github.skytoph.taski.presentation.habit.icon.component.IconsWarning
 import com.github.skytoph.taski.presentation.settings.backup.component.ButtonWithLoading
+import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
 fun ReminderItem(
@@ -35,11 +41,9 @@ fun ReminderItem(
     confirm: () -> Unit,
     isLoading: Boolean,
     dismiss: () -> Unit,
-    doNotShowAgain: () -> Unit,
     icon: ImageVector,
     text: String,
     buttonConfirm: String,
-    showDoNotShowAgain: Boolean,
     background: Color = MaterialTheme.colorScheme.primaryContainer
 ) {
     Column(
@@ -86,22 +90,6 @@ fun ReminderItem(
                     fontWeight = FontWeight.Bold
                 )
             }
-            if (showDoNotShowAgain) Box(
-                modifier = Modifier
-                    .clip(MaterialTheme.shapes.medium)
-                    .clickable(enabled = !isLoading, onClick = doNotShowAgain)
-                    .padding(horizontal = 8.dp, vertical = 8.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    modifier = Modifier.padding(horizontal = 8.dp),
-                    text = stringResource(R.string.do_not_show_again),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Bold
-                )
-            }
             Spacer(modifier = Modifier.width(4.dp))
             ButtonWithLoading(
                 title = buttonConfirm,
@@ -115,5 +103,13 @@ fun ReminderItem(
                 textPadding = 16.dp
             )
         }
+    }
+}
+
+@Composable
+@Preview(showBackground = true)
+private fun ReminderPreview(@PreviewParameter(IconLockedProvider::class) icons: List<IconsLockedGroup>) {
+    HabitMateTheme(darkTheme = true) {
+        IconsWarning(modifier = Modifier.fillMaxWidth())
     }
 }
