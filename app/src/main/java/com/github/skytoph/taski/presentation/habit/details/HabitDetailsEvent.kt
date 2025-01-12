@@ -1,7 +1,9 @@
 package com.github.skytoph.taski.presentation.habit.details
 
 import androidx.compose.runtime.MutableState
+import com.github.skytoph.taski.core.datastore.SettingsCache
 import com.github.skytoph.taski.presentation.habit.HabitUi
+import com.github.skytoph.taski.presentation.settings.SettingsViewModel
 
 interface HabitDetailsEvent {
     fun handle(state: MutableState<HabitDetailsState>)
@@ -39,6 +41,12 @@ interface HabitDetailsEvent {
     object ExpandDescription : HabitDetailsEvent {
         override fun handle(state: MutableState<HabitDetailsState>) {
             state.value = state.value.copy(isDescriptionExpanded = !state.value.isDescriptionExpanded)
+        }
+    }
+
+    object UpdateHistoryView : SettingsViewModel.Event {
+        override suspend fun handle(settings: SettingsCache) {
+            settings.updateHabitHistoryView()
         }
     }
 }

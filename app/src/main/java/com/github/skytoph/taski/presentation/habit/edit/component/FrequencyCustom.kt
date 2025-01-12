@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -104,9 +105,7 @@ fun FrequencyCustom(
                     .padding(8.dp)
             ) {
                 Text(
-                    text = pluralStringResource(
-                        id = frequency.frequencyType.title, count = frequency.typeCount.value
-                    ),
+                    text = stringResource(id = frequency.frequencyType.title),
                     color = MaterialTheme.colorScheme.onBackground,
                     style = MaterialTheme.typography.bodySmall
                 )
@@ -142,21 +141,21 @@ fun FrequencyCustom(
                 option = FrequencyCustomType.Day,
                 selected = frequency.frequencyType == FrequencyCustomType.Day,
                 select = selectType,
-                title = pluralStringResource(id = FrequencyCustomType.Day.title, count = 1)
+                title = stringResource(FrequencyCustomType.Day.title)
             )
             HorizontalDivider()
             MenuOptionComponent(
                 option = FrequencyCustomType.Week,
                 selected = frequency.frequencyType == FrequencyCustomType.Week,
                 select = selectType,
-                title = pluralStringResource(id = FrequencyCustomType.Week.title, count = 1)
+                title = stringResource(FrequencyCustomType.Week.title)
             )
             HorizontalDivider()
             MenuOptionComponent(
                 option = FrequencyCustomType.Month,
                 selected = frequency.frequencyType == FrequencyCustomType.Month,
                 select = selectType,
-                title = pluralStringResource(id = FrequencyCustomType.Month.title, count = 1)
+                title = stringResource(FrequencyCustomType.Month.title)
             )
         }
     }

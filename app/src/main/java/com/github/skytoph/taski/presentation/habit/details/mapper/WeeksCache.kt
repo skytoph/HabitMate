@@ -7,4 +7,8 @@ class WeeksCache(private var weeks: Int = 0) {
     }
 
     fun get(): Int = weeks
+
+    fun clear() {
+        weeks = 0
+    }
 }

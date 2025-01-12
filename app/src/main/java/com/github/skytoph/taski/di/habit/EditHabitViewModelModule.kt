@@ -1,8 +1,9 @@
 package com.github.skytoph.taski.di.habit
 
 import com.github.skytoph.taski.core.Now
+import com.github.skytoph.taski.presentation.habit.details.mapper.EditableEntryCalendarUiMapper
 import com.github.skytoph.taski.presentation.habit.details.mapper.EditableEntryDomainToUiMapper
-import com.github.skytoph.taski.presentation.habit.details.mapper.EditableEntryUiMapper
+import com.github.skytoph.taski.presentation.habit.details.mapper.EditableEntryGridUiMapper
 import com.github.skytoph.taski.presentation.habit.details.mapper.HabitStatisticsMapper
 import com.github.skytoph.taski.presentation.habit.details.mapper.HabitWithEditableEntryUiMapper
 import com.github.skytoph.taski.presentation.habit.details.mapper.WeeksCache
@@ -34,9 +35,12 @@ object EditHabitViewModelModule {
     fun domainMapper(now: Now): HabitDomainMapper = HabitDomainMapper.Base(now)
 
     @Provides
-    fun historyMapper(
-        now: Now, weekCache: WeeksCache, mapper: EditableEntryDomainToUiMapper
-    ): HabitHistoryUiMapper<EditableHistoryUi, ViewType> = EditableEntryUiMapper(now, weekCache, mapper)
+    fun historyCalendarMapper(now: Now, mapper: EditableEntryDomainToUiMapper)
+            : EditableEntryCalendarUiMapper = EditableEntryCalendarUiMapper(now, mapper)
+
+    @Provides
+    fun historyGridMapper(now: Now, weekCache: WeeksCache, mapper: EditableEntryDomainToUiMapper):
+            EditableEntryGridUiMapper = EditableEntryGridUiMapper(now, weekCache, mapper)
 
     @Provides
     fun entryMapper(now: Now): EditableEntryDomainToUiMapper = EditableEntryDomainToUiMapper.Base(now)

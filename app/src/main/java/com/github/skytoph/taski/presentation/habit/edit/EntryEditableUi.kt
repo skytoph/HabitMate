@@ -22,7 +22,8 @@ data class EntryEditableUi(
     val day: String,
     val timesDone: Int = 0,
     val daysAgo: Int = 0,
-    val hasBorder: Boolean
+    val hasBorder: Boolean = false,
+    val isDisabled: Boolean = false,
 ) : HabitEntryUi
 
 @Stable
@@ -32,7 +33,11 @@ data class MonthUi(
     val index: Int,
     val alignment: TextAlign = TextAlign.Start
 ) : HabitEntryUi {
+
     fun getDisplayName(locale: Locale): String =
+        SimpleDateFormat("LLLL yyyy", locale).format(Date(timestamp))
+
+    fun getDisplayMonth(locale: Locale): String =
         SimpleDateFormat("LLL", locale).format(Date(timestamp))
 
     fun getDisplayYear(locale: Locale): String =

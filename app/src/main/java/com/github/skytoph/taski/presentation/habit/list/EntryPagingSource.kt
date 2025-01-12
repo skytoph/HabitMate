@@ -5,9 +5,10 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.github.skytoph.taski.domain.habit.EntryList
 import com.github.skytoph.taski.domain.habit.HabitRepository
 import com.github.skytoph.taski.domain.habit.HabitWithEntries
+import com.github.skytoph.taski.presentation.habit.details.mapper.EditableEntryCalendarUiMapper
+import com.github.skytoph.taski.presentation.habit.details.mapper.EditableEntryGridUiMapper
 import com.github.skytoph.taski.presentation.habit.details.mapper.StatisticsUiMapper
 import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitHistoryUiMapper
@@ -56,32 +57,25 @@ class EntryPagingSource(
         }
 }
 
-class HabitCache(private val data: MutableList<EntryList> = ArrayList()) {
-    suspend fun cacheIfEmpty(fetch: suspend () -> EntryList) {
-        if (data.isEmpty()) data.add(fetch())
-    }
-
-    fun get(): EntryList = data[0]
-}
-
 class EntityPagerProvider(
     private val repository: HabitRepository,
-    private val uiMapper: HabitHistoryUiMapper<EditableHistoryUi, ViewType>,
+    private val gridUiMapper: EditableEntryGridUiMapper,
+    private val calendarUiMapper: EditableEntryCalendarUiMapper,
     private val statsMapper: StatisticsUiMapper,
-    private val entryCache: HabitCache
 ) {
-    private var dataSource: EntryPagingSource? = null
 
-    fun getEntries(id: Long, isBorderOn: Boolean, isFirstDaySunday: Boolean): Flow<PagingData<EditableHistoryUi>> = Pager(
-        config = PagingConfig(
-            pageSize = 1,
-            prefetchDistance = 3,
-            initialLoadSize = 6,
-            enablePlaceholders = false
-        ),
-        pagingSourceFactory = {
-            EntryPagingSource(repository, uiMapper, statsMapper, id, isBorderOn, isFirstDaySunday)
-                .also { dataSource = it }
-        }
-    ).flow
+    fun getEntries(id: Long, isBorderOn: Boolean, isFirstDaySunday: Boolean, isCalendarView: Boolean)
+            : Flow<PagingData<EditableHistoryUi>> =
+        Pager(
+            config = PagingConfig(
+                pageSize = 1,
+                prefetchDistance = 3,
+                initialLoadSize = 6,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = {
+                val mapper = if (isCalendarView) calendarUiMapper else gridUiMapper.also { it.clear() }
+                EntryPagingSource(repository, mapper, statsMapper, id, isBorderOn, isFirstDaySunday)
+            }
+        ).flow
 }

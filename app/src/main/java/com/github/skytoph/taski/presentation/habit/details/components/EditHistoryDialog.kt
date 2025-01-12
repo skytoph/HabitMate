@@ -42,19 +42,21 @@ fun EditHistoryDialog(
     habitColor: Color,
     goal: Int,
     isFirstDaySunday: Boolean = false,
+    isCalendarView: Boolean = false,
 ) {
     Dialog(onDismissRequest = onEdit) {
-        HabitHistoryGridEditable(entries, habitColor, goal, onDayClick, isFirstDaySunday)
+        HabitHistoryEditable(entries, habitColor, goal, onDayClick, isFirstDaySunday, isCalendarView)
     }
 }
 
 @Composable
-fun HabitHistoryGridEditable(
+fun HabitHistoryEditable(
     entries: Flow<PagingData<EditableHistoryUi>>,
     habitColor: Color,
     goal: Int,
     onDayClick: (Int) -> Unit,
     isFirstDaySunday: Boolean = false,
+    isCalendarView: Boolean = false,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -67,7 +69,15 @@ fun HabitHistoryGridEditable(
             .fillMaxWidth()
             .padding(bottom = 8.dp)
     ) {
-        HabitHistoryGrid(
+        if (isCalendarView) MonthlyPager(
+            entries = entries,
+            habitColor = habitColor,
+            goal = goal,
+            isEditable = true,
+            onEdit = onDayClick,
+            isFirstDaySunday = isFirstDaySunday
+        )
+        else HabitHistoryGrid(
             entries = entries,
             habitColor = habitColor,
             goal = goal,
@@ -82,7 +92,7 @@ fun HabitHistoryGridEditable(
                     color = MaterialTheme.colorScheme.secondaryContainer,
                     shape = MaterialTheme.shapes.small
                 )
-                .padding(horizontal = 32.dp, vertical = 4.dp),
+                .padding(horizontal = 16.dp, vertical = 4.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
@@ -110,7 +120,7 @@ private fun DialogPreview(
     @PreviewParameter(HabitsEditableProvider::class) entries: List<EditableHistoryUi>
 ) {
     HabitMateTheme(darkTheme = true) {
-        HabitHistoryGridEditable(
+        HabitHistoryEditable(
             entries = flowOf(PagingData.from(entries)),
             habitColor = Color.Red,
             goal = 1,

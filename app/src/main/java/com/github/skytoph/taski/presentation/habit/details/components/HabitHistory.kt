@@ -12,6 +12,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -29,6 +30,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -42,7 +44,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -79,9 +83,11 @@ fun HabitHistory(
     habitColor: Color = IconsColors.Default,
     isFirstDaySunday: Boolean = false,
     onEdit: () -> Unit = {},
+    onChangeView: () -> Unit = {},
+    isCalendarView: Boolean = true
 ) {
     Column(
-        Modifier
+        modifier = Modifier
             .background(
                 color = MaterialTheme.colorScheme.tertiaryContainer,
                 shape = MaterialTheme.shapes.extraSmall
@@ -90,17 +96,52 @@ fun HabitHistory(
             .fillMaxWidth()
             .animateContentSize()
     ) {
-        HabitHistoryGrid(
-            entries = entries,
-            habitColor = habitColor,
-            goal = goal,
-            isFirstDaySunday = isFirstDaySunday,
-        )
-        ButtonWithBackground(
-            onEdit,
-            stringResource(R.string.button_edit),
-            MaterialTheme.colorScheme.onTertiaryContainer,
-        )
+        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopCenter) {
+            if (isCalendarView)
+                MonthlyPager(
+                    entries = entries,
+                    habitColor = habitColor,
+                    goal = goal,
+                    isFirstDaySunday = isFirstDaySunday,
+                )
+            else
+                HabitHistoryGrid(
+                    entries = entries,
+                    habitColor = habitColor,
+                    goal = goal,
+                    isFirstDaySunday = isFirstDaySunday,
+                )
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 8.dp, end = 8.dp, bottom = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .background(
+                        MaterialTheme.colorScheme.onTertiaryContainer, MaterialTheme.shapes.small
+                    )
+                    .clip(MaterialTheme.shapes.small)
+                    .clickable(onClick = onChangeView)
+                    .size(32.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(if (isCalendarView) R.drawable.table else R.drawable.calendar_days),
+                    contentDescription = "calendar view",
+                    tint = Color.White
+                )
+            }
+            ButtonWithBackground(
+                onClick = onEdit,
+                text = stringResource(R.string.button_edit),
+                background = MaterialTheme.colorScheme.onTertiaryContainer,
+                height = 32.dp,
+            )
+        }
     }
 }
 
@@ -302,14 +343,14 @@ private fun MonthLabel(
         verticalAlignment = Alignment.Bottom
     ) {
         Text(
-            text = month.getDisplayName(getLocale()),
+            text = month.getDisplayMonth(getLocale()),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onBackground,
             overflow = TextOverflow.Ellipsis,
             textAlign = month.alignment,
             maxLines = 1,
         )
-        if ((month.index == Calendar.JANUARY || month.index == Calendar.JUNE) && month.weeks > 1) {
+        if ((month.index == Calendar.JANUARY || month.index == Calendar.JULY || month.index == Calendar.DECEMBER) && month.weeks > 1) {
             Spacer(modifier = Modifier.width(2.dp))
             Text(
                 text = month.getDisplayYear(getLocale()),
@@ -325,10 +366,20 @@ private fun MonthLabel(
 
 @Composable
 @Preview
+fun DarkEditableGridPreview(@PreviewParameter(HabitsEditableProvider::class) entries: List<EditableHistoryUi>) {
+    HabitMateTheme(darkTheme = true) {
+        Surface {
+            HabitHistory(flowOf(PagingData.from(entries)), isFirstDaySunday = false)
+        }
+    }
+}
+
+@Composable
+@Preview
 fun DarkCalendarEditableGridPreview(@PreviewParameter(HabitsEditableProvider::class) entries: List<EditableHistoryUi>) {
     HabitMateTheme(darkTheme = true) {
-        Surface(modifier = Modifier.padding(16.dp)) {
-            HabitHistory(flowOf(PagingData.from(entries)), isFirstDaySunday = false)
+        Surface {
+            HabitHistory(flowOf(PagingData.from(entries)), isCalendarView = false)
         }
     }
 }

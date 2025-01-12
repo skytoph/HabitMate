@@ -64,6 +64,7 @@ fun HabitDetailsScreen(
     onEditHabit: () -> Unit,
     onDeleteHabit: () -> Unit,
 ) {
+    val settings = viewModel.settings().collectAsState()
     val colorEdit = MaterialTheme.colorScheme.onSurface
     val colorDelete = MaterialTheme.colorScheme.error
     LaunchedEffect(Unit) {
@@ -85,9 +86,11 @@ fun HabitDetailsScreen(
         onDeleteHabit = { onHideDialog(); onDeleteHabit() },
         onDayClick = { viewModel.habitDone(it) },
         onEditHistory = { viewModel.onEvent(HabitDetailsEvent.EditHistory) },
-        isFirstDaySunday = viewModel.settings().collectAsState().value.weekStartsOnSunday.value,
+        isFirstDaySunday = settings.value.weekStartsOnSunday.value,
+        isHistoryCalendarView = settings.value.isHabitHistoryCalendar,
         expandSummary = { viewModel.onEvent(HabitDetailsEvent.ExpandSummary) },
-        expandDescription = { viewModel.onEvent(HabitDetailsEvent.ExpandDescription) }
+        expandDescription = { viewModel.onEvent(HabitDetailsEvent.ExpandDescription) },
+        updateView = { viewModel.onEvent(HabitDetailsEvent.UpdateHistoryView) }
     )
 }
 
@@ -100,8 +103,10 @@ fun HabitDetails(
     onDayClick: (Int) -> Unit = {},
     onEditHistory: () -> Unit = {},
     isFirstDaySunday: Boolean = false,
+    isHistoryCalendarView: Boolean = false,
     expandSummary: () -> Unit = {},
     expandDescription: () -> Unit = {},
+    updateView: () -> Unit = {},
 ) {
     val context = LocalContext.current
     val habit = state.value.habit ?: return
@@ -223,19 +228,19 @@ fun HabitDetails(
         ) {
             LabelWithValue(
                 modifier = Modifier.weight(1f),
-                label = "total",
+                label = stringResource(R.string.total),
                 value = state.value.statistics.total.toString(),
                 color = state.value.habit?.color
             )
             LabelWithValue(
                 modifier = Modifier.weight(1f),
-                label = "best streak",
+                label = stringResource(R.string.best_streak),
                 value = state.value.statistics.bestStreak.toString(),
                 color = state.value.habit?.color
             )
             LabelWithValue(
                 modifier = Modifier.weight(1f),
-                label = "streak",
+                label = stringResource(R.string.current_streak),
                 value = state.value.statistics.currentStreak.toString(),
                 color = state.value.habit?.color
             )
@@ -252,9 +257,11 @@ fun HabitDetails(
             goal = habit.goal,
             habitColor = habit.color,
             onEdit = onEditHistory,
-            isFirstDaySunday = isFirstDaySunday
+            isFirstDaySunday = isFirstDaySunday,
+            isCalendarView = isHistoryCalendarView,
+            onChangeView = updateView
         )
-        if (BuildConfig.DEBUG)
+        if (BuildConfig.DEBUG) //todo remove
             Text(text = "streaks: " + state.value.statistics.streaksLength.joinToString(", "))
         Spacer(modifier = Modifier.height(16.dp))
     }
@@ -274,7 +281,8 @@ fun HabitDetails(
             onEdit = onEditHistory,
             habitColor = habit.color,
             goal = habit.goal,
-            isFirstDaySunday = isFirstDaySunday
+            isFirstDaySunday = isFirstDaySunday,
+            isCalendarView = isHistoryCalendarView
         )
 }
 

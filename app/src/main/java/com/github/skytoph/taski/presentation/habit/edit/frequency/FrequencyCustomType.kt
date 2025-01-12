@@ -1,6 +1,7 @@
 package com.github.skytoph.taski.presentation.habit.edit.frequency
 
 import androidx.annotation.PluralsRes
+import androidx.annotation.StringRes
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.core.reminder.ReminderItem
 import com.github.skytoph.taski.core.reminder.ReminderScheduler
@@ -12,8 +13,10 @@ import com.github.skytoph.taski.presentation.habit.edit.mapper.HabitDateMapper
 import com.github.skytoph.taski.presentation.habit.edit.mapper.MapToDatesCustom
 
 sealed class FrequencyCustomType : MapToDatesCustom, ScheduleReminder {
-    @get:PluralsRes
+    @get:StringRes
     abstract val title: Int
+    @get:PluralsRes
+    abstract val titlePlural: Int
 
     abstract val maxTimes: Int
     abstract val maxType: Int
@@ -41,7 +44,8 @@ sealed class FrequencyCustomType : MapToDatesCustom, ScheduleReminder {
     abstract fun map(): Frequency.Custom.Type
 
     data object Day : FrequencyCustomType() {
-        override val title: Int = R.plurals.day_label
+        override val titlePlural: Int = R.plurals.day_label
+        override val title: Int = R.string.day_label_one
         override val maxTimes: Int = 1
         override val maxType: Int = 365
         override val interval: FrequencyInterval = FrequencyInterval.Day(1, false)
@@ -53,7 +57,8 @@ sealed class FrequencyCustomType : MapToDatesCustom, ScheduleReminder {
     }
 
     data object Week : FrequencyCustomType() {
-        override val title: Int = R.plurals.week_label
+        override val titlePlural: Int = R.plurals.week_label
+        override val title: Int = R.string.week_label_one
         override val maxTimes: Int = 7
         override val maxType: Int = 100
         override val interval: FrequencyInterval = FrequencyInterval.Day(7, false)
@@ -65,7 +70,8 @@ sealed class FrequencyCustomType : MapToDatesCustom, ScheduleReminder {
     }
 
     data object Month : FrequencyCustomType() {
-        override val title: Int = R.plurals.month_label
+        override val titlePlural: Int = R.plurals.month_label
+        override val title: Int = R.string.month_label_one
         override val maxTimes: Int = 31
         override val maxType: Int = 12
         override val interval: FrequencyInterval = FrequencyInterval.Month(1, true)

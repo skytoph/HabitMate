@@ -12,6 +12,6 @@ interface HabitHistoryUiMapper<T : HabitHistoryUi, V : ViewType> {
         history: EntryList,
         stats: HabitStatisticsUi,
         isBorderOn: Boolean,
-        isFirstDaySunday: Boolean
+        isFirstDaySunday: Boolean,
     ): T
 }

@@ -41,9 +41,10 @@ sealed interface FrequencyUi : MapToDates, ScheduleReminder {
         override val interval: FrequencyInterval = frequencyType.interval.copy(typeCount.value)
 
         override fun summarize(resources: Resources, isFirstDaySunday: Boolean, locale: Locale): AnnotatedString {
-            val type = resources.getQuantityString(frequencyType.title, typeCount.value)
+            val type = resources.getQuantityString(frequencyType.titlePlural, typeCount.value)
             val resId = R.string.frequency_summary_custom
-            val string = resources.getString(resId, timesCount.value, typeCount.value, type)
+            val times = resources.getQuantityString(R.plurals.times_label, timesCount.value)
+            val string = resources.getString(resId, timesCount.value, times, typeCount.value, type)
             return annotate(
                 string = string,
                 arguments = listOf(timesCount.value.toString(), typeCount.value.toString())

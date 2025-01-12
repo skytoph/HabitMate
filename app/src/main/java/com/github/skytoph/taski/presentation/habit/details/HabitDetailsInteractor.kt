@@ -1,7 +1,10 @@
+@file:OptIn(ExperimentalCoroutinesApi::class)
+
 package com.github.skytoph.taski.presentation.habit.details
 
 import androidx.paging.PagingData
 import com.github.skytoph.taski.core.datastore.Settings
+import com.github.skytoph.taski.core.datastore.SettingsCache
 import com.github.skytoph.taski.domain.habit.Habit
 import com.github.skytoph.taski.domain.habit.HabitRepository
 import com.github.skytoph.taski.domain.habit.HabitWithEntries
@@ -11,7 +14,9 @@ import com.github.skytoph.taski.presentation.habit.details.mapper.EditableEntryD
 import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
 import com.github.skytoph.taski.presentation.habit.edit.EntryEditableUi
 import com.github.skytoph.taski.presentation.habit.list.EntityPagerProvider
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flatMapLatest
 
 interface HabitDetailsInteractor : HabitDoneInteractor {
     fun entries(id: Long, settings: Settings): Flow<PagingData<EditableHistoryUi>>
@@ -23,12 +28,16 @@ interface HabitDetailsInteractor : HabitDoneInteractor {
         private val pagerProvider: EntityPagerProvider,
         private val entryMapper: EditableEntryDomainToUiMapper,
         private val repository: HabitRepository,
+        private val settings: SettingsCache,
         interactor: HabitDoneInteractor,
     ) : HabitDetailsInteractor, HabitDoneInteractor by interactor {
 
-        override fun entries(id: Long, settings: Settings)
+        override fun entries(id: Long, settings1: Settings)
                 : Flow<PagingData<EditableHistoryUi>> =
-            pagerProvider.getEntries(id, settings.streaksHighlighted, settings.weekStartsOnSunday.value)
+            settings.state().flatMapLatest { s ->
+                pagerProvider.getEntries(id, s.streaksHighlighted, s.weekStartsOnSunday.value, s.isHabitHistoryCalendar)
+            }
+
 
         override suspend fun habitDoneAndReturn(habit: HabitUi, daysAgo: Int): EntryEditableUi {
             val entry = habitDone(habit, daysAgo)

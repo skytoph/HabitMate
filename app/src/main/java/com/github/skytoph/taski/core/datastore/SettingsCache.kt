@@ -18,6 +18,7 @@ interface SettingsCache {
     suspend fun updateCurrentDayHighlight()
     suspend fun updateStreakHighlight()
     suspend fun updateIconsSort()
+    suspend fun updateHabitHistoryView()
     suspend fun updateCrashlytics(allow: Boolean? = null)
     suspend fun updateTheme(theme: AppTheme)
     suspend fun updateViewNumberOfEntries(number: Int)
@@ -51,6 +52,10 @@ interface SettingsCache {
 
         override suspend fun updateStreakHighlight() {
             dataStore.updateData { it.copy(streaksHighlighted = !it.streaksHighlighted) }
+        }
+
+        override suspend fun updateHabitHistoryView() {
+            dataStore.updateData { it.copy(isHabitHistoryCalendar = !it.isHabitHistoryCalendar) }
         }
 
         override suspend fun updateIconsSort() {

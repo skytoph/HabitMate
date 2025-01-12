@@ -4,16 +4,17 @@ import com.github.skytoph.taski.core.Now
 import com.github.skytoph.taski.presentation.habit.edit.EntryEditableUi
 
 interface EditableEntryDomainToUiMapper {
-    fun map(daysAgo: Int, timesDone: Int, goal: Int, hasBorder: Boolean): EntryEditableUi
+    fun map(daysAgo: Int, timesDone: Int, goal: Int, hasBorder: Boolean, isDisabled: Boolean = false): EntryEditableUi
 
     class Base(private val now: Now) : EditableEntryDomainToUiMapper {
 
-        override fun map(daysAgo: Int, timesDone: Int, goal: Int, hasBorder: Boolean) =
+        override fun map(daysAgo: Int, timesDone: Int, goal: Int, hasBorder: Boolean, isDisabled: Boolean) =
             EntryEditableUi(
                 day = now.dayOfMonths(daysAgo).toString(),
                 timesDone = timesDone,
                 daysAgo = daysAgo,
-                hasBorder = hasBorder
+                hasBorder = hasBorder,
+                isDisabled = isDisabled
             )
     }
 }
