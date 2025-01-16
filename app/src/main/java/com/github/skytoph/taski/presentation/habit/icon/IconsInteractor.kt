@@ -3,6 +3,7 @@ package com.github.skytoph.taski.presentation.habit.icon
 import android.content.res.Resources
 import com.github.skytoph.taski.core.NetworkManager
 import com.github.skytoph.taski.core.auth.SignInWithGoogle
+import com.github.skytoph.taski.core.backup.BackupDatastore
 import com.github.skytoph.taski.presentation.core.state.IconResource
 import com.github.skytoph.taski.presentation.settings.backup.ProfileUi
 import com.github.skytoph.taski.presentation.settings.backup.SignInInteractor
@@ -14,8 +15,8 @@ interface IconsInteractor : SignInInteractor<Boolean> {
     suspend fun unlock(icon: String): Boolean
     suspend fun shouldShowWarning(): Boolean
 
-    class Base(private val datastore: IconsDatastore, networkManager: NetworkManager) : IconsInteractor,
-        SignInInteractor.Base<Boolean>(datastore, networkManager) {
+    class Base(private val datastore: IconsDatastore, networkManager: NetworkManager, drive: BackupDatastore) :
+        IconsInteractor, SignInInteractor.Base<Boolean>(datastore, networkManager, drive) {
 
         override fun icons(resources: Resources): Flow<List<IconsLockedGroup>> =
             datastore.unlockedFlow().map { icons ->

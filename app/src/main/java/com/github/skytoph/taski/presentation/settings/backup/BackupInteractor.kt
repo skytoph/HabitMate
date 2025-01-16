@@ -41,7 +41,7 @@ interface BackupInteractor : SignInInteractor<BackupResultUi> {
         private val iconsDatastore: IconsDatastore,
         private val networkMapper: NetworkErrorMapper,
         networkManager: NetworkManager
-    ) : BackupInteractor, SignInInteractor.Base<BackupResultUi>(iconsDatastore, networkManager) {
+    ) : BackupInteractor, SignInInteractor.Base<BackupResultUi>(iconsDatastore, networkManager, drive) {
 
         override suspend fun export(context: Context): BackupResultUi = try {
             val uri = fileWriter.getUriFromFile(
@@ -123,7 +123,7 @@ interface BackupInteractor : SignInInteractor<BackupResultUi> {
             }
 
         override suspend fun mapResult(profile: ProfileUi, synchronized: Boolean?): BackupResultUi =
-            BackupResultUi.Success.SignedIn(profile, drive.lastSync(), synchronized)
+            BackupResultUi.Success.SignedIn(profile, lastSync(), synchronized)
 
         override fun mapResult(exception: Exception?, default: BackupResultUi): BackupResultUi = when {
             exception != null && networkMapper.isNetworkUnavailable(exception) -> BackupResultUi.NoConnection

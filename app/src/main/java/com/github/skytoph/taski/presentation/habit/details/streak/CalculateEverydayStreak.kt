@@ -17,7 +17,7 @@ class CalculateEverydayStreak(private val counter: StreakCounterCache = StreakCo
             .zipWithNext()
             .fold(mutableListOf<Streak>()) { streaks, (prev, current) ->
                 streaks.apply {
-                    if (current.first != prev.first + 1)
+                    if (current.first != prev.first + 1 || !current.second.isCompleted(goal))
                         counter.save(streaks)
                     if (current.second.isCompleted(goal))
                         counter.add(count = 1, start = current.first)

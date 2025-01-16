@@ -59,6 +59,12 @@ interface SelectIconEvent {
         }
     }
 
+    class UpdateLastSync(private val time: Long?) : SettingsEvent {
+        override suspend fun handle(settings: SettingsCache) {
+            settings.updateBackupTime(time)
+        }
+    }
+
     object DoNotShowWarning : SettingsEvent {
         override suspend fun handle(settings: SettingsCache) {
             settings.updateIconWarning(false)

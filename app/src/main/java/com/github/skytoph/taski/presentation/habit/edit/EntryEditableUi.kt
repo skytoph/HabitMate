@@ -22,9 +22,16 @@ data class EntryEditableUi(
     val day: String,
     val timesDone: Int = 0,
     val daysAgo: Int = 0,
-    val hasBorder: Boolean = false,
+    val streakType: StreakType? = null,
     val isDisabled: Boolean = false,
 ) : HabitEntryUi
+
+enum class StreakType {
+    Start,
+    End,
+    Middle,
+    Dot
+}
 
 @Stable
 data class MonthUi(

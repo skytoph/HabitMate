@@ -25,8 +25,9 @@ class EditableEntryGridUiMapper(
         (weeksAgo * ROWS until weeksAgo * ROWS + weeks * ROWS).associate { index ->
             val daysAgo = now.dayOfWeek(isFirstDaySunday) - index % ROWS + index / ROWS * ROWS - 1
             val timesDone = history[daysAgo]?.timesDone ?: 0
-            val hasBorder = isBorderOn && timesDone == 0 && stats.isInRange(daysAgo)
-            daysAgo to entryMapper.map(daysAgo, timesDone, goal, hasBorder)
+            val streakType = if (isBorderOn && timesDone == 0) stats.type(daysAgo) else null
+            val isDisabled = daysAgo < 0
+            daysAgo to entryMapper.map(daysAgo, timesDone, goal, streakType, isDisabled)
         }
 
     override fun weeksInMonth(isFirstDaySunday: Boolean, weeksAgo: Int): Int =

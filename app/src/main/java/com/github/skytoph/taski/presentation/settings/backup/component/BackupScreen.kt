@@ -324,7 +324,7 @@ private fun LocalBackup(
         )
         HorizontalDivider()
         ButtonWithLoadingFull(
-            title = "Clear all data",
+            title = stringResource(R.string.clear_all_data),
             onClick = clear,
             isLoading = isClearingLoading,
             loadingText = stringResource(R.string.loading_clearing),
@@ -415,7 +415,8 @@ private fun ProfileItem(profile: ProfileUi, lastTimeBackupSaved: String?) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .animateContentSize(),
+            .animateContentSize()
+            .padding(horizontal = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {

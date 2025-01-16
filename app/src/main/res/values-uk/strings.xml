@@ -56,6 +56,11 @@
     <string name="everyday">Щодня</string>
     <string name="reminder_none">Відсутні</string>
     <string name="select_time">Оберіть час</string>
+    <string name="frequency">частота</string>
+    <string name="reminder">нагадування</string>
+    <string name="weekly">щотижня</string>
+    <string name="monthly">щомісяця</string>
+    <string name="custom">налаштувати</string>
 
     <!--    Habit list Labels-->
     <string name="action_view">Вигляд</string>
@@ -65,7 +70,7 @@
     <!--    Habit list view settings-->
     <string name="view_label">вигляд</string>
     <string name="view_layout">розташування</string>
-    <string name="option_calendar">календар</string>
+    <string name="option_calendar">таблиця</string>
     <string name="option_daily">список</string>
     <string name="view_sort">сортувати за</string>
     <string name="view_filter">фільтрувати за</string>
@@ -83,7 +88,7 @@
     <string name="habit_menu_delete">Видалити</string>
     <string name="habit_menu_reorder_habits">Змінити порядок звичок</string>
 
-    <!--    App bar titles.....................................-->
+    <!--    App bar titles-->
     <string name="edit_habit">Редагувати</string>
     <string name="habit_list_title">Звички</string>
     <string name="settings_title">Налаштування</string>
@@ -135,16 +140,31 @@
     <string name="hide_reminder_confirmation_description">Сховати це нагадування?</string>
     <string name="hide_reminder_confirmation_description_permanently">Ви завжди можете ввімкнути його знову в налаштуваннях.</string>
 
+    <!--    Settings-->
+    <string name="settings_app">Додаток</string>
+    <string name="settings_general">Загальні</string>
+    <string name="settings_theme">Тема</string>
+    <string name="settings_reorder_habits">Порядок звичок</string>
+    <string name="settings_archived_habits">Архів</string>
+    <string name="settings_data_backup">Данні та Резервні копії</string>
+    <string name="settings_info">Інформація</string>
+    <string name="settings_privacy_policy">Політика конфіденційності</string>
+    <string name="settings_terms_of_use">Умови використання</string>
+    <string name="settings_credits">Використані ресурси</string>
+    <string name="settings_feedback">Зворотній зв\'язок</string>
+    <string name="settings_rate_the_app">Оцінити додаток</string>
+    <string name="settings_share_the_app">Поділитись додатком</string>
+
     <!--    General Settings-->
     <string name="week_starts_on_sunday">починами тиждень з неділі</string>
     <string name="highlight_current_day">виділяти поточний день</string>
     <string name="highlight_streaks">виділяти серію</string>
 
     <!--    Theme Settings-->
-    <string name="theme_system">Системна</string>
-    <string name="theme_light">Світла</string>
-    <string name="theme_dark">Темна</string>
-    <string name="settings_theme_mode">Тема</string>
+    <string name="settings_theme_mode">Режим</string>
+    <string name="theme_system">Системний</string>
+    <string name="theme_light">Світлий</string>
+    <string name="theme_dark">Темний</string>
 
     <!--    Icons-->
     <string name="unlock_icon_title">Розблокувати</string>
@@ -212,8 +232,8 @@
     <string name="error_deleting_account">Сталася помилка, не вдалося видалити ваш обліковий запис. Будь ласка, спробуйте пізніше.</string>
     <string name="backup_no_connection">Підключіться до Інтернету, щоб увімкнути резервне копіювання у Google Drive.</string>
     <string name="restore_no_connection">Будь ласка, підключіться до Інтернету, щоб отримати доступ до списку резервних копій.</string>
-    <string name="google_drive_backup">Резервна копія у Google Drive</string>
-    <string name="local_backup">Локальна резервна копія</string>
+    <string name="google_drive_backup">Google Drive</string>
+    <string name="local_backup">Локальне резервне копіювання</string>
     <string name="restore_title">Відновити резервну копію</string>
     <string name="action_delete_data">Видалити всі резервні копії</string>
     <string name="delete_all_data_title">Підтвердити видалення</string>
@@ -249,12 +269,10 @@
     <string name="loading_import" tools:ignore="TypographyEllipsis">Відновлення даних...</string>
     <string name="loading_clearing" tools:ignore="TypographyEllipsis">Видалення даних...</string>
     <string name="loading_backup" tools:ignore="TypographyEllipsis">Створення резервної копії...</string>
+    <string name="clear_all_data">Очистити данні</string>
 
     <!--    Share-->
     <string name="share_app_message">Спробуйте цей зручний додаток для відстеження звичок, який я використовую! Завантажити можна тут: </string>
-
-    <!--    Credits-->
-    <string name="credit_author">від %1$s</string>
 
     <!--    Crashlytics-->
     <string name="allow_crashlytics">дозволити збір звітів про збої</string>
@@ -281,7 +299,7 @@
     </plurals>
     <plurals name="day_label">
         <item quantity="one" tools:ignore="ImpliedQuantity">день</item>
-        <item quantity="few">дня</item>
+        <item quantity="few">дні</item>
         <item quantity="many">днів</item>
     </plurals>
 </resources>

@@ -348,7 +348,7 @@ fun EditBaseHabit(
         }
         Spacer(modifier = Modifier.height(18.dp))
         Text(
-            text = "frequency",
+            text = stringResource(R.string.frequency),
             style = MaterialTheme.typography.titleSmall,
             color = MaterialTheme.colorScheme.onBackground
         )
@@ -371,7 +371,7 @@ fun EditBaseHabit(
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = "reminder",
+            text = stringResource(R.string.reminder),
             style = MaterialTheme.typography.titleSmall,
             color = MaterialTheme.colorScheme.onBackground
         )

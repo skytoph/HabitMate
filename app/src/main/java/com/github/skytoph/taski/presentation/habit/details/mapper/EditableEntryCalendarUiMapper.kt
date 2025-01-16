@@ -28,9 +28,9 @@ class EditableEntryCalendarUiMapper(
         val lastDayOfWeek = lastDay - ROWS + now.dayOfWeek(isFirstDaySunday = isFirstDaySunday, daysAgo = lastDay)
         return (firstDayOfWeek downTo lastDayOfWeek).associateWith { daysAgo ->
             val timesDone = history[daysAgo]?.timesDone ?: 0
-            val hasBorder = isBorderOn && timesDone == 0 && stats.isInRange(daysAgo)
-            val isDisabled = daysAgo > firstDay || daysAgo < lastDay
-            entryMapper.map(daysAgo, timesDone, goal, hasBorder, isDisabled)
+            val streakType = if (isBorderOn) stats.type(daysAgo) else null
+            val isDisabled = daysAgo > firstDay || daysAgo < lastDay || daysAgo < 0
+            entryMapper.map(daysAgo, timesDone, goal, streakType, isDisabled)
         }
     }
 }

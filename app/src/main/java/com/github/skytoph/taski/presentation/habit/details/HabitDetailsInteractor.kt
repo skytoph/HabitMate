@@ -3,7 +3,6 @@
 package com.github.skytoph.taski.presentation.habit.details
 
 import androidx.paging.PagingData
-import com.github.skytoph.taski.core.datastore.Settings
 import com.github.skytoph.taski.core.datastore.SettingsCache
 import com.github.skytoph.taski.domain.habit.Habit
 import com.github.skytoph.taski.domain.habit.HabitRepository
@@ -19,7 +18,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 
 interface HabitDetailsInteractor : HabitDoneInteractor {
-    fun entries(id: Long, settings: Settings): Flow<PagingData<EditableHistoryUi>>
+    fun entries(id: Long): Flow<PagingData<EditableHistoryUi>>
     fun habit(id: Long): Flow<Habit?>
     fun statistics(id: Long): Flow<HabitWithEntries?>
     suspend fun habitDoneAndReturn(habit: HabitUi, daysAgo: Int): EntryEditableUi
@@ -32,16 +31,14 @@ interface HabitDetailsInteractor : HabitDoneInteractor {
         interactor: HabitDoneInteractor,
     ) : HabitDetailsInteractor, HabitDoneInteractor by interactor {
 
-        override fun entries(id: Long, settings1: Settings)
-                : Flow<PagingData<EditableHistoryUi>> =
+        override fun entries(id: Long): Flow<PagingData<EditableHistoryUi>> =
             settings.state().flatMapLatest { s ->
                 pagerProvider.getEntries(id, s.streaksHighlighted, s.weekStartsOnSunday.value, s.isHabitHistoryCalendar)
             }
 
-
         override suspend fun habitDoneAndReturn(habit: HabitUi, daysAgo: Int): EntryEditableUi {
             val entry = habitDone(habit, daysAgo)
-            return entryMapper.map(daysAgo, entry.timesDone, habit.goal, false)
+            return entryMapper.map(daysAgo, entry.timesDone, habit.goal, null)
         }
 
         override fun habit(id: Long) = repository.habitFlow(id)

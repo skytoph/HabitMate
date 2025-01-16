@@ -5,15 +5,18 @@ import android.content.Intent
 import android.util.Log
 import com.github.skytoph.taski.core.NetworkManager
 import com.github.skytoph.taski.core.auth.SignInWithGoogle
+import com.github.skytoph.taski.core.backup.BackupDatastore
 import com.github.skytoph.taski.presentation.habit.icon.IconsDatastore
 
 interface SignInInteractor<R> {
     suspend fun signInWithFirebase(intent: Intent, context: Context): R
+    suspend fun lastSync(): Long?
     fun checkConnection(context: Context): R
 
     abstract class Base<R>(
         private val iconsDatastore: IconsDatastore,
-        private val networkManager: NetworkManager
+        private val networkManager: NetworkManager,
+        private val drive: BackupDatastore
     ) : SignInInteractor<R> {
 
         abstract val defaultSigningInResult: R
@@ -42,6 +45,8 @@ interface SignInInteractor<R> {
             Log.e("tag", exception.stackTraceToString())
             mapResult(exception, defaultSigningInResult)
         }
+
+        override suspend fun lastSync(): Long? = drive.lastSync()?.value
 
         override fun checkConnection(context: Context): R = if (networkManager.isNetworkAvailable()) connectedResult
         else noConnectionResult

@@ -64,10 +64,12 @@ class SelectIconViewModel @Inject constructor(
 
     fun signInWithFirebase(intent: Intent, context: Context) = viewModelScope.launch(Dispatchers.IO) {
         val success = interactor.signInWithFirebase(intent, context)
+        val syncTime = if (success) interactor.lastSync() else null
         withContext(Dispatchers.Main) {
             onEvent(SelectIconEvent.IsSigningIn(false))
             onEvent(SelectIconEvent.IsWarningShown(!success))
             if (!success) showMessage(BackupMessages.signInFailedMessage)
+            else onEvent(SelectIconEvent.UpdateLastSync(syncTime))
         }
     }
 

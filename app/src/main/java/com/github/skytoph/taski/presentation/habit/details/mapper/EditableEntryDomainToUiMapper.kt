@@ -2,18 +2,20 @@ package com.github.skytoph.taski.presentation.habit.details.mapper
 
 import com.github.skytoph.taski.core.Now
 import com.github.skytoph.taski.presentation.habit.edit.EntryEditableUi
+import com.github.skytoph.taski.presentation.habit.edit.StreakType
 
 interface EditableEntryDomainToUiMapper {
-    fun map(daysAgo: Int, timesDone: Int, goal: Int, hasBorder: Boolean, isDisabled: Boolean = false): EntryEditableUi
+    fun map(daysAgo: Int, timesDone: Int, goal: Int, streakType: StreakType?, isDisabled: Boolean = false)
+            : EntryEditableUi
 
     class Base(private val now: Now) : EditableEntryDomainToUiMapper {
 
-        override fun map(daysAgo: Int, timesDone: Int, goal: Int, hasBorder: Boolean, isDisabled: Boolean) =
+        override fun map(daysAgo: Int, timesDone: Int, goal: Int, streakType: StreakType?, isDisabled: Boolean) =
             EntryEditableUi(
                 day = now.dayOfMonths(daysAgo).toString(),
                 timesDone = timesDone,
                 daysAgo = daysAgo,
-                hasBorder = hasBorder,
+                streakType = streakType,
                 isDisabled = isDisabled
             )
     }

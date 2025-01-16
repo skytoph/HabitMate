@@ -262,7 +262,7 @@ fun HabitDetails(
             onChangeView = updateView
         )
         if (BuildConfig.DEBUG) //todo remove
-            Text(text = "streaks: " + state.value.statistics.streaksLength.joinToString(", "))
+            Text(text = "streaks: " + state.value.statistics.streaks.map { it.length }.joinToString(", "))
         Spacer(modifier = Modifier.height(16.dp))
     }
 

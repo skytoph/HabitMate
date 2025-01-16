@@ -17,9 +17,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyCustomType
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyState
 import com.github.skytoph.taski.presentation.habit.edit.frequency.FrequencyUi
@@ -55,7 +57,7 @@ fun FrequencySettings(
         ) {
             FrequencyOption(
                 modifier = Modifier.weight(1f),
-                title = "daily",
+                title = stringResource(R.string.weekly),
                 selected = frequency.isSelected(frequency.daily),
                 select = { selectType(frequency.daily) })
             VerticalDivider(
@@ -66,7 +68,7 @@ fun FrequencySettings(
             )
             FrequencyOption(
                 modifier = Modifier.weight(1f),
-                title = "monthly",
+                title = stringResource(R.string.monthly),
                 selected = frequency.isSelected(frequency.monthly),
                 select = { selectType(frequency.monthly) })
             VerticalDivider(
@@ -77,7 +79,7 @@ fun FrequencySettings(
             )
             FrequencyOption(
                 modifier = Modifier.weight(1f),
-                title = "custom",
+                title = stringResource(R.string.custom),
                 selected = frequency.isSelected(frequency.custom),
                 select = { selectType(frequency.custom) })
         }

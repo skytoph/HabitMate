@@ -7,10 +7,10 @@ import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -45,17 +45,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.github.skytoph.taski.R
-import com.github.skytoph.taski.presentation.core.color.contrastColor
+import com.github.skytoph.taski.presentation.core.component.LoadingItems
 import com.github.skytoph.taski.presentation.core.component.ProgressCircle
 import com.github.skytoph.taski.presentation.core.component.WeekDayLabel
 import com.github.skytoph.taski.presentation.core.component.getLocale
 import com.github.skytoph.taski.presentation.core.component.weekDayCalendar
 import com.github.skytoph.taski.presentation.core.preview.HabitsEditableProvider
+import com.github.skytoph.taski.presentation.habit.applyColor
 import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
 import com.github.skytoph.taski.presentation.habit.edit.EntryEditableUi
+import com.github.skytoph.taski.presentation.habit.edit.StreakType
 import com.github.skytoph.taski.presentation.habit.icon.IconsColors
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 import kotlinx.coroutines.flow.Flow
@@ -70,11 +73,21 @@ fun MonthlyPager(
     isFirstDaySunday: Boolean = false,
     isEditable: Boolean = false,
     onEdit: (Int) -> Unit = {},
+    squareDp: Dp = 40.dp,
 ) {
     val items = entries.collectAsLazyPagingItems()
     val coroutineScope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = { items.itemCount })
-    Column(
+
+    if (items.loadState.refresh == LoadState.Loading || items.itemCount == 0) Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(min = squareDp.times(7)),
+        contentAlignment = Alignment.Center
+    ) {
+        LoadingItems()
+    }
+    else Column(
         modifier = Modifier
             .background(
                 color = MaterialTheme.colorScheme.tertiaryContainer,
@@ -82,13 +95,14 @@ fun MonthlyPager(
             )
             .padding(vertical = 4.dp, horizontal = 8.dp)
             .animateContentSize()
-            .widthIn(max = 400.dp)
+            .widthIn(max = squareDp.times(8)),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.Absolute.SpaceBetween,
+            horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
@@ -143,7 +157,7 @@ fun MonthlyPager(
             reverseLayout = true,
             beyondViewportPageCount = 1,
             key = { it },
-            verticalAlignment = Alignment.Top
+            verticalAlignment = Alignment.Top,
         ) { page ->
             items[page]?.let { item ->
                 MonthlyView(
@@ -152,7 +166,8 @@ fun MonthlyPager(
                     habitColor = habitColor,
                     isFirstDaySunday = isFirstDaySunday,
                     isEditable = isEditable,
-                    onEdit = onEdit
+                    onEdit = onEdit,
+                    squareDp = squareDp
                 )
             }
         }
@@ -171,13 +186,11 @@ fun MonthlyView(
 ) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(7),
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp),
         userScrollEnabled = false,
-        contentPadding = PaddingValues(4.dp),
         modifier = Modifier
             .wrapContentHeight()
-            .heightIn(min = 0.dp, max = squareDp.times(8))
+            .heightIn(min = 0.dp, max = squareDp.times(8)),
+        horizontalArrangement = Arrangement.Center
     ) {
         items(items = (1..7).toList()) { index ->
             WeekDayLabel(
@@ -195,6 +208,7 @@ fun MonthlyView(
                 percentDone = entry.timesDone / goal,
                 goal = goal,
                 habitColor = habitColor,
+                streakType = entry.streakType,
                 squareDp = squareDp,
                 isEditable = isEditable,
                 isDisabled = entry.isDisabled,
@@ -212,14 +226,16 @@ private fun EntryItem(
     percentDone: Int,
     goal: Int,
     habitColor: Color,
+    streakType: StreakType?,
     onClick: () -> Unit,
     isEditable: Boolean = false,
     isDisabled: Boolean = false,
-    squareDp: Dp = 40.dp
+    squareDp: Dp = 50.dp,
+    streakColor: Color = habitColor.applyColor(MaterialTheme.colorScheme.tertiaryContainer, 0.2f)
 ) {
     val defaultColor = MaterialTheme.colorScheme.tertiaryContainer
-    val color =
-        remember { Animatable(if (percentDone >= 1f) habitColor else defaultColor) }
+    val color = remember { Animatable(if (percentDone >= 1f) habitColor else defaultColor) }
+    val disabledColor = habitColor.applyColor(MaterialTheme.colorScheme.tertiaryContainer, 0.5f)
     LaunchedEffect(timesDone) {
         color.animateTo(
             targetValue = if (percentDone >= 1f) habitColor else defaultColor,
@@ -229,25 +245,38 @@ private fun EntryItem(
             )
         )
     }
-    val background = MaterialTheme.colorScheme.surfaceVariant
-    Box(contentAlignment = Alignment.Center) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier.aspectRatio(1f)
+    ) {
         Box(
             modifier = Modifier
                 .size(squareDp)
                 .aspectRatio(1f)
                 .clip(CircleShape)
-                .clickable(enabled = isEditable && !isDisabled && daysAgo >= 0, onClick = onClick)
+                .clickable(
+                    enabled = isEditable && !isDisabled,
+                    onClick = onClick,
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                )
         )
+        Crossfade(targetState = streakType, label = "streak_crossfade_$daysAgo") { type ->
+            type?.let {
+                StreakLine(type = type, color = streakColor, squareSize = 48.dp)
+            }
+        }
         Text(
             text = day,
-            color = if (isDisabled) MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f) else background.contrastColor(),
+            color = if (isDisabled) MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f) else MaterialTheme.colorScheme.onBackground,
             style = MaterialTheme.typography.bodyMedium
         )
         ProgressCircle(
             goal = goal,
             done = timesDone,
             size = 30.dp,
-            color = habitColor
+            color = if (isDisabled) disabledColor else habitColor,
+            isHintShown = false
         )
     }
 }

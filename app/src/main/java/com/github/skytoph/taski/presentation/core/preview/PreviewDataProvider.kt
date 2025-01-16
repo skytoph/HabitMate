@@ -43,7 +43,7 @@ class HabitsEditableProvider : PreviewParameterProvider<List<EditableHistoryUi>>
             (month - 1) * 28 + day to EntryEditableUi(
                 day = (day + 1).toString(),
                 daysAgo = (month - 1) * 28 + day,
-                hasBorder = day % 7 == 0,
+                streakType = null,
                 timesDone = day % 5
             )
         }, MonthUi(timestamp = month.toLong(), weeks = 4, index = month))

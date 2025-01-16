@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -21,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -65,80 +68,85 @@ private fun SettingsMenu(
     backupClick: () -> Unit = {},
     creditsClick: () -> Unit = {},
 ) {
-    Column(modifier = Modifier.padding(24.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        MenuTitleText(text = "App", modifier = Modifier.padding(start = 16.dp))
+    Column(
+        modifier = Modifier
+            .verticalScroll(state = rememberScrollState())
+            .padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        MenuTitleText(text = stringResource(R.string.settings_app), modifier = Modifier.padding(start = 16.dp))
         Column(modifier = Modifier.clip(MaterialTheme.shapes.small)) {
             SettingsMenuItem(
-                title = "General",
+                title = stringResource(R.string.settings_general),
                 icon = ImageVector.vectorResource(id = R.drawable.wrench),
                 onClick = generalClick,
                 color = Blue
             )
             HorizontalDivider()
             SettingsMenuItem(
-                title = "Theme",
+                title = stringResource(R.string.settings_theme),
                 icon = ImageVector.vectorResource(id = R.drawable.palette),
                 onClick = themeClick,
                 color = Green
             )
             HorizontalDivider()
             SettingsMenuItem(
-                title = "Reorder habits",
+                title = stringResource(R.string.settings_reorder_habits),
                 icon = ImageVector.vectorResource(id = R.drawable.arrow_up_down),
                 onClick = reorderClick,
                 color = Yellow
             )
             HorizontalDivider()
             SettingsMenuItem(
-                title = "Archived habits",
+                title = stringResource(R.string.settings_archived_habits),
                 icon = ImageVector.vectorResource(id = R.drawable.archive),
                 onClick = archiveClick,
                 color = Orange
             )
             HorizontalDivider()
             SettingsMenuItem(
-                title = "Data & Backup",
+                title = stringResource(R.string.settings_data_backup),
                 icon = ImageVector.vectorResource(id = R.drawable.folder_input),
                 onClick = backupClick,
                 color = Red
             )
         }
         Spacer(modifier = Modifier.height(8.dp))
-        MenuTitleText(text = "Info", modifier = Modifier.padding(start = 16.dp))
+        MenuTitleText(text = stringResource(R.string.settings_info), modifier = Modifier.padding(start = 16.dp))
         Column(modifier = Modifier.clip(MaterialTheme.shapes.small)) {
             SettingsMenuItem(
-                title = "Privacy policy",
+                title = stringResource(R.string.settings_privacy_policy),
                 icon = ImageVector.vectorResource(id = R.drawable.file_lock),
                 onClick = {},
                 color = GrayLight
             )
             HorizontalDivider()
             SettingsMenuItem(
-                title = "Terms of use",
+                title = stringResource(R.string.settings_terms_of_use),
                 icon = ImageVector.vectorResource(id = R.drawable.file_type),
                 onClick = {},
                 color = PurpleLight
             )
             HorizontalDivider()
             SettingsMenuItem(
-                title = "Credits",
+                title = stringResource(R.string.settings_credits),
                 icon = ImageVector.vectorResource(id = R.drawable.file_heart),
                 onClick = creditsClick,
                 color = PinkLight
             )
         }
         Spacer(modifier = Modifier.height(8.dp))
-        MenuTitleText(text = "Feedback", modifier = Modifier.padding(start = 16.dp))
+        MenuTitleText(text = stringResource(R.string.settings_feedback), modifier = Modifier.padding(start = 16.dp))
         Column(modifier = Modifier.clip(MaterialTheme.shapes.small)) {
             SettingsMenuItem(
-                title = "Rate the app",
+                title = stringResource(R.string.settings_rate_the_app),
                 icon = ImageVector.vectorResource(id = R.drawable.star),
                 onClick = {},
                 color = Peach
             )
             HorizontalDivider()
             SettingsMenuItem(
-                title = "Share the app",
+                title = stringResource(R.string.settings_share_the_app),
                 icon = ImageVector.vectorResource(id = R.drawable.share_2),
                 onClick = {},
                 color = BlueLight
@@ -151,7 +159,7 @@ private fun SettingsMenu(
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Text(
-                text = "HabitMate 1.0.0",
+                text = stringResource(R.string.settings_app_version),
                 style = MaterialTheme.typography.bodySmall,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth(),

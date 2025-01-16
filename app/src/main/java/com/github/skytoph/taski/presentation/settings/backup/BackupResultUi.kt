@@ -14,7 +14,6 @@ import com.github.skytoph.taski.presentation.settings.backup.BackupMessages.impo
 import com.github.skytoph.taski.presentation.settings.backup.BackupMessages.signInFailedMessage
 import com.github.skytoph.taski.presentation.settings.backup.BackupMessages.signOutFailedMessage
 import com.github.skytoph.taski.presentation.settings.backup.BackupMessages.syncFailedMessage
-import com.google.api.client.util.DateTime
 
 sealed interface BackupResultUi : MapResultToListOfEvents<BackupEvent> {
 
@@ -28,10 +27,10 @@ sealed interface BackupResultUi : MapResultToListOfEvents<BackupEvent> {
             override fun apply(): List<BackupEvent> = listOf(BackupEvent.UpdateProfile(data))
         }
 
-        class SignedIn(profile: ProfileUi, private val sync: DateTime?, private val synchronized: Boolean?) :
+        class SignedIn(profile: ProfileUi, private val syncTime: Long?, private val synchronized: Boolean?) :
             Success<ProfileUi>(profile) {
             override fun apply(): List<BackupEvent> = listOf(
-                BackupEvent.UpdateLastBackup(sync?.value),
+                BackupEvent.UpdateLastBackup(syncTime),
                 BackupEvent.IsSigningIn(false),
                 BackupEvent.UpdateProfile(data),
             ).let { list ->

@@ -6,6 +6,7 @@
 package com.github.skytoph.taski.presentation.habit.details.components
 
 import androidx.compose.animation.Animatable
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -21,6 +22,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -53,6 +55,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
+import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
@@ -60,6 +63,7 @@ import androidx.paging.compose.itemKey
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.color.contrastColor
 import com.github.skytoph.taski.presentation.core.component.ButtonWithBackground
+import com.github.skytoph.taski.presentation.core.component.LoadingItems
 import com.github.skytoph.taski.presentation.core.component.WeekDayLabel
 import com.github.skytoph.taski.presentation.core.component.getLocale
 import com.github.skytoph.taski.presentation.core.component.weekDayCalendar
@@ -69,6 +73,7 @@ import com.github.skytoph.taski.presentation.habit.applyColor
 import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
 import com.github.skytoph.taski.presentation.habit.edit.EntryEditableUi
 import com.github.skytoph.taski.presentation.habit.edit.MonthUi
+import com.github.skytoph.taski.presentation.habit.edit.StreakType
 import com.github.skytoph.taski.presentation.habit.icon.IconsColors
 import com.github.skytoph.taski.presentation.habit.list.mapper.ColorPercentMapper
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
@@ -129,11 +134,13 @@ fun HabitHistory(
                     .size(32.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    imageVector = ImageVector.vectorResource(if (isCalendarView) R.drawable.table else R.drawable.calendar_days),
-                    contentDescription = "calendar view",
-                    tint = Color.White
-                )
+                Crossfade(targetState = isCalendarView, label = "calendar_view_crossfade") { calendarView ->
+                    Icon(
+                        imageVector = ImageVector.vectorResource(if (calendarView) R.drawable.table else R.drawable.calendar_days),
+                        contentDescription = "calendar view",
+                        tint = Color.White
+                    )
+                }
             }
             ButtonWithBackground(
                 onClick = onEdit,
@@ -159,7 +166,15 @@ fun HabitHistoryGrid(
 ) {
     val items = entries.collectAsLazyPagingItems()
 
-    Column(
+    if (items.loadState.refresh == LoadState.Loading || items.itemCount == 0) Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(min = squareDp.times(8)),
+        contentAlignment = Alignment.Center
+    ) {
+        LoadingItems()
+    }
+    else Column(
         modifier = Modifier
             .padding(initialOffsetDp)
             .fillMaxWidth()
@@ -267,7 +282,7 @@ private fun DailyEntry(
 ) {
     val defaultColor = Color.White
     val color = remember { Animatable(entryColor(entry, habitColor, defaultColor, isEditable, goal)) }
-    LaunchedEffect(entry.timesDone, entry.hasBorder) {
+    LaunchedEffect(entry.timesDone, entry.streakType) {
         color.animateTo(
             targetValue = entryColor(entry, habitColor, defaultColor, isEditable, goal),
             animationSpec = tween(durationMillis = 300)
@@ -304,10 +319,11 @@ private fun DailyEntry(
                 .clip(shape = MaterialTheme.shapes.extraSmall)
                 .border(
                     width = 2.dp,
-                    color = if (entry.hasBorder) habitColor.applyColor(defaultColor, 0.1f) else Color.Transparent,
+                    color = if (entry.streakType == StreakType.Middle && entry.timesDone == 0)
+                        habitColor.applyColor(defaultColor, 0.1f) else Color.Transparent,
                     shape = MaterialTheme.shapes.extraSmall
                 )
-                .clickable(enabled = isEditable && entry.daysAgo >= 0) {
+                .clickable(enabled = isEditable && !entry.isDisabled) {
                     onDayClick(entry.daysAgo)
                 },
             contentAlignment = Alignment.Center
@@ -325,7 +341,7 @@ private fun entryColor(
     entry: EntryEditableUi, habitColor: Color, defaultColor: Color, isEditable: Boolean, goal: Int
 ) = when {
     entry.daysAgo < 0 -> Color.Gray.applyColor(defaultColor, 0.3f)
-    entry.hasBorder -> habitColor.applyColor(defaultColor, 0.5f)
+    entry.streakType == StreakType.Middle && entry.timesDone == 0 -> habitColor.applyColor(defaultColor, 0.5f)
     else -> habitColor.applyColor(defaultColor, ColorPercentMapper.toColorPercent(entry.timesDone, goal))
 }
 

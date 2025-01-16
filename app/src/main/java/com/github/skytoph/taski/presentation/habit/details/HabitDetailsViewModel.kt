@@ -42,7 +42,7 @@ class HabitDetailsViewModel @Inject constructor(
     private val actions = MutableStateFlow<List<HabitEntriesAction>>(emptyList())
 
     val entries: Flow<PagingData<EditableHistoryUi>> =
-        interactor.entries(savedStateHandle.id(), settings().value)
+        interactor.entries(savedStateHandle.id())
             .cachedIn(viewModelScope)
             .combine(actions) { pagingData, actions ->
                 actions.fold(pagingData) { paging, event -> applyAction(paging, event) }

@@ -93,6 +93,11 @@
     <string name="everyday">Everyday</string>
     <string name="reminder_none">None</string>
     <string name="select_time">Select time</string>
+    <string name="frequency">frequency</string>
+    <string name="reminder">reminder</string>
+    <string name="weekly">daily</string>
+    <string name="monthly">monthly</string>
+    <string name="custom">custom</string>
 
     <!--    Habit list Labels-->
     <string name="action_view">View</string>
@@ -102,7 +107,7 @@
     <!--    Habit list view settings-->
     <string name="view_label">view</string>
     <string name="view_layout">layout</string>
-    <string name="option_calendar">calendar</string>
+    <string name="option_calendar">heatmap</string>
     <string name="option_daily">daily</string>
     <string name="view_sort">sort by</string>
     <string name="view_filter">filter by</string>
@@ -244,8 +249,9 @@
     <string name="loading_import" tools:ignore="TypographyEllipsis">Restoring the data...</string>
     <string name="loading_clearing" tools:ignore="TypographyEllipsis">Clearing the data...</string>
     <string name="loading_backup" tools:ignore="TypographyEllipsis">Creating Backup...</string>
+    <string name="clear_all_data">Clear all data</string>
 
-    <string name="backup_date_format" translatable="false">dd.MM.yyyy HH:mm:ss</string>
+    <string name="backup_date_format" translatable="false">dd.MM.yyyy HH:mm</string>
     <string name="backup_filename_date_format" translatable="false">dd.MM.yyyy</string>
     <string name="backup_mimetype" translatable="false">application/octet-stream</string>
     <string name="backup_filename" translatable="false">backup-%1$s.db</string>
@@ -263,7 +269,7 @@
     <string name="new_line" translatable="false">\n</string>
 
     <!--    Credits-->
-    <string name="credit_author">by %1$s</string>
+    <string name="credit_author" translatable="false">by %1$s</string>
     <string name="material_icons_url" translatable="false">https://fonts.google.com/icons</string>
     <string name="lucide_icons_url" translatable="false">https://github.com/lucide-icons/lucide</string>
     <string name="reorderable_library_url" translatable="false">https://github.com/Calvin-LL/Reorderable/tree/main</string>
@@ -282,9 +288,28 @@
     <string name="allow_crashlytics_title">Crashlytics</string>
     <string name="allow_crashlytics_description">Would you like to enable crash reporting? We use crash reports to improve the app.</string>
 
+    <!--    Settings-->
+    <string name="settings_app">App</string>
+    <string name="settings_general">General</string>
+    <string name="settings_theme">Theme</string>
+    <string name="settings_reorder_habits">Reorder habits</string>
+    <string name="settings_archived_habits">Archived habits</string>
+    <string name="settings_data_backup"><![CDATA[Data & Backup]]></string>
+    <string name="settings_info">Info</string>
+    <string name="settings_privacy_policy">Privacy policy</string>
+    <string name="settings_terms_of_use">Terms of use</string>
+    <string name="settings_credits">Credits</string>
+    <string name="settings_feedback">Feedback</string>
+    <string name="settings_rate_the_app">Rate the app</string>
+    <string name="settings_share_the_app">Share the app</string>
+    <string name="settings_app_version" translatable="false">HabitMate 1.0.0</string>
+
+    <!--    Quantity-->
     <string name="day_label_one">day</string>
     <string name="week_label_one">week</string>
     <string name="month_label_one">month</string>
+
+
 
     <plurals name="times_label">
         <item quantity="one">time</item>
