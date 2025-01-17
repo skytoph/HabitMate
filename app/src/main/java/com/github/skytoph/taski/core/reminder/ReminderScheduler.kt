@@ -1,5 +1,6 @@
 package com.github.skytoph.taski.core.reminder
 
+import android.content.Context
 import android.net.Uri
 
 interface ReminderScheduler {
@@ -8,6 +9,7 @@ interface ReminderScheduler {
     fun reschedule(item: ReminderItem)
     fun cancel(uri: Uri)
     fun cancel(id: Long, times: Int)
+    fun areNotificationsAllowed(context: Context): Boolean
 }
 
 interface ScheduleReminder {

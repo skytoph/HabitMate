@@ -1,6 +1,9 @@
 package com.github.skytoph.taski.core.reminder.worker
 
+import android.app.AlarmManager
+import android.content.Context
 import android.net.Uri
+import android.os.Build
 import androidx.work.Data
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.OneTimeWorkRequest
@@ -67,6 +70,10 @@ class WorkScheduler(
             .build()
         return request
     }
+
+    override fun areNotificationsAllowed(context: Context): Boolean =
+        Build.VERSION.SDK_INT < Build.VERSION_CODES.S ||
+                (context.getSystemService(Context.ALARM_SERVICE) as AlarmManager).canScheduleExactAlarms()
 
     override fun cancel(uri: Uri) {
         workManager.cancelAllWorkByTag(uri.toString())

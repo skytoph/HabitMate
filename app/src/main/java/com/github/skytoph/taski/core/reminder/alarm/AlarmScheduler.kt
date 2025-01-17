@@ -39,6 +39,9 @@ class AlarmScheduler(
         }
     }
 
+    override fun areNotificationsAllowed(context: Context): Boolean =
+        Build.VERSION.SDK_INT < Build.VERSION_CODES.S || alarm.alarmManager(context).canScheduleExactAlarms()
+
     override fun reschedule(item: ReminderItem) =
         schedule(items = listOf(item.copy(timeMillis = item.interval.next(item.timeMillis, item.day))))
 

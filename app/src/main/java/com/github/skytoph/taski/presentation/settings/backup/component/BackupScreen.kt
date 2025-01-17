@@ -195,8 +195,8 @@ private fun Backup(
     isSigningInLoading: Boolean = false,
     isLoadingFullscreen: Boolean = false,
     isInternetConnected: Boolean = true,
-    profile: ProfileUi? = null,
-//    profile: ProfileUi? = ProfileUi(email = "email@gmail.com", name = "Name"),
+//    profile: ProfileUi? = null,
+    profile: ProfileUi? = ProfileUi(email = "email@gmail.com", name = "Name"),
     lastTimeBackupSaved: String? = "28.09.24 12:00",
 ) {
     val enabled =
@@ -361,7 +361,8 @@ fun DriveBackup(
                     .background(
                         MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f),
                         MaterialTheme.shapes.small
-                    ),
+                    )
+                    .padding(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Spacer(modifier = Modifier.height(8.dp))
@@ -373,7 +374,7 @@ fun DriveBackup(
                     isLoading = isBackupLoading,
                     loadingText = stringResource(R.string.loading_backup),
                     enabled = enabled,
-                    textPadding = 64.dp
+                    textPadding = 16.dp
                 )
                 Spacer(modifier = Modifier.height(8.dp))
             }
@@ -592,19 +593,19 @@ fun ButtonWithLoading(
             targetState = isLoading,
             label = "backup_button_crossfade",
             animationSpec = tween(durationMillis = 150)
-        ) {
-            Box(
-                modifier = modifier,
-                contentAlignment = Alignment.CenterEnd
+        ) { load ->
+            Column(
+                modifier = modifier.padding(horizontal = textPadding),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 Text(
-                    text = if (it) loadingText else title,
-                    style = style,
+                    text = if (load) loadingText else title,
                     color = textColor,
                     textAlign = TextAlign.Center,
-                    modifier = modifier.padding(horizontal = textPadding)
+                    style = style
                 )
-                if (it) LoadingItems(spaceSize = 4.dp)
+                if (load) LoadingItems(spaceSize = 4.dp)
             }
         }
     }

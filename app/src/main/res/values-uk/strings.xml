@@ -26,7 +26,7 @@
     <string name="icons_art">мистецтво</string>
 
     <!--    Habit-related Labels-->
-    <string name="create_new_habit">нова звичка</string>
+    <string name="create_new_habit">Нова звичка</string>
     <string name="history_label">історія</string>
     <string name="icon_label">іконка</string>
     <string name="goal_label">ціль</string>
@@ -146,7 +146,7 @@
     <string name="settings_theme">Тема</string>
     <string name="settings_reorder_habits">Порядок звичок</string>
     <string name="settings_archived_habits">Архів</string>
-    <string name="settings_data_backup">Данні та Резервні копії</string>
+    <string name="settings_data_backup">Резервне копіювання</string>
     <string name="settings_info">Інформація</string>
     <string name="settings_privacy_policy">Політика конфіденційності</string>
     <string name="settings_terms_of_use">Умови використання</string>
@@ -233,7 +233,7 @@
     <string name="backup_no_connection">Підключіться до Інтернету, щоб увімкнути резервне копіювання у Google Drive.</string>
     <string name="restore_no_connection">Будь ласка, підключіться до Інтернету, щоб отримати доступ до списку резервних копій.</string>
     <string name="google_drive_backup">Google Drive</string>
-    <string name="local_backup">Локальне резервне копіювання</string>
+    <string name="local_backup">Локальні дані</string>
     <string name="restore_title">Відновити резервну копію</string>
     <string name="action_delete_data">Видалити всі резервні копії</string>
     <string name="delete_all_data_title">Підтвердити видалення</string>

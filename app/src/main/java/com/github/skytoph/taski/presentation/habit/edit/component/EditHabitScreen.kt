@@ -507,13 +507,13 @@ fun RequestNotificationPermission(
         DialogItem.notification.copy(
             onConfirm = {
                 startNotificationSettingsActivity(lifecycleScope, context, notificationLauncher)
-            }, onDismiss = { requestPermissionDialog(null) }
+            }, onDismiss = { requestPermissionDialog(null); permissionGranted(false) }
         )
     }
     val alarmDialog = remember {
         DialogItem.alarm.copy(
             onConfirm = { startAlarmSettingsActivity(lifecycleScope, context, alarmLauncher) },
-            onDismiss = { requestPermissionDialog(null) }
+            onDismiss = { requestPermissionDialog(null); permissionGranted(false) }
         )
     }
     val askForNotificationPermission = {

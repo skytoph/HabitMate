@@ -144,7 +144,9 @@ fun RestoreScreen(viewModel: RestoreViewModel = hiltViewModel()) {
         requestPermissionDialog = { viewModel.onEvent(RestoreEvent.UpdatePermissionDialog(it)) },
         permissionGranted = { isGranted ->
             if (isGranted) viewModel.onEvent(RestoreEvent.RefreshingReminders(true))
+            else viewModel
         },
+        initialize = false,
         content = { requestPermission ->
             if (state.value.requestingPermission) {
                 viewModel.onEvent(RestoreEvent.RequestPermissions(false))

@@ -7,6 +7,7 @@ import com.github.skytoph.taski.core.reminder.ReminderScheduler
 import com.github.skytoph.taski.domain.habit.CheckHabitState
 import com.github.skytoph.taski.domain.habit.Habit
 import com.github.skytoph.taski.domain.habit.HabitRepository
+import com.github.skytoph.taski.domain.habit.Reminder
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.edit.mapper.HabitNotificationMapper
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitUiMapper
@@ -21,7 +22,7 @@ interface NotificationInteractor {
         private val scheduler: ReminderScheduler,
         private val notificationMapper: HabitNotificationMapper,
         private val mapper: HabitUiMapper,
-        private val settings: SettingsCache
+        private val settings: SettingsCache,
     ) : NotificationInteractor {
 
         override fun scheduleNotification(habit: HabitUi, context: Context, isFirstDaySunday: Boolean) {
@@ -30,10 +31,12 @@ interface NotificationInteractor {
         }
 
         override suspend fun refreshAllNotifications(context: Context) {
+            val isNotificationEnabled = scheduler.areNotificationsAllowed(context)
             val isFirstDaySunday = settings.initAndGet().first().weekStartsOnSunday.value
             repository.habits().forEach { habit ->
                 scheduler.cancel(habit.id, habit.frequency.times)
-                scheduleNotification(mapper.map(habit), context, isFirstDaySunday)
+                if (isNotificationEnabled) repository.update(habit.copy(reminder = Reminder.None))
+                else scheduleNotification(mapper.map(habit), context, isFirstDaySunday)
             }
         }
     }
