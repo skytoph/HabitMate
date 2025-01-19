@@ -3,6 +3,7 @@ package com.github.skytoph.taski.di.habit
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import com.github.skytoph.taski.core.Now
+import com.github.skytoph.taski.core.datastore.settings.ViewType
 import com.github.skytoph.taski.presentation.habit.details.mapper.HabitStatisticsMapper
 import com.github.skytoph.taski.presentation.habit.details.mapper.StatisticsUiMapper
 import com.github.skytoph.taski.presentation.habit.list.HabitListState
@@ -17,7 +18,6 @@ import com.github.skytoph.taski.presentation.habit.list.mapper.HabitWithEntriesC
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitWithEntriesDailyUiMapper
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitWithHistoryUiMapper
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitsViewMapper
-import com.github.skytoph.taski.presentation.habit.list.view.ViewType
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

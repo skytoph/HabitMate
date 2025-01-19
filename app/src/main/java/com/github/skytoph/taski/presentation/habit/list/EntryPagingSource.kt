@@ -5,6 +5,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.github.skytoph.taski.core.datastore.settings.ViewType
 import com.github.skytoph.taski.domain.habit.HabitRepository
 import com.github.skytoph.taski.domain.habit.HabitWithEntries
 import com.github.skytoph.taski.presentation.habit.details.mapper.EditableEntryCalendarUiMapper
@@ -12,7 +13,6 @@ import com.github.skytoph.taski.presentation.habit.details.mapper.EditableEntryG
 import com.github.skytoph.taski.presentation.habit.details.mapper.StatisticsUiMapper
 import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitHistoryUiMapper
-import com.github.skytoph.taski.presentation.habit.list.view.ViewType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext

@@ -2,8 +2,8 @@ package com.github.skytoph.taski.presentation.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.skytoph.taski.core.datastore.Settings
 import com.github.skytoph.taski.core.datastore.SettingsCache
+import com.github.skytoph.taski.core.datastore.settings.Settings
 import com.github.skytoph.taski.presentation.appbar.InitAppBar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.StateFlow

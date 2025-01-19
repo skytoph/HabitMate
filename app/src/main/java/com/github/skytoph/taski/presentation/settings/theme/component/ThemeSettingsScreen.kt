@@ -22,10 +22,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.skytoph.taski.R
-import com.github.skytoph.taski.core.datastore.Settings
+import com.github.skytoph.taski.core.datastore.settings.AppTheme
+import com.github.skytoph.taski.core.datastore.settings.Settings
 import com.github.skytoph.taski.presentation.core.component.MenuOptionComponent
 import com.github.skytoph.taski.presentation.core.component.MenuTitleText
-import com.github.skytoph.taski.presentation.settings.theme.AppTheme
 import com.github.skytoph.taski.presentation.settings.theme.ThemeSettingsEvent
 import com.github.skytoph.taski.presentation.settings.theme.ThemeSettingsViewModel
 import com.github.skytoph.taski.ui.theme.HabitMateTheme

@@ -102,20 +102,22 @@ fun HabitHistory(
             .animateContentSize()
     ) {
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopCenter) {
-            if (isCalendarView)
-                MonthlyPager(
-                    entries = entries,
-                    habitColor = habitColor,
-                    goal = goal,
-                    isFirstDaySunday = isFirstDaySunday,
-                )
-            else
-                HabitHistoryGrid(
-                    entries = entries,
-                    habitColor = habitColor,
-                    goal = goal,
-                    isFirstDaySunday = isFirstDaySunday,
-                )
+            Crossfade(targetState = isCalendarView, label = "habit_history_crossfade") { isCalendar ->
+                if (isCalendar)
+                    MonthlyPager(
+                        entries = entries,
+                        habitColor = habitColor,
+                        goal = goal,
+                        isFirstDaySunday = isFirstDaySunday,
+                    )
+                else
+                    HabitHistoryGrid(
+                        entries = entries,
+                        habitColor = habitColor,
+                        goal = goal,
+                        isFirstDaySunday = isFirstDaySunday,
+                    )
+            }
         }
         Row(
             modifier = Modifier

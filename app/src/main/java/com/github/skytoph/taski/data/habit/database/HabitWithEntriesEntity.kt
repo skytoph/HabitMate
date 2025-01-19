@@ -1,9 +1,11 @@
 package com.github.skytoph.taski.data.habit.database
 
+import androidx.annotation.Keep
 import androidx.room.Embedded
 import androidx.room.Relation
 import com.github.skytoph.taski.data.habit.mapper.HabitDBToDomainMapper
 
+@Keep
 data class HabitWithEntriesEntity(
 
     @Embedded

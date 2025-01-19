@@ -1,8 +1,11 @@
-package com.github.skytoph.taski.presentation.habit.list.view
+package com.github.skytoph.taski.core.datastore.settings
 
 import com.github.skytoph.taski.domain.habit.Habit
 import com.github.skytoph.taski.domain.habit.HabitWithEntries
 import com.github.skytoph.taski.presentation.habit.details.mapper.StatisticsUiMapper
+import com.github.skytoph.taski.presentation.habit.list.view.HabitsViewTypesProvider
+import com.github.skytoph.taski.presentation.habit.list.view.OptionUi
+import com.github.skytoph.taski.presentation.habit.list.view.ProvideOptionUi
 
 sealed interface FilterHabits : ProvideOptionUi<FilterHabits> {
     fun predicate(todayDone: Int = 0): (Habit) -> Boolean
@@ -34,8 +37,9 @@ sealed interface FilterHabits : ProvideOptionUi<FilterHabits> {
         override fun predicate(todayDone: Int): (Habit) -> Boolean = { it.isArchived == archived }
     }
 
-    class Today(private val todayOnly: Boolean = false, private val mapper: StatisticsUiMapper) {
-        fun filter(habits: List<HabitWithEntries>, isFirstDaySunday: Boolean): List<HabitWithEntries> =
+    class Today(private val todayOnly: Boolean = false) {
+        fun filter(habits: List<HabitWithEntries>, isFirstDaySunday: Boolean, mapper: StatisticsUiMapper)
+                : List<HabitWithEntries> =
             if (!todayOnly) habits else habits.filter { mapper.state(it, isFirstDaySunday).isScheduledForToday }
     }
 

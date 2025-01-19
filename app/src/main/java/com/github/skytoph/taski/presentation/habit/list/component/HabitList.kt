@@ -21,11 +21,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.github.skytoph.taski.R
+import com.github.skytoph.taski.core.datastore.settings.ViewType
 import com.github.skytoph.taski.presentation.core.preview.HabitsProvider
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.HabitWithHistoryUi
 import com.github.skytoph.taski.presentation.habit.list.HistoryUi
-import com.github.skytoph.taski.presentation.habit.list.view.ViewType
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 import kotlinx.coroutines.delay
 

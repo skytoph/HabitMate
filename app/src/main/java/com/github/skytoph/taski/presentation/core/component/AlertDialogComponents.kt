@@ -15,6 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.habit.details.components.BaseAlertDialog
+import com.github.skytoph.taski.presentation.habit.details.components.CheckboxDialog
 import com.github.skytoph.taski.presentation.habit.list.component.DialogItem
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
@@ -90,25 +91,6 @@ fun RestoreDialog(
     onDismissRequest: () -> Unit = {},
     onConfirm: () -> Unit = {},
     text: String,
-    title: String,
-) {
-    BaseAlertDialog(
-        onDismissRequest = onDismissRequest,
-        onConfirm = onConfirm,
-        dismissLabel = stringResource(R.string.action_cancel),
-        confirmLabel = stringResource(R.string.action_restore),
-        text = text,
-        title = title,
-        confirmColor = MaterialTheme.colorScheme.primary,
-        confirmContainerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.8f)
-    )
-}
-
-@Composable
-fun RestoreDialog(
-    onDismissRequest: () -> Unit = {},
-    onConfirm: () -> Unit = {},
-    text: AnnotatedString,
     title: String,
 ) {
     BaseAlertDialog(
@@ -242,8 +224,10 @@ fun ClearDialog(
 @Composable
 fun RestoreBackupDialog(
     date: String,
+    checked: Boolean,
     onDismissRequest: () -> Unit = {},
     onConfirm: () -> Unit = {},
+    checkboxClick: () -> Unit = {},
 ) {
     val description = buildAnnotatedBoldString(
         date to SpanStyle(),
@@ -251,11 +235,17 @@ fun RestoreBackupDialog(
         stringResource(id = R.string.restore_dialog_description_warning) to
                 SpanStyle(color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
     )
-    RestoreDialog(
+    CheckboxDialog(
+        isChecked = checked,
         onDismissRequest = onDismissRequest,
         onConfirm = onConfirm,
+        checkboxClick = checkboxClick,
         text = description,
         title = stringResource(id = R.string.restore_backup_title),
+        confirmColor = MaterialTheme.colorScheme.primary,
+        confirmContainerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.8f),
+        dismissLabel = stringResource(R.string.action_cancel),
+        confirmLabel = stringResource(R.string.action_restore),
     )
 }
 

@@ -1,9 +1,9 @@
 package com.github.skytoph.taski.domain.habit
 
+import com.github.skytoph.taski.core.datastore.settings.ViewType
 import com.github.skytoph.taski.presentation.habit.HabitWithHistoryUi
 import com.github.skytoph.taski.presentation.habit.list.HistoryUi
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitWithHistoryUiMapper
-import com.github.skytoph.taski.presentation.habit.list.view.ViewType
 
 data class HabitWithEntries(
     val habit: Habit,

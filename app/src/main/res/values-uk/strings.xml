@@ -177,7 +177,7 @@
     <string name="action_watch_ad">Переглянути рекламу</string>
 
     <!--    Reorder Habits Settings-->
-    <string name="apply_manual_sorting_description">Поточне сортування: за %1$s.\nЩоб застосувати зміни, увімкніть ручне сортування.</string>
+    <string name="apply_manual_sorting_description">Поточне сортування: %1$s.\nЩоб застосувати зміни, увімкніть ручне сортування.</string>
     <string name="apply_manual_sorting_title">Увімкнути ручне сортування?</string>
     <string name="action_apply">Застосувати</string>
 
@@ -273,6 +273,7 @@
 
     <!--    Share-->
     <string name="share_app_message">Спробуйте цей зручний додаток для відстеження звичок, який я використовую! Завантажити можна тут: </string>
+    <string name="share_app_title">Поділитись додатком</string>
 
     <!--    Crashlytics-->
     <string name="allow_crashlytics">дозволити збір звітів про збої</string>

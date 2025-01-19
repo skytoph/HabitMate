@@ -2,12 +2,7 @@
 
 package com.github.skytoph.taski.presentation.settings.reorder.component
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -61,7 +56,7 @@ import com.github.skytoph.taski.presentation.core.preview.HabitsProvider
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.HabitWithHistoryUi
 import com.github.skytoph.taski.presentation.habit.list.HistoryUi
-import com.github.skytoph.taski.presentation.habit.list.view.SortHabits
+import com.github.skytoph.taski.presentation.settings.reorder.ReorderHabitsEvent
 import com.github.skytoph.taski.presentation.settings.reorder.ReorderHabitsViewModel
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 import sh.calvin.reorderable.ReorderableItem
@@ -87,69 +82,77 @@ fun HabitReorderScreen(
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
 
-    val state = viewModel.settings().collectAsState()
+    val settings = viewModel.settings().collectAsState()
+    val state = viewModel.state()
 
     HabitsReorder(
         habits = viewModel.habits().value,
-        currentSort = state.value.view.sortBy.optionUi().title.getString(context),
-        showApplyManualOrder = !SortHabits.Manually.matches(state.value.view.sortBy),
+        currentSort = settings.value.view.sortBy.optionUi().title.getString(context),
+        showApplyManualOrder = state.value.isReminderShown,
         onSwap = { from, to -> viewModel.swap(from, to) },
         applyManualOrder = { viewModel.applyManualOrder() },
+        dismissReminder = { viewModel.onEvent(ReorderHabitsEvent.UpdateReminder(false)) }
     )
 }
 
 @Composable
 private fun HabitsReorder(
     habits: List<HabitUi>,
-    currentSort: String = "by color",
+    currentSort: String = "color",
     showApplyManualOrder: Boolean = true,
     onSwap: (Int, Int) -> Unit = { _, _ -> },
-    applyManualOrder: () -> Unit = {}
+    applyManualOrder: () -> Unit = {},
+    dismissReminder: () -> Unit = {}
 ) {
     val lazyListState = rememberLazyListState()
-    val state = rememberReorderableLazyListState(lazyListState) { from, to -> onSwap(from.index - 1, to.index - 1) }
+    val state = rememberReorderableLazyListState(lazyListState) { from, to ->
+        val offset = if (showApplyManualOrder) 2 else 1
+        onSwap(from.index - offset, to.index - offset)
+    }
 
     if (habits.isEmpty()) EmptyScreen(
         title = stringResource(R.string.list_of_habits_is_empty_label),
         icon = ImageVector.vectorResource(R.drawable.sparkles_large)
     )
-    Column(Modifier.fillMaxWidth()) {
-        AnimatedVisibility(
-            visible = showApplyManualOrder,
-            enter = fadeIn() + expandVertically(),
-            exit = fadeOut() + shrinkVertically()
-        ) {
-            ApplyManualOrder(currentSort = currentSort, apply = applyManualOrder)
+    LazyColumn(
+        state = lazyListState,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        if (showApplyManualOrder) item {
+            ApplyManualOrder(
+                modifier = Modifier.animateItem(),
+                currentSort = currentSort,
+                apply = applyManualOrder,
+                dismiss = dismissReminder
+            )
         }
-        LazyColumn(
-            state = lazyListState,
-            modifier = Modifier
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            item {
-                ReorderableItem(state = state, key = 0, enabled = false) {}
-            }
-            items(habits, key = { it.id }) { habit ->
-                ReorderableItem(state = state, key = habit.id) { isDragging ->
-                    val borderColor =
-                        if (isDragging) MaterialTheme.colorScheme.secondaryContainer else Color.Transparent
-                    HabitReorderingItem(
-                        modifier = Modifier.longPressDraggableHandle(),
-                        habit = habit,
-                        borderColor = borderColor
-                    )
-                }
+        item {
+            ReorderableItem(state = state, key = 0, enabled = false) {}
+        }
+        items(habits, key = { it.id }) { habit ->
+            ReorderableItem(state = state, key = habit.id) { isDragging ->
+                HabitReorderingItem(
+                    modifier = Modifier.longPressDraggableHandle(),
+                    habit = habit,
+                    borderColor = if (isDragging) MaterialTheme.colorScheme.secondaryContainer else Color.Transparent
+                )
             }
         }
     }
 }
 
 @Composable
-private fun ApplyManualOrder(currentSort: String, apply: () -> Unit) {
+private fun ApplyManualOrder(
+    modifier: Modifier = Modifier,
+    currentSort: String,
+    apply: () -> Unit,
+    dismiss: () -> Unit
+) {
     Column(
-        modifier = Modifier
-            .padding(horizontal = 16.dp)
+        modifier = modifier
             .fillMaxWidth()
             .background(
                 color = MaterialTheme.colorScheme.primaryContainer,
@@ -187,7 +190,7 @@ private fun ApplyManualOrder(currentSort: String, apply: () -> Unit) {
             Box(
                 modifier = Modifier
                     .clip(MaterialTheme.shapes.small)
-                    .clickable { apply() }
+                    .clickable(onClick = dismiss)
                     .padding(horizontal = 16.dp, vertical = 8.dp)
             ) {
                 Text(
@@ -199,7 +202,7 @@ private fun ApplyManualOrder(currentSort: String, apply: () -> Unit) {
             Box(
                 modifier = Modifier
                     .clip(MaterialTheme.shapes.small)
-                    .clickable { apply() }
+                    .clickable(onClick = apply)
                     .padding(horizontal = 16.dp, vertical = 8.dp)
             ) {
                 Text(
@@ -253,7 +256,7 @@ fun HabitReorderingItem(
 }
 
 @Composable
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(showBackground = true)
 private fun DarkHabitReorderingPreview(@PreviewParameter(HabitsProvider::class) habits: List<HabitWithHistoryUi<HistoryUi>>) {
     HabitMateTheme(darkTheme = true) {
         val state = remember { mutableStateOf(false) }

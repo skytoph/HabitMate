@@ -16,7 +16,7 @@ import com.github.skytoph.taski.presentation.habit.list.component.DialogItem
 interface EditHabitEvent {
     fun handle(state: MutableState<EditHabitState>, icon: MutableState<IconState>)
 
-    class Init(private val habit: HabitUi) : EditHabitEvent {
+    class Init(private val habit: HabitUi, private val reminderAllowed: Boolean) : EditHabitEvent {
 
         override fun handle(state: MutableState<EditHabitState>, icon: MutableState<IconState>) {
             state.value = EditHabitState(
@@ -29,7 +29,7 @@ interface EditHabitEvent {
                 priority = habit.priority,
                 isLoading = false,
                 frequencyState = FrequencyState(selectedName = habit.frequency.name).updateSelected(habit.frequency),
-                reminder = if (state.value.reminder.switchedOn) habit.reminder else state.value.reminder
+                reminder = if (reminderAllowed) habit.reminder else habit.reminder.copy(switchedOn = false)
             )
             icon.value = IconState(habit.icon, habit.color)
         }

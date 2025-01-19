@@ -2,10 +2,10 @@ package com.github.skytoph.taski.presentation.habit.list
 
 import androidx.compose.runtime.MutableState
 import com.github.skytoph.taski.core.datastore.SettingsCache
+import com.github.skytoph.taski.core.datastore.settings.FilterHabits
+import com.github.skytoph.taski.core.datastore.settings.SortHabits
+import com.github.skytoph.taski.core.datastore.settings.ViewType
 import com.github.skytoph.taski.presentation.habit.HabitWithHistoryUi
-import com.github.skytoph.taski.presentation.habit.list.view.FilterHabits
-import com.github.skytoph.taski.presentation.habit.list.view.SortHabits
-import com.github.skytoph.taski.presentation.habit.list.view.ViewType
 import com.github.skytoph.taski.presentation.settings.SettingsViewModel
 
 interface HabitListEvent {

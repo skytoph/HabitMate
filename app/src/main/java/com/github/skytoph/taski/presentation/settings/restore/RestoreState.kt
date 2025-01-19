@@ -12,13 +12,14 @@ data class RestoreState(
     val permissionDialog: DialogItem? = null,
     val refreshingReminders: Boolean = false,
     val requestingPermission: Boolean = false,
+    val restoreSettings: Boolean = false,
 )
 
 sealed class RestoreDialogUi {
     open val item: BackupItemUi? = null
 
-    data class Delete(override val item: BackupItemUi) : RestoreDialogUi()
-    data class Restore(override val item: BackupItemUi) : RestoreDialogUi()
     data object DeleteAllData : RestoreDialogUi()
     data object RequestPermissions : RestoreDialogUi()
+    data class Delete(override val item: BackupItemUi) : RestoreDialogUi()
+    data class Restore(override val item: BackupItemUi) : RestoreDialogUi()
 }

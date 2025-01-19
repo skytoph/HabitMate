@@ -1,4 +1,4 @@
-package com.github.skytoph.taski.presentation.settings.theme
+package com.github.skytoph.taski.core.datastore.settings
 
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.state.StringResource

@@ -1,10 +1,11 @@
 package com.github.skytoph.taski.core.datastore
 
 import androidx.datastore.core.DataStore
-import com.github.skytoph.taski.presentation.habit.list.view.FilterHabits
-import com.github.skytoph.taski.presentation.habit.list.view.SortHabits
-import com.github.skytoph.taski.presentation.habit.list.view.ViewType
-import com.github.skytoph.taski.presentation.settings.theme.AppTheme
+import com.github.skytoph.taski.core.datastore.settings.AppTheme
+import com.github.skytoph.taski.core.datastore.settings.FilterHabits
+import com.github.skytoph.taski.core.datastore.settings.Settings
+import com.github.skytoph.taski.core.datastore.settings.SortHabits
+import com.github.skytoph.taski.core.datastore.settings.ViewType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

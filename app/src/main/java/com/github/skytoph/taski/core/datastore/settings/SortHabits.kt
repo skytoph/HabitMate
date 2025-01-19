@@ -1,10 +1,13 @@
-package com.github.skytoph.taski.presentation.habit.list.view
+package com.github.skytoph.taski.core.datastore.settings
 
 import android.graphics.Color
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
 import com.github.skytoph.taski.domain.habit.Habit
+import com.github.skytoph.taski.presentation.habit.list.view.HabitsViewTypesProvider
+import com.github.skytoph.taski.presentation.habit.list.view.OptionUi
+import com.github.skytoph.taski.presentation.habit.list.view.ProvideOptionUi
 
 sealed interface SortHabits : ProvideOptionUi<SortHabits> {
     fun comparator(): Comparator<Pair<Int, Habit>>

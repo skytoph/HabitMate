@@ -128,12 +128,15 @@ fun RestoreScreen(viewModel: RestoreViewModel = hiltViewModel()) {
     }
 
     state.value.dialog?.let { dialog ->
-        DialogItem(dialog = dialog,
+        DialogItem(
+            dialog = dialog,
+            restoreSettings = state.value.restoreSettings,
             restore = { viewModel.onEvent(RestoreEvent.ShowContextMenu()); viewModel.downloadBackup(it.id, context) },
             delete = { viewModel.onEvent(RestoreEvent.ShowContextMenu()); viewModel.delete(it.id, locale, context) },
             deleteAllData = { viewModel.deleteAllData() },
             requestPermissions = { viewModel.onEvent(RestoreEvent.RequestPermissions(true)) },
-            dismiss = { viewModel.onEvent(RestoreEvent.UpdateDialog()) })
+            dismiss = { viewModel.onEvent(RestoreEvent.UpdateDialog()) },
+            restoreSettingsClick = { viewModel.onEvent(RestoreEvent.UpdateRestoreSettings) })
     }
 
     state.value.permissionDialog?.let { dialog ->
@@ -218,14 +221,18 @@ fun BackupItem(title: String, description: String, onClick: () -> Unit, onLongCl
 @Composable
 fun DialogItem(
     dialog: RestoreDialogUi,
+    restoreSettings: Boolean,
     restore: (BackupItemUi) -> Unit,
     delete: (BackupItemUi) -> Unit,
+    restoreSettingsClick: () -> Unit,
     deleteAllData: () -> Unit,
     requestPermissions: () -> Unit,
     dismiss: () -> Unit
 ) = when (dialog) {
     is RestoreDialogUi.Restore -> RestoreBackupDialog(
         date = dialog.item.date,
+        checked = restoreSettings,
+        checkboxClick = restoreSettingsClick,
         onConfirm = { restore(dialog.item) },
         onDismissRequest = dismiss
     )

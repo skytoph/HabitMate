@@ -268,6 +268,12 @@
     <string name="hide_reminder_confirmation_description_permanently">you can always turn it back on in settings</string>
     <string name="new_line" translatable="false">\n</string>
 
+    <!--    Info links-->
+    <string name="privacy_policy_url" translatable="false">https://sites.google.com/view/habitmate/privacy</string>
+    <string name="terms_of_use_url" translatable="false">https://sites.google.com/view/habitmate/terms</string>
+    <string name="rate_the_app_url" translatable="false"></string>
+    <string name="app_page_url" translatable="false"></string>
+
     <!--    Credits-->
     <string name="credit_author" translatable="false">by %1$s</string>
     <string name="material_icons_url" translatable="false">https://fonts.google.com/icons</string>
@@ -281,6 +287,7 @@
     <string name="credits_reorderable_author" translatable="false">Calvin Liang</string>
 
     <!--    Share-->
+    <string name="share_app_title">Share the app</string>
     <string name="share_app_message">Check out this handy habit-tracking app I\'ve been using! Download it here: </string>
 
     <!--    Crashlytics-->

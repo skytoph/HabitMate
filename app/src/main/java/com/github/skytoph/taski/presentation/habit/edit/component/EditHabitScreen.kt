@@ -118,6 +118,10 @@ fun EditHabitScreen(
         if (validated) viewModel.saveHabit(navigateUp = navigateUp, context = context)
     }
 
+    LaunchedEffect(Unit) {
+        viewModel.init(reminderAllowed = areNotificationsEnabled(context) && areAlarmsEnabled(context))
+    }
+
     EditHabit(
         state = viewModel.state(),
         onSelectIconClick = onSelectIconClick,

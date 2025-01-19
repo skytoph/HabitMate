@@ -1,6 +1,7 @@
 package com.github.skytoph.taski.presentation.habit.details.mapper
 
 import com.github.skytoph.taski.core.Now
+import com.github.skytoph.taski.core.datastore.settings.ViewType
 import com.github.skytoph.taski.domain.habit.Entry
 import com.github.skytoph.taski.domain.habit.EntryList
 import com.github.skytoph.taski.presentation.habit.details.HabitStatisticsUi
@@ -8,7 +9,6 @@ import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
 import com.github.skytoph.taski.presentation.habit.edit.EntryEditableUi
 import com.github.skytoph.taski.presentation.habit.edit.MonthUi
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitHistoryUiMapper
-import com.github.skytoph.taski.presentation.habit.list.view.ViewType
 
 abstract class AbstractEditableEntryUiMapper(
     private val now: Now,

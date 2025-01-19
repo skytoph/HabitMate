@@ -45,7 +45,7 @@ class RestoreViewModel @Inject constructor(
 
     private fun restoreBackup(data: ByteArray, context: Context) = actionHandler.action(
         beforeAction = emptyArray(),
-        doAction = { interactor.restore(data, context) },
+        doAction = { interactor.restore(data, context, state.value.restoreSettings) },
     )
 
     fun delete(id: String, locale: Locale, context: Context) = actionHandler.action(

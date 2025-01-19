@@ -1,12 +1,12 @@
 package com.github.skytoph.taski.presentation.settings.reorder
 
 import android.content.Context
+import com.github.skytoph.taski.core.datastore.settings.FilterHabits
+import com.github.skytoph.taski.core.datastore.settings.SortHabits
 import com.github.skytoph.taski.domain.habit.HabitRepository
 import com.github.skytoph.taski.presentation.core.interactor.GetHabitsInteractor
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitDomainMapper
-import com.github.skytoph.taski.presentation.habit.list.view.FilterHabits
-import com.github.skytoph.taski.presentation.habit.list.view.SortHabits
 
 interface ReorderHabitsInteractor : GetHabitsInteractor.HabitsList {
     suspend fun update(habits: List<HabitUi>, context: Context)

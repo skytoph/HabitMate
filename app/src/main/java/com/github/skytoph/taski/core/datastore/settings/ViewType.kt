@@ -1,9 +1,12 @@
-package com.github.skytoph.taski.presentation.habit.list.view
+package com.github.skytoph.taski.core.datastore.settings
 
 import com.github.skytoph.taski.domain.habit.HabitWithEntries
 import com.github.skytoph.taski.presentation.habit.HabitWithHistoryUi
 import com.github.skytoph.taski.presentation.habit.list.HistoryUi
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitListUiMapper
+import com.github.skytoph.taski.presentation.habit.list.view.HabitsViewTypesProvider
+import com.github.skytoph.taski.presentation.habit.list.view.OptionUi
+import com.github.skytoph.taski.presentation.habit.list.view.ProvideOptionUi
 
 sealed class ViewType : ProvideOptionUi<ViewType> {
     abstract fun map(

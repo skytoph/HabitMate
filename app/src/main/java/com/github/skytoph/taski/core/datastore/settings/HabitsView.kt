@@ -1,6 +1,5 @@
-package com.github.skytoph.taski.presentation.habit.list.view
+package com.github.skytoph.taski.core.datastore.settings
 
-import com.github.skytoph.taski.core.datastore.Settings
 import com.github.skytoph.taski.domain.habit.HabitWithEntries
 import com.github.skytoph.taski.presentation.habit.HabitWithHistoryUi
 import com.github.skytoph.taski.presentation.habit.list.HistoryUi

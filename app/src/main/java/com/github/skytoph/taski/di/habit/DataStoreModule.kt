@@ -3,10 +3,10 @@ package com.github.skytoph.taski.di.habit
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.dataStore
-import com.github.skytoph.taski.core.datastore.InitializeEmptyValues
-import com.github.skytoph.taski.core.datastore.Settings
 import com.github.skytoph.taski.core.datastore.SettingsCache
 import com.github.skytoph.taski.core.datastore.SettingsSerializer
+import com.github.skytoph.taski.core.datastore.settings.InitializeEmptyValues
+import com.github.skytoph.taski.core.datastore.settings.Settings
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -1,9 +1,9 @@
 package com.github.skytoph.taski.presentation.habit.list.mapper
 
+import com.github.skytoph.taski.core.datastore.settings.ViewType
 import com.github.skytoph.taski.domain.habit.EntryList
 import com.github.skytoph.taski.presentation.habit.HabitHistoryUi
 import com.github.skytoph.taski.presentation.habit.details.HabitStatisticsUi
-import com.github.skytoph.taski.presentation.habit.list.view.ViewType
 
 interface HabitHistoryUiMapper<T : HabitHistoryUi, V : ViewType> {
     fun map(

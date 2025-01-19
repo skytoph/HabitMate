@@ -1,8 +1,10 @@
 package com.github.skytoph.taski.core.reminder
 
+import androidx.annotation.Keep
 import com.github.skytoph.taski.presentation.habit.edit.mapper.FrequencyInterval
 import java.io.Serializable
 
+@Keep
 data class ReminderItem(
     val id: Long,
     val messageIdentifier: String,

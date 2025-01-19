@@ -44,7 +44,7 @@ class BackupViewModel @Inject constructor(
 
     fun import(contentResolver: ContentResolver, uri: Uri, context: Context) = actionHandler.action(
         beforeAction = arrayOf(BackupEvent.UpdateDialog()),
-        doAction = { interactor.import(contentResolver, uri, context) })
+        doAction = { interactor.import(contentResolver, uri, context, state.value.restoreSettings) })
 
     fun clearLocalData() = actionHandler.action(
         beforeAction = arrayOf(BackupEvent.UpdateDialog(), BackupEvent.IsClearingLoading(true)),

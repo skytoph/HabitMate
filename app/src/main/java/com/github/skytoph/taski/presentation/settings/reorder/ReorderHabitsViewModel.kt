@@ -6,13 +6,15 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
 import com.github.skytoph.taski.core.datastore.SettingsCache
+import com.github.skytoph.taski.core.datastore.settings.SortHabits
 import com.github.skytoph.taski.presentation.appbar.InitAppBar
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitUiMapper
-import com.github.skytoph.taski.presentation.habit.list.view.SortHabits
 import com.github.skytoph.taski.presentation.settings.SettingsViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -22,6 +24,7 @@ class ReorderHabitsViewModel @Inject constructor(
     private val interactor: ReorderHabitsInteractor,
     private val mapper: HabitUiMapper,
     private val settings: SettingsCache,
+    private val state: MutableState<ReorderState>,
     initAppBar: InitAppBar
 ) : SettingsViewModel<SettingsViewModel.Event>(settings, initAppBar) {
 
@@ -31,11 +34,18 @@ class ReorderHabitsViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val habitList = interactor.habits().map { habit -> mapper.map(habit) }
             withContext(Dispatchers.Main) { habits.value = habitList }
+            settings().map { it.view.sortBy }
+                .distinctUntilChanged()
+                .collect { sort -> onEvent(ReorderHabitsEvent.UpdateReminder(!SortHabits.Manually.matches(sort))) }
         }
     }
 
+    fun state(): State<ReorderState> = state
+
+    fun onEvent(event: ReorderHabitsEvent) = event.handle(state)
+
     fun swap(from: Int, to: Int) {
-        if ((from < 0 || from > habits.value.size) || (to < 0 || to > habits.value.size)) return
+        if (from < 0 || from >= habits.value.size || to < 0 || to >= habits.value.size) return
         habits.value = habits.value.toMutableList().apply { add(to, removeAt(from)) }
     }
 
@@ -47,13 +57,5 @@ class ReorderHabitsViewModel @Inject constructor(
 
     fun applyManualOrder() = viewModelScope.launch(Dispatchers.IO) {
         ReorderHabitsEvent.ApplyManualOrder.handle(settings)
-    }
-}
-
-sealed interface ReorderHabitsEvent : SettingsViewModel.Event {
-    data object ApplyManualOrder : ReorderHabitsEvent {
-        override suspend fun handle(settings: SettingsCache) {
-            settings.updateView(sortBy = SortHabits.Manually)
-        }
     }
 }

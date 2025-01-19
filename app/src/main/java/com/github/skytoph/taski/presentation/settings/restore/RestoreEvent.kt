@@ -128,6 +128,17 @@ sealed interface RestoreEvent {
         }
     }
 
+    data object UpdateRestoreSettings : RestoreEvent {
+        override fun handle(
+            state: MutableState<RestoreState>,
+            postMessage: PostMessage,
+            restore: RestoreData,
+            updateSettings: (SettingsEvent) -> Unit
+        ) {
+            state.value = state.value.copy(restoreSettings = !state.value.restoreSettings)
+        }
+    }
+
     class UpdatePermissionDialog(private val dialog: DialogItem? = null) : RestoreEvent {
         override fun handle(
             state: MutableState<RestoreState>,
@@ -135,7 +146,10 @@ sealed interface RestoreEvent {
             restore: RestoreData,
             updateSettings: (SettingsEvent) -> Unit
         ) {
-            state.value = state.value.copy(permissionDialog = dialog)
+            state.value = state.value.copy(
+                permissionDialog = dialog,
+                restoreSettings = if (dialog == null) false else state.value.restoreSettings
+            )
         }
     }
 

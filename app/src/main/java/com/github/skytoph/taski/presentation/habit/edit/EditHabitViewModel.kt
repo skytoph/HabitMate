@@ -26,16 +26,16 @@ class EditHabitViewModel @Inject constructor(
     private val interactor: EditHabitInteractor,
     private val habitMapper: HabitUiMapper,
     private val validator: EditHabitValidator,
-    savedStateHandle: SavedStateHandle,
+    private val savedStateHandle: SavedStateHandle,
     settings: SettingsCache,
     initAppBar: InitAppBar
 ) : SettingsViewModel<SettingsViewModel.Event>(settings, initAppBar), EventHandler<EditHabitEvent> {
 
-    init {
+    fun init(reminderAllowed: Boolean) {
         onEvent(EditHabitEvent.Progress(true))
         viewModelScope.launch(Dispatchers.IO) {
             val habit = habitMapper.map(interactor.habit(savedStateHandle.id()))
-            withContext(Dispatchers.Main) { onEvent(EditHabitEvent.Init(habit)) }
+            withContext(Dispatchers.Main) { onEvent(EditHabitEvent.Init(habit, reminderAllowed)) }
         }
     }
 

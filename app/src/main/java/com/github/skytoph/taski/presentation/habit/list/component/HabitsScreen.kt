@@ -24,6 +24,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.skytoph.taski.R
+import com.github.skytoph.taski.core.datastore.settings.ViewType
 import com.github.skytoph.taski.presentation.core.component.AllowCrashlyticsDialog
 import com.github.skytoph.taski.presentation.core.component.AppBarAction
 import com.github.skytoph.taski.presentation.core.component.ArchiveDialog
@@ -39,7 +40,6 @@ import com.github.skytoph.taski.presentation.habit.list.HabitListEvent
 import com.github.skytoph.taski.presentation.habit.list.HabitListState
 import com.github.skytoph.taski.presentation.habit.list.HabitsViewModel
 import com.github.skytoph.taski.presentation.habit.list.HistoryUi
-import com.github.skytoph.taski.presentation.habit.list.view.ViewType
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable

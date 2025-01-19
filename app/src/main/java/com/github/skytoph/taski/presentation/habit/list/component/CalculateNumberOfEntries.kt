@@ -5,7 +5,7 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.Dp
 import com.github.skytoph.taski.R
-import com.github.skytoph.taski.presentation.habit.list.view.ViewType
+import com.github.skytoph.taski.core.datastore.settings.ViewType
 
 @Composable
 @ReadOnlyComposable

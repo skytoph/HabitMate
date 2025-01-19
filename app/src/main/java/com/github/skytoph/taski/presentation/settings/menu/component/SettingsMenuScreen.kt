@@ -1,5 +1,6 @@
 package com.github.skytoph.taski.presentation.settings.menu.component
 
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,6 +24,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
@@ -114,18 +117,18 @@ private fun SettingsMenu(
         Spacer(modifier = Modifier.height(8.dp))
         MenuTitleText(text = stringResource(R.string.settings_info), modifier = Modifier.padding(start = 16.dp))
         Column(modifier = Modifier.clip(MaterialTheme.shapes.small)) {
-            SettingsMenuItem(
+            SettingsLinkMenuItem(
                 title = stringResource(R.string.settings_privacy_policy),
                 icon = ImageVector.vectorResource(id = R.drawable.file_lock),
-                onClick = {},
-                color = GrayLight
+                color = GrayLight,
+                url = stringResource(R.string.privacy_policy_url)
             )
             HorizontalDivider()
-            SettingsMenuItem(
+            SettingsLinkMenuItem(
                 title = stringResource(R.string.settings_terms_of_use),
                 icon = ImageVector.vectorResource(id = R.drawable.file_type),
-                onClick = {},
-                color = PurpleLight
+                color = PurpleLight,
+                url = stringResource(R.string.terms_of_use_url)
             )
             HorizontalDivider()
             SettingsMenuItem(
@@ -138,18 +141,20 @@ private fun SettingsMenu(
         Spacer(modifier = Modifier.height(8.dp))
         MenuTitleText(text = stringResource(R.string.settings_feedback), modifier = Modifier.padding(start = 16.dp))
         Column(modifier = Modifier.clip(MaterialTheme.shapes.small)) {
-            SettingsMenuItem(
+            SettingsLinkMenuItem(
                 title = stringResource(R.string.settings_rate_the_app),
                 icon = ImageVector.vectorResource(id = R.drawable.star),
-                onClick = {},
-                color = Peach
+                color = Peach,
+                url = stringResource(R.string.app_page_url)
             )
             HorizontalDivider()
-            SettingsMenuItem(
+            SettingsShareMenuItem(
                 title = stringResource(R.string.settings_share_the_app),
                 icon = ImageVector.vectorResource(id = R.drawable.share_2),
-                onClick = {},
-                color = BlueLight
+                color = BlueLight,
+                message = stringResource(R.string.share_app_message) + stringResource(R.string.new_line) +
+                        stringResource(R.string.app_page_url),
+                messageTitle = stringResource(R.string.share_app_title)
             )
         }
         Spacer(modifier = Modifier.height(4.dp))
@@ -187,6 +192,46 @@ private fun SettingsMenuItem(
         title = title,
         icon = icon,
         onClick = onClick,
+        tint = color,
+    )
+}
+
+@Composable
+private fun SettingsLinkMenuItem(
+    title: String,
+    icon: ImageVector,
+    color: Color,
+    url: String
+) {
+    val uriHandler = LocalUriHandler.current
+    TitleWithIconMenuItem(
+        modifier = Modifier.background(MaterialTheme.colorScheme.primaryContainer),
+        title = title,
+        icon = icon,
+        onClick = { uriHandler.openUri(url) },
+        tint = color,
+    )
+}
+
+@Composable
+private fun SettingsShareMenuItem(
+    title: String,
+    icon: ImageVector,
+    color: Color,
+    message: String,
+    messageTitle: String,
+) {
+    val context = LocalContext.current
+    val sendIntent: Intent = Intent(Intent.ACTION_SEND).apply {
+        putExtra(Intent.EXTRA_TEXT, message)
+        type = "text/plain"
+    }
+    val shareIntent = Intent.createChooser(sendIntent, messageTitle)
+    TitleWithIconMenuItem(
+        modifier = Modifier.background(MaterialTheme.colorScheme.primaryContainer),
+        title = title,
+        icon = icon,
+        onClick = { context.startActivity(shareIntent) },
         tint = color,
     )
 }

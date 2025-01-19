@@ -29,7 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.skytoph.taski.R
-import com.github.skytoph.taski.core.datastore.Settings
+import com.github.skytoph.taski.core.datastore.settings.Settings
 import com.github.skytoph.taski.presentation.core.component.MenuItemText
 import com.github.skytoph.taski.presentation.settings.general.GeneralSettingsEvent
 import com.github.skytoph.taski.presentation.settings.general.GeneralSettingsViewModel

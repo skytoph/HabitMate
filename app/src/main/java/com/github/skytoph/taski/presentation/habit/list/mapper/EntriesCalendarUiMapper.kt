@@ -1,10 +1,10 @@
 package com.github.skytoph.taski.presentation.habit.list.mapper
 
 import com.github.skytoph.taski.core.Now
+import com.github.skytoph.taski.core.datastore.settings.ViewType
 import com.github.skytoph.taski.domain.habit.EntryList
 import com.github.skytoph.taski.presentation.habit.details.HabitStatisticsUi
 import com.github.skytoph.taski.presentation.habit.list.HistoryUi
-import com.github.skytoph.taski.presentation.habit.list.view.ViewType
 import kotlin.math.max
 
 class EntriesCalendarUiMapper(

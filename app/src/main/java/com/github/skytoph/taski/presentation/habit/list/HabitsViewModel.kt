@@ -5,12 +5,12 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.lifecycle.viewModelScope
 import com.github.skytoph.taski.core.datastore.SettingsCache
+import com.github.skytoph.taski.core.datastore.settings.HabitsView
 import com.github.skytoph.taski.domain.habit.HabitWithEntries
 import com.github.skytoph.taski.presentation.appbar.InitAppBar
 import com.github.skytoph.taski.presentation.habit.HabitUi
 import com.github.skytoph.taski.presentation.habit.HabitWithHistoryUi
 import com.github.skytoph.taski.presentation.habit.list.mapper.HabitsViewMapper
-import com.github.skytoph.taski.presentation.habit.list.view.HabitsView
 import com.github.skytoph.taski.presentation.settings.SettingsViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

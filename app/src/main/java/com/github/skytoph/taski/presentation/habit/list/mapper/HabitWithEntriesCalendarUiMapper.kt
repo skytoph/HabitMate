@@ -1,8 +1,8 @@
 package com.github.skytoph.taski.presentation.habit.list.mapper
 
+import com.github.skytoph.taski.core.datastore.settings.ViewType
 import com.github.skytoph.taski.presentation.habit.details.mapper.HabitStatisticsMapper
 import com.github.skytoph.taski.presentation.habit.list.HistoryUi
-import com.github.skytoph.taski.presentation.habit.list.view.ViewType
 
 class HabitWithEntriesCalendarUiMapper(
     habitMapper: HabitUiMapper,

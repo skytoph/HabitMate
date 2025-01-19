@@ -33,11 +33,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.skytoph.taski.R
+import com.github.skytoph.taski.core.datastore.settings.FilterHabits
+import com.github.skytoph.taski.core.datastore.settings.HabitsView
+import com.github.skytoph.taski.core.datastore.settings.SortHabits
+import com.github.skytoph.taski.core.datastore.settings.ViewType
 import com.github.skytoph.taski.presentation.core.component.OptionsDropdown
-import com.github.skytoph.taski.presentation.habit.list.view.FilterHabits
-import com.github.skytoph.taski.presentation.habit.list.view.HabitsView
-import com.github.skytoph.taski.presentation.habit.list.view.SortHabits
-import com.github.skytoph.taski.presentation.habit.list.view.ViewType
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable

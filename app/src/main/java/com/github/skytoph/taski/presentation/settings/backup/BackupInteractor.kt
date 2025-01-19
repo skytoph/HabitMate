@@ -24,7 +24,13 @@ import java.util.Locale
 
 interface BackupInteractor : SignInInteractor<BackupResultUi> {
     suspend fun export(context: Context): BackupResultUi
-    suspend fun import(contentResolver: ContentResolver, uri: Uri, context: Context): BackupResultUi
+    suspend fun import(
+        contentResolver: ContentResolver,
+        uri: Uri,
+        context: Context,
+        restoreSettings: Boolean
+    ): BackupResultUi
+
     suspend fun saveBackupOnDrive(context: Context): BackupResultUi
     suspend fun profile(context: Context): BackupResultUi
     suspend fun signOut(context: Context): BackupResultUi
@@ -56,10 +62,12 @@ interface BackupInteractor : SignInInteractor<BackupResultUi> {
             BackupResultUi.ExportFailed
         }
 
-        override suspend fun import(contentResolver: ContentResolver, uri: Uri, context: Context): BackupResultUi {
+        override suspend fun import(
+            contentResolver: ContentResolver, uri: Uri, context: Context, restoreSettings: Boolean
+        ): BackupResultUi {
             return try {
                 val data = fileWriter.readFromUri(contentResolver, uri) ?: return BackupResultUi.Imported(false)
-                backup.import(data)
+                backup.import(data, restoreSettings)
                 val containsReminders = repository.habits().find { it.reminder != Reminder.None } != null
                 val needsPermission = isPermissionNeeded(context)
                 BackupResultUi.Imported(true, containsReminders, needsPermission)
