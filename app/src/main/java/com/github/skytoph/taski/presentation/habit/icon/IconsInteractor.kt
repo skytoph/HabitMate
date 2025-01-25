@@ -4,6 +4,7 @@ import android.content.res.Resources
 import com.github.skytoph.taski.core.NetworkManager
 import com.github.skytoph.taski.core.auth.SignInWithGoogle
 import com.github.skytoph.taski.core.backup.BackupDatastore
+import com.github.skytoph.taski.presentation.core.Logger
 import com.github.skytoph.taski.presentation.core.state.IconResource
 import com.github.skytoph.taski.presentation.settings.backup.ProfileUi
 import com.github.skytoph.taski.presentation.settings.backup.SignInInteractor
@@ -15,8 +16,12 @@ interface IconsInteractor : SignInInteractor<Boolean> {
     suspend fun unlock(icon: String): Boolean
     suspend fun shouldShowWarning(): Boolean
 
-    class Base(private val datastore: IconsDatastore, networkManager: NetworkManager, drive: BackupDatastore) :
-        IconsInteractor, SignInInteractor.Base<Boolean>(datastore, networkManager, drive) {
+    class Base(
+        private val datastore: IconsDatastore,
+        log: Logger,
+        networkManager: NetworkManager,
+        drive: BackupDatastore
+    ) : IconsInteractor, SignInInteractor.Base<Boolean>(datastore, networkManager, drive, log) {
 
         override fun icons(resources: Resources): Flow<List<IconsLockedGroup>> =
             datastore.unlockedFlow().map { icons ->
@@ -32,6 +37,7 @@ interface IconsInteractor : SignInInteractor<Boolean> {
             }
 
         override suspend fun unlock(icon: String): Boolean = try {
+            if (profile().isEmpty) SignInWithGoogle.DriveScope.signInAnonymously()
             datastore.unlock(icon)
             true
         } catch (exception: Exception) {
@@ -44,7 +50,9 @@ interface IconsInteractor : SignInInteractor<Boolean> {
 
         override suspend fun shouldShowWarning(): Boolean = !signedIn()
 
-        private fun signedIn(): Boolean = SignInWithGoogle.DriveScope.profile().let { it != null && !it.isAnonymous }
+        private fun signedIn(): Boolean = profile().let { !it.isEmpty && !it.isAnonymous }
+
+        private fun profile(): ProfileUi = SignInWithGoogle.DriveScope.profile()
 
         override val defaultSigningInResult: Boolean = false
         override val noConnectionResult: Boolean = false

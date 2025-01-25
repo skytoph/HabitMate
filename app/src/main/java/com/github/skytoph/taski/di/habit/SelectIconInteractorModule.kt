@@ -4,6 +4,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import com.github.skytoph.taski.core.NetworkManager
 import com.github.skytoph.taski.core.backup.BackupDatastore
+import com.github.skytoph.taski.presentation.core.Logger
 import com.github.skytoph.taski.presentation.habit.icon.IconsDatastore
 import com.github.skytoph.taski.presentation.habit.icon.IconsInteractor
 import com.github.skytoph.taski.presentation.habit.icon.SelectIconState
@@ -17,11 +18,8 @@ import dagger.hilt.android.components.ViewModelComponent
 object SelectIconInteractorModule {
 
     @Provides
-    fun interactor(datastore: IconsDatastore, networkManager: NetworkManager, drive: BackupDatastore): IconsInteractor =
-        IconsInteractor.Base(datastore, networkManager, drive)
-
-    @Provides
-    fun datastore(networkManager: NetworkManager): IconsDatastore = IconsDatastore.Base(networkManager)
+    fun interactor(datastore: IconsDatastore, networkManager: NetworkManager, drive: BackupDatastore, log: Logger)
+            : IconsInteractor = IconsInteractor.Base(datastore, log, networkManager, drive)
 
     @Provides
     fun state(): MutableState<SelectIconState> = mutableStateOf(SelectIconState())

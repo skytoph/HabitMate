@@ -35,8 +35,8 @@ interface NotificationInteractor {
             val isFirstDaySunday = settings.initAndGet().first().weekStartsOnSunday.value
             repository.habits().forEach { habit ->
                 scheduler.cancel(habit.id, habit.frequency.times)
-                if (isNotificationEnabled) repository.update(habit.copy(reminder = Reminder.None))
-                else scheduleNotification(mapper.map(habit), context, isFirstDaySunday)
+                if (isNotificationEnabled) scheduleNotification(mapper.map(habit), context, isFirstDaySunday)
+                else repository.update(habit.copy(reminder = Reminder.None))
             }
         }
     }

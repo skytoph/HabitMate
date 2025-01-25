@@ -2,10 +2,10 @@ package com.github.skytoph.taski.presentation.settings.backup
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import com.github.skytoph.taski.core.NetworkManager
 import com.github.skytoph.taski.core.auth.SignInWithGoogle
 import com.github.skytoph.taski.core.backup.BackupDatastore
+import com.github.skytoph.taski.presentation.core.Logger
 import com.github.skytoph.taski.presentation.habit.icon.IconsDatastore
 
 interface SignInInteractor<R> {
@@ -16,7 +16,8 @@ interface SignInInteractor<R> {
     abstract class Base<R>(
         private val iconsDatastore: IconsDatastore,
         private val networkManager: NetworkManager,
-        private val drive: BackupDatastore
+        private val drive: BackupDatastore,
+        private val log: Logger
     ) : SignInInteractor<R> {
 
         abstract val defaultSigningInResult: R
@@ -31,8 +32,7 @@ interface SignInInteractor<R> {
                 SignInWithGoogle.DriveScope.signInWithCredentials(credentials)
             }
             val profile = SignInWithGoogle.DriveScope.profile()
-            if (profile == null) mapResult(null, defaultSigningInResult)
-            else {
+            run {
                 val synchronized = try {
                     if (credentials != null && icons.isNotEmpty()) iconsDatastore.unlock(icons).let { true }
                     else null
@@ -42,7 +42,7 @@ interface SignInInteractor<R> {
                 mapResult(profile, synchronized)
             }
         } catch (exception: Exception) {
-            Log.e("tag", exception.stackTraceToString())
+            log.log(exception)
             mapResult(exception, defaultSigningInResult)
         }
 

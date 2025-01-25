@@ -1,8 +1,8 @@
 package com.github.skytoph.taski.core.backup
 
 import android.content.Context
-import android.util.Log
 import com.github.skytoph.taski.R
+import com.github.skytoph.taski.presentation.core.Logger
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.http.ByteArrayContent
@@ -28,7 +28,10 @@ interface BackupDatastore {
     suspend fun deleteAllFiles(): BackupResult
     suspend fun lastSync(): DateTime?
 
-    class Base(private val context: Context) : BackupDatastore {
+    class Base(
+        private val context: Context,
+        private val log: Logger
+    ) : BackupDatastore {
         private fun drive(): Drive? = GoogleSignIn.getLastSignedInAccount(context)?.let { googleAccount ->
             val credential =
                 GoogleAccountCredential.usingOAuth2(context, listOf(DriveScopes.DRIVE_APPDATA))
@@ -51,7 +54,7 @@ interface BackupDatastore {
                 return drive.files()?.create(file, mediaContent)?.setFields("modifiedTime")?.execute()
                     ?.let { BackupResult.Success.Saved(it.modifiedTime) } ?: BackupResult.Fail.FileNotSaved()
             } catch (exception: Exception) {
-                Log.e(BackupDatastore::class.simpleName, exception.stackTraceToString())
+                log.log(exception)
                 BackupResult.Fail.FileNotSaved(exception)
             }
         }
@@ -64,9 +67,10 @@ interface BackupDatastore {
                 return if (result == null) BackupResult.Fail.DriveIsNotConnected()
                 else BackupResult.Success.ListOfFiles(result.files ?: emptyList())
             } catch (exception: UnknownHostException) {
+                log.log(exception)
                 BackupResult.Fail.DriveIsNotConnected(exception)
             } catch (exception: Exception) {
-                Log.e(BackupDatastore::class.simpleName, exception.stackTraceToString())
+                log.log(exception)
                 BackupResult.Fail.DriveIsNotConnected(exception)
             }
         }
@@ -80,7 +84,7 @@ interface BackupDatastore {
 
                 BackupResult.Success.FileDownloaded(outputStream.toByteArray())
             } catch (exception: Exception) {
-                Log.e(BackupDatastore::class.simpleName, exception.stackTraceToString())
+                log.log(exception)
                 BackupResult.Fail.FileNotDownloaded(exception)
             }
         }
@@ -104,7 +108,7 @@ interface BackupDatastore {
                     newData = getFiles(drive)?.files ?: emptyList()
                 )
             } catch (exception: Exception) {
-                Log.e(BackupDatastore::class.simpleName, exception.stackTraceToString())
+                log.log(exception)
                 BackupResult.Fail.FileNotDownloaded(exception)
             }
         }
@@ -113,7 +117,7 @@ interface BackupDatastore {
             return try {
                 lastSync(drive() ?: return null)
             } catch (exception: Exception) {
-                Log.e(BackupDatastore::class.simpleName, exception.stackTraceToString())
+                log.log(exception)
                 null
             }
         }
@@ -134,7 +138,7 @@ interface BackupDatastore {
 
                 return BackupResult.Success.AllFilesDeleted
             } catch (exception: Exception) {
-                Log.e(BackupDatastore::class.simpleName, exception.stackTraceToString())
+                log.log(exception)
                 BackupResult.Fail.FileNotDeleted(exception)
             }
         }

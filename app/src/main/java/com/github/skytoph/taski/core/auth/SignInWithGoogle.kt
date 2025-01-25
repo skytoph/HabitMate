@@ -25,11 +25,9 @@ interface SignInWithGoogle<C> {
     suspend fun signInWithCredentials(credentials: AuthCredential)
     suspend fun signOut(context: Context)
     suspend fun deleteAccount(context: Context)
+    suspend fun signInAnonymously()
 
     object DriveScope : SignInWithGoogle<GoogleSignInClient> {
-        init {
-            if (Firebase.auth.currentUser == null) Firebase.auth.signInAnonymously()
-        }
 
         override fun getClient(context: Context): GoogleSignInClient {
             val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -42,11 +40,17 @@ interface SignInWithGoogle<C> {
             return GoogleSignIn.getClient(context, signInOptions)
         }
 
+        override suspend fun signInAnonymously() {
+            if (Firebase.auth.currentUser == null) Firebase.auth.signInAnonymously().await()
+        }
+
         override suspend fun signInWithFirebase(intent: Intent): AuthCredential? {
             val account = GoogleSignIn.getSignedInAccountFromIntent(intent).await()
             val credentials = GoogleAuthProvider.getCredential(account.idToken, null)
-            return try {
-                Firebase.auth.currentUser?.linkWithCredential(credentials)?.await()
+            val currentUser = Firebase.auth.currentUser
+            return if (currentUser == null) credentials
+            else try {
+                currentUser.linkWithCredential(credentials).await()
                 val request = UserProfileChangeRequest.Builder()
                     .setPhotoUri(account.photoUrl)
                     .setDisplayName(account.displayName)
@@ -66,23 +70,23 @@ interface SignInWithGoogle<C> {
         override suspend fun signOut(context: Context) {
             Firebase.auth.signOut()
             GoogleSignIn.getClient(context, GoogleSignInOptions.DEFAULT_SIGN_IN).signOut().await()
-            Firebase.auth.signInAnonymously().await()
         }
 
         override suspend fun deleteAccount(context: Context) {
             Firebase.auth.currentUser?.delete()?.await()
             GoogleSignIn.getClient(context, GoogleSignInOptions.DEFAULT_SIGN_IN).revokeAccess().await()
-            Firebase.auth.signInAnonymously().await()
         }
 
-        override fun profile(): ProfileUi? = Firebase.auth.currentUser?.map()
+        override fun profile(): ProfileUi = Firebase.auth.currentUser.map()
 
-        private fun FirebaseUser.map(): ProfileUi = ProfileUi(
-            email = email ?: "",
-            name = displayName ?: "",
-            imageUri = photoUrl,
-            id = uid,
-            isAnonymous = isAnonymous
-        )
+        private fun FirebaseUser?.map(): ProfileUi = this?.run {
+            ProfileUi(
+                email = email ?: "",
+                name = displayName ?: "",
+                imageUri = photoUrl,
+                id = uid,
+                isAnonymous = isAnonymous,
+            )
+        } ?: ProfileUi(isEmpty = true, isAnonymous = true)
     }
 }

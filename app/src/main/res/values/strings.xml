@@ -50,6 +50,7 @@
     <string name="restore_habit_confirmation_dialog_title">Restore habit</string>
     <string name="restore_habit_confirmation_dialog_description">Do you want to restore this habit?</string>
     <string name="action_restore">Restore</string>
+    <string name="restore_settings">Restore settings</string>
 
     <!--    App bar titles-->
     <string name="habit_details_label">Habit details</string>

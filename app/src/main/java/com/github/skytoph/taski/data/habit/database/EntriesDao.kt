@@ -13,6 +13,9 @@ interface EntriesDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(entry: EntryEntity)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(entries: List<EntryEntity>)
+
     @Query("DELETE FROM entry WHERE habit_id = :id AND timestamp = :timestamp")
     suspend fun delete(id: Long, timestamp: Long)
 

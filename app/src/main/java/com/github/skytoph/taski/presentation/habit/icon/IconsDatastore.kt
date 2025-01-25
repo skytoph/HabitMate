@@ -17,7 +17,6 @@ interface IconsDatastore {
     fun unlockedFlow(): Flow<Set<String>>
     suspend fun unlocked(): Set<String>
     suspend fun unlock(icon: String)
-    suspend fun create()
     suspend fun unlock(icons: Set<String>)
     suspend fun delete()
 
@@ -37,16 +36,13 @@ interface IconsDatastore {
             .let { if (it is List<*>) it.filterIsInstance<String>().toSet() else emptySet() }
 
         override suspend fun unlock(icon: String) {
-            document()?.update(FIREBASE_FIELD, FieldValue.arrayUnion(icon))
+            document()?.set(mapOf(FIREBASE_FIELD to FieldValue.arrayUnion(icon)), SetOptions.merge())
                 ?.let { if (networkManager.isNetworkAvailable()) it.await() }
         }
 
-        override suspend fun create() {
-            document()?.set(mapOf(FIREBASE_FIELD to emptyList<String>()), SetOptions.merge())?.await()
-        }
-
         override suspend fun unlock(icons: Set<String>) {
-            document()?.update(FIREBASE_FIELD, FieldValue.arrayUnion(*icons.toTypedArray()))?.await()
+            document()?.set(mapOf(FIREBASE_FIELD to FieldValue.arrayUnion(*icons.toTypedArray())), SetOptions.merge())
+                ?.let { if (networkManager.isNetworkAvailable()) it.await() }
         }
 
         override suspend fun delete() {
@@ -54,8 +50,9 @@ interface IconsDatastore {
         }
 
         private fun document(): DocumentReference? {
-            return Firebase.firestore.collection(FIREBASE_COLLECTION)
-                .document(SignInWithGoogle.DriveScope.profile()?.id ?: return null)
+            val profile = SignInWithGoogle.DriveScope.profile()
+            return if (profile.isEmpty) null
+            else Firebase.firestore.collection(FIREBASE_COLLECTION).document(profile.id)
         }
 
         private companion object {

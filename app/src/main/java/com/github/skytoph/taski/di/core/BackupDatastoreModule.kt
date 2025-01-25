@@ -2,6 +2,7 @@ package com.github.skytoph.taski.di.core
 
 import android.content.Context
 import com.github.skytoph.taski.core.backup.BackupDatastore
+import com.github.skytoph.taski.presentation.core.Logger
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -13,5 +14,6 @@ import dagger.hilt.components.SingletonComponent
 object BackupDatastoreModule {
 
     @Provides
-    fun datastore(@ApplicationContext context: Context): BackupDatastore = BackupDatastore.Base(context)
+    fun datastore(@ApplicationContext context: Context, log: Logger): BackupDatastore =
+        BackupDatastore.Base(context, log)
 }

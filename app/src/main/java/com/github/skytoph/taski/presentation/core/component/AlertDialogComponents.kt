@@ -242,10 +242,11 @@ fun RestoreBackupDialog(
         checkboxClick = checkboxClick,
         text = description,
         title = stringResource(id = R.string.restore_backup_title),
-        confirmColor = MaterialTheme.colorScheme.primary,
-        confirmContainerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.8f),
+        checkboxText = stringResource(R.string.restore_settings),
         dismissLabel = stringResource(R.string.action_cancel),
         confirmLabel = stringResource(R.string.action_restore),
+        confirmColor = MaterialTheme.colorScheme.primary,
+        confirmContainerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.8f),
     )
 }
 

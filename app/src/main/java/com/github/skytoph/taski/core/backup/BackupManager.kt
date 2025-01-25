@@ -37,9 +37,7 @@ interface BackupManager {
                 database.habitDao().deleteAll()
                 habits.forEach { habitWithEntries ->
                     database.habitDao().insert(habitWithEntries.habit)
-                    habitWithEntries.entries.forEach { entry ->
-                        database.entryDao().insert(entry)
-                    }
+                    database.entryDao().insert(habitWithEntries.entries)
                 }
             }
         }

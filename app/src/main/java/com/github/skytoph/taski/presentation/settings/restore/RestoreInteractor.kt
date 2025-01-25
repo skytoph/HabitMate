@@ -6,6 +6,7 @@ import com.github.skytoph.taski.core.backup.BackupManager
 import com.github.skytoph.taski.core.backup.BackupResult
 import com.github.skytoph.taski.domain.habit.HabitRepository
 import com.github.skytoph.taski.domain.habit.Reminder
+import com.github.skytoph.taski.presentation.core.Logger
 import com.github.skytoph.taski.presentation.habit.edit.component.isPermissionNeeded
 import com.github.skytoph.taski.presentation.settings.restore.mapper.RestoreBackupResultMapper
 import java.util.Locale
@@ -22,6 +23,7 @@ interface RestoreInteractor {
         private val datastore: BackupDatastore,
         private val resultMapper: RestoreBackupResultMapper,
         private val database: BackupManager,
+        private val log: Logger
     ) : RestoreInteractor {
 
         override suspend fun backupItems(locale: Locale, context: Context): RestoreResultUi =
@@ -37,6 +39,7 @@ interface RestoreInteractor {
                 val needsPermission = isPermissionNeeded(context)
                 resultMapper.map(BackupResult.Success.FileRestored(containsReminders, needsPermission))
             } catch (exception: Exception) {
+                log.log(exception)
                 resultMapper.map(BackupResult.Fail.FileNotRestored(exception))
             }
 

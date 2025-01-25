@@ -97,55 +97,44 @@ fun UnlockIconDialog(
             CompositionLocalProvider(
                 LocalMinimumInteractiveComponentEnforcement provides false,
             ) {
-                Crossfade(
-                    targetState = isLoading,
-                    label = "loading_backup_time_crossfade",
-                    animationSpec = tween(durationMillis = 150),
-                ) { isLoading ->
-                    Row(
-                        modifier = Modifier
-                            .heightIn(min = 40.dp)
-                            .widthIn(min = 128.dp)
-                            .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
-                            .background(
-                                color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),
-                                shape = MaterialTheme.shapes.small
-                            )
-                            .clip(MaterialTheme.shapes.small)
-                            .clickable { onConfirm() }
-                            .padding(horizontal = 16.dp, vertical = 6.dp)
-                            .animateContentSize(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = if (isLoading) Arrangement.Center else Arrangement.spacedBy(4.dp)
-                    ) {
-                        if (isLoading) LoadingItems()
-                        else {
-                            Text(
-                                text = stringResource(R.string.action_watch_ad),
-                                color = MaterialTheme.colorScheme.primary,
-                                style = MaterialTheme.typography.labelLarge
-                            )
-                            Icon(
-                                imageVector = ImageVector.vectorResource(R.drawable.play_filled),
-                                contentDescription = stringResource(id = R.string.unlock_icon_description),
-                                modifier = Modifier.size(14.dp)
-                            )
+                Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth()) {
+                    Crossfade(
+                        targetState = isLoading,
+                        label = "loading_backup_time_crossfade",
+                        animationSpec = tween(durationMillis = 150),
+                    ) { isLoading ->
+                        Row(
+                            modifier = Modifier
+                                .heightIn(min = 40.dp)
+                                .widthIn(min = 128.dp)
+                                .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
+                                .background(
+                                    color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),
+                                    shape = MaterialTheme.shapes.small
+                                )
+                                .clip(MaterialTheme.shapes.small)
+                                .clickable { onConfirm() }
+                                .padding(horizontal = 16.dp, vertical = 6.dp)
+                                .animateContentSize(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = if (isLoading) Arrangement.Center else Arrangement.spacedBy(4.dp)
+                        ) {
+                            if (isLoading) LoadingItems()
+                            else {
+                                Text(
+                                    text = stringResource(R.string.action_watch_ad),
+                                    color = MaterialTheme.colorScheme.primary,
+                                    style = MaterialTheme.typography.labelLarge
+                                )
+                                Icon(
+                                    imageVector = ImageVector.vectorResource(R.drawable.play_filled),
+                                    contentDescription = stringResource(id = R.string.unlock_icon_description),
+                                    modifier = Modifier.size(14.dp)
+                                )
+                            }
                         }
                     }
                 }
-            }
-        },
-        dismissButton = {
-            CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
-                Text(
-                    modifier = Modifier
-                        .clip(MaterialTheme.shapes.small)
-                        .clickable(enabled = !isLoading) { onDismissRequest() }
-                        .padding(horizontal = 16.dp, vertical = 6.dp),
-                    text = stringResource(R.string.action_cancel),
-                    color = MaterialTheme.colorScheme.onSecondary,
-                    style = MaterialTheme.typography.labelLarge
-                )
             }
         },
         shape = MaterialTheme.shapes.medium,

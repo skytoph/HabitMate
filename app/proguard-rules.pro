@@ -14,7 +14,8 @@
 
 # Uncomment this to preserve the line number information for
 # debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+-keepattributes SourceFile,LineNumberTable
+-keep public class * extends java.lang.Exception
 
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
@@ -44,6 +45,7 @@
 -keep class * implements com.google.gson.JsonSerializer
 -keep class * implements com.google.gson.JsonDeserializer
 -keepclasseswithmembers class * implements java.io.Serializable { <fields>; }
+-keepclasseswithmembers class * implements com.github.skytoph.taski.core.backup.Backup { *; }
 -keep class com.github.skytoph.taski.core.datastore.settings.**  { <fields>; }
 
 # Retain generic signatures of TypeToken and its subclasses with R8 version 3.0 and higher.
@@ -59,8 +61,9 @@
 -dontwarn androidx.room.paging.**
 
 # Datastore
--keep class androidx.datastore.*.** {*;}
+-keep class androidx.datastore.*.** { *; }
 
 # Google Drive
 -keep class * extends com.google.api.client.json.GenericJson { *; }
 -keep class com.google.api.services.drive.** { *; }
+-keepclassmembers class * { @com.google.api.client.util.Key <fields>; }

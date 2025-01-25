@@ -1,10 +1,12 @@
 package com.github.skytoph.taski.data.habit.database
 
+import androidx.annotation.Keep
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
+@Keep
 @Entity(tableName = "habit")
 data class HabitEntity(
 

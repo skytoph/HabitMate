@@ -46,7 +46,9 @@ sealed interface RestoreEvent {
             restore: RestoreData,
             updateSettings: (SettingsEvent) -> Unit
         ) {
-            state.value = state.value.copy(dialog = dialog)
+            state.value = state.value.copy(
+                dialog = dialog, restoreSettings = if (dialog == null) false else state.value.restoreSettings
+            )
         }
     }
 

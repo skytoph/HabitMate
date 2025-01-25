@@ -3,7 +3,6 @@ package com.github.skytoph.taski.presentation.settings.backup
 import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.core.NetworkManager
 import com.github.skytoph.taski.core.auth.SignInWithGoogle
@@ -12,6 +11,7 @@ import com.github.skytoph.taski.core.backup.BackupManager
 import com.github.skytoph.taski.core.backup.BackupResult
 import com.github.skytoph.taski.domain.habit.HabitRepository
 import com.github.skytoph.taski.domain.habit.Reminder
+import com.github.skytoph.taski.presentation.core.Logger
 import com.github.skytoph.taski.presentation.core.NetworkErrorMapper
 import com.github.skytoph.taski.presentation.habit.edit.component.isPermissionNeeded
 import com.github.skytoph.taski.presentation.habit.icon.IconsDatastore
@@ -23,20 +23,15 @@ import java.util.Locale
 
 
 interface BackupInteractor : SignInInteractor<BackupResultUi> {
-    suspend fun export(context: Context): BackupResultUi
-    suspend fun import(
-        contentResolver: ContentResolver,
-        uri: Uri,
-        context: Context,
-        restoreSettings: Boolean
-    ): BackupResultUi
-
     suspend fun saveBackupOnDrive(context: Context): BackupResultUi
     suspend fun profile(context: Context): BackupResultUi
     suspend fun signOut(context: Context): BackupResultUi
     suspend fun deleteAccount(context: Context): BackupResultUi
     suspend fun clear(): BackupResultUi
     fun mapTime(lastBackupSaved: Long?, loading: Long, context: Context, locale: Locale): String?
+    suspend fun export(context: Context): BackupResultUi
+    suspend fun import(contentResolver: ContentResolver, uri: Uri, context: Context, restoreSettings: Boolean)
+            : BackupResultUi
 
     class Base(
         private val repository: HabitRepository,
@@ -46,8 +41,9 @@ interface BackupInteractor : SignInInteractor<BackupResultUi> {
         private val mapper: BackupResultMapper,
         private val iconsDatastore: IconsDatastore,
         private val networkMapper: NetworkErrorMapper,
+        private val log: Logger,
         networkManager: NetworkManager
-    ) : BackupInteractor, SignInInteractor.Base<BackupResultUi>(iconsDatastore, networkManager, drive) {
+    ) : BackupInteractor, SignInInteractor.Base<BackupResultUi>(iconsDatastore, networkManager, drive, log) {
 
         override suspend fun export(context: Context): BackupResultUi = try {
             val uri = fileWriter.getUriFromFile(
@@ -58,7 +54,7 @@ interface BackupInteractor : SignInInteractor<BackupResultUi> {
             if (uri != null) BackupResultUi.Success.BackupExported(uri)
             else BackupResultUi.ExportFailed
         } catch (exception: Exception) {
-            Log.e("tag", exception.stackTraceToString())
+            log.log(exception)
             BackupResultUi.ExportFailed
         }
 
@@ -72,7 +68,7 @@ interface BackupInteractor : SignInInteractor<BackupResultUi> {
                 val needsPermission = isPermissionNeeded(context)
                 BackupResultUi.Imported(true, containsReminders, needsPermission)
             } catch (exception: Exception) {
-                Log.e("tag", exception.stackTraceToString())
+                log.log(exception)
                 BackupResultUi.Imported(false)
             }
         }
@@ -82,7 +78,7 @@ interface BackupInteractor : SignInInteractor<BackupResultUi> {
                 backup.clear()
                 BackupResultUi.ClearData(true)
             } catch (exception: Exception) {
-                Log.e("tag", exception.stackTraceToString())
+                log.log(exception)
                 BackupResultUi.ClearData(false)
             }
         }
@@ -98,15 +94,14 @@ interface BackupInteractor : SignInInteractor<BackupResultUi> {
 
         override suspend fun profile(context: Context): BackupResultUi =
             SignInWithGoogle.DriveScope.profile().let {
-                if (it != null) BackupResultUi.Success.ProfileLoaded(it)
-                else BackupResultUi.ProfileLoadingFailed
+                BackupResultUi.Success.ProfileLoaded(it)
             }
 
         override suspend fun signOut(context: Context): BackupResultUi = try {
             SignInWithGoogle.DriveScope.signOut(context)
-            iconsDatastore.create()
             profile(context)
         } catch (exception: Exception) {
+            log.log(exception)
             mapResult(exception, BackupResultUi.SignOutFailed)
         }
 
@@ -114,9 +109,9 @@ interface BackupInteractor : SignInInteractor<BackupResultUi> {
             val result = drive.deleteAllFiles()
             iconsDatastore.delete()
             SignInWithGoogle.DriveScope.deleteAccount(context)
-            iconsDatastore.create()
             BackupResultUi.DeletingAccount(deleted = result is BackupResult.Success)
         } catch (exception: Exception) {
+            log.log(exception)
             mapResult(exception, BackupResultUi.DeletingAccount(deleted = false))
         }
 

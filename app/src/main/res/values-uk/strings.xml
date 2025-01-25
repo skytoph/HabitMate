@@ -118,6 +118,7 @@
     <string name="restore_habit_confirmation_dialog_title">Відновити звичку</string>
     <string name="restore_habit_confirmation_dialog_description">Ви хочете відновити звичку?</string>
     <string name="action_restore">Відновити</string>
+    <string name="restore_settings">Відновити налаштування</string>
 
     <!--    Snackbar messages-->
     <string name="message_habit_deleted">звичку видалено</string>
