@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -66,58 +66,52 @@ fun HabitHistoryTable(
                 color = MaterialTheme.colorScheme.secondaryContainer,
                 shape = RoundedCornerShape(10f)
             )
+            .height(height + initialOffsetDp * 2)
+            .fillMaxWidth()
+            .padding(initialOffsetDp)
+            .leftFadingEdge(
+                color = MaterialTheme.colorScheme.secondaryContainer,
+                width = 4.dp,
+                spec = tween(100),
+                isVisible = state.canScrollBackward,
+            )
+            .rightFadingEdge(
+                color = MaterialTheme.colorScheme.secondaryContainer,
+                width = 4.dp,
+                spec = tween(100),
+                isVisible = state.canScrollForward
+            )
     ) {
         Box(
-            modifier = Modifier
-                .height(height + initialOffsetDp * 2)
-                .fillMaxWidth()
-                .padding(initialOffsetDp)
-                .leftFadingEdge(
-                    color = MaterialTheme.colorScheme.secondaryContainer,
-                    width = 4.dp,
-                    spec = tween(100),
-                    isVisible = state.canScrollBackward,
-                )
-                .rightFadingEdge(
-                    color = MaterialTheme.colorScheme.secondaryContainer,
-                    width = 4.dp,
-                    spec = tween(100),
-                    isVisible = state.canScrollForward
-                )
+            modifier = Modifier.horizontalScroll(state)
         ) {
-            Box(
-                modifier = Modifier.horizontalScroll(state)
+            Canvas(
+                modifier = Modifier.size(width = width, height = height)
             ) {
-                Canvas(
-                    modifier = Modifier
-                        .height(height)
-                        .width(width)
-                ) {
-                    val squareSize = squareDp.toPx()
-                    val squareOffset = squareOffsetDp.toPx()
-                    val rectSize = Size(squareSize, squareSize)
+                val squareSize = squareDp.toPx()
+                val squareOffset = squareOffsetDp.toPx()
+                val rectSize = Size(squareSize, squareSize)
 
-                    history.forEachIndexed { index, entry ->
-                        val stepX: Int = index / rows
-                        val offsetX = stepX * squareSize + squareOffset * stepX
-                        val stepY = index.mod(rows)
-                        val offsetY = squareSize * stepY + squareOffset * stepY
+                history.forEachIndexed { index, entry ->
+                    val stepX: Int = index / rows
+                    val offsetX = stepX * squareSize + squareOffset * stepX
+                    val stepY = index.mod(rows)
+                    val offsetY = squareSize * stepY + squareOffset * stepY
 
-                        drawRoundRect(
-                            color = habitColor.applyColor(defaultColor, entry.percentDone),
-                            cornerRadius = CornerRadius(5f, 5f),
-                            style = Fill,
-                            topLeft = Offset(offsetX, offsetY),
-                            size = rectSize
-                        )
-                        if (entry.hasBorder) drawRoundRect(
-                            color = borderColor(habitColor),
-                            cornerRadius = CornerRadius(5f, 5f),
-                            style = Stroke(1.dp.toPx()),
-                            topLeft = Offset(offsetX, offsetY),
-                            size = rectSize
-                        )
-                    }
+                    drawRoundRect(
+                        color = habitColor.applyColor(defaultColor, entry.percentDone),
+                        cornerRadius = CornerRadius(5f, 5f),
+                        style = Fill,
+                        topLeft = Offset(offsetX, offsetY),
+                        size = rectSize
+                    )
+                    if (entry.hasBorder) drawRoundRect(
+                        color = borderColor(habitColor),
+                        cornerRadius = CornerRadius(5f, 5f),
+                        style = Stroke(1.dp.toPx()),
+                        topLeft = Offset(offsetX, offsetY),
+                        size = rectSize
+                    )
                 }
             }
         }

@@ -1,9 +1,9 @@
 package com.github.skytoph.taski.core.backup
 
+import android.accounts.Account
 import android.content.Context
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.Logger
-import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.http.ByteArrayContent
 import com.google.api.client.http.javanet.NetHttpTransport
@@ -13,6 +13,8 @@ import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
 import com.google.api.services.drive.model.File
 import com.google.api.services.drive.model.FileList
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -23,7 +25,7 @@ import java.util.Collections
 interface BackupDatastore {
     suspend fun save(data: ByteArray, filename: String, mime: String): BackupResult
     suspend fun getFilesList(): BackupResult
-    suspend fun downloadFile(id: String): BackupResult
+    suspend fun downloadFile(id: String, restoreSettings: Boolean): BackupResult
     suspend fun delete(id: String): BackupResult
     suspend fun deleteAllFiles(): BackupResult
     suspend fun lastSync(): DateTime?
@@ -32,12 +34,11 @@ interface BackupDatastore {
         private val context: Context,
         private val log: Logger
     ) : BackupDatastore {
-        private fun drive(): Drive? = GoogleSignIn.getLastSignedInAccount(context)?.let { googleAccount ->
-            val credential =
-                GoogleAccountCredential.usingOAuth2(context, listOf(DriveScopes.DRIVE_APPDATA))
-            credential.selectedAccount = googleAccount.account
-
-            Drive.Builder(NetHttpTransport(), JacksonFactory.getDefaultInstance(), credential)
+        private fun drive(): Drive? {
+            val user = Firebase.auth.currentUser ?: return null
+            val credential = GoogleAccountCredential.usingOAuth2(context, listOf(DriveScopes.DRIVE_APPDATA))
+            credential.selectedAccount = Account(user.email ?: return null, "com.google")
+            return Drive.Builder(NetHttpTransport(), JacksonFactory.getDefaultInstance(), credential)
                 .setApplicationName(context.getString(R.string.app_name))
                 .build()
         }
@@ -63,7 +64,6 @@ interface BackupDatastore {
             return try {
                 val drive = drive() ?: return BackupResult.Fail.DriveIsNotConnected()
                 val result = getFiles(drive)
-
                 return if (result == null) BackupResult.Fail.DriveIsNotConnected()
                 else BackupResult.Success.ListOfFiles(result.files ?: emptyList())
             } catch (exception: UnknownHostException) {
@@ -75,14 +75,14 @@ interface BackupDatastore {
             }
         }
 
-        override suspend fun downloadFile(id: String): BackupResult {
+        override suspend fun downloadFile(id: String, restoreSettings: Boolean): BackupResult {
             return try {
                 val drive = drive() ?: return BackupResult.Fail.DriveIsNotConnected()
 
                 val outputStream = ByteArrayOutputStream()
                 drive.files()?.get(id)?.executeMediaAndDownloadTo(outputStream)
 
-                BackupResult.Success.FileDownloaded(outputStream.toByteArray())
+                BackupResult.Success.FileDownloaded(outputStream.toByteArray(), restoreSettings)
             } catch (exception: Exception) {
                 log.log(exception)
                 BackupResult.Fail.FileNotDownloaded(exception)

@@ -89,10 +89,7 @@ fun UnlockIconDialog(
                 textAlign = TextAlign.Center
             )
         },
-        onDismissRequest = {
-            if (!isLoading)
-                onDismissRequest()
-        },
+        onDismissRequest = onDismissRequest,
         confirmButton = {
             CompositionLocalProvider(
                 LocalMinimumInteractiveComponentEnforcement provides false,

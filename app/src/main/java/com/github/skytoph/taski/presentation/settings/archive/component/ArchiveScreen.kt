@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -60,7 +61,8 @@ fun ArchiveScreen(
     )
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier.padding(horizontal = 16.dp)
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
     ) {
         items(habits) { habit ->
             ArchivedHabitItem(
@@ -101,6 +103,7 @@ fun ArchivedHabitItem(
 ) {
     Card(
         modifier = Modifier
+            .widthIn(max = 520.dp)
             .fillMaxWidth()
             .wrapContentHeight(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
@@ -119,7 +122,7 @@ fun ArchivedHabitItem(
                 horizontalArrangement = Arrangement.End
             ) {
                 ArchiveActionButton(
-                    title = "delete",
+                    title = stringResource(R.string.delete),
                     icon = ImageVector.vectorResource(R.drawable.trash),
                     id = habit.id,
                     onClick = delete,
@@ -128,7 +131,7 @@ fun ArchivedHabitItem(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 ArchiveActionButton(
-                    title = "restore",
+                    title = stringResource(R.string.restore),
                     icon = ImageVector.vectorResource(R.drawable.archive_up),
                     id = habit.id,
                     onClick = unarchive,

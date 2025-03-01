@@ -32,13 +32,13 @@ interface BackupManager {
             val json: String = compressor.decompressString(byteArray)
             val backup: Backup = gson.fromJson(json, Backup::class.java)
             val habits: List<HabitWithEntriesEntity> = backup.habitsWithEntries
-            if (restoreSettings) settings.update(backup.settings)
             database.withTransaction {
                 database.habitDao().deleteAll()
                 habits.forEach { habitWithEntries ->
                     database.habitDao().insert(habitWithEntries.habit)
                     database.entryDao().insert(habitWithEntries.entries)
                 }
+                if (restoreSettings) settings.update(backup.settings)
             }
         }
 

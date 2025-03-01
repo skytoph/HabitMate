@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
@@ -24,38 +25,34 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
 import com.github.skytoph.taski.R
-import com.github.skytoph.taski.presentation.core.preview.HabitsEditableProvider
 import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
-import com.github.skytoph.taski.ui.theme.HabitMateTheme
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 
 @Composable
 fun EditHistoryDialog(
-    entries: Flow<PagingData<EditableHistoryUi>>,
+    items: LazyPagingItems<EditableHistoryUi>,
     onEdit: () -> Unit,
     onDayClick: (Int) -> Unit,
     habitColor: Color,
     goal: Int,
+    page: Int,
     isFirstDaySunday: Boolean = false,
     isCalendarView: Boolean = false,
 ) {
     Dialog(onDismissRequest = onEdit) {
-        HabitHistoryEditable(entries, habitColor, goal, onDayClick, isFirstDaySunday, isCalendarView)
+        HabitHistoryEditable(items, habitColor, goal, page, onDayClick, isFirstDaySunday, isCalendarView)
     }
 }
 
 @Composable
 fun HabitHistoryEditable(
-    entries: Flow<PagingData<EditableHistoryUi>>,
+    items: LazyPagingItems<EditableHistoryUi>,
     habitColor: Color,
     goal: Int,
+    page: Int,
     onDayClick: (Int) -> Unit,
     isFirstDaySunday: Boolean = false,
     isCalendarView: Boolean = false,
@@ -72,16 +69,18 @@ fun HabitHistoryEditable(
             .padding(bottom = 8.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        if (isCalendarView) MonthlyPager(
-            entries = entries,
-            habitColor = habitColor,
-            goal = goal,
-            isEditable = true,
-            onEdit = onDayClick,
-            isFirstDaySunday = isFirstDaySunday
-        )
-        else HabitHistoryGrid(
-            entries = entries,
+        if (isCalendarView) {
+            MonthlyPager(
+                goal = goal,
+                habitColor = habitColor,
+                isFirstDaySunday = isFirstDaySunday,
+                isEditable = true,
+                onEdit = onDayClick,
+                items = items,
+                pagerState = rememberPagerState(pageCount = { items.itemCount }, initialPage = page)
+            )
+        } else HabitHistoryGrid(
+            items = items,
             habitColor = habitColor,
             goal = goal,
             isEditable = true,
@@ -114,19 +113,5 @@ fun HabitHistoryEditable(
                 modifier = Modifier.wrapContentWidth()
             )
         }
-    }
-}
-
-@Composable
-@Preview
-private fun DialogPreview(
-    @PreviewParameter(HabitsEditableProvider::class) entries: List<EditableHistoryUi>
-) {
-    HabitMateTheme(darkTheme = true) {
-        HabitHistoryEditable(
-            entries = flowOf(PagingData.from(entries)),
-            habitColor = Color.Red,
-            goal = 1,
-            onDayClick = {})
     }
 }

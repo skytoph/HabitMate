@@ -2,6 +2,7 @@ package com.github.skytoph.taski.presentation.settings.backup
 
 import android.content.ContentResolver
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.core.NetworkManager
@@ -28,10 +29,13 @@ interface BackupInteractor : SignInInteractor<BackupResultUi> {
     suspend fun signOut(context: Context): BackupResultUi
     suspend fun deleteAccount(context: Context): BackupResultUi
     suspend fun clear(): BackupResultUi
-    fun mapTime(lastBackupSaved: Long?, loading: Long, context: Context, locale: Locale): String?
+    fun log(data: Intent?)
     suspend fun export(context: Context): BackupResultUi
     suspend fun import(contentResolver: ContentResolver, uri: Uri, context: Context, restoreSettings: Boolean)
             : BackupResultUi
+
+    fun mapTime(lastBackupSaved: Long?, loading: Long, context: Context, locale: Locale, is24HoursFormat: Boolean)
+            : String?
 
     class Base(
         private val repository: HabitRepository,
@@ -42,8 +46,9 @@ interface BackupInteractor : SignInInteractor<BackupResultUi> {
         private val iconsDatastore: IconsDatastore,
         private val networkMapper: NetworkErrorMapper,
         private val log: Logger,
+        private val auth: SignInWithGoogle,
         networkManager: NetworkManager
-    ) : BackupInteractor, SignInInteractor.Base<BackupResultUi>(iconsDatastore, networkManager, drive, log) {
+    ) : BackupInteractor, SignInInteractor.Base<BackupResultUi>(iconsDatastore, networkManager, drive, auth, log) {
 
         override suspend fun export(context: Context): BackupResultUi = try {
             val uri = fileWriter.getUriFromFile(
@@ -93,12 +98,12 @@ interface BackupInteractor : SignInInteractor<BackupResultUi> {
         }
 
         override suspend fun profile(context: Context): BackupResultUi =
-            SignInWithGoogle.DriveScope.profile().let {
+            auth.profile(auth.backupAvailable(context)).let {
                 BackupResultUi.Success.ProfileLoaded(it)
             }
 
         override suspend fun signOut(context: Context): BackupResultUi = try {
-            SignInWithGoogle.DriveScope.signOut(context)
+            auth.signOut(context)
             profile(context)
         } catch (exception: Exception) {
             log.log(exception)
@@ -107,34 +112,48 @@ interface BackupInteractor : SignInInteractor<BackupResultUi> {
 
         override suspend fun deleteAccount(context: Context): BackupResultUi = try {
             val result = drive.deleteAllFiles()
-            iconsDatastore.delete()
-            SignInWithGoogle.DriveScope.deleteAccount(context)
+            iconsDatastore.delete(auth.profile())
+            auth.deleteAccount(context)
             BackupResultUi.DeletingAccount(deleted = result is BackupResult.Success)
+            BackupResultUi.DeletingAccount(deleted = true)
         } catch (exception: Exception) {
             log.log(exception)
             mapResult(exception, BackupResultUi.DeletingAccount(deleted = false))
         }
 
-        override fun mapTime(lastBackupSaved: Long?, loading: Long, context: Context, locale: Locale): String? =
-            when (lastBackupSaved) {
-                loading -> null
-                null -> context.getString(R.string.no_backup_data)
-                else -> context.getString(
-                    R.string.last_time_backup_saved,
-                    SimpleDateFormat(context.getString(R.string.backup_date_format), locale).format(lastBackupSaved)
+        override fun mapTime(
+            lastBackupSaved: Long?, loading: Long, context: Context, locale: Locale, is24HoursFormat: Boolean
+        ): String? = when (lastBackupSaved) {
+            loading -> null
+            null -> context.getString(R.string.no_backup_data)
+            else -> {
+                val dateFormat =
+                    context.getString(if (is24HoursFormat) R.string.backup_date_format_24h_format else R.string.backup_date_format_12h_format)
+                context.getString(
+                    R.string.last_time_backup_saved, SimpleDateFormat(dateFormat, locale).format(lastBackupSaved)
                 )
             }
+        }
 
-        override suspend fun mapResult(profile: ProfileUi, synchronized: Boolean?): BackupResultUi =
-            BackupResultUi.Success.SignedIn(profile, lastSync(), synchronized)
+        override suspend fun mapResult(
+            profile: ProfileUi, synchronized: Boolean?, permissionNeeded: Boolean
+        ): BackupResultUi = BackupResultUi.Success.SignedIn(profile, lastSync(), synchronized, permissionNeeded)
 
         override fun mapResult(exception: Exception?, default: BackupResultUi): BackupResultUi = when {
             exception != null && networkMapper.isNetworkUnavailable(exception) -> BackupResultUi.NoConnection
             else -> default
         }
 
-        override val defaultSigningInResult: BackupResultUi = BackupResultUi.SignInFailed
+        override fun log(data: Intent?) {
+            val message = data?.extras?.apply {
+                keySet()?.joinToString(separator = "\n") { key -> "Key [$key]: ${get(key)?.toString()}" }
+            }
+            log.log("Google sign in failed.\n$message")
+        }
+
+        override val defaultSignInFailResult: BackupResultUi = BackupResultUi.SignInFailed
         override val noConnectionResult: BackupResultUi = BackupResultUi.NoConnection
         override val connectedResult: BackupResultUi = BackupResultUi.Empty
+        override val emptyResult: BackupResultUi = BackupResultUi.Empty
     }
 }

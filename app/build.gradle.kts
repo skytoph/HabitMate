@@ -16,7 +16,7 @@ android {
         applicationId = "com.github.skytoph.taski"
         minSdk = 26
         targetSdk = 35
-        versionCode = 1
+        versionCode = 5
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -27,7 +27,6 @@ android {
 
     buildTypes {
         release {
-//            isDebuggable = true
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
@@ -35,11 +34,6 @@ android {
                 "proguard-rules.pro"
             )
             signingConfig = signingConfigs.getByName("debug")
-        }
-        create("benchmark") {
-            initWith(buildTypes.getByName("release"))
-            matchingFallbacks += listOf("release")
-            isDebuggable = false
         }
     }
     compileOptions {
@@ -97,7 +91,7 @@ dependencies {
     // Compose material
     implementation("androidx.compose.material3:material3:1.2.0-alpha08")
     implementation("androidx.compose.material:material-icons-extended:1.1.2")
-    implementation("androidx.compose.foundation:foundation:1.7.0-beta06")
+    implementation("androidx.compose.foundation:foundation:1.7.8")
 
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
@@ -146,9 +140,11 @@ dependencies {
         exclude(group = "org.apache.httpcomponents")
         exclude(module = "guava-jdk5")
     }
+    implementation("androidx.credentials:credentials:1.3.0")
+    implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
+    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
 
     // Firebase
-    implementation(platform("com.google.firebase:firebase-bom:33.2.0"))
     implementation("com.google.firebase:firebase-firestore")
 
     // Crashlytics
@@ -160,5 +156,8 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.7.0")
 
     // AdMob
-    implementation("com.google.android.gms:play-services-ads:23.4.0")
+    implementation("com.google.android.gms:play-services-ads:23.6.0")
+
+    // AppCheck
+    implementation("com.google.firebase:firebase-appcheck-playintegrity")
 }

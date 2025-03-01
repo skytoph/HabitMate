@@ -48,7 +48,7 @@ object BackupMessages {
     )
     val importFailedMessage = SnackbarMessage(
         messageResource = StringResource.ResId(R.string.error_import),
-        title = StringResource.ResId(R.string.import_error_title),
+        title = StringResource.ResId(R.string.error_title),
         icon = IconResource.Id(id = R.drawable.folder_x)
     )
     val importSucceededMessage = SnackbarMessage(
@@ -56,14 +56,24 @@ object BackupMessages {
         title = StringResource.ResId(R.string.success_import_title),
         icon = IconResource.Id(id = R.drawable.folder_input)
     )
+    val createBackupSucceededMessage = SnackbarMessage(
+        title = StringResource.ResId(R.string.success_title),
+        messageResource = StringResource.ResId(R.string.success_create_backup),
+        icon = IconResource.Id(R.drawable.folder_sync)
+    )
     val deleteItemSucceededMessage = SnackbarMessage(
         title = StringResource.ResId(R.string.success_title),
         messageResource = StringResource.ResId(R.string.success_delete_backup),
-        icon = IconResource.Id(R.drawable.refresh_cw)
+        icon = IconResource.Id(R.drawable.folder_sync)
     )
     val deleteDataSucceededMessage = SnackbarMessage(
         title = StringResource.ResId(R.string.success_title),
         messageResource = StringResource.ResId(R.string.success_delete_backups),
+        icon = IconResource.Id(R.drawable.folder_sync)
+    )
+    val allowBackupMessage = SnackbarMessage(
+        title = StringResource.ResId(R.string.error_title),
+        messageResource = StringResource.ResId(R.string.error_backup_unavailable),
         icon = IconResource.Id(R.drawable.folder_sync)
     )
     val iconsSynchronizeSuccessMessage = SnackbarMessage(

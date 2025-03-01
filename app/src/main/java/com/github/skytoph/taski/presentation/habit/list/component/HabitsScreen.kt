@@ -97,7 +97,7 @@ fun HabitsScreen(
                     modifier = Modifier.padding(top = 4.dp),
                     onClick = onCreateHabit,
                     backgroundColor = MaterialTheme.colorScheme.primary,
-                    title = "Create",
+                    title = stringResource(R.string.action_create),
                     icon = Icons.Default.Add,
                     color = Color.White
                 )

@@ -1,9 +1,5 @@
 package com.github.skytoph.taski.presentation.core.component
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.ui.graphics.Color
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.state.IconResource
@@ -30,21 +26,16 @@ data class AppBarAction(
     val checked: Boolean? = null
 ) {
     companion object {
-        val navigateUp = AppBarAction(
-            StringResource.ResId(R.string.action_navigate_up), IconResource.Vector(Icons.AutoMirrored.Filled.ArrowBackIos),
-        )
+        val navigateUp =
+            AppBarAction(StringResource.ResId(R.string.action_navigate_up), IconResource.Id(R.drawable.chevron_left))
 
-        val save = AppBarAction(
-            StringResource.ResId(R.string.action_save_habit), IconResource.Vector(Icons.Filled.Check)
-        )
+        val save = AppBarAction(StringResource.ResId(R.string.action_save_habit), IconResource.Id(R.drawable.check_thin))
 
         val edit = AppBarAction(StringResource.ResId(R.string.edit_habit), IconResource.Id(R.drawable.pencil))
 
-        val delete =
-            AppBarAction(StringResource.ResId(R.string.action_delete), IconResource.Id(R.drawable.trash))
+        val delete = AppBarAction(StringResource.ResId(R.string.action_delete), IconResource.Id(R.drawable.trash))
 
-        val add =
-            AppBarAction(StringResource.ResId(R.string.action_add), IconResource.Vector(Icons.Filled.Add))
+        val add = AppBarAction(StringResource.ResId(R.string.action_add), IconResource.Id(R.drawable.plus))
 
         val view =
             AppBarAction(StringResource.ResId(R.string.action_view), IconResource.Id(R.drawable.sliders_horizontal))

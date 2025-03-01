@@ -31,11 +31,11 @@ class EditHabitViewModel @Inject constructor(
     initAppBar: InitAppBar
 ) : SettingsViewModel<SettingsViewModel.Event>(settings, initAppBar), EventHandler<EditHabitEvent> {
 
-    fun init(reminderAllowed: Boolean) {
+    init {
         onEvent(EditHabitEvent.Progress(true))
         viewModelScope.launch(Dispatchers.IO) {
             val habit = habitMapper.map(interactor.habit(savedStateHandle.id()))
-            withContext(Dispatchers.Main) { onEvent(EditHabitEvent.Init(habit, reminderAllowed)) }
+            withContext(Dispatchers.Main) { onEvent(EditHabitEvent.Init(habit)) }
         }
     }
 

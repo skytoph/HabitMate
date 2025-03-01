@@ -2,7 +2,11 @@
 
 package com.github.skytoph.taski.presentation.settings.reorder.component
 
-import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -17,6 +21,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -120,14 +125,23 @@ private fun HabitsReorder(
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        if (showApplyManualOrder) item {
-            ApplyManualOrder(
-                modifier = Modifier.animateItem(),
-                currentSort = currentSort,
-                apply = applyManualOrder,
-                dismiss = dismissReminder
-            )
+        item {
+            AnimatedVisibility(
+                visible = showApplyManualOrder,
+                enter = fadeIn() + expandVertically(),
+                exit = fadeOut() + shrinkVertically()
+            ) {
+                ApplyManualOrder(
+                    modifier = Modifier
+                        .widthIn(max = 520.dp)
+                        .fillMaxWidth(),
+                    currentSort = currentSort,
+                    apply = applyManualOrder,
+                    dismiss = dismissReminder
+                )
+            }
         }
         item {
             ReorderableItem(state = state, key = 0, enabled = false) {}
@@ -135,7 +149,9 @@ private fun HabitsReorder(
         items(habits, key = { it.id }) { habit ->
             ReorderableItem(state = state, key = habit.id) { isDragging ->
                 HabitReorderingItem(
-                    modifier = Modifier.longPressDraggableHandle(),
+                    modifier = Modifier
+                        .longPressDraggableHandle()
+                        .widthIn(max = 520.dp),
                     habit = habit,
                     borderColor = if (isDragging) MaterialTheme.colorScheme.secondaryContainer else Color.Transparent
                 )
@@ -153,13 +169,11 @@ private fun ApplyManualOrder(
 ) {
     Column(
         modifier = modifier
-            .fillMaxWidth()
             .background(
                 color = MaterialTheme.colorScheme.primaryContainer,
                 shape = MaterialTheme.shapes.small
             )
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-            .animateContentSize(),
+            .padding(horizontal = 16.dp, vertical = 8.dp),
         horizontalAlignment = Alignment.End
     ) {
         Row(

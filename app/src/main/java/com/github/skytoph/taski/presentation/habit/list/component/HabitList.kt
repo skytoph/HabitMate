@@ -5,7 +5,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
@@ -15,6 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -48,11 +51,14 @@ fun HabitList(
     }
 
     LazyColumn(
-        modifier = modifier.padding(horizontal = dimensionResource(id = R.dimen.main_padding)),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = dimensionResource(id = R.dimen.main_padding)),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (view.matches(ViewType.Daily())) stickyHeader {
-            WeekDayLabelsCard(entries = view.entries)
+            WeekDayLabelsCard(modifier = Modifier.animateItem(), entries = view.entries)
         }
         items(items = habits, key = { it.habit.id }) { habitWithHistory ->
             HabitCard(view, habitWithHistory, updateView, onClick, onLongClick, onDone, Modifier.animateItem())
@@ -72,7 +78,7 @@ private fun HabitCard(
 ) {
     if (view is ViewType.Daily)
         HabitDaily(
-            modifier = modifier,
+            modifier = modifier.widthIn(max = 520.dp),
             onDone = onDoneHabit,
             habit = habitWithHistory.habit,
             history = habitWithHistory.history,
@@ -82,7 +88,7 @@ private fun HabitCard(
         )
     else
         HabitCalendar(
-            modifier = modifier,
+            modifier = modifier.widthIn(max = 520.dp),
             onDone = { onDoneHabit(habitWithHistory.habit, 0) },
             habit = habitWithHistory.habit,
             history = habitWithHistory.history,

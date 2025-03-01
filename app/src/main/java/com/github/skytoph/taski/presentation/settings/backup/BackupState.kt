@@ -11,6 +11,7 @@ data class BackupState(
     val isDriveBackupLoading: Boolean = false,
     val isProfileLoading: Boolean = true,
     val isSigningInLoading: Boolean = false,
+    val requestBackupPermission: Boolean = false,
     val restoreSettings: Boolean = false,
     val uriShareFile: Uri? = null,
     val profile: ProfileUi? = null,

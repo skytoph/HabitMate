@@ -15,6 +15,7 @@ import com.github.skytoph.taski.core.reminder.HabitNotificationChannel
 import com.github.skytoph.taski.presentation.habit.edit.NotificationInteractor
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.delay
 
 @HiltWorker
 class ReminderRefreshWorker @AssistedInject constructor(
@@ -25,6 +26,7 @@ class ReminderRefreshWorker @AssistedInject constructor(
 
     override suspend fun doWork(): Result {
         setForeground(createForegroundInfo())
+        delay(4000)
         interactor.refreshAllNotifications(context)
         return Result.success()
     }

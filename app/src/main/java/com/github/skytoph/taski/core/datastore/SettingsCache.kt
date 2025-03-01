@@ -16,6 +16,7 @@ interface SettingsCache {
     suspend fun initialize()
     suspend fun update(settings: Settings)
     suspend fun updateWeekStart()
+    suspend fun updateTimeFormat()
     suspend fun updateCurrentDayHighlight()
     suspend fun updateStreakHighlight()
     suspend fun updateIconsSort()
@@ -40,11 +41,17 @@ interface SettingsCache {
         }
 
         override suspend fun update(settings: Settings) {
-            dataStore.updateData { settings.copy(lastBackupSaved = it.lastBackupSaved) }
+            dataStore.updateData {
+                settings.copy(lastBackupSaved = it.lastBackupSaved, allowCrashlytics = it.allowCrashlytics)
+            }
         }
 
         override suspend fun updateWeekStart() {
             dataStore.updateData { it.copy(weekStartsOnSunday = it.weekStartsOnSunday.copy(!it.weekStartsOnSunday.value)) }
+        }
+
+        override suspend fun updateTimeFormat() {
+            dataStore.updateData { it.copy(time24hoursFormat = it.time24hoursFormat.copy(!it.time24hoursFormat.value)) }
         }
 
         override suspend fun updateCurrentDayHighlight() {

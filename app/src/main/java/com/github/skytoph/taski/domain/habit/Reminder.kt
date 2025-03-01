@@ -14,7 +14,6 @@ sealed class Reminder {
 
     class SwitchedOn(val hour: Int, val minute: Int) : Reminder() {
         override fun mapToDB(): ReminderEntity = ReminderEntity(hour = hour, minute = minute)
-        override fun mapToUi(): ReminderUi =
-            ReminderUi(switchedOn = true, hour = hour, minute = minute)
+        override fun mapToUi(): ReminderUi = ReminderUi(switchedOn = true, hour = hour, minute = minute)
     }
 }

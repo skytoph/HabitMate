@@ -31,10 +31,10 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TooltipBox
 import androidx.compose.material3.TooltipDefaults
@@ -50,14 +50,11 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import androidx.paging.LoadState
-import androidx.paging.PagingData
-import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.github.skytoph.taski.R
@@ -68,28 +65,24 @@ import com.github.skytoph.taski.presentation.core.component.WeekDayLabel
 import com.github.skytoph.taski.presentation.core.component.getLocale
 import com.github.skytoph.taski.presentation.core.component.weekDayCalendar
 import com.github.skytoph.taski.presentation.core.leftFadingEdge
-import com.github.skytoph.taski.presentation.core.preview.HabitsEditableProvider
 import com.github.skytoph.taski.presentation.habit.applyColor
 import com.github.skytoph.taski.presentation.habit.edit.EditableHistoryUi
 import com.github.skytoph.taski.presentation.habit.edit.EntryEditableUi
 import com.github.skytoph.taski.presentation.habit.edit.MonthUi
-import com.github.skytoph.taski.presentation.habit.edit.StreakType
 import com.github.skytoph.taski.presentation.habit.icon.IconsColors
 import com.github.skytoph.taski.presentation.habit.list.mapper.ColorPercentMapper
-import com.github.skytoph.taski.ui.theme.HabitMateTheme
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 import java.util.Calendar
 
 @Composable
 fun HabitHistory(
-    entries: Flow<PagingData<EditableHistoryUi>>,
+    items: LazyPagingItems<EditableHistoryUi>,
     goal: Int = 1,
     habitColor: Color = IconsColors.Default,
     isFirstDaySunday: Boolean = false,
     onEdit: () -> Unit = {},
     onChangeView: () -> Unit = {},
-    isCalendarView: Boolean = true
+    isCalendarView: Boolean = true,
+    pagerState: PagerState
 ) {
     Column(
         modifier = Modifier
@@ -103,16 +96,17 @@ fun HabitHistory(
     ) {
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopCenter) {
             Crossfade(targetState = isCalendarView, label = "habit_history_crossfade") { isCalendar ->
-                if (isCalendar)
+                if (isCalendar) {
                     MonthlyPager(
-                        entries = entries,
-                        habitColor = habitColor,
                         goal = goal,
+                        habitColor = habitColor,
                         isFirstDaySunday = isFirstDaySunday,
+                        items = items,
+                        pagerState = pagerState
                     )
-                else
+                } else
                     HabitHistoryGrid(
-                        entries = entries,
+                        items = items,
                         habitColor = habitColor,
                         goal = goal,
                         isFirstDaySunday = isFirstDaySunday,
@@ -140,7 +134,7 @@ fun HabitHistory(
                     Icon(
                         imageVector = ImageVector.vectorResource(if (calendarView) R.drawable.table else R.drawable.calendar_days),
                         contentDescription = "calendar view",
-                        tint = Color.White
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 }
             }
@@ -149,6 +143,7 @@ fun HabitHistory(
                 text = stringResource(R.string.button_edit),
                 background = MaterialTheme.colorScheme.onTertiaryContainer,
                 height = 32.dp,
+                textColor = MaterialTheme.colorScheme.onPrimaryContainer
             )
         }
     }
@@ -156,7 +151,7 @@ fun HabitHistory(
 
 @Composable
 fun HabitHistoryGrid(
-    entries: Flow<PagingData<EditableHistoryUi>>,
+    items: LazyPagingItems<EditableHistoryUi>,
     habitColor: Color = IconsColors.Default,
     goal: Int = 1,
     isEditable: Boolean = false,
@@ -166,8 +161,6 @@ fun HabitHistoryGrid(
     initialOffsetDp: Dp = 4.dp,
     isFirstDaySunday: Boolean,
 ) {
-    val items = entries.collectAsLazyPagingItems()
-
     if (items.loadState.refresh == LoadState.Loading || items.itemCount == 0) Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -321,7 +314,7 @@ private fun DailyEntry(
                 .clip(shape = MaterialTheme.shapes.extraSmall)
                 .border(
                     width = 2.dp,
-                    color = if (entry.streakType == StreakType.Middle && entry.timesDone == 0)
+                    color = if (entry.streakType != null && entry.timesDone == 0)
                         habitColor.applyColor(defaultColor, 0.1f) else Color.Transparent,
                     shape = MaterialTheme.shapes.extraSmall
                 )
@@ -343,7 +336,7 @@ private fun entryColor(
     entry: EntryEditableUi, habitColor: Color, defaultColor: Color, isEditable: Boolean, goal: Int
 ) = when {
     entry.daysAgo < 0 -> Color.Gray.applyColor(defaultColor, 0.3f)
-    entry.streakType == StreakType.Middle && entry.timesDone == 0 -> habitColor.applyColor(defaultColor, 0.5f)
+    entry.streakType != null && entry.timesDone == 0 -> habitColor.applyColor(defaultColor, 0.5f)
     else -> habitColor.applyColor(defaultColor, ColorPercentMapper.toColorPercent(entry.timesDone, goal))
 }
 
@@ -378,26 +371,6 @@ private fun MonthLabel(
                 textAlign = month.alignment,
                 maxLines = 1
             )
-        }
-    }
-}
-
-@Composable
-@Preview
-fun DarkEditableGridPreview(@PreviewParameter(HabitsEditableProvider::class) entries: List<EditableHistoryUi>) {
-    HabitMateTheme(darkTheme = true) {
-        Surface {
-            HabitHistory(flowOf(PagingData.from(entries)), isFirstDaySunday = false)
-        }
-    }
-}
-
-@Composable
-@Preview
-fun DarkCalendarEditableGridPreview(@PreviewParameter(HabitsEditableProvider::class) entries: List<EditableHistoryUi>) {
-    HabitMateTheme(darkTheme = true) {
-        Surface {
-            HabitHistory(flowOf(PagingData.from(entries)), isCalendarView = false)
         }
     }
 }

@@ -4,6 +4,7 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -45,7 +46,7 @@ fun CheckboxDialog(
     icon = icon,
     content = {
         Row(
-            modifier = Modifier.clickable(onClick = checkboxClick),
+            modifier = Modifier.fillMaxWidth().clickable(onClick = checkboxClick),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Checkbox(

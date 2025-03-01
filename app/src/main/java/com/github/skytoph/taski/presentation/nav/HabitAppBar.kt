@@ -13,8 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -26,10 +24,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.component.AppBarState
 
 @Composable
@@ -90,7 +91,7 @@ fun HabitAppBar(
             if (state.dropdownItems.isNotEmpty())
                 Box {
                     IconButton(onClick = { expandList(true) }) {
-                        Icon(Icons.Default.MoreVert, "menu")
+                        Icon(ImageVector.vectorResource(R.drawable.ellipsis_vertical), "menu")
                     }
 
                     DropdownMenu(

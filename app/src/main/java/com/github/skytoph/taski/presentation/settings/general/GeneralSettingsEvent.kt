@@ -11,6 +11,12 @@ sealed interface GeneralSettingsEvent : SettingsViewModel.Event {
         }
     }
 
+    data object ToggleTimeFormat : GeneralSettingsEvent {
+        override suspend fun handle(settings: SettingsCache) {
+            settings.updateTimeFormat()
+        }
+    }
+
     data object ToggleCurrentDayHighlight : GeneralSettingsEvent {
         override suspend fun handle(settings: SettingsCache) {
             settings.updateCurrentDayHighlight()

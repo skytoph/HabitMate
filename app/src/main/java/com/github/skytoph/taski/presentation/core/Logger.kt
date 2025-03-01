@@ -1,5 +1,6 @@
 package com.github.skytoph.taski.presentation.core
 
+import android.util.Log
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
@@ -10,10 +11,11 @@ interface Logger {
 
     class Crashlytics(private val crashlytics: FirebaseCrashlytics = Firebase.crashlytics) : Logger {
         override fun log(string: String) {
-            crashlytics.log(string)
+            log(Exception(string))
         }
 
         override fun log(exception: Exception) {
+            Log.e("TAG", exception.stackTraceToString())
             crashlytics.recordException(exception)
         }
     }

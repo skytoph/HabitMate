@@ -25,6 +25,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
@@ -47,6 +48,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.component.LoadingItems
@@ -61,13 +63,13 @@ import com.github.skytoph.taski.presentation.habit.edit.EntryEditableUi
 import com.github.skytoph.taski.presentation.habit.edit.StreakType
 import com.github.skytoph.taski.presentation.habit.icon.IconsColors
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 
 @Composable
 fun MonthlyPager(
-    entries: Flow<PagingData<EditableHistoryUi>>,
+    items: LazyPagingItems<EditableHistoryUi>,
+    pagerState: PagerState,
     goal: Int = 1,
     habitColor: Color = IconsColors.Default,
     isFirstDaySunday: Boolean = false,
@@ -75,9 +77,7 @@ fun MonthlyPager(
     onEdit: (Int) -> Unit = {},
     squareDp: Dp = 40.dp,
 ) {
-    val items = entries.collectAsLazyPagingItems()
     val coroutineScope = rememberCoroutineScope()
-    val pagerState = rememberPagerState(pageCount = { items.itemCount })
 
     if (items.loadState.refresh == LoadState.Loading || items.itemCount == 0) Box(
         modifier = Modifier
@@ -126,7 +126,7 @@ fun MonthlyPager(
                 label = "habit_history_month_crossfade",
                 animationSpec = tween(durationMillis = 300, easing = LinearEasing)
             ) { page ->
-                if (items.itemCount > 0) items[page]?.let {
+                if (page < items.itemCount) items[page]?.let {
                     Text(
                         text = it.month.getDisplayName(getLocale()),
                         color = MaterialTheme.colorScheme.onBackground,
@@ -285,6 +285,11 @@ private fun EntryItem(
 @Composable
 private fun MonthlyPreview(@PreviewParameter(HabitsEditableProvider::class) entries: List<EditableHistoryUi>) {
     HabitMateTheme(darkTheme = true) {
-        MonthlyPager(flowOf(PagingData.from(entries)), isFirstDaySunday = false, goal = 4)
+        MonthlyPager(
+            goal = 4,
+            isFirstDaySunday = false,
+            items = flowOf(PagingData.from(entries)).collectAsLazyPagingItems(),
+            pagerState = rememberPagerState(pageCount = { 1 })
+        )
     }
 }

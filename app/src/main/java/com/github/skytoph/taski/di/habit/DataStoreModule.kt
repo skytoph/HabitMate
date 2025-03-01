@@ -26,7 +26,7 @@ object DataStoreModule {
     fun settings(dataStore: DataStore<Settings>): SettingsCache = SettingsCache.Base(dataStore = dataStore)
 
     @Provides
-    fun mapper(): InitializeEmptyValues = InitializeEmptyValues()
+    fun mapper(@ApplicationContext context: Context): InitializeEmptyValues = InitializeEmptyValues(context)
 }
 
 val Context.settingsDataStore: DataStore<Settings> by dataStore(

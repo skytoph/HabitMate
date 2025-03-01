@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -25,6 +26,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -63,6 +65,7 @@ import com.github.skytoph.taski.ui.theme.HabitMateTheme
 @Composable
 fun RestoreScreen(viewModel: RestoreViewModel = hiltViewModel()) {
     val state = viewModel.state()
+    val settings = viewModel.settings().collectAsState()
     val locale = getLocale()
     val context = LocalContext.current
     val error = MaterialTheme.colorScheme.error
@@ -85,7 +88,7 @@ fun RestoreScreen(viewModel: RestoreViewModel = hiltViewModel()) {
     }
 
     LaunchedEffect(viewModel) {
-        viewModel.loadItems(locale, context)
+        viewModel.loadItems(locale, settings.value.time24hoursFormat.value, context)
     }
 
     LaunchedEffect(state.value.items) {
@@ -131,8 +134,14 @@ fun RestoreScreen(viewModel: RestoreViewModel = hiltViewModel()) {
         DialogItem(
             dialog = dialog,
             restoreSettings = state.value.restoreSettings,
-            restore = { viewModel.onEvent(RestoreEvent.ShowContextMenu()); viewModel.downloadBackup(it.id, context) },
-            delete = { viewModel.onEvent(RestoreEvent.ShowContextMenu()); viewModel.delete(it.id, locale, context) },
+            restore = {
+                viewModel.onEvent(RestoreEvent.ShowContextMenu())
+                viewModel.downloadBackup(it.id, settings.value.time24hoursFormat.value, context)
+            },
+            delete = {
+                viewModel.onEvent(RestoreEvent.ShowContextMenu())
+                viewModel.delete(it.id, locale, settings.value.time24hoursFormat.value, context)
+            },
             deleteAllData = { viewModel.deleteAllData() },
             requestPermissions = { viewModel.onEvent(RestoreEvent.RequestPermissions(true)) },
             dismiss = { viewModel.onEvent(RestoreEvent.UpdateDialog()) },
@@ -181,7 +190,10 @@ fun BackupItemsList(
                     icon = ImageVector.vectorResource(id = R.drawable.folder_large)
                 )
             }
-        else LazyColumn {
+        else LazyColumn(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             itemsIndexed(items) { index, item ->
                 BackupItem(
                     title = item.date,
@@ -190,7 +202,11 @@ fun BackupItemsList(
                     onClick = { restore(item) },
                     onLongClick = { showContextMenu(item) })
                 if (index != items.lastIndex)
-                    HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
+                    HorizontalDivider(
+                        modifier = Modifier
+                            .widthIn(max = 520.dp)
+                            .padding(horizontal = 16.dp)
+                    )
             }
         }
     }
@@ -200,6 +216,7 @@ fun BackupItemsList(
 fun BackupItem(title: String, description: String, onClick: () -> Unit, onLongClick: () -> Unit, isLoading: Boolean) {
     Column(
         modifier = Modifier
+            .widthIn(max = 520.dp)
             .fillMaxWidth()
             .combinedClickable(enabled = !isLoading, onClick = onClick, onLongClick = onLongClick)
             .padding(horizontal = 32.dp, vertical = 12.dp),

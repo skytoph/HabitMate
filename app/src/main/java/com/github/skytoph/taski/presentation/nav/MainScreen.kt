@@ -5,6 +5,7 @@ package com.github.skytoph.taski.presentation.nav
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -44,7 +45,7 @@ fun MainScreen(
     Scaffold(
         topBar = {
             HabitAppBar(
-                modifier = Modifier.padding(horizontal = 8.dp),
+                modifier = Modifier.statusBarsPadding().padding(horizontal = 8.dp),
                 state = viewModel.state(),
                 navigateUp = navController::navigateUp,
                 expandList = viewModel::expandList

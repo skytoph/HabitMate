@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
@@ -71,111 +72,117 @@ private fun SettingsMenu(
     backupClick: () -> Unit = {},
     creditsClick: () -> Unit = {},
 ) {
-    Column(
+    Box(
         modifier = Modifier
-            .verticalScroll(state = rememberScrollState())
-            .padding(24.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState()),
+        contentAlignment = Alignment.TopCenter
     ) {
-        MenuTitleText(text = stringResource(R.string.settings_app), modifier = Modifier.padding(start = 16.dp))
-        Column(modifier = Modifier.clip(MaterialTheme.shapes.small)) {
-            SettingsMenuItem(
-                title = stringResource(R.string.settings_general),
-                icon = ImageVector.vectorResource(id = R.drawable.wrench),
-                onClick = generalClick,
-                color = Blue
-            )
-            HorizontalDivider()
-            SettingsMenuItem(
-                title = stringResource(R.string.settings_theme),
-                icon = ImageVector.vectorResource(id = R.drawable.palette),
-                onClick = themeClick,
-                color = Green
-            )
-            HorizontalDivider()
-            SettingsMenuItem(
-                title = stringResource(R.string.settings_reorder_habits),
-                icon = ImageVector.vectorResource(id = R.drawable.arrow_up_down),
-                onClick = reorderClick,
-                color = Yellow
-            )
-            HorizontalDivider()
-            SettingsMenuItem(
-                title = stringResource(R.string.settings_archived_habits),
-                icon = ImageVector.vectorResource(id = R.drawable.archive),
-                onClick = archiveClick,
-                color = Orange
-            )
-            HorizontalDivider()
-            SettingsMenuItem(
-                title = stringResource(R.string.settings_data_backup),
-                icon = ImageVector.vectorResource(id = R.drawable.folder_input),
-                onClick = backupClick,
-                color = Red
-            )
-        }
-        Spacer(modifier = Modifier.height(8.dp))
-        MenuTitleText(text = stringResource(R.string.settings_info), modifier = Modifier.padding(start = 16.dp))
-        Column(modifier = Modifier.clip(MaterialTheme.shapes.small)) {
-            SettingsLinkMenuItem(
-                title = stringResource(R.string.settings_privacy_policy),
-                icon = ImageVector.vectorResource(id = R.drawable.file_lock),
-                color = GrayLight,
-                url = stringResource(R.string.privacy_policy_url)
-            )
-            HorizontalDivider()
-            SettingsLinkMenuItem(
-                title = stringResource(R.string.settings_terms_of_use),
-                icon = ImageVector.vectorResource(id = R.drawable.file_type),
-                color = PurpleLight,
-                url = stringResource(R.string.terms_of_use_url)
-            )
-            HorizontalDivider()
-            SettingsMenuItem(
-                title = stringResource(R.string.settings_credits),
-                icon = ImageVector.vectorResource(id = R.drawable.file_heart),
-                onClick = creditsClick,
-                color = PinkLight
-            )
-        }
-        Spacer(modifier = Modifier.height(8.dp))
-        MenuTitleText(text = stringResource(R.string.settings_feedback), modifier = Modifier.padding(start = 16.dp))
-        Column(modifier = Modifier.clip(MaterialTheme.shapes.small)) {
-            SettingsLinkMenuItem(
-                title = stringResource(R.string.settings_rate_the_app),
-                icon = ImageVector.vectorResource(id = R.drawable.star),
-                color = Peach,
-                url = stringResource(R.string.app_page_url)
-            )
-            HorizontalDivider()
-            SettingsShareMenuItem(
-                title = stringResource(R.string.settings_share_the_app),
-                icon = ImageVector.vectorResource(id = R.drawable.share_2),
-                color = BlueLight,
-                message = stringResource(R.string.share_app_message) + stringResource(R.string.new_line) +
-                        stringResource(R.string.app_page_url),
-                messageTitle = stringResource(R.string.share_app_title)
-            )
-        }
-        Spacer(modifier = Modifier.height(4.dp))
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(4.dp)
+            modifier = Modifier
+                .padding(24.dp)
+                .widthIn(max = 520.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text(
-                text = stringResource(R.string.settings_app_version),
-                style = MaterialTheme.typography.bodySmall,
-                textAlign = TextAlign.Center,
+            MenuTitleText(text = stringResource(R.string.settings_app), modifier = Modifier.padding(start = 16.dp))
+            Column(modifier = Modifier.clip(MaterialTheme.shapes.small)) {
+                SettingsMenuItem(
+                    title = stringResource(R.string.settings_general),
+                    icon = ImageVector.vectorResource(id = R.drawable.wrench),
+                    onClick = generalClick,
+                    color = Blue
+                )
+                HorizontalDivider()
+                SettingsMenuItem(
+                    title = stringResource(R.string.settings_theme),
+                    icon = ImageVector.vectorResource(id = R.drawable.palette),
+                    onClick = themeClick,
+                    color = Green
+                )
+                HorizontalDivider()
+                SettingsMenuItem(
+                    title = stringResource(R.string.settings_reorder_habits),
+                    icon = ImageVector.vectorResource(id = R.drawable.arrow_up_down),
+                    onClick = reorderClick,
+                    color = Yellow
+                )
+                HorizontalDivider()
+                SettingsMenuItem(
+                    title = stringResource(R.string.settings_archived_habits),
+                    icon = ImageVector.vectorResource(id = R.drawable.archive),
+                    onClick = archiveClick,
+                    color = Orange
+                )
+                HorizontalDivider()
+                SettingsMenuItem(
+                    title = stringResource(R.string.settings_data_backup),
+                    icon = ImageVector.vectorResource(id = R.drawable.folder_input),
+                    onClick = backupClick,
+                    color = Red
+                )
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            MenuTitleText(text = stringResource(R.string.settings_info), modifier = Modifier.padding(start = 16.dp))
+            Column(modifier = Modifier.clip(MaterialTheme.shapes.small)) {
+                SettingsLinkMenuItem(
+                    title = stringResource(R.string.settings_privacy_policy),
+                    icon = ImageVector.vectorResource(id = R.drawable.file_lock),
+                    color = GrayLight,
+                    url = stringResource(R.string.privacy_policy_url)
+                )
+                HorizontalDivider()
+                SettingsLinkMenuItem(
+                    title = stringResource(R.string.settings_terms_of_use),
+                    icon = ImageVector.vectorResource(id = R.drawable.file_type),
+                    color = PurpleLight,
+                    url = stringResource(R.string.terms_of_use_url)
+                )
+                HorizontalDivider()
+                SettingsMenuItem(
+                    title = stringResource(R.string.settings_credits),
+                    icon = ImageVector.vectorResource(id = R.drawable.file_heart),
+                    onClick = creditsClick,
+                    color = PinkLight
+                )
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            MenuTitleText(text = stringResource(R.string.settings_feedback), modifier = Modifier.padding(start = 16.dp))
+            Column(modifier = Modifier.clip(MaterialTheme.shapes.small)) {
+                SettingsLinkMenuItem(
+                    title = stringResource(R.string.settings_rate_the_app),
+                    icon = ImageVector.vectorResource(id = R.drawable.star),
+                    color = Peach,
+                    url = stringResource(R.string.app_page_url)
+                )
+                HorizontalDivider()
+                SettingsShareMenuItem(
+                    title = stringResource(R.string.settings_share_the_app),
+                    icon = ImageVector.vectorResource(id = R.drawable.share_2),
+                    color = BlueLight,
+                    message = stringResource(R.string.app_page_url),
+                    messageTitle = stringResource(R.string.share_app_title)
+                )
+            }
+            Spacer(modifier = Modifier.height(4.dp))
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colorScheme.onBackground
-            )
-            Icon(
-                imageVector = ImageVector.vectorResource(R.drawable.heart),
-                contentDescription = null,
-                modifier = Modifier.size(16.dp),
-                tint = MaterialTheme.colorScheme.onBackground
-            )
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.settings_app_version),
+                    style = MaterialTheme.typography.bodySmall,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth(),
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.heart),
+                    contentDescription = null,
+                    modifier = Modifier.size(16.dp),
+                    tint = MaterialTheme.colorScheme.onBackground
+                )
+            }
         }
     }
 }

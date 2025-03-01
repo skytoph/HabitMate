@@ -16,10 +16,10 @@ import com.github.skytoph.taski.presentation.habit.list.component.DialogItem
 interface EditHabitEvent {
     fun handle(state: MutableState<EditHabitState>, icon: MutableState<IconState>)
 
-    class Init(private val habit: HabitUi, private val reminderAllowed: Boolean) : EditHabitEvent {
+    class Init(private val habit: HabitUi) : EditHabitEvent {
 
         override fun handle(state: MutableState<EditHabitState>, icon: MutableState<IconState>) {
-            state.value = EditHabitState(
+            state.value = state.value.copy(
                 id = habit.id,
                 title = FieldState(field = habit.title),
                 description = FieldState(field = habit.description),
@@ -29,9 +29,15 @@ interface EditHabitEvent {
                 priority = habit.priority,
                 isLoading = false,
                 frequencyState = FrequencyState(selectedName = habit.frequency.name).updateSelected(habit.frequency),
-                reminder = if (reminderAllowed) habit.reminder else habit.reminder.copy(switchedOn = false)
+                reminder = habit.reminder
             )
             icon.value = IconState(habit.icon, habit.color)
+        }
+    }
+
+    class AllowReminder(private val allowed: Boolean) : EditHabitEvent {
+        override fun handle(state: MutableState<EditHabitState>, icon: MutableState<IconState>) {
+            state.value = state.value.copy(reminderAllowed = allowed)
         }
     }
 

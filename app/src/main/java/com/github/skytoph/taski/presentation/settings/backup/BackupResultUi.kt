@@ -4,6 +4,7 @@ import android.net.Uri
 import com.github.skytoph.taski.presentation.core.MapResultToListOfEvents
 import com.github.skytoph.taski.presentation.settings.backup.BackupMessages.clearingDataFailedMessage
 import com.github.skytoph.taski.presentation.settings.backup.BackupMessages.clearingDataSucceededMessage
+import com.github.skytoph.taski.presentation.settings.backup.BackupMessages.createBackupSucceededMessage
 import com.github.skytoph.taski.presentation.settings.backup.BackupMessages.deletingAccountFailedMessage
 import com.github.skytoph.taski.presentation.settings.backup.BackupMessages.deletingAccountSucceededMessage
 import com.github.skytoph.taski.presentation.settings.backup.BackupMessages.exportFailedMessage
@@ -20,22 +21,27 @@ sealed interface BackupResultUi : MapResultToListOfEvents<BackupEvent> {
     abstract class Success<T>(protected val data: T) : BackupResultUi {
 
         class BackupSaved(time: Long) : Success<Long>(time) {
-            override fun apply(): List<BackupEvent> = listOf(BackupEvent.UpdateLastBackup(data))
+            override fun apply(): List<BackupEvent> =
+                listOf(BackupEvent.UpdateLastBackup(data), BackupEvent.Message(createBackupSucceededMessage))
         }
 
         class ProfileLoaded(profile: ProfileUi) : Success<ProfileUi>(profile) {
             override fun apply(): List<BackupEvent> = listOf(BackupEvent.UpdateProfile(data))
         }
 
-        class SignedIn(profile: ProfileUi, private val syncTime: Long?, private val synchronized: Boolean?) :
-            Success<ProfileUi>(profile) {
+        class SignedIn(
+            profile: ProfileUi,
+            private val syncTime: Long?,
+            private val synchronized: Boolean?,
+            private val requestBackupPermission: Boolean
+        ) : Success<ProfileUi>(profile) {
             override fun apply(): List<BackupEvent> = listOf(
                 BackupEvent.UpdateLastBackup(syncTime),
                 BackupEvent.IsSigningIn(false),
                 BackupEvent.UpdateProfile(data),
-            ).let { list ->
-                if (synchronized == null) list
-                else list + BackupEvent.Message(if (synchronized) iconsSynchronizeSuccessMessage else iconsSynchronizeErrorMessage)
+            ).toMutableList().apply {
+                if (synchronized != null) add(BackupEvent.Message(if (synchronized) iconsSynchronizeSuccessMessage else iconsSynchronizeErrorMessage))
+                if (requestBackupPermission) add(BackupEvent.RequestBackupPermission(true))
             }
         }
 

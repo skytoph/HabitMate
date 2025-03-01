@@ -2,8 +2,6 @@ package com.github.skytoph.taski.presentation.habit.icon
 
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
-import android.content.res.Resources
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.lifecycle.viewModelScope
@@ -15,6 +13,7 @@ import com.github.skytoph.taski.presentation.appbar.SnackbarMessage
 import com.github.skytoph.taski.presentation.core.state.IconResource
 import com.github.skytoph.taski.presentation.settings.SettingsViewModel
 import com.github.skytoph.taski.presentation.settings.backup.BackupMessages
+import com.github.skytoph.taski.presentation.settings.backup.BackupMessages.iconsSynchronizeSuccessMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
@@ -38,14 +37,12 @@ class SelectIconViewModel @Inject constructor(
     initAppBar: InitAppBar
 ) : SettingsViewModel<SelectIconEvent.SettingsEvent>(settings, initAppBar) {
 
-    init {
-        viewModelScope.launch {
-            onEvent(SelectIconEvent.IsWarningShown(settings().first().showIconWarning && interactor.shouldShowWarning()))
-        }
-    }
-
     fun init(activity: Activity) {
-        interactor.icons(activity.resources)
+        viewModelScope.launch {
+            val isWarningShown = settings().first().showIconWarning && interactor.shouldShowWarning(activity)
+            withContext(Dispatchers.Main) { onEvent(SelectIconEvent.IsWarningShown(isWarningShown)) }
+        }
+        interactor.icons(activity)
             .flowOn(Dispatchers.IO)
             .combine(settings()) { groups, settings -> if (settings.sortIcons) sort(groups) else groups }
             .onEach { icons -> onEvent(SelectIconEvent.Initialize(icons)) }
@@ -62,14 +59,17 @@ class SelectIconViewModel @Inject constructor(
 
     fun state(): State<SelectIconState> = state
 
-    fun signInWithFirebase(intent: Intent, context: Context) = viewModelScope.launch(Dispatchers.IO) {
-        val success = interactor.signInWithFirebase(intent, context)
+    fun signIn(context: Context) = viewModelScope.launch(Dispatchers.IO) {
+        val success = interactor.signIn(context, false)
         val syncTime = if (success) interactor.lastSync() else null
         withContext(Dispatchers.Main) {
             onEvent(SelectIconEvent.IsSigningIn(false))
             onEvent(SelectIconEvent.IsWarningShown(!success))
             if (!success) showMessage(BackupMessages.signInFailedMessage)
-            else onEvent(SelectIconEvent.UpdateLastSync(syncTime))
+            else {
+                showMessage(iconsSynchronizeSuccessMessage)
+                onEvent(SelectIconEvent.UpdateLastSync(syncTime))
+            }
         }
     }
 
@@ -86,20 +86,27 @@ class SelectIconViewModel @Inject constructor(
     fun unlockIcon(icon: IconResource, activity: Activity) {
         if (networkManager.isNetworkAvailable()) {
             onEvent(SelectIconEvent.UpdateDialog(isLoading = true))
-            rewards.show(activity = activity, reward = { reward(icon, activity.resources) }, fail = { rewardFailed() })
+            rewards.show(activity = activity, reward = { reward(icon, activity) }, fail = { rewardFailed() })
         } else {
             onEvent(SelectIconEvent.UpdateDialog())
             showMessage(IconMessages.noConnectionMessage)
         }
     }
 
-    private fun reward(icon: IconResource, resources: Resources) = viewModelScope.launch(Dispatchers.IO) {
-        interactor.unlock(icon.name(resources))
-        withContext(Dispatchers.Main) {
-            onEvent(SelectIconEvent.UpdateDialog())
-            showMessage(IconMessages.rewardedMessage(icon))
-        }
+    fun cancelAd() {
+        rewards.cancel()
+        onEvent(SelectIconEvent.UpdateDialog())
     }
+
+    private fun reward(icon: IconResource, context: Context) =
+        viewModelScope.launch(Dispatchers.IO) {
+            interactor.unlock(context, icon.name(context.resources))
+            withContext(Dispatchers.Main) {
+                onEvent(SelectIconEvent.UpdateDialog())
+                onEvent(SelectIconEvent.Update(icon = icon))
+                showMessage(IconMessages.rewardedMessage(icon))
+            }
+        }
 
     private fun rewardFailed() {
         onEvent(SelectIconEvent.UpdateDialog())

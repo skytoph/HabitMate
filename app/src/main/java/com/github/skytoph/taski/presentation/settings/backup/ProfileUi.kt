@@ -8,5 +8,6 @@ data class ProfileUi(
     val imageUri: Uri? = null,
     val id: String = "",
     val isAnonymous: Boolean = false,
-    val isEmpty: Boolean = false
+    val isEmpty: Boolean = false,
+    val isBackupAvailable: Boolean = false
 )

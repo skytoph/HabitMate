@@ -6,7 +6,7 @@ import com.google.api.services.drive.model.File
 sealed interface BackupResult {
     sealed interface Success : BackupResult {
         class ListOfFiles(val data: List<File>) : Success
-        class FileDownloaded(val file: ByteArray) : Success
+        class FileDownloaded(val file: ByteArray, val restoreSettings: Boolean) : Success
         class Saved(val time: DateTime) : Success
         class Deleted(val time: DateTime?, val newData: List<File>) : Success
         class FileRestored(val containsReminders: Boolean, val needsPermission: Boolean) : Success

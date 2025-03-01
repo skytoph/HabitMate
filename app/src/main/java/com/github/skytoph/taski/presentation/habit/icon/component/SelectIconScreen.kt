@@ -1,12 +1,8 @@
 package com.github.skytoph.taski.presentation.habit.icon.component
 
-import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -19,9 +15,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -36,7 +34,6 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -51,7 +48,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.skytoph.taski.R
-import com.github.skytoph.taski.core.auth.SignInWithGoogle
 import com.github.skytoph.taski.presentation.core.color.borderColor
 import com.github.skytoph.taski.presentation.core.component.AppBarAction
 import com.github.skytoph.taski.presentation.core.component.LoadingFullscreen
@@ -64,32 +60,19 @@ import com.github.skytoph.taski.presentation.habit.icon.IconsColors
 import com.github.skytoph.taski.presentation.habit.icon.IconsLockedGroup
 import com.github.skytoph.taski.presentation.habit.icon.SelectIconEvent
 import com.github.skytoph.taski.presentation.habit.icon.SelectIconViewModel
-import com.github.skytoph.taski.presentation.settings.backup.BackupMessages.iconsSynchronizeSuccessMessage
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
-import kotlinx.coroutines.launch
 
 @Composable
 fun SelectIconScreen(viewModel: SelectIconViewModel = hiltViewModel()) {
     val context = LocalContext.current
     val state = viewModel.state()
     val iconState = viewModel.iconState()
-    val contract = ActivityResultContracts.StartActivityForResult()
     val settings = viewModel.settings().collectAsState()
-    val coroutineScope = rememberCoroutineScope()
     val actionColor = MaterialTheme.colorScheme.onBackground
     val sortIcons = settings.value.sortIcons
 
-    val startForResult = rememberLauncherForActivityResult(contract) { result: ActivityResult ->
-        if (result.resultCode == Activity.RESULT_OK)
-            result.data?.let { intent -> viewModel.signInWithFirebase(intent, context) }
-        else {
-            viewModel.onEvent(SelectIconEvent.IsSigningIn(false))
-            viewModel.showMessage(iconsSynchronizeSuccessMessage)
-        }
-    }
-
     val actionSortIcons = AppBarAction(
-        title = StringResource.Value("Unlocked first"),
+        title = StringResource.ResId(R.string.icons_menu_item_unlocked_first),
         color = actionColor,
         onClick = { viewModel.onEvent(SelectIconEvent.UpdateSort()) },
         checked = sortIcons
@@ -118,9 +101,7 @@ fun SelectIconScreen(viewModel: SelectIconViewModel = hiltViewModel()) {
         logIn = {
             if (viewModel.connected(context)) {
                 viewModel.onEvent(SelectIconEvent.IsSigningIn(true))
-                coroutineScope.launch {
-                    startForResult.launch(SignInWithGoogle.DriveScope.getClient(context).signInIntent)
-                }
+                viewModel.signIn(context)
             } else viewModel.showMessage(IconMessages.noConnectionMessage)
         },
         dismiss = { viewModel.onEvent(SelectIconEvent.IsWarningDialogShown(true)) },
@@ -129,10 +110,8 @@ fun SelectIconScreen(viewModel: SelectIconViewModel = hiltViewModel()) {
     state.value.dialogIcon?.let { icon ->
         UnlockIconDialog(
             icon = icon.vector(context),
-            onConfirm = {
-                viewModel.unlockIcon(icon, context.getActivity() ?: return@UnlockIconDialog)
-            },
-            onDismissRequest = { viewModel.onEvent(SelectIconEvent.UpdateDialog()) },
+            onConfirm = { viewModel.unlockIcon(icon, context.getActivity() ?: return@UnlockIconDialog) },
+            onDismissRequest = { viewModel.cancelAd() },
             isLoading = state.value.isDialogLoading,
             color = iconState.value.color
         )
@@ -168,61 +147,68 @@ private fun SelectIcon(
 ) {
     if (isLoading)
         LoadingFullscreen()
-    else LazyVerticalGrid(
-        modifier = Modifier.padding(horizontal = 16.dp),
-        columns = GridCells.Adaptive(iconSize + iconPadding),
-        contentPadding = PaddingValues(iconPadding),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+    else Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.TopCenter
     ) {
-        item(
-            span = { GridItemSpan(maxLineSpan) },
-            contentType = { "warning" }) {
-            AnimatedVisibility(
-                visible = isWarningShown,
-                enter = expandVertically() + fadeIn(),
-                exit = shrinkVertically() + fadeOut()
-            ) {
-                IconsWarning(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .animateItem(),
-                    logIn = logIn,
-                    dismiss = dismiss,
-                    isLoading = isSigningIn
-                )
+        LazyVerticalGrid(
+            modifier = Modifier
+                .padding(horizontal = 16.dp)
+                .widthIn(max = 424.dp),
+            columns = GridCells.Adaptive(iconSize + iconPadding),
+            contentPadding = PaddingValues(iconPadding),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            item(
+                span = { GridItemSpan(maxLineSpan) },
+                contentType = { "warning" }) {
+                AnimatedVisibility(
+                    visible = isWarningShown,
+                    enter = expandVertically() + fadeIn(),
+                    exit = shrinkVertically() + fadeOut()
+                ) {
+                    IconsWarning(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .animateItem(),
+                        logIn = logIn,
+                        dismiss = dismiss,
+                        isLoading = isSigningIn
+                    )
+                }
             }
-        }
-        item(
-            span = { GridItemSpan(maxLineSpan) },
-            contentType = { "title" }) {
-            IconGroupLabel(stringResource(R.string.color), iconPadding)
-        }
-        items(IconsColors.allColors, contentType = { "color" }) { color ->
-            ColorItem(
-                onSelectColor = onSelectColor,
-                color = color,
-                iconSize = iconSize,
-                isSelected = color == state.value.color
-            )
-        }
-        icons.forEach { iconGroup ->
             item(
                 span = { GridItemSpan(maxLineSpan) },
                 contentType = { "title" }) {
-                IconGroupLabel(stringResource(iconGroup.title), iconPadding)
+                IconGroupLabel(stringResource(R.string.color), iconPadding)
             }
-            items(iconGroup.icons, contentType = { "icon" }) { icon ->
-                val iconResource = IconResource.Id(icon.first)
-                IconItem(
-                    modifier = Modifier.animateItem(),
-                    icon = iconResource,
-                    onSelectIcon = onSelectIcon,
-                    onUnlockIcon = onUnlockIcon,
+            items(IconsColors.allColors, contentType = { "color" }) { color ->
+                ColorItem(
+                    onSelectColor = onSelectColor,
+                    color = color,
                     iconSize = iconSize,
-                    isSelected = state.value.icon.matches(iconResource, LocalContext.current),
-                    isUnlocked = icon.second,
-                    color = state.value.color
+                    isSelected = color == state.value.color
                 )
+            }
+            icons.forEach { iconGroup ->
+                item(
+                    span = { GridItemSpan(maxLineSpan) },
+                    contentType = { "title" }) {
+                    IconGroupLabel(stringResource(iconGroup.title), iconPadding)
+                }
+                items(iconGroup.icons, contentType = { "icon" }) { icon ->
+                    val iconResource = IconResource.Id(icon.first)
+                    IconItem(
+                        modifier = Modifier.animateItem(),
+                        icon = iconResource,
+                        onSelectIcon = onSelectIcon,
+                        onUnlockIcon = onUnlockIcon,
+                        iconSize = iconSize,
+                        isSelected = state.value.icon.matches(iconResource, LocalContext.current),
+                        isUnlocked = icon.second,
+                        color = state.value.color
+                    )
+                }
             }
         }
     }

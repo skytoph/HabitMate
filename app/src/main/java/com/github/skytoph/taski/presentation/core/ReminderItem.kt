@@ -1,6 +1,9 @@
 package com.github.skytoph.taski.presentation.core
 
+import androidx.compose.animation.Animatable
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,6 +20,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,10 +34,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.github.skytoph.taski.R
+import com.github.skytoph.taski.presentation.core.component.LoadingItems
 import com.github.skytoph.taski.presentation.core.preview.IconLockedProvider
 import com.github.skytoph.taski.presentation.habit.icon.IconsLockedGroup
 import com.github.skytoph.taski.presentation.habit.icon.component.IconsWarning
-import com.github.skytoph.taski.presentation.settings.backup.component.ButtonWithLoading
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
@@ -97,10 +102,47 @@ fun ReminderItem(
                 isLoading = isLoading,
                 enabledColor = MaterialTheme.colorScheme.primary,
                 disabledColor = MaterialTheme.colorScheme.secondaryContainer,
-                shape = MaterialTheme.shapes.medium,
-                style = MaterialTheme.typography.bodySmall,
                 enabled = !isLoading,
-                textPadding = 16.dp
+            )
+        }
+    }
+}
+
+@Composable
+fun ButtonWithLoading(
+    modifier: Modifier = Modifier,
+    enabled: Boolean,
+    title: String,
+    onClick: () -> Unit,
+    isLoading: Boolean = false,
+    enabledColor: Color = MaterialTheme.colorScheme.primary,
+    disabledColor: Color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.5f),
+) {
+    val color = remember { Animatable(if (isLoading) disabledColor else enabledColor) }
+    LaunchedEffect(isLoading) {
+        color.animateTo(
+            targetValue = if (isLoading) disabledColor else enabledColor,
+            animationSpec = tween(durationMillis = 400)
+        )
+    }
+    Box(modifier = modifier
+        .background(color = color.value, shape = MaterialTheme.shapes.large)
+        .clip(MaterialTheme.shapes.small)
+        .clickable(enabled = !isLoading && enabled) { onClick() }
+        .padding(horizontal = 16.dp, vertical = 8.dp)
+        .animateContentSize(),
+        contentAlignment = Alignment.Center) {
+        Crossfade(
+            targetState = isLoading,
+            label = "reminder_button_crossfade",
+            animationSpec = tween(durationMillis = 150)
+        ) { load ->
+            if (load) LoadingItems(spaceSize = 4.dp)
+            else Text(
+                text = title,
+                color = Color.White,
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.titleSmall
             )
         }
     }

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
@@ -49,7 +50,8 @@ fun GeneralSettingsScreen(
         currentDayHighlightChange = { viewModel.onEvent(GeneralSettingsEvent.ToggleCurrentDayHighlight) },
         streakHighlightChange = { viewModel.onEvent(GeneralSettingsEvent.ToggleStreakHighlight) },
         iconWarningChange = { viewModel.onEvent(GeneralSettingsEvent.ToggleIconWarning) },
-        allowCrashlytics = { viewModel.onEvent(GeneralSettingsEvent.ToggleAllowCrashlytics) }
+        allowCrashlytics = { viewModel.onEvent(GeneralSettingsEvent.ToggleAllowCrashlytics) },
+        timeFormatChange = { viewModel.onEvent(GeneralSettingsEvent.ToggleTimeFormat) },
     )
 }
 
@@ -58,6 +60,7 @@ private fun GeneralContent(
     state: State<Settings>,
     weekStartChange: (Boolean) -> Unit = {},
     currentDayHighlightChange: (Boolean) -> Unit = {},
+    timeFormatChange: (Boolean) -> Unit = {},
     streakHighlightChange: (Boolean) -> Unit = {},
     iconWarningChange: (Boolean) -> Unit = {},
     allowCrashlytics: (Boolean) -> Unit = {},
@@ -66,14 +69,23 @@ private fun GeneralContent(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
+        contentAlignment = Alignment.TopCenter
     ) {
         Column(
-            modifier = Modifier.clip(MaterialTheme.shapes.small)
+            modifier = Modifier
+                .widthIn(max = 520.dp)
+                .clip(MaterialTheme.shapes.small)
         ) {
             SwitchSetting(
                 onChange = weekStartChange,
                 title = stringResource(R.string.week_starts_on_sunday),
                 isChecked = state.value.weekStartsOnSunday.value
+            )
+            HorizontalDivider()
+            SwitchSetting(
+                onChange = timeFormatChange,
+                title = stringResource(R.string.time_format_is_24h),
+                isChecked = state.value.time24hoursFormat.value
             )
             HorizontalDivider()
             SwitchSetting(

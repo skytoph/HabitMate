@@ -30,6 +30,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -66,9 +67,12 @@ fun HabitDaily(
     onLongClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
+    val entriesNumber = remember { mutableIntStateOf(0) }
+    LaunchedEffect(entriesNumber.value) {
+        if (entriesNumber.value != 0) updateEntries(entriesNumber.value)
+    }
     BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
-        val entries = calculateNumberOfDailyEntries(maxWidth = maxWidth)
-        updateEntries(entries)
+        entriesNumber.value = calculateNumberOfDailyEntries(maxWidth = maxWidth)
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -94,7 +98,7 @@ fun HabitDaily(
                     title = habit.title
                 )
                 AnimatedVisibility(
-                    visible = entries == history.entries.size,
+                    visible = entriesNumber.value == history.entries.size,
                     enter = fadeIn(),
                     exit = fadeOut()
                 ) {

@@ -27,6 +27,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -61,6 +62,10 @@ fun HabitCalendar(
 ) {
     val defaultColor = MaterialTheme.colorScheme.secondaryContainer
     val color = remember { Animatable(if (history.todayDonePercent >= 1f) habit.color else defaultColor) }
+    val entriesNumber = remember { mutableIntStateOf(0) }
+    LaunchedEffect(entriesNumber.value) {
+        if (entriesNumber.value != 0) updateEntries(entriesNumber.value)
+    }
     LaunchedEffect(history.todayDonePercent) {
         color.animateTo(
             targetValue = if (history.todayDonePercent >= 1f) habit.color else defaultColor,
@@ -71,8 +76,7 @@ fun HabitCalendar(
         )
     }
     BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
-        val entries = calculateNumberOfCalendarEntries(maxWidth = maxWidth)
-        updateEntries(entries)
+        entriesNumber.value = calculateNumberOfCalendarEntries(maxWidth = maxWidth)
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -119,11 +123,12 @@ fun HabitCalendar(
                     }
                 }
                 val padding = dimensionResource(R.dimen.entry_calendar_content_padding)
-                HabitHistoryTable(
-                    Modifier.padding(start = padding, end = padding, bottom = padding),
-                    habit.color,
-                    history.entries
-                )
+                if (history.entries.size >= entriesNumber.value.times(7))
+                    HabitHistoryTable(
+                        Modifier.padding(start = padding, end = padding, bottom = padding),
+                        habit.color,
+                        history.entries
+                    )
             }
         }
     }
@@ -145,7 +150,11 @@ fun DarkHabitCardPreview(
     @PreviewParameter(HabitProvider::class, limit = 1) habit: HabitWithHistoryUi<HistoryUi>
 ) {
     HabitMateTheme(darkTheme = true) {
-        Box(Modifier.background(MaterialTheme.colorScheme.background).fillMaxSize()) {
+        Box(
+            Modifier
+                .background(MaterialTheme.colorScheme.background)
+                .fillMaxSize()
+        ) {
             HabitCalendar(habit = habit.habit, history = habit.history)
         }
     }

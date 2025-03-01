@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.HorizontalDivider
@@ -44,11 +45,18 @@ fun CreditsScreen(
 
 @Composable
 fun CreditsList(credits: List<CreditItemUi> = emptyList()) {
-    LazyColumn {
+    LazyColumn(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         itemsIndexed(credits) { index, item ->
             CreditItem(item)
             if (index != credits.lastIndex)
-                HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
+                HorizontalDivider(
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .widthIn(max = 520.dp)
+                )
         }
     }
 }
@@ -58,6 +66,7 @@ fun CreditItem(item: CreditItemUi) {
     val uriHandler = LocalUriHandler.current
     Row(
         modifier = Modifier
+            .widthIn(max = 520.dp)
             .fillMaxWidth()
             .clickable(onClick = {
                 item.url?.let { url -> uriHandler.openUri(url) }

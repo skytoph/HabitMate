@@ -33,8 +33,10 @@ fun TimePickerDialog(
     onDismissRequest: () -> Unit = {},
     initialHour: Int = 12,
     initialMinute: Int = 0,
+    is24HourFormat: Boolean = false,
 ) {
-    val state = rememberTimePickerState(initialHour = initialHour, initialMinute = initialMinute)
+    val state =
+        rememberTimePickerState(initialHour = initialHour, initialMinute = initialMinute, is24Hour = is24HourFormat)
     Dialog(
         onDismissRequest = onDismissRequest,
     ) {
@@ -64,6 +66,9 @@ fun TimePickerDialog(
                 colors = TimePickerDefaults.colors(
                     timeSelectorUnselectedContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
                     timeSelectorSelectedContainerColor = MaterialTheme.colorScheme.primary,
+                    periodSelectorUnselectedContentColor = MaterialTheme.colorScheme.tertiary,
+                    periodSelectorSelectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    timeSelectorSelectedContentColor = MaterialTheme.colorScheme.onSurface
                 )
             )
         }
@@ -110,6 +115,14 @@ private fun TimePickerContent(
 @Composable
 @Preview
 fun TimePickerDialogPreview() {
+    HabitMateTheme {
+        Box { TimePickerDialog() }
+    }
+}
+
+@Composable
+@Preview
+fun DarkTimePickerDialogPreview() {
     HabitMateTheme(darkTheme = true) {
         Box { TimePickerDialog() }
     }

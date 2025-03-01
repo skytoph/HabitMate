@@ -34,23 +34,27 @@ class RestoreViewModel @Inject constructor(
 
     fun showMessage(message: SnackbarMessage) = viewModelScope.launch { snackbar.show(message) }
 
-    fun loadItems(locale: Locale, context: Context) = actionHandler.action(
-        doAction = { interactor.backupItems(locale, context) },
+    fun loadItems(locale: Locale, is24HoursFormat: Boolean, context: Context) = actionHandler.action(
+        doAction = { interactor.backupItems(locale, context, is24HoursFormat) },
     )
 
-    fun downloadBackup(id: String, context: Context) = actionHandler.action(
+    fun downloadBackup(id: String, is24HoursFormat: Boolean, context: Context) =
+        state.value.restoreSettings.let { restoreSettings ->
+            actionHandler.action(
+                beforeAction = arrayOf(RestoreEvent.UpdateDialog(), RestoreEvent.Loading(true)),
+                doAction = { interactor.download(id, restoreSettings, context, is24HoursFormat) },
+            )
+        }
+
+    private fun restoreBackup(data: ByteArray, restoreSettings: Boolean, is24HoursFormat: Boolean, context: Context) =
+        actionHandler.action(
+            beforeAction = emptyArray(),
+            doAction = { interactor.restore(data, context, restoreSettings, is24HoursFormat) },
+        )
+
+    fun delete(id: String, locale: Locale, is24HoursFormat: Boolean, context: Context) = actionHandler.action(
         beforeAction = arrayOf(RestoreEvent.UpdateDialog(), RestoreEvent.Loading(true)),
-        doAction = { interactor.download(id, context) },
-    )
-
-    private fun restoreBackup(data: ByteArray, context: Context) = actionHandler.action(
-        beforeAction = emptyArray(),
-        doAction = { interactor.restore(data, context, state.value.restoreSettings) },
-    )
-
-    fun delete(id: String, locale: Locale, context: Context) = actionHandler.action(
-        beforeAction = arrayOf(RestoreEvent.UpdateDialog(), RestoreEvent.Loading(true)),
-        doAction = { interactor.delete(id, locale, context) },
+        doAction = { interactor.delete(id, locale, context, is24HoursFormat) },
     )
 
     fun deleteAllData() = actionHandler.action(

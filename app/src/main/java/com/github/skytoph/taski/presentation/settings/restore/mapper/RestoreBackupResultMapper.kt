@@ -14,21 +14,25 @@ import com.google.api.services.drive.model.File
 import java.util.Locale
 
 interface RestoreBackupResultMapper {
-    fun map(result: BackupResult, locale: Locale? = null, context: Context? = null): RestoreResultUi
+    fun map(result: BackupResult, is24HoursFormat: Boolean, locale: Locale? = null, context: Context? = null)
+            : RestoreResultUi
 
     class Base(private val mapper: BackupItemsUiMapper, private val networkMapper: NetworkErrorMapper) :
         RestoreBackupResultMapper {
 
-        override fun map(result: BackupResult, locale: Locale?, context: Context?): RestoreResultUi = when (result) {
-            is BackupResult.Success.ListOfFiles ->
-                RestoreResultUi.Success.ListOfData(mapper.map(result.data.map { it.map() }, locale!!, context!!))
+        override fun map(result: BackupResult, is24HoursFormat: Boolean, locale: Locale?, context: Context?)
+                : RestoreResultUi = when (result) {
+            is BackupResult.Success.ListOfFiles -> RestoreResultUi.Success.ListOfData(
+                mapper.map(result.data.map { it.map() }, locale!!, context!!, is24HoursFormat)
+            )
 
-            is BackupResult.Success.FileDownloaded -> RestoreResultUi.Success.NextAction(result.file, context!!)
+            is BackupResult.Success.FileDownloaded ->
+                RestoreResultUi.Success.NextAction(result.file, result.restoreSettings, is24HoursFormat, context!!)
 
             is BackupResult.Success.Deleted -> RestoreResultUi.Success.Deleted(
                 message = BackupMessages.deleteItemSucceededMessage,
                 time = result.time?.value,
-                newData = mapper.map(result.newData.map { it.map() }, locale!!, context!!)
+                newData = mapper.map(result.newData.map { it.map() }, locale!!, context!!, is24HoursFormat)
             )
 
             is BackupResult.Success.FileRestored -> RestoreResultUi.Success.Restored(

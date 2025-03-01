@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -54,7 +55,8 @@ fun ViewBottomSheet(
     ModalBottomSheet(
         onDismissRequest = hideBottomSheet,
         sheetState = state,
-        containerColor = MaterialTheme.colorScheme.primaryContainer
+        containerColor = MaterialTheme.colorScheme.primaryContainer,
+        modifier = Modifier.widthIn(max = 640.dp)
     ) {
         Column(
             modifier = Modifier.fillMaxWidth()

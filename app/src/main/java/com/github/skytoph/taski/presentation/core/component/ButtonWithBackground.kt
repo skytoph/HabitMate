@@ -17,7 +17,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ButtonWithBackground(onClick: () -> Unit, text: String, background: Color, enabled: Boolean = true, height: Dp) {
+fun ButtonWithBackground(
+    onClick: () -> Unit, text: String, background: Color, enabled: Boolean = true, height: Dp, textColor: Color
+) {
     Box(modifier = Modifier
         .fillMaxWidth()
         .heightIn(min = height)
@@ -32,7 +34,7 @@ fun ButtonWithBackground(onClick: () -> Unit, text: String, background: Color, e
         Text(
             text = text,
             style = MaterialTheme.typography.titleSmall,
-            color = Color.White
+            color = textColor
         )
     }
 }

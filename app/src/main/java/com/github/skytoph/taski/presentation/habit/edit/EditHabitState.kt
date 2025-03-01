@@ -18,6 +18,7 @@ data class EditHabitState(
     val priority: Int = Int.MAX_VALUE,
     val frequencyState: FrequencyState = FrequencyState(),
     val reminder: ReminderUi = ReminderUi(),
+    val reminderAllowed: Boolean? = null,
     val isFrequencyExpanded: Boolean = false,
     val isCustomTypeExpanded: Boolean = false,
     val icon: IconResource = IconResource.Default,

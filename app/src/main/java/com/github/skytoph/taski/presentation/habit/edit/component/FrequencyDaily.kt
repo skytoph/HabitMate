@@ -31,35 +31,47 @@ fun FrequencyDaily(
     select: (Int) -> Unit,
     isFirstDaySunday: Boolean
 ) {
-    val surfaceVariant = MaterialTheme.colorScheme.surfaceVariant
-    val primary = MaterialTheme.colorScheme.primary
-
+    val weekDays = remember(isFirstDaySunday, frequency.days) {
+        (1..7)
+            .map { weekDayCalendar(isFirstDaySunday, it) }
+            .associateWith { frequency.days.contains(it) }
+    }
     Column(modifier = Modifier.padding(horizontal = 8.dp)) {
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-            for (index in 1..7) {
-                val item = weekDayCalendar(isFirstDaySunday, index)
-                val color = remember { Animatable(if (frequency.days.contains(item)) primary else surfaceVariant) }
-                LaunchedEffect(frequency.days) {
-                    color.animateTo(
-                        targetValue = if (frequency.days.contains(item)) primary else surfaceVariant,
-                        animationSpec = tween(300)
-                    )
-                }
-                WeekDayLabel(
-                    modifier = Modifier
-                        .weight(1f)
-                        .background(color = color.value, shape = MaterialTheme.shapes.extraSmall)
-                        .clip(shape = MaterialTheme.shapes.extraSmall)
-                        .clickable { select(item) }
-                        .padding(vertical = 6.dp),
-                    index = item,
-                    alignment = Alignment.Center,
-                    color = color.value.contrastColor(),
+            for (item in weekDays) {
+                DailyItem(
+                    modifier = Modifier.weight(1f),
+                    item = item.key,
+                    selected = item.value,
+                    select = select
                 )
             }
         }
         Spacer(modifier = Modifier.height(8.dp))
     }
+}
+
+@Composable
+fun DailyItem(modifier: Modifier = Modifier, item: Int, selected: Boolean, select: (Int) -> Unit) {
+    val surfaceVariant = MaterialTheme.colorScheme.surfaceVariant
+    val primary = MaterialTheme.colorScheme.primary
+    val color = remember { Animatable(if (selected) primary else surfaceVariant) }
+    LaunchedEffect(selected) {
+        color.animateTo(
+            targetValue = if (selected) primary else surfaceVariant,
+            animationSpec = tween(300)
+        )
+    }
+    WeekDayLabel(
+        modifier = modifier
+            .background(color = color.value, shape = MaterialTheme.shapes.extraSmall)
+            .clip(shape = MaterialTheme.shapes.extraSmall)
+            .clickable { select(item) }
+            .padding(vertical = 6.dp),
+        index = item,
+        alignment = Alignment.Center,
+        color = color.value.contrastColor(),
+    )
 }
 
 @Preview

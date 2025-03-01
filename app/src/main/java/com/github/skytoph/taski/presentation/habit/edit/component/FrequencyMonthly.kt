@@ -1,7 +1,10 @@
 package com.github.skytoph.taski.presentation.habit.edit.component
 
+import androidx.compose.animation.Animatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,6 +20,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -72,18 +77,28 @@ private fun MonthlyItem(
     selected: Boolean = false,
     select: (Int) -> Unit
 ) {
-    val background =
-        if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant
+    val primary = MaterialTheme.colorScheme.primary
+    val surfaceVariant = MaterialTheme.colorScheme.surfaceVariant
+    val color = remember { Animatable(if (selected) primary else surfaceVariant) }
+    LaunchedEffect(selected) {
+        color.animateTo(
+            targetValue = if (selected) primary else surfaceVariant,
+            animationSpec = tween(durationMillis = 300)
+        )
+    }
     Box(contentAlignment = Alignment.Center) {
         Box(
             modifier = Modifier
                 .size(squareDp)
-                .background(color = background, shape = CircleShape)
+                .background(color = color.value, shape = CircleShape)
                 .aspectRatio(1f)
                 .clip(CircleShape)
-                .clickable { select(index) }
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                ) { select(index) }
         )
-        Text(text = index.toString(), color = background.contrastColor(), style = MaterialTheme.typography.bodyMedium)
+        Text(text = index.toString(), color = color.value.contrastColor(), style = MaterialTheme.typography.bodyMedium)
     }
 }
 

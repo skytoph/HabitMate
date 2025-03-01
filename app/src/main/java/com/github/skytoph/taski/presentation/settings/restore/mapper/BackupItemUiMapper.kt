@@ -9,15 +9,19 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 interface BackupItemsUiMapper {
-    fun map(items: List<BackupFile>, locale: Locale, context: Context): List<BackupItemUi>
+    fun map(items: List<BackupFile>, locale: Locale, context: Context, is24HoursFormat: Boolean): List<BackupItemUi>
 
     class Base : BackupItemsUiMapper {
-        override fun map(items: List<BackupFile>, locale: Locale, context: Context): List<BackupItemUi> =
+        override fun map(items: List<BackupFile>, locale: Locale, context: Context, is24HoursFormat: Boolean)
+                : List<BackupItemUi> =
             items.map { item ->
+                val date = context.getString(
+                    if (is24HoursFormat) R.string.backup_date_format_24h_format
+                    else R.string.backup_date_format_12h_format
+                )
                 BackupItemUi(
                     id = item.id,
-                    date = SimpleDateFormat(context.getString(R.string.backup_date_format), locale)
-                        .format(item.modifiedTime),
+                    date = SimpleDateFormat(date, locale).format(item.modifiedTime),
                     size = Formatter.formatShortFileSize(context, item.size)
                 )
             }

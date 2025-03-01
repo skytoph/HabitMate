@@ -1,9 +1,11 @@
 package com.github.skytoph.taski.data.habit.database
 
+import androidx.annotation.Keep
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 
+@Keep
 @Entity(
     tableName = "entry",
     primaryKeys = ["habit_id", "timestamp"],
@@ -12,7 +14,7 @@ import androidx.room.ForeignKey
         parentColumns = ["id"],
         childColumns = ["habit_id"],
         onDelete = ForeignKey.CASCADE,
-        onUpdate = ForeignKey.NO_ACTION,
+        onUpdate = ForeignKey.CASCADE,
     )]
 )
 data class EntryEntity(

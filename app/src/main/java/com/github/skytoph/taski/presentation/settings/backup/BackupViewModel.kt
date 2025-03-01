@@ -3,7 +3,9 @@ package com.github.skytoph.taski.presentation.settings.backup
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentSender
 import android.net.Uri
+import androidx.activity.result.ActivityResult
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.lifecycle.viewModelScope
@@ -14,7 +16,9 @@ import com.github.skytoph.taski.presentation.appbar.SnackbarMessage
 import com.github.skytoph.taski.presentation.core.ViewModelAction
 import com.github.skytoph.taski.presentation.settings.SettingsViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Locale
 import javax.inject.Inject
 
@@ -25,7 +29,7 @@ class BackupViewModel @Inject constructor(
     private val snackbar: PopupMessage.Show<SnackbarMessage>,
     settings: SettingsCache,
     initAppBar: InitAppBar
-) : SettingsViewModel<BackupEvent.SettingsEvent>(settings, initAppBar) {
+) : SettingsViewModel<BackupEvent.SettingsEvent>(settings, initAppBar), BackupEvent.BackupEventHandler {
 
     private val actionHandler: ViewModelAction<BackupResultUi, BackupEvent> =
         ViewModelAction.Base(scope = viewModelScope, eventHandler = ::onEvent, mapper = { it.apply() })
@@ -76,19 +80,46 @@ class BackupViewModel @Inject constructor(
         doAction = { interactor.deleteAccount(context) }
     )
 
-    fun onEvent(event: BackupEvent) =
-        event.handle(state = state, showMessage = ::showMessage, settingsEvent = ::onEvent)
+    fun onEvent(event: BackupEvent) = event.handle(state = state, handler = this)
 
-    private fun showMessage(message: SnackbarMessage) = viewModelScope.launch { snackbar.show(message) }
+    override fun showMessage(message: SnackbarMessage) {
+        viewModelScope.launch { snackbar.show(message) }
+    }
 
     fun state(): State<BackupState> = state
 
-    fun mapBackupTime(time: Long?, context: Context, locale: Locale): String? =
-        interactor.mapTime(time, TIME_IS_LOADING_VALUE, context, locale)
+    fun mapBackupTime(time: Long?, context: Context, locale: Locale, is24HoursFormat: Boolean): String? =
+        interactor.mapTime(time, TIME_IS_LOADING_VALUE, context, locale, is24HoursFormat)
 
-    fun signInWithFirebase(intent: Intent, context: Context) = actionHandler.action(
-        doAction = { interactor.signInWithFirebase(intent, context) }
-    )
+    fun signIn(context: Context) = actionHandler.action(
+        beforeAction = arrayOf(BackupEvent.IsSigningIn(true)),
+        doAction = { interactor.signIn(context, true) })
+
+    fun signInFailed(result: ActivityResult? = null) {
+        onEvent(BackupEvent.IsSigningIn(false))
+        interactor.log(result?.data)
+    }
+
+    override fun updateSettings(event: BackupEvent.SettingsEvent) {
+        onEvent(event)
+    }
+
+    fun authorizeResult(context: Context, data: Intent?) = viewModelScope.launch(Dispatchers.IO) {
+        interactor.authorizeResult(context, data)
+        withContext(Dispatchers.Main) {
+            onEvent(BackupEvent.IsSigningIn(false))
+            loadProfile(context)
+        }
+    }
+
+    fun backupPermissionRequest(context: Context, requestPermission: suspend (IntentSender) -> Unit) =
+        viewModelScope.launch(Dispatchers.IO) {
+            val request = interactor.backupPermissionRequest(context)
+            withContext(Dispatchers.Main) {
+                request?.let { requestPermission(request) }
+                onEvent(BackupEvent.RequestBackupPermission(false))
+            }
+        }
 
     companion object {
         const val TIME_IS_LOADING_VALUE = -1L

@@ -97,10 +97,12 @@ fun EditHabitScreen(
     onSelectIconClick: () -> Unit
 ) {
     val context = LocalContext.current
-
     val actionColor = MaterialTheme.colorScheme.onSurface
-    LaunchedEffect(viewModel.state().value.isLoading) {
-        if (viewModel.state().value.isLoading) return@LaunchedEffect
+    val state = viewModel.state()
+    val settings = viewModel.settings().collectAsState()
+
+    LaunchedEffect(state.value.isLoading) {
+        if (state.value.isLoading) return@LaunchedEffect
         val actionSave =
             AppBarAction.save.copy(color = actionColor, onClick = { viewModel.validate() })
         viewModel.initAppBar(
@@ -113,17 +115,23 @@ fun EditHabitScreen(
     LaunchedEffect(iconState.value) {
         viewModel.onEvent(EditHabitEvent.UpdateIcon(iconState.value.icon, iconState.value.color))
     }
-    val validated = viewModel.state().value.isValidated
+    val validated = state.value.isValidated
     LaunchedEffect(validated) {
         if (validated) viewModel.saveHabit(navigateUp = navigateUp, context = context)
     }
 
     LaunchedEffect(Unit) {
-        viewModel.init(reminderAllowed = areNotificationsEnabled(context) && areAlarmsEnabled(context))
+        val reminderAllowed = areNotificationsEnabled(context) && areAlarmsEnabled(context)
+        viewModel.onEvent(EditHabitEvent.AllowReminder(allowed = reminderAllowed))
+    }
+
+    LaunchedEffect(state.value.reminderAllowed) {
+        if (state.value.reminderAllowed == false)
+            viewModel.onEvent(EditHabitEvent.UpdateReminder(switchOn = false))
     }
 
     EditHabit(
-        state = viewModel.state(),
+        state = state,
         onSelectIconClick = onSelectIconClick,
         onTypeTitle = { viewModel.onEvent(EditHabitEvent.EditTitle(it)) },
         onTypeDescription = { viewModel.onEvent(EditHabitEvent.EditDescription(it)) },
@@ -141,12 +149,11 @@ fun EditHabitScreen(
         switchOn = { viewModel.onEvent(EditHabitEvent.UpdateReminder(switchOn = it)) },
         showDialog = { viewModel.onEvent(EditHabitEvent.UpdateReminder(showDialog = it)) },
         updateReminder = { hour, minute ->
-            viewModel.onEvent(
-                EditHabitEvent.UpdateReminder(hour = hour, minute = minute, showDialog = false)
-            )
+            viewModel.onEvent(EditHabitEvent.UpdateReminder(hour = hour, minute = minute, showDialog = false))
         },
         showPermissionDialog = { viewModel.onEvent(EditHabitEvent.ShowPermissionDialog(it)) },
-        isFirstDaySunday = viewModel.settings().collectAsState().value.weekStartsOnSunday.value
+        isFirstDaySunday = settings.value.weekStartsOnSunday.value,
+        is24HourFormat = settings.value.time24hoursFormat.value,
     )
 }
 
@@ -172,6 +179,7 @@ private fun EditHabit(
     updateReminder: (Int, Int) -> Unit = { _, _ -> },
     showPermissionDialog: (DialogItem?) -> Unit = {},
     isFirstDaySunday: Boolean = false,
+    is24HourFormat: Boolean = false,
 ) {
     EditBaseHabit(
         title = state.value.title,
@@ -202,7 +210,8 @@ private fun EditHabit(
         showTimeDialog = showDialog,
         showPermissionDialog = showPermissionDialog,
         updateReminder = updateReminder,
-        isFirstDaySunday = isFirstDaySunday
+        isFirstDaySunday = isFirstDaySunday,
+        is24HourFormat = is24HourFormat
     )
 }
 
@@ -238,166 +247,176 @@ fun EditBaseHabit(
     showPermissionDialog: (DialogItem?) -> Unit,
     updateReminder: (Int, Int) -> Unit,
     isFirstDaySunday: Boolean,
+    is24HourFormat: Boolean,
 ) {
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
-    Column(
+    Box(
         modifier = Modifier
-            .padding(horizontal = 16.dp)
-            .verticalScroll(rememberScrollState())
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState()),
+        contentAlignment = Alignment.TopCenter
     ) {
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+        Column(
+            modifier = Modifier
+                .widthIn(max = 520.dp)
+                .padding(horizontal = 16.dp)
+        ) {
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Text(
+                    text = stringResource(R.string.habit_label),
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                Text(
+                    text = stringResource(R.string.icon_label),
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier.widthIn(min = minHeight)
+                )
+            }
+            Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                TextFieldWithError(
+                    modifier = Modifier.weight(1f),
+                    value = title.field,
+                    onValueChange = onTypeTitle,
+                    error = title.error?.getString(context),
+                    height = minHeight,
+                    clearFocus = { focusManager.clearFocus() },
+                    title = "",
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
+                )
+                IconSelector(
+                    icon = icon,
+                    color = color,
+                    size = minHeight,
+                    onClick = { focusManager.clearFocus(); onSelectIconClick() }
+                )
+            }
+            Spacer(modifier = Modifier.height(4.dp))
+            TextFieldWithError(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .animateContentSize(),
+                value = description.field,
+                onValueChange = onTypeDescription,
+                height = minHeight,
+                clearFocus = { focusManager.clearFocus() },
+                title = stringResource(R.string.description_label),
+                singleLine = false,
+                maxLines = 5,
+                keyboardOptions = KeyboardOptions.Default,
+                keyboardActions = KeyboardActions.Default
+            )
+            Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = stringResource(R.string.habit_label),
+                text = stringResource(R.string.goal_label),
                 style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.onBackground
             )
-            Text(
-                text = stringResource(R.string.icon_label),
-                style = MaterialTheme.typography.titleSmall,
-                color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.widthIn(min = minHeight)
-            )
-        }
-        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-            TextFieldWithError(
-                modifier = Modifier.weight(1f),
-                value = title.field,
-                onValueChange = onTypeTitle,
-                error = title.error?.getString(context),
-                height = minHeight,
-                clearFocus = { focusManager.clearFocus() },
-                title = "",
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
-            )
-            IconSelector(
-                icon = icon,
-                color = color,
-                size = minHeight,
-                onClick = { focusManager.clearFocus(); onSelectIconClick() }
-            )
-        }
-        Spacer(modifier = Modifier.height(4.dp))
-        TextFieldWithError(
-            modifier = Modifier
-                .fillMaxWidth()
-                .animateContentSize(),
-            value = description.field,
-            onValueChange = onTypeDescription,
-            height = minHeight,
-            clearFocus = { focusManager.clearFocus() },
-            title = stringResource(R.string.description_label),
-            singleLine = false,
-            maxLines = 5,
-            keyboardOptions = KeyboardOptions.Default,
-            keyboardActions = KeyboardActions.Default
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(
-            text = stringResource(R.string.goal_label),
-            style = MaterialTheme.typography.titleSmall,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-            Row(
-                modifier = Modifier
-                    .background(
-                        color = MaterialTheme.colorScheme.surfaceVariant,
-                        shape = MaterialTheme.shapes.extraSmall
-                    )
-                    .padding(horizontal = 16.dp)
-                    .height(minHeight)
-                    .wrapContentHeight()
-                    .weight(1f)
-            ) {
-                AnimatedContent(
-                    targetState = goal.value,
-                    transitionSpec = {
-                        if (initialState == EditHabitState.goalIsNotInitialized || targetState == EditHabitState.goalIsNotInitialized)
-                            fadeIn(tween(durationMillis = 0)) togetherWith fadeOut(tween(durationMillis = 0))
-                        else if (targetState > initialState)
-                            slideInVertically { -it } togetherWith slideOutVertically { it }
-                        else
-                            slideInVertically { it } togetherWith slideOutVertically { -it }
-                    },
-                    label = "goal_counter_anim"
-                ) { count ->
+            Spacer(modifier = Modifier.height(4.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                Row(
+                    modifier = Modifier
+                        .background(
+                            color = MaterialTheme.colorScheme.surfaceVariant,
+                            shape = MaterialTheme.shapes.extraSmall
+                        )
+                        .padding(horizontal = 16.dp)
+                        .height(minHeight)
+                        .wrapContentHeight()
+                        .weight(1f)
+                ) {
+                    AnimatedContent(
+                        targetState = goal.value,
+                        transitionSpec = {
+                            if (initialState == EditHabitState.goalIsNotInitialized || targetState == EditHabitState.goalIsNotInitialized)
+                                fadeIn(tween(durationMillis = 0)) togetherWith fadeOut(tween(durationMillis = 0))
+                            else if (targetState > initialState)
+                                slideInVertically { -it } togetherWith slideOutVertically { it }
+                            else
+                                slideInVertically { it } togetherWith slideOutVertically { -it }
+                        },
+                        label = "goal_counter_anim"
+                    ) { count ->
+                        Text(
+                            text = count.toString(),
+                            style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                    }
                     Text(
-                        text = count.toString(),
-                        style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
+                        text = " " + stringResource(R.string.goal_in_day),
+                        style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onBackground
                     )
                 }
-                Text(
-                    text = " " + stringResource(R.string.goal_in_day),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onBackground
+                SquareButton(
+                    onClick = { focusManager.clearFocus(); onDecreaseGoal() },
+                    icon = Icons.Default.Remove,
+                    size = minHeight,
+                    isEnabled = goal.canBeDecreased
+                )
+                SquareButton(
+                    onClick = { focusManager.clearFocus(); onIncreaseGoal() },
+                    icon = Icons.Default.Add,
+                    size = minHeight,
+                    isEnabled = goal.canBeIncreased
                 )
             }
-            SquareButton(
-                onClick = { focusManager.clearFocus(); onDecreaseGoal() },
-                icon = Icons.Default.Remove,
-                size = minHeight,
-                isEnabled = goal.canBeDecreased
+            Spacer(modifier = Modifier.height(18.dp))
+            Text(
+                text = stringResource(R.string.frequency),
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.onBackground
             )
-            SquareButton(
-                onClick = { focusManager.clearFocus(); onIncreaseGoal() },
-                icon = Icons.Default.Add,
-                size = minHeight,
-                isEnabled = goal.canBeIncreased
+            Spacer(modifier = Modifier.height(4.dp))
+            EditFrequency(
+                frequency = frequency,
+                expanded = isFrequencyExpanded,
+                expand = { focusManager.clearFocus(); expandFrequency() },
+                minHeight = minHeight,
+                selectType = selectType,
+                increaseTimes = increaseTimes,
+                decreaseTimes = decreaseTimes,
+                increaseType = increaseType,
+                decreaseType = decreaseType,
+                selectDay = selectDay,
+                selectCustomType = selectCustomType,
+                expandType = expandType,
+                typeExpanded = typeExpanded,
+                isFirstDaySunday = isFirstDaySunday
             )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = stringResource(R.string.reminder),
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            EditReminder(
+                minHeight = minHeight,
+                reminder = reminder,
+                is24HoursFormat = is24HourFormat,
+                switchOn = { focusManager.clearFocus(); switchOn(it) },
+                showTimeDialog = { focusManager.clearFocus(); showTimeDialog(it) },
+                requestPermissionDialog = { focusManager.clearFocus(); showPermissionDialog(it) }
+            )
+            Spacer(modifier = Modifier.height(80.dp))
         }
-        Spacer(modifier = Modifier.height(18.dp))
-        Text(
-            text = stringResource(R.string.frequency),
-            style = MaterialTheme.typography.titleSmall,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        EditFrequency(
-            frequency = frequency,
-            expanded = isFrequencyExpanded,
-            expand = { focusManager.clearFocus(); expandFrequency() },
-            minHeight = minHeight,
-            selectType = selectType,
-            increaseTimes = increaseTimes,
-            decreaseTimes = decreaseTimes,
-            increaseType = increaseType,
-            decreaseType = decreaseType,
-            selectDay = selectDay,
-            selectCustomType = selectCustomType,
-            expandType = expandType,
-            typeExpanded = typeExpanded,
-            isFirstDaySunday = isFirstDaySunday
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = stringResource(R.string.reminder),
-            style = MaterialTheme.typography.titleSmall,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        EditReminder(
-            minHeight = minHeight,
-            reminder = reminder,
-            switchOn = { focusManager.clearFocus(); switchOn(it) },
-            showTimeDialog = { focusManager.clearFocus(); showTimeDialog(it) },
-            requestPermissionDialog = { focusManager.clearFocus(); showPermissionDialog(it) }
-        )
-        Spacer(modifier = Modifier.height(80.dp))
-    }
-    if (reminder.isDialogShown)
-        TimePickerDialog(
-            onDismissRequest = { showTimeDialog(false) },
-            onConfirm = updateReminder,
-            initialHour = reminder.hour,
-            initialMinute = reminder.minute,
-        )
-    dialog?.let {
-        NotificationPermissionDialog(dialog)
+        if (reminder.isDialogShown)
+            TimePickerDialog(
+                onDismissRequest = { showTimeDialog(false) },
+                onConfirm = updateReminder,
+                initialHour = reminder.hour,
+                initialMinute = reminder.minute,
+                is24HourFormat = is24HourFormat
+            )
+        dialog?.let {
+            NotificationPermissionDialog(dialog)
+        }
     }
 }
 
@@ -405,6 +424,7 @@ fun EditBaseHabit(
 private fun EditReminder(
     minHeight: Dp,
     reminder: ReminderUi,
+    is24HoursFormat: Boolean,
     switchOn: (Boolean) -> Unit,
     showTimeDialog: (Boolean) -> Unit,
     requestPermissionDialog: (DialogItem?) -> Unit,
@@ -441,7 +461,11 @@ private fun EditReminder(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = reminder.formatted(getLocale(), stringResource(R.string.reminder_none)),
+                            text = reminder.formatted(
+                                getLocale(),
+                                stringResource(R.string.reminder_none),
+                                is24HoursFormat
+                            ),
                             style = MaterialTheme.typography.bodyMedium,
                             color = if (isReminderOn) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground,
                             modifier = Modifier.padding(horizontal = 16.dp),

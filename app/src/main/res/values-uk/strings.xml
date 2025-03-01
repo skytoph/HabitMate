@@ -35,6 +35,7 @@
     <string name="edit_history_hint">натисніть на день для оновлення прогресу, зміни будуть збережені автоматично</string>
     <string name="entry_tooltip_percent_done">%1$s / %2$s виконано</string>
     <string name="color_and_icon_label">колір та іконка</string>
+    <string name="icons_menu_item_unlocked_first">Спочатку розблоковані</string>
     <string name="habit_label">звичка</string>
     <string name="error_habit_title_is_empty">введіть назву звички</string>
     <string name="color">колір</string>
@@ -113,6 +114,8 @@
     <string name="archive_habit_confirmation_dialog_title">Архівувати звичку</string>
     <string name="archive_habit_confirmation_dialog_description">Ви дійсно хочете архівувати звичку?\nЗвичку можна відновити у будь-який час.</string>
     <string name="action_archive">Архівувати</string>
+    <string name="delete">Видалити</string>
+    <string name="restore">Відновити</string>
 
     <!--    Restore dialog-->
     <string name="restore_habit_confirmation_dialog_title">Відновити звичку</string>
@@ -129,6 +132,7 @@
     <string name="list_of_habits_is_empty_label">Список звичок порожній</string>
     <string name="list_of_habits_is_empty_create_label">Немає запланованих звичок\nСтворити нову?</string>
     <string name="archive_is_empty_label">Архів порожній</string>
+    <string name="action_create">Створити</string>
 
     <!--    Reminders-->
     <string name="habit_reminder_message">Час виконати звичку &#x2728;</string>
@@ -140,6 +144,7 @@
     <string name="hide_reminder">Підтвердження</string>
     <string name="hide_reminder_confirmation_description">Сховати це нагадування?</string>
     <string name="hide_reminder_confirmation_description_permanently">Ви завжди можете ввімкнути його знову в налаштуваннях.</string>
+    <string name="unlocked_first">Спочатку розблоковані</string>
 
     <!--    Settings-->
     <string name="settings_app">Додаток</string>
@@ -157,7 +162,8 @@
     <string name="settings_share_the_app">Поділитись додатком</string>
 
     <!--    General Settings-->
-    <string name="week_starts_on_sunday">починами тиждень з неділі</string>
+    <string name="week_starts_on_sunday">починати тиждень з неділі</string>
+    <string name="time_format_is_24h">24-годинний формат</string>
     <string name="highlight_current_day">виділяти поточний день</string>
     <string name="highlight_streaks">виділяти серію</string>
 
@@ -186,7 +192,7 @@
     <string name="export_title">Експорт у файл</string>
     <string name="import_title">Імпорт із файлу</string>
     <string name="success_import_title">Успішно</string>
-    <string name="import_error_title">Помилка</string>
+    <string name="error_title">Помилка</string>
     <string name="success_import_message">Дані успішно відновлено!</string>
     <string name="error_export_title">Не вдалося експортувати</string>
     <string name="error_export">Сталася помилка, не вдалося експортувати дані.</string>
@@ -198,8 +204,9 @@
     <string name="export_description_icons_warning">Розблоковані іконки не включені у файл експорту.</string>
     <string name="export_description_icons_warning_details">Щоб зберегти розблоковані іконки, будь ласка, увійдіть через обліковий запис Google.</string>
     <string name="backup_with_google_description">Увійдіть через Google, щоб зберегти резервну копію у Google Drive.\nЗверніть увагу, якщо ви не увійшли, ви не зможете використовувати розблоковані іконки.</string>
-    <string name="last_time_backup_saved">остання синхронізація %1$s</string>
-    <string name="no_backup_data">Немає збережених резервних даних</string>
+    <string name="last_time_backup_saved">резервне копіювання %1$s</string>
+    <string name="icons_are_synchronized">іконки синхронізовано</string>
+    <string name="no_backup_data">немає збережених резервних даних</string>
     <string name="restore_dialog_description_confirmation">Ви хочете відновити цю резервну копію?</string>
     <string name="restore_dialog_description_warning">Це перезапише ваші поточні дані.</string>
     <string name="delete_backup_dialog_description_confirmation">Ви хочете видалити цю резервну копію?</string>
@@ -247,16 +254,19 @@
     <string name="error_downloading_backup">Не вдалося завантажити резервну копію. Спробуйте ще раз пізніше.</string>
     <string name="error_deleting_backup">Не вдалося видалити резервну копію. Спробуйте ще раз пізніше.</string>
     <string name="error_general">Сталася помилка. Будь ласка, спробуйте ще раз пізніше.</string>
+    <string name="error_backup_unavailable">Дозвольте доступ до Google Drive для відновлення даних</string>
     <string name="success_title">Успішно</string>
-    <string name="success_delete_backups">Резервні копії було остаточно видалено.</string>
-    <string name="success_delete_backup">Резервну копію успішно видалено.</string>
+    <string name="success_delete_backups">Резервні копії було остаточно видалено</string>
+    <string name="success_create_backup">Резервна копія успішно збережена</string>
+    <string name="success_delete_backup">Резервну копію успішно видалено</string>
     <string name="success_deleting_account">Ваш обліковий запис видалено</string>
     <string name="success_synchronizing_icons">Іконки успішно синхронізовано</string>
-    <string name="success_clearing_data">Усі локальні дані було очищено.</string>
+    <string name="success_clearing_data">Усі локальні дані було очищено</string>
     <string name="error_clearing_data">Сталася помилка, не вдалося очистити локальні дані. Спробуйте ще раз пізніше.</string>
     <string name="error_synchronizing_icons">Не вдалося синхронізувати іконки</string>
     <string name="backup_item_size">розмір: %1$s</string>
     <string name="create_backup_on_drive">Резервне копіювання у Google Drive</string>
+    <string name="allow_backup">Дозволити резервне копіювання Google Drive</string>
     <string name="restore_item">Відновити</string>
     <string name="sign_out_item">Вийти</string>
     <string name="delete_account_item">Видалити обліковий запис</string>
@@ -271,9 +281,9 @@
     <string name="loading_clearing" tools:ignore="TypographyEllipsis">Видалення даних...</string>
     <string name="loading_backup" tools:ignore="TypographyEllipsis">Створення резервної копії...</string>
     <string name="clear_all_data">Очистити данні</string>
+    <string name="loading_backup_permission" tools:ignore="TypographyEllipsis">Запит дозволу...</string>
 
     <!--    Share-->
-    <string name="share_app_message">Спробуйте цей зручний додаток для відстеження звичок, який я використовую! Завантажити можна тут: </string>
     <string name="share_app_title">Поділитись додатком</string>
 
     <!--    Crashlytics-->

@@ -1,5 +1,7 @@
 package com.github.skytoph.taski.core.datastore.settings
 
+import android.content.Context
+import android.text.format.DateFormat
 import androidx.compose.runtime.Stable
 import java.util.Calendar
 
@@ -7,6 +9,7 @@ import java.util.Calendar
 data class Settings(
     val weekStartsOnSunday: Initializable<Boolean> = Initializable(default = true),
     val currentDayHighlighted: Boolean = true,
+    val time24hoursFormat: Initializable<Boolean> = Initializable(default = true),
     val streaksHighlighted: Boolean = true,
     val showIconWarning: Boolean = true,
     val allowCrashlytics: Boolean? = null,
@@ -31,12 +34,14 @@ data class Initializable<T : Any>(private val initialValue: T? = null, private v
         if (initialValue == null) Initializable(newValue, newValue) else this
 }
 
-class InitializeEmptyValues {
+class InitializeEmptyValues(private val context: Context? = null) {
     fun initialize(value: Settings): Settings {
         val weekStartDefault = Calendar.getInstance().firstDayOfWeek == Calendar.SUNDAY
+        val time24hoursDefault = if (context == null) true else DateFormat.is24HourFormat(context)
 
         return value.copy(
             weekStartsOnSunday = value.weekStartsOnSunday.initializeIfEmpty(weekStartDefault),
+            time24hoursFormat = value.time24hoursFormat.initializeIfEmpty(time24hoursDefault),
             theme = value.theme ?: AppTheme.System,
             view = HabitsView(initialized = true)
         )

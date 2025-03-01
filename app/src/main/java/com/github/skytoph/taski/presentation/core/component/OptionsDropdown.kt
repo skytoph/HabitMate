@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -52,7 +53,7 @@ fun <T : ProvideOptionUi<T>> OptionsDropdown(
             modifier = Modifier.padding(start = 16.dp, top = 12.dp),
             style = MaterialTheme.typography.titleMedium
         )
-        Box {
+        Box(modifier = modifier.fillMaxWidth()) {
             Row(
                 modifier = Modifier
                     .clickable { expanded = !expanded }
@@ -79,6 +80,7 @@ fun <T : ProvideOptionUi<T>> OptionsDropdown(
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
                 modifier = Modifier
+                    .widthIn(max = 640.dp)
                     .fillMaxWidth()
                     .background(color = MaterialTheme.colorScheme.primaryContainer),
             ) {

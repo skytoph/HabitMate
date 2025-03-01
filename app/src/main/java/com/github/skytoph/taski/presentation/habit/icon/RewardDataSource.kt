@@ -2,6 +2,8 @@ package com.github.skytoph.taski.presentation.habit.icon
 
 import android.app.Activity
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import com.github.skytoph.taski.BuildConfig
 import com.github.skytoph.taski.presentation.habit.icon.RewardDataSource.Fail
@@ -17,6 +19,7 @@ interface RewardDataSource {
     suspend fun initialize(context: Context)
     fun load(activity: Activity, fail: Fail = Fail {})
     fun show(activity: Activity, reward: Reward, fail: Fail)
+    fun cancel()
 
     fun interface Reward {
         fun rewarded()
@@ -39,19 +42,20 @@ interface RewardDataSource {
         }
 
         override fun load(activity: Activity, fail: Fail) {
+            Log.e(TAG, "Preparing to load the ad...")
             isLoading = true
             val request = AdRequest.Builder().build()
             RewardedAd.load(activity, ADMOB_UNIT_ID, request, object : RewardedAdLoadCallback() {
                 override fun onAdFailedToLoad(error: LoadAdError) {
-                    rewardedAd = null
                     isLoading = false
+                    rewardedAd = null
                     fail.failed()
                     Log.e(TAG, "Ad failed to load.")
                 }
 
                 override fun onAdLoaded(ad: RewardedAd) {
-                    rewardedAd = ad
                     isLoading = false
+                    rewardedAd = ad
                     showIfIntended?.invoke(activity)
                     Log.e(
                         TAG,
@@ -62,7 +66,7 @@ interface RewardDataSource {
         }
 
         override fun show(activity: Activity, reward: Reward, fail: Fail) {
-            Log.e(TAG, "Preparing the ad")
+            Log.e(TAG, "Preparing to show the ad")
             showIfIntended = { activity: Activity ->
                 rewardedAd?.let { ad ->
                     ad.fullScreenContentCallback = fullscreenCallback
@@ -75,10 +79,21 @@ interface RewardDataSource {
                     }
                 } ?: run {
                     if (!isLoading) load(activity, fail)
-                    Log.e(TAG, "The rewarded ad wasn't ready yet.")
+                    Log.e(TAG, "The rewarded ad wasn't ready yet. is loading: $isLoading")
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        if (isLoading) {
+                            Log.e(TAG, "Reloading!")
+                            load(activity, fail)
+                        }
+                    }, 3000)
                 }
             }
             showIfIntended?.invoke(activity)
+        }
+
+        override fun cancel() {
+            isLoading = false
+            showIfIntended = null
         }
 
         private companion object {

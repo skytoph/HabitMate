@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
+import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.Animatable
 import androidx.compose.animation.AnimatedVisibility
@@ -25,7 +26,10 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
@@ -33,9 +37,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -57,7 +61,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.github.skytoph.taski.R
-import com.github.skytoph.taski.core.auth.SignInWithGoogle
 import com.github.skytoph.taski.core.reminder.RefreshRemindersReceiver
 import com.github.skytoph.taski.presentation.core.component.LoadingFullscreen
 import com.github.skytoph.taski.presentation.core.component.LoadingItems
@@ -66,29 +69,22 @@ import com.github.skytoph.taski.presentation.core.component.getLocale
 import com.github.skytoph.taski.presentation.habit.edit.component.RequestNotificationPermission
 import com.github.skytoph.taski.presentation.settings.backup.BackupDialogUi
 import com.github.skytoph.taski.presentation.settings.backup.BackupEvent
+import com.github.skytoph.taski.presentation.settings.backup.BackupMessages.allowBackupMessage
 import com.github.skytoph.taski.presentation.settings.backup.BackupViewModel
 import com.github.skytoph.taski.presentation.settings.backup.ProfileUi
 import com.github.skytoph.taski.ui.theme.HabitMateTheme
-import kotlinx.coroutines.launch
 
 @Composable
 fun BackupScreen(viewModel: BackupViewModel = hiltViewModel(), restoreBackup: () -> Unit) {
     val context = LocalContext.current
     val locale = getLocale()
-    val coroutineScope = rememberCoroutineScope()
     val state = viewModel.state()
     val contract = ActivityResultContracts.StartActivityForResult()
+    val settings = viewModel.settings().collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.checkConnection(context)
         viewModel.loadProfile(context)
-    }
-
-    val launcherSignIn = rememberLauncherForActivityResult(contract) { result: ActivityResult ->
-        if (result.resultCode == Activity.RESULT_OK)
-            result.data?.let { intent -> viewModel.signInWithFirebase(intent, context) }
-        else
-            viewModel.onEvent(BackupEvent.IsSigningIn(false))
     }
 
     val launcherImport = rememberLauncherForActivityResult(contract = contract) { result ->
@@ -98,6 +94,14 @@ fun BackupScreen(viewModel: BackupViewModel = hiltViewModel(), restoreBackup: ()
                 viewModel.import(context.contentResolver, uri, context)
             }
     }
+    val authorizeLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartIntentSenderForResult(),
+        onResult = { result: ActivityResult ->
+            if (result.resultCode == Activity.RESULT_OK)
+                viewModel.authorizeResult(context, result.data)
+            else viewModel.signInFailed(result)
+        }
+    )
 
     LaunchedEffect(Unit) {
         viewModel.initAppBar(title = R.string.settings_backup_title)
@@ -120,6 +124,12 @@ fun BackupScreen(viewModel: BackupViewModel = hiltViewModel(), restoreBackup: ()
         }
     }
 
+    LaunchedEffect(state.value.requestBackupPermission) {
+        if (state.value.requestBackupPermission)
+            viewModel.backupPermissionRequest(context = context,
+                requestPermission = { authorizeLauncher.launch(IntentSenderRequest.Builder(it).build()) })
+    }
+
     Backup(
         isImportLoading = state.value.isImportLoading,
         isExportLoading = state.value.isExportLoading,
@@ -130,14 +140,13 @@ fun BackupScreen(viewModel: BackupViewModel = hiltViewModel(), restoreBackup: ()
         isInternetConnected = state.value.isInternetConnected,
         restoreBackup = restoreBackup,
         profile = state.value.profile,
-        lastTimeBackupSaved = viewModel.mapBackupTime(state.value.lastBackupSavedTime, context, locale),
-        logIn = {
-            viewModel.onEvent(BackupEvent.IsSigningIn(true))
-            coroutineScope.launch {
-                launcherSignIn.launch(SignInWithGoogle.DriveScope.getClient(context).signInIntent)
-            }
-        },
+        lastTimeBackupSaved = viewModel.mapBackupTime(
+            state.value.lastBackupSavedTime, context, locale, settings.value.time24hoursFormat.value
+        ),
+        logIn = { viewModel.signIn(context = context) },
         saveBackup = { viewModel.saveBackupOnDrive(context) },
+        showBackupError = { viewModel.showMessage(allowBackupMessage) },
+        allowBackup = { viewModel.onEvent(BackupEvent.RequestBackupPermission(true)) },
         export = { viewModel.onEvent(BackupEvent.UpdateDialog(BackupDialogUi.Export)) },
         import = { viewModel.onEvent(BackupEvent.UpdateDialog(BackupDialogUi.Import)) },
         clear = { viewModel.onEvent(BackupEvent.UpdateDialog(BackupDialogUi.Clear)) },
@@ -184,9 +193,11 @@ private fun Backup(
     clear: () -> Unit = {},
     signOut: () -> Unit = {},
     deleteAccount: () -> Unit = {},
+    showBackupError: () -> Unit = {},
     logIn: () -> Unit = {},
     saveBackup: () -> Unit = {},
     restoreBackup: () -> Unit = {},
+    allowBackup: () -> Unit = {},
     isImportLoading: Boolean = false,
     isExportLoading: Boolean = true,
     isClearingLoading: Boolean = false,
@@ -207,9 +218,16 @@ private fun Backup(
             !(isProfileLoading || isExportLoading || isImportLoading || isSigningInLoading || isDriveBackupLoading)
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
+        contentAlignment = Alignment.TopCenter
+    ) {
         Column(
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier
+                .padding(horizontal = 16.dp)
+                .widthIn(max = 520.dp)
         ) {
             Text(
                 text = stringResource(R.string.google_drive_backup),
@@ -240,7 +258,7 @@ private fun Backup(
                             LoadingItems()
                         }
 
-                    profile == null || profile.isAnonymous ->
+                    profile == null || profile.isAnonymous || profile.isEmpty ->
                         LogInItem(
                             logIn = logIn,
                             isLoading = isSigningInLoading,
@@ -253,9 +271,11 @@ private fun Backup(
                             lastTimeBackupSaved = lastTimeBackupSaved,
                             createBackup = saveBackup,
                             restoreBackup = restoreBackup,
+                            allowBackup = allowBackup,
                             signOut = signOut,
                             isBackupLoading = isDriveBackupLoading,
                             deleteAccount = deleteAccount,
+                            showBackupError = showBackupError,
                             enabled = enabled.value
                         )
                 }
@@ -339,9 +359,11 @@ private fun LocalBackup(
 fun DriveBackup(
     profile: ProfileUi,
     createBackup: () -> Unit,
+    allowBackup: () -> Unit,
     restoreBackup: () -> Unit,
     signOut: () -> Unit = {},
     deleteAccount: () -> Unit,
+    showBackupError: () -> Unit,
     isBackupLoading: Boolean,
     lastTimeBackupSaved: String?,
     enabled: Boolean,
@@ -368,11 +390,19 @@ fun DriveBackup(
                 Spacer(modifier = Modifier.height(8.dp))
                 ProfileItem(profile = profile, lastTimeBackupSaved = lastTimeBackupSaved)
                 Spacer(modifier = Modifier.height(8.dp))
-                ButtonWithLoading(
+                if (profile.isBackupAvailable) ButtonWithLoading(
                     title = stringResource(R.string.create_backup_on_drive),
                     onClick = createBackup,
                     isLoading = isBackupLoading,
                     loadingText = stringResource(R.string.loading_backup),
+                    enabled = enabled,
+                    textPadding = 16.dp
+                )
+                else ButtonWithLoading(
+                    title = stringResource(R.string.allow_backup),
+                    onClick = allowBackup,
+                    isLoading = isBackupLoading,
+                    loadingText = stringResource(R.string.loading_backup_permission),
                     enabled = enabled,
                     textPadding = 16.dp
                 )
@@ -387,7 +417,7 @@ fun DriveBackup(
         ) {
             ButtonWithLoadingFull(
                 title = stringResource(R.string.restore_item),
-                onClick = restoreBackup,
+                onClick = if (profile.isBackupAvailable) restoreBackup else showBackupError,
                 isLoading = false,
                 modifier = Modifier.fillMaxWidth(),
                 enabled = enabled
@@ -435,35 +465,37 @@ private fun ProfileItem(profile: ProfileUi, lastTimeBackupSaved: String?) {
         Spacer(modifier = Modifier.width(8.dp))
         Column(verticalArrangement = Arrangement.Center, modifier = Modifier.width(IntrinsicSize.Max)) {
             Text(
-                text = profile.name,
-                color = MaterialTheme.colorScheme.onBackground,
-                style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.SemiBold)
-            )
-            Spacer(modifier = Modifier.height(2.dp))
-            Text(
                 text = profile.email,
                 color = MaterialTheme.colorScheme.onBackground,
                 style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.ExtraBold)
             )
             Spacer(modifier = Modifier.height(2.dp))
-            Crossfade(
-                targetState = lastTimeBackupSaved == null,
-                label = "loading_backup_time_crossfade",
-                animationSpec = tween(durationMillis = 150),
-                modifier = Modifier
-                    .heightIn(min = 16.dp)
-                    .fillMaxWidth(),
-            ) {
-                if (it) Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                    LoadingItems(
-                        itemColor = MaterialTheme.colorScheme.primary,
-                        item = ImageVector.vectorResource(id = R.drawable.sparkle_filled),
+            Text(
+                text = stringResource(R.string.icons_are_synchronized),
+                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Light)
+            )
+            if (profile.isBackupAvailable) {
+                Spacer(modifier = Modifier.height(2.dp))
+                Crossfade(
+                    targetState = lastTimeBackupSaved == null,
+                    label = "loading_backup_time_crossfade",
+                    animationSpec = tween(durationMillis = 150),
+                    modifier = Modifier
+                        .heightIn(min = 16.dp)
+                        .fillMaxWidth(),
+                ) {
+                    if (it) Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                        LoadingItems(
+                            itemColor = MaterialTheme.colorScheme.primary,
+                            item = ImageVector.vectorResource(id = R.drawable.sparkle_filled),
+                        )
+                    } else Text(
+                        text = lastTimeBackupSaved!!,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Light)
                     )
-                } else Text(
-                    text = lastTimeBackupSaved!!,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Light)
-                )
+                }
             }
         }
     }

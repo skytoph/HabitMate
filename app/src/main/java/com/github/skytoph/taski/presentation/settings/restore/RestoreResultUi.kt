@@ -12,8 +12,13 @@ sealed interface RestoreResultUi : MapResultToEvent<RestoreEvent> {
             override fun apply(): RestoreEvent = RestoreEvent.UpdateList(data)
         }
 
-        class NextAction(data: ByteArray, private val context: Context) : Success<ByteArray>(data) {
-            override fun apply(): RestoreEvent = RestoreEvent.Restore(data, context)
+        class NextAction(
+            data: ByteArray,
+            private val is24HoursFormat: Boolean,
+            private val restoreSettings: Boolean,
+            private val context: Context
+        ) : Success<ByteArray>(data) {
+            override fun apply(): RestoreEvent = RestoreEvent.Restore(data, restoreSettings, is24HoursFormat, context)
         }
 
         class Restored(

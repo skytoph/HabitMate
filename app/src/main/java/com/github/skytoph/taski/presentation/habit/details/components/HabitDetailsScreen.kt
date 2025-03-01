@@ -9,12 +9,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -43,7 +44,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.PagingData
-import com.github.skytoph.taski.BuildConfig
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.github.skytoph.taski.R
 import com.github.skytoph.taski.presentation.core.component.AppBarAction
 import com.github.skytoph.taski.presentation.core.component.DeleteDialog
@@ -82,12 +83,13 @@ fun HabitDetailsScreen(
     HabitDetails(
         state = viewModel.state(),
         entries = viewModel.entries,
+        isFirstDaySunday = settings.value.weekStartsOnSunday.value,
+        is24HourFormat = settings.value.time24hoursFormat.value,
+        isHistoryCalendarView = settings.value.isHabitHistoryCalendar,
         onHideDialog = onHideDialog,
         onDeleteHabit = { onHideDialog(); onDeleteHabit() },
         onDayClick = { viewModel.habitDone(it) },
         onEditHistory = { viewModel.onEvent(HabitDetailsEvent.EditHistory) },
-        isFirstDaySunday = settings.value.weekStartsOnSunday.value,
-        isHistoryCalendarView = settings.value.isHabitHistoryCalendar,
         expandSummary = { viewModel.onEvent(HabitDetailsEvent.ExpandSummary) },
         expandDescription = { viewModel.onEvent(HabitDetailsEvent.ExpandDescription) },
         updateView = { viewModel.onEvent(HabitDetailsEvent.UpdateHistoryView) }
@@ -107,183 +109,196 @@ fun HabitDetails(
     expandSummary: () -> Unit = {},
     expandDescription: () -> Unit = {},
     updateView: () -> Unit = {},
+    is24HourFormat: Boolean = false,
 ) {
     val context = LocalContext.current
     val habit = state.value.habit ?: return
+    val items = entries.collectAsLazyPagingItems()
+    val pagerState = rememberPagerState(pageCount = { items.itemCount })
 
-    Column(
+    Box(
         modifier = Modifier
-            .padding(horizontal = 16.dp)
-            .fillMaxSize()
+            .fillMaxWidth()
             .verticalScroll(rememberScrollState()),
+        contentAlignment = Alignment.TopCenter
     ) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
+        Column(
+            modifier = Modifier
+                .padding(horizontal = 16.dp)
+                .widthIn(max = 520.dp),
         ) {
-            Box(
-                modifier = Modifier
-                    .size(size = 44.dp)
-                    .background(color = habit.color, shape = RoundedCornerShape(10)),
-                contentAlignment = Alignment.Center
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Icon(
-                    imageVector = habit.icon.vector(context),
-                    contentDescription = habit.icon.name(context.resources),
+                Box(
                     modifier = Modifier
-                        .size(32.dp)
-                        .padding(2.dp),
-                    tint = Color.White
+                        .size(size = 44.dp)
+                        .background(color = habit.color, shape = RoundedCornerShape(10)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = habit.icon.vector(context),
+                        contentDescription = habit.icon.name(context.resources),
+                        modifier = Modifier
+                            .size(32.dp)
+                            .padding(2.dp),
+                        tint = Color.White
+                    )
+                }
+                Text(
+                    text = habit.title,
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onBackground
                 )
             }
+            if (state.value.habit?.description?.isNotEmpty() == true) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(shape = MaterialTheme.shapes.extraSmall)
+                        .clickable { expandDescription() }
+                        .background(
+                            color = MaterialTheme.colorScheme.tertiaryContainer,
+                            shape = MaterialTheme.shapes.extraSmall
+                        )
+                        .padding(8.dp)
+                        .animateContentSize(),
+                ) {
+                    Text(
+                        text = habit.description,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        style = MaterialTheme.typography.bodySmall,
+                        maxLines = if (state.value.isDescriptionExpanded) Int.MAX_VALUE else 3,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.animateContentSize()
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = habit.title,
-                style = MaterialTheme.typography.titleLarge,
+                text = stringResource(R.string.frequency_label),
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onBackground
             )
-        }
-        if (state.value.habit?.description?.isNotEmpty() == true) {
-            Spacer(modifier = Modifier.height(8.dp))
-            Box(
+            Spacer(modifier = Modifier.height(4.dp))
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(shape = MaterialTheme.shapes.extraSmall)
-                    .clickable { expandDescription() }
                     .background(
                         color = MaterialTheme.colorScheme.tertiaryContainer,
                         shape = MaterialTheme.shapes.extraSmall
                     )
                     .padding(8.dp)
                     .animateContentSize(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Text(
-                    text = habit.description,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    style = MaterialTheme.typography.bodySmall,
-                    maxLines = if (state.value.isDescriptionExpanded) Int.MAX_VALUE else 3,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.animateContentSize()
+                LabelWithIcon(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null
+                        ) { expandSummary() },
+                    annotatedText = habit.frequency.summarize(context.resources, isFirstDaySunday, getLocale()),
+                    icon = ImageVector.vectorResource(R.drawable.calendar),
+                    maxLines = if (state.value.isSummaryExpanded) Int.MAX_VALUE else 2
+                )
+                LabelWithIcon(
+                    modifier = Modifier.weight(1f),
+                    text = stringResource(R.string.goal_value, habit.goal),
+                    icon = ImageVector.vectorResource(R.drawable.flame),
+                )
+                LabelWithIcon(
+                    modifier = Modifier.weight(1f),
+                    text = habit.reminder.formatted(
+                        getLocale(),
+                        stringResource(R.string.reminder_turned_off),
+                        is24HourFormat
+                    ),
+                    icon = ImageVector.vectorResource(R.drawable.bell),
                 )
             }
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = stringResource(R.string.frequency_label),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    color = MaterialTheme.colorScheme.tertiaryContainer,
-                    shape = MaterialTheme.shapes.extraSmall
-                )
-                .padding(8.dp)
-                .animateContentSize(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            LabelWithIcon(
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = stringResource(R.string.overview_label),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier
-                    .weight(1f)
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null
-                    ) { expandSummary() },
-                annotatedText = habit.frequency.summarize(context.resources, isFirstDaySunday, getLocale()),
-                icon = ImageVector.vectorResource(R.drawable.calendar),
-                maxLines = if (state.value.isSummaryExpanded) Int.MAX_VALUE else 2
-            )
-            LabelWithIcon(
-                modifier = Modifier.weight(1f),
-                text = stringResource(R.string.goal_value, habit.goal),
-                icon = ImageVector.vectorResource(R.drawable.flame),
-            )
-            LabelWithIcon(
-                modifier = Modifier.weight(1f),
-                text = habit.reminder.formatted(getLocale(), stringResource(R.string.reminder_turned_off)),
-                icon = ImageVector.vectorResource(R.drawable.bell),
-            )
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = stringResource(R.string.overview_label),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    color = MaterialTheme.colorScheme.tertiaryContainer,
-                    shape = MaterialTheme.shapes.extraSmall
+                    .fillMaxWidth()
+                    .background(
+                        color = MaterialTheme.colorScheme.tertiaryContainer,
+                        shape = MaterialTheme.shapes.extraSmall
+                    )
+                    .padding(8.dp)
+            ) {
+                LabelWithValue(
+                    modifier = Modifier.weight(1f),
+                    label = stringResource(R.string.total),
+                    value = state.value.statistics.total.toString(),
+                    color = state.value.habit?.color
                 )
-                .padding(8.dp)
-        ) {
-            LabelWithValue(
-                modifier = Modifier.weight(1f),
-                label = stringResource(R.string.total),
-                value = state.value.statistics.total.toString(),
-                color = state.value.habit?.color
+                LabelWithValue(
+                    modifier = Modifier.weight(1f),
+                    label = stringResource(R.string.best_streak),
+                    value = state.value.statistics.bestStreak.toString(),
+                    color = state.value.habit?.color
+                )
+                LabelWithValue(
+                    modifier = Modifier.weight(1f),
+                    label = stringResource(R.string.current_streak),
+                    value = state.value.statistics.currentStreak.toString(),
+                    color = state.value.habit?.color
+                )
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = stringResource(R.string.history_label),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onBackground
             )
-            LabelWithValue(
-                modifier = Modifier.weight(1f),
-                label = stringResource(R.string.best_streak),
-                value = state.value.statistics.bestStreak.toString(),
-                color = state.value.habit?.color
+            Spacer(modifier = Modifier.height(4.dp))
+            HabitHistory(
+                items = items,
+                goal = habit.goal,
+                habitColor = habit.color,
+                onEdit = onEditHistory,
+                isFirstDaySunday = isFirstDaySunday,
+                isCalendarView = isHistoryCalendarView,
+                onChangeView = updateView,
+                pagerState = pagerState
             )
-            LabelWithValue(
-                modifier = Modifier.weight(1f),
-                label = stringResource(R.string.current_streak),
-                value = state.value.statistics.currentStreak.toString(),
-                color = state.value.habit?.color
-            )
+            Spacer(modifier = Modifier.height(16.dp))
         }
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = stringResource(R.string.history_label),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        HabitHistory(
-            entries = entries,
-            goal = habit.goal,
-            habitColor = habit.color,
-            onEdit = onEditHistory,
-            isFirstDaySunday = isFirstDaySunday,
-            isCalendarView = isHistoryCalendarView,
-            onChangeView = updateView
-        )
-        if (BuildConfig.DEBUG) //todo remove
-            Text(text = "streaks: " + state.value.statistics.streaks.map { it.length }.joinToString(", "))
-        Spacer(modifier = Modifier.height(16.dp))
+
+        if (state.value.isDeleteDialogShown)
+            DeleteDialog(
+                onDismissRequest = onHideDialog,
+                onConfirm = onDeleteHabit,
+                text = stringResource(R.string.delete_habit_confirmation_dialog_description),
+                title = stringResource(R.string.delete_habit_confirmation_dialog_title)
+            )
+
+        if (state.value.isHistoryEditable)
+            EditHistoryDialog(
+                items = items,
+                onDayClick = onDayClick,
+                onEdit = onEditHistory,
+                habitColor = habit.color,
+                goal = habit.goal,
+                page = pagerState.currentPage,
+                isFirstDaySunday = isFirstDaySunday,
+                isCalendarView = isHistoryCalendarView
+            )
     }
-
-    if (state.value.isDeleteDialogShown)
-        DeleteDialog(
-            onDismissRequest = onHideDialog,
-            onConfirm = onDeleteHabit,
-            text = stringResource(R.string.delete_habit_confirmation_dialog_description),
-            title = stringResource(R.string.delete_habit_confirmation_dialog_title)
-        )
-
-    if (state.value.isHistoryEditable)
-        EditHistoryDialog(
-            entries = entries,
-            onDayClick = onDayClick,
-            onEdit = onEditHistory,
-            habitColor = habit.color,
-            goal = habit.goal,
-            isFirstDaySunday = isFirstDaySunday,
-            isCalendarView = isHistoryCalendarView
-        )
 }
 
 @Composable

@@ -29,7 +29,8 @@ class AlarmScheduler(
         items.forEach { item ->
             Log.e(
                 AlarmScheduler::class.simpleName,
-                "reminder scheduled: " + SimpleDateFormat(context.getString(R.string.backup_date_format)).format(item.timeMillis)
+                "reminder scheduled: " + SimpleDateFormat(context.getString(R.string.backup_date_format_24h_format))
+                    .format(item.timeMillis)
             )
             alarmManager.setExactAndAllowWhileIdle(
                 /* type = */ AlarmManager.RTC_WAKEUP,

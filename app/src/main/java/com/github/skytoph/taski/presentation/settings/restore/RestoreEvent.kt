@@ -75,14 +75,19 @@ sealed interface RestoreEvent {
         }
     }
 
-    class Restore(private val data: ByteArray, private val context: Context) : RestoreEvent {
+    class Restore(
+        private val data: ByteArray,
+        private val restoreSettings: Boolean,
+        private val is24HoursFormat: Boolean,
+        private val context: Context
+    ) : RestoreEvent {
         override fun handle(
             state: MutableState<RestoreState>,
             postMessage: PostMessage,
             restore: RestoreData,
             updateSettings: (SettingsEvent) -> Unit
         ) {
-            restore.restore(data, context)
+            restore.restore(data, restoreSettings, is24HoursFormat, context)
         }
     }
 
@@ -198,7 +203,7 @@ sealed interface RestoreEvent {
     data object Empty : RestoreEvent
 
     fun interface RestoreData {
-        fun restore(data: ByteArray, context: Context)
+        fun restore(data: ByteArray, restoreSettings: Boolean, is24HoursFormat: Boolean, context: Context)
     }
 
     interface SettingsEvent : SettingsViewModel.Event

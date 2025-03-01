@@ -45,6 +45,8 @@
     <string name="archive_habit_confirmation_dialog_title">Archive habit</string>
     <string name="archive_habit_confirmation_dialog_description">Do you want to archive this habit?\nYou can restore it anytime.</string>
     <string name="action_archive">Archive</string>
+    <string name="delete">Delete</string>
+    <string name="restore">Restore</string>
 
     <!--    Restore dialog-->
     <string name="restore_habit_confirmation_dialog_title">Restore habit</string>
@@ -73,6 +75,7 @@
     <string name="edit_history_hint">tap on the day to update your progress, changes will be saved immediately</string>
     <string name="entry_tooltip_percent_done">%1$s / %2$s done</string>
     <string name="color_and_icon_label">color and icon</string>
+    <string name="icons_menu_item_unlocked_first">Unlocked first</string>
     <string name="error_habit_title_is_empty">enter a name for the habit</string>
     <string name="color">color</string>
     <string name="ok">OK</string>
@@ -135,6 +138,7 @@
     <string name="list_of_habits_is_empty_label">List of habits is empty</string>
     <string name="list_of_habits_is_empty_create_label">There is no habit for today\nCreate one?</string>
     <string name="archive_is_empty_label">Archive is empty</string>
+    <string name="action_create">Create</string>
 
     <!--    Reminders-->
     <string name="habit_reminder_message">It\'s time to complete the habit &#x2728;</string>
@@ -146,6 +150,7 @@
 
     <!--    General Settings-->
     <string name="week_starts_on_sunday">week starts on sunday</string>
+    <string name="time_format_is_24h">24-hour format</string>
     <string name="highlight_current_day">highlight current day</string>
     <string name="highlight_streaks">highlight streaks</string>
     <string name="show_icon_warning">remind me to sign in for icon syncing</string>
@@ -165,7 +170,7 @@
     <string name="export_title">Export to file</string>
     <string name="import_title">Import from file</string>
     <string name="success_import_title">Success</string>
-    <string name="import_error_title">Fail</string>
+    <string name="error_title">Fail</string>
     <string name="success_import_message">The data restored successfully!</string>
     <string name="error_export_title">Failed to export</string>
     <string name="error_export">Something went wrong, can\'t export the data.</string>
@@ -178,6 +183,7 @@
     <string name="export_description_icons_warning_details">To save your unlocked icons, please sign in with your Google account.</string>
     <string name="backup_with_google_description">Sign in with Google to save your backup to your Google Drive.\nNote that if you’re not signed in, you won’t be able to use your unlocked icons.</string>
     <string name="last_time_backup_saved">last sync %1$s</string>
+    <string name="icons_are_synchronized">icons are synchronized</string>
     <string name="no_backup_data">There is no saved backup data</string>
     <string name="restore_dialog_description_confirmation">Do you want to restore this backup?</string>
     <string name="restore_dialog_description_warning">This will overwrite your current data.</string>
@@ -226,16 +232,19 @@
     <string name="error_downloading_backup">Failed to download the backup. Please try again later.</string>
     <string name="error_deleting_backup">Failed to delete the backup. Please try again later.</string>
     <string name="error_general">Something went wrong. Please try again later.</string>
+    <string name="error_backup_unavailable">Allow Google Drive permission to restore the backup</string>
     <string name="success_title">Success</string>
     <string name="success_delete_backups">Your backups have been permanently deleted.</string>
-    <string name="success_delete_backup">Backup successfully removed.</string>
+    <string name="success_create_backup">Backup created successfully</string>
+    <string name="success_delete_backup">Backup successfully removed</string>
     <string name="success_deleting_account">Your account has been deleted</string>
     <string name="success_synchronizing_icons">Your icons are synchronized</string>
-    <string name="success_clearing_data">All local data has been cleared.</string>
+    <string name="success_clearing_data">All local data has been cleared</string>
     <string name="error_clearing_data">Something went wrong, unable to clear local data. Please try again later.</string>
     <string name="error_synchronizing_icons">Can\'t synchronize icons</string>
     <string name="backup_item_size">size: %1$s</string>
     <string name="create_backup_on_drive">Backup to Google Drive</string>
+    <string name="allow_backup">Allow Google Drive backup</string>
     <string name="restore_item">Restore</string>
     <string name="log_in">Log In</string>
     <string name="sign_out_item">Sign Out</string>
@@ -251,6 +260,9 @@
     <string name="loading_clearing" tools:ignore="TypographyEllipsis">Clearing the data...</string>
     <string name="loading_backup" tools:ignore="TypographyEllipsis">Creating Backup...</string>
     <string name="clear_all_data">Clear all data</string>
+    <string name="loading_backup_permission" tools:ignore="TypographyEllipsis">Requesting permission...</string>
+    <string name="backup_date_format_24h_format" translatable="false">HH:mm</string>
+    <string name="backup_date_format_12h_format" translatable="false">hh:mm a</string>
 
     <string name="backup_date_format" translatable="false">dd.MM.yyyy HH:mm</string>
     <string name="backup_filename_date_format" translatable="false">dd.MM.yyyy</string>
@@ -268,18 +280,10 @@
     <string name="hide_reminder_confirmation_description">Do you want to hide this reminder?</string>
     <string name="hide_reminder_confirmation_description_permanently">you can always turn it back on in settings</string>
     <string name="new_line" translatable="false">\n</string>
-
-    <!--    Info links-->
-    <string name="privacy_policy_url" translatable="false">https://sites.google.com/view/habitmate/privacy</string>
-    <string name="terms_of_use_url" translatable="false">https://sites.google.com/view/habitmate/terms</string>
-    <string name="rate_the_app_url" translatable="false"></string>
-    <string name="app_page_url" translatable="false"></string>
+    <string name="unlocked_first">Unlocked first</string>
 
     <!--    Credits-->
     <string name="credit_author" translatable="false">by %1$s</string>
-    <string name="material_icons_url" translatable="false">https://fonts.google.com/icons</string>
-    <string name="lucide_icons_url" translatable="false">https://github.com/lucide-icons/lucide</string>
-    <string name="reorderable_library_url" translatable="false">https://github.com/Calvin-LL/Reorderable/tree/main</string>
     <string name="credits_icons" translatable="false">Lucide Icons</string>
     <string name="credits_material_icons" translatable="false">Material Icons</string>
     <string name="credits_reorderable" translatable="false">Reorderable</string>
@@ -289,7 +293,6 @@
 
     <!--    Share-->
     <string name="share_app_title">Share the app</string>
-    <string name="share_app_message">Check out this handy habit-tracking app I\'ve been using! Download it here: </string>
 
     <!--    Crashlytics-->
     <string name="allow_crashlytics">allow crash report collection</string>
@@ -316,8 +319,6 @@
     <string name="day_label_one">day</string>
     <string name="week_label_one">week</string>
     <string name="month_label_one">month</string>
-
-
 
     <plurals name="times_label">
         <item quantity="one">time</item>

@@ -31,6 +31,7 @@ fun CreateHabitScreen(
     onSelectIconClick: () -> Unit
 ) {
     val context = LocalContext.current
+    val settings = viewModel.settings().collectAsState()
 
     val iconState = remember { viewModel.iconState() }
     LaunchedEffect(iconState.value) {
@@ -68,12 +69,11 @@ fun CreateHabitScreen(
         switchOn = { viewModel.onEvent(CreateHabitEvent.UpdateReminder(switchOn = it)) },
         showDialog = { viewModel.onEvent(CreateHabitEvent.UpdateReminder(showDialog = it)) },
         updateReminder = { hour, minute ->
-            viewModel.onEvent(
-                CreateHabitEvent.UpdateReminder(hour = hour, minute = minute, showDialog = false)
-            )
+            viewModel.onEvent(CreateHabitEvent.UpdateReminder(hour = hour, minute = minute, showDialog = false))
         },
         showPermissionDialog = { viewModel.onEvent(CreateHabitEvent.ShowPermissionDialog(it)) },
-        isFirstDaySunday = viewModel.settings().collectAsState().value.weekStartsOnSunday.value
+        isFirstDaySunday = settings.value.weekStartsOnSunday.value,
+        is24HourFormat = settings.value.time24hoursFormat.value
     )
 }
 
@@ -98,7 +98,8 @@ private fun CreateHabit(
     showDialog: (Boolean) -> Unit = {},
     updateReminder: (Int, Int) -> Unit = { _, _ -> },
     showPermissionDialog: (DialogItem?) -> Unit = {},
-    isFirstDaySunday: Boolean = false
+    isFirstDaySunday: Boolean = false,
+    is24HourFormat: Boolean = false
 ) {
     Column(
         modifier = Modifier.fillMaxSize()
@@ -132,7 +133,8 @@ private fun CreateHabit(
             showTimeDialog = showDialog,
             showPermissionDialog = showPermissionDialog,
             updateReminder = updateReminder,
-            isFirstDaySunday = isFirstDaySunday
+            isFirstDaySunday = isFirstDaySunday,
+            is24HourFormat = is24HourFormat
         )
     }
 }
