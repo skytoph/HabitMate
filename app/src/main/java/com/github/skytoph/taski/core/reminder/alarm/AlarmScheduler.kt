@@ -66,6 +66,7 @@ class AlarmScheduler(
         val intent = Intent(context, AlarmReceiver::class.java)
         intent.setAction(AlarmReceiver.ACTION)
         intent.setData(uri)
+        intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND)
         return intent
     }
 

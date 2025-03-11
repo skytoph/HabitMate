@@ -1,7 +1,9 @@
 package com.github.skytoph.taski.data.habit.database
 
+import androidx.annotation.Keep
 import androidx.room.ColumnInfo
 
+@Keep
 data class ReminderEntity(
     @ColumnInfo(name = "reminder_hour")
     val hour: Int,

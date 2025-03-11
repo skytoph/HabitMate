@@ -237,6 +237,7 @@
     <string name="error_failed_to_load_reward">Сталася помилка, не вдалося завантажити рекламу.</string>
     <string name="reward_unlocked">Іконка успішно розблокована</string>
     <string name="sync_title">Сталася помилка, не вдалося створити резервну копію.</string>
+    <string name="error_rate_the_app">Не вдалося перенаправити вас для оцінки додатка. Спробуйте ще раз пізніше.</string>
     <string name="error_deleting_account">Сталася помилка, не вдалося видалити ваш обліковий запис. Будь ласка, спробуйте пізніше.</string>
     <string name="backup_no_connection">Підключіться до Інтернету, щоб увімкнути резервне копіювання у Google Drive.</string>
     <string name="restore_no_connection">Будь ласка, підключіться до Інтернету, щоб отримати доступ до списку резервних копій.</string>

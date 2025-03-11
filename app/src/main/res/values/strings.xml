@@ -216,6 +216,7 @@
     <string name="reward_unlocked">The icon successfully unlocked.</string>
     <string name="sync_title">Something went wrong, can\'t create backup.</string>
     <string name="error_deleting_account">Something went wrong, can\'t delete your account. Try again later please.</string>
+    <string name="error_rate_the_app">Something went wrong. Couldn\'t redirect you to rate the app. Try again later please.</string>
     <string name="backup_no_connection">Connect to the Internet to enable Google Drive Backup.</string>
     <string name="restore_no_connection">Please connect to the internet to access your backup list.</string>
     <string name="google_drive_backup">Google Drive Backup</string>
@@ -261,10 +262,9 @@
     <string name="loading_backup" tools:ignore="TypographyEllipsis">Creating Backup...</string>
     <string name="clear_all_data">Clear all data</string>
     <string name="loading_backup_permission" tools:ignore="TypographyEllipsis">Requesting permission...</string>
-    <string name="backup_date_format_24h_format" translatable="false">HH:mm</string>
-    <string name="backup_date_format_12h_format" translatable="false">hh:mm a</string>
+    <string name="backup_date_format_24h_format" translatable="false">dd.MM.yyyy HH:mm</string>
+    <string name="backup_date_format_12h_format" translatable="false">dd.MM.yyyy hh:mm a</string>
 
-    <string name="backup_date_format" translatable="false">dd.MM.yyyy HH:mm</string>
     <string name="backup_filename_date_format" translatable="false">dd.MM.yyyy</string>
     <string name="backup_mimetype" translatable="false">application/octet-stream</string>
     <string name="backup_filename" translatable="false">backup-%1$s.db</string>
