@@ -9,14 +9,14 @@ plugins {
 }
 
 android {
-    namespace = "com.github.skytoph.taski"
+    namespace = "com.skytoph.taski"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.github.skytoph.taski"
+        applicationId = "com.skytoph.taski"
         minSdk = 26
         targetSdk = 35
-        versionCode = 7
+        versionCode = 1
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -160,4 +160,7 @@ dependencies {
 
     // AppCheck
     implementation("com.google.firebase:firebase-appcheck-playintegrity")
+
+    // Play integrity
+    implementation("com.google.android.play:integrity:1.4.0")
 }

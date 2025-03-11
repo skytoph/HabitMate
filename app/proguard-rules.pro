@@ -45,8 +45,8 @@
 -keep class * implements com.google.gson.JsonSerializer
 -keep class * implements com.google.gson.JsonDeserializer
 -keepclasseswithmembers class * implements java.io.Serializable { <fields>; }
--keepclasseswithmembers class * implements com.github.skytoph.taski.core.backup.Backup { *; }
--keep class com.github.skytoph.taski.core.datastore.settings.**  { <fields>; }
+-keepclasseswithmembers class * implements com.skytoph.taski.core.backup.Backup { *; }
+-keep class com.skytoph.taski.core.datastore.settings.**  { <fields>; }
 
 # Retain generic signatures of TypeToken and its subclasses with R8 version 3.0 and higher.
 -keep,allowobfuscation,allowshrinking class com.google.gson.reflect.TypeToken
