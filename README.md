@@ -16,7 +16,7 @@ Whether you want to form new habits or maintain existing ones, HabitMate helps y
 
 ## Screenshots
 
-<img src="https://github.com/skytoph/HabitMate/assets/44202107/ea95692b-c5b7-44cb-8245-26ce3904c2d7" width="250"> <img src="https://github.com/skytoph/HabitMate/assets/44202107/b53a3294-50da-4da2-9215-a3b8265b5dea" width="250"> <img src="https://github.com/skytoph/HabitMate/assets/44202107/d81ffc48-3144-4a8c-adc4-3f97c1bf9465" width="250">
+<img src="https://github.com/skytoph/HabitMate/assets/44202107/d81ffc48-3144-4a8c-adc4-3f97c1bf9465" width="250"> <img src="https://github.com/skytoph/HabitMate/assets/44202107/ea95692b-c5b7-44cb-8245-26ce3904c2d7" width="250"> <img src="https://github.com/skytoph/HabitMate/assets/44202107/b53a3294-50da-4da2-9215-a3b8265b5dea" width="250">
 
 ## License
 ```
