@@ -11,6 +11,7 @@ import com.skytoph.taski.presentation.appbar.InitAppBar
 import com.skytoph.taski.presentation.appbar.PopupMessage
 import com.skytoph.taski.presentation.appbar.SnackbarMessage
 import com.skytoph.taski.presentation.core.state.IconResource
+import com.skytoph.taski.presentation.core.state.StringResource
 import com.skytoph.taski.presentation.settings.SettingsViewModel
 import com.skytoph.taski.presentation.settings.backup.BackupMessages
 import com.skytoph.taski.presentation.settings.backup.BackupMessages.iconsSynchronizeSuccessMessage
@@ -86,7 +87,10 @@ class SelectIconViewModel @Inject constructor(
     fun unlockIcon(icon: IconResource, activity: Activity) {
         if (networkManager.isNetworkAvailable()) {
             onEvent(SelectIconEvent.UpdateDialog(isLoading = true))
-            rewards.show(activity = activity, reward = { reward(icon, activity) }, fail = { rewardFailed() })
+            rewards.requestPermissionAndShow(
+                activity = activity,
+                reward = { reward(icon, activity) },
+                fail = { rewardFailed() })
         } else {
             onEvent(SelectIconEvent.UpdateDialog())
             showMessage(IconMessages.noConnectionMessage)
@@ -108,8 +112,10 @@ class SelectIconViewModel @Inject constructor(
             }
         }
 
-    private fun rewardFailed() {
+    private fun rewardFailed(message: StringResource? = null) {
         onEvent(SelectIconEvent.UpdateDialog())
-        showMessage(IconMessages.failedToLoadRewardMessage)
+        val error = if (message == null) IconMessages.failedToLoadRewardMessage
+        else IconMessages.failedToLoadRewardMessage.copy(messageResource = message)
+        showMessage(error)
     }
 }

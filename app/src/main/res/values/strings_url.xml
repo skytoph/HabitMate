@@ -2,9 +2,10 @@
 <resources>
     <string name="privacy_policy_url" translatable="false">https://sites.google.com/view/habitmate/privacy</string>
     <string name="terms_of_use_url" translatable="false">https://sites.google.com/view/habitmate/terms</string>
-    <string name="rate_the_app_url" translatable="false">https://play.google.com/store/apps/developer?id=skytoph</string>
-    <string name="app_page_url" translatable="false">https://play.google.com/store/apps/developer?id=skytoph</string>
+    <string name="rate_the_app_url" translatable="false">https://play.google.com/store/apps/details?id=com.skytoph.taski</string>
+    <string name="app_page_url" translatable="false">https://play.google.com/store/apps/details?id=com.skytoph.taski</string>
     <string name="material_icons_url" translatable="false">https://fonts.google.com/icons</string>
     <string name="lucide_icons_url" translatable="false">https://github.com/lucide-icons/lucide</string>
     <string name="reorderable_library_url" translatable="false">https://github.com/Calvin-LL/Reorderable/tree/main</string>
+    <string name="feedback_email" translatable="false">skyetophapp@gmail.com</string>
 </resources>

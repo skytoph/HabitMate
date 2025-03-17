@@ -2,13 +2,16 @@ package com.skytoph.taski.core.crashlytics
 
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
+import com.skytoph.taski.core.datastore.CrashlyticsIdDataStore
 
 interface Crashlytics {
-    fun allow(allow: Boolean)
+    suspend fun allow(allow: Boolean)
 
-    class Base : Crashlytics {
-        override fun allow(allow: Boolean) {
+    class Base(private val idDatastore: CrashlyticsIdDataStore) : Crashlytics {
+
+        override suspend fun allow(allow: Boolean) {
             Firebase.crashlytics.isCrashlyticsCollectionEnabled = allow
+            if (allow) Firebase.crashlytics.setUserId(idDatastore.id())
         }
     }
 }

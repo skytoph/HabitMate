@@ -16,7 +16,7 @@ android {
         applicationId = "com.skytoph.taski"
         minSdk = 26
         targetSdk = 35
-        versionCode = 1
+        versionCode = 3
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -157,10 +157,8 @@ dependencies {
 
     // AdMob
     implementation("com.google.android.gms:play-services-ads:23.6.0")
+    implementation("com.google.android.ump:user-messaging-platform:3.1.0")
 
     // AppCheck
     implementation("com.google.firebase:firebase-appcheck-playintegrity")
-
-    // Play integrity
-    implementation("com.google.android.play:integrity:1.4.0")
 }

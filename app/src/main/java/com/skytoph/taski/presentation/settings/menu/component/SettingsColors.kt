@@ -9,6 +9,7 @@ val Orange = Color(0xFFEF9255)
 val Red = Color(0xFFBB3648)
 
 val GrayLight = Color(0xFFC3C3EE)
+val Gray = Color(0xFFBCC2D9)
 val PurpleLight = Color(0xFFD2BCF2)
 val PinkLight = Color(0xFFF1B8DB)
 

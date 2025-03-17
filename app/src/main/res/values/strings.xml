@@ -154,6 +154,12 @@
     <string name="highlight_current_day">highlight current day</string>
     <string name="highlight_streaks">highlight streaks</string>
     <string name="show_icon_warning">remind me to sign in for icon syncing</string>
+    <string name="privacy_settings">privacy settings</string>
+    <string name="copy_support_id">copy support ID</string>
+    <string name="general_settings_item_view">View</string>
+    <string name="general_settings_item_crash_report">Crash report</string>
+    <string name="general_settings_item_ad_preferences">Ad Preferences</string>
+    <string name="message_user_id_copied">support ID copied to clipboard</string>
 
     <!--    Theme Settings-->
     <string name="theme_system">System</string>
@@ -212,6 +218,7 @@
     <string name="fail_title">Fail</string>
     <string name="error_sync">Failed to create backup.</string>
     <string name="error_no_connection">No Internet connection.</string>
+    <string name="error_no_ads">No ads to show right now.</string>
     <string name="error_failed_to_load_reward">Something went wrong, failed to load the ad.</string>
     <string name="reward_unlocked">The icon successfully unlocked.</string>
     <string name="sync_title">Something went wrong, can\'t create backup.</string>

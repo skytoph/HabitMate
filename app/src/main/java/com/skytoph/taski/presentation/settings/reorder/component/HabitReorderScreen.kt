@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -111,8 +112,7 @@ private fun HabitsReorder(
 ) {
     val lazyListState = rememberLazyListState()
     val state = rememberReorderableLazyListState(lazyListState) { from, to ->
-        val offset = if (showApplyManualOrder) 2 else 1
-        onSwap(from.index - offset, to.index - offset)
+        onSwap(from.index - 2, to.index - 2)
     }
 
     if (habits.isEmpty()) EmptyScreen(
@@ -156,6 +156,9 @@ private fun HabitsReorder(
                     borderColor = if (isDragging) MaterialTheme.colorScheme.secondaryContainer else Color.Transparent
                 )
             }
+        }
+        item {
+            Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }

@@ -166,6 +166,12 @@
     <string name="time_format_is_24h">24-годинний формат</string>
     <string name="highlight_current_day">виділяти поточний день</string>
     <string name="highlight_streaks">виділяти серію</string>
+    <string name="privacy_settings">налаштування приватності</string>
+    <string name="copy_support_id">копіювати ID</string>
+    <string name="general_settings_item_view">Вигляд</string>
+    <string name="general_settings_item_crash_report">Звіти про збої</string>
+    <string name="general_settings_item_ad_preferences">Налаштування реклами</string>
+    <string name="message_user_id_copied">ID скопійовано в буфер обміну</string>
 
     <!--    Theme Settings-->
     <string name="settings_theme_mode">Режим</string>
@@ -234,6 +240,7 @@
     <string name="fail_title">Помилка</string>
     <string name="error_sync">Не вдалося створити резервну копію.</string>
     <string name="error_no_connection">Немає підключення до Інтернету.</string>
+    <string name="error_no_ads">Наразі немає доступної реклами.</string>
     <string name="error_failed_to_load_reward">Сталася помилка, не вдалося завантажити рекламу.</string>
     <string name="reward_unlocked">Іконка успішно розблокована</string>
     <string name="sync_title">Сталася помилка, не вдалося створити резервну копію.</string>

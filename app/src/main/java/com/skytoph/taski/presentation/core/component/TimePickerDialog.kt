@@ -66,8 +66,10 @@ fun TimePickerDialog(
                 colors = TimePickerDefaults.colors(
                     timeSelectorUnselectedContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
                     timeSelectorSelectedContainerColor = MaterialTheme.colorScheme.primary,
-                    periodSelectorUnselectedContentColor = MaterialTheme.colorScheme.tertiary,
-                    periodSelectorSelectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    periodSelectorUnselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    periodSelectorSelectedContentColor = MaterialTheme.colorScheme.onPrimary,
+                    periodSelectorSelectedContainerColor = MaterialTheme.colorScheme.primary,
+                    periodSelectorUnselectedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
                     timeSelectorSelectedContentColor = MaterialTheme.colorScheme.onSurface
                 )
             )

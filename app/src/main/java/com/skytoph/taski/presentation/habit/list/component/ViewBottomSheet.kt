@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -104,8 +105,9 @@ fun ViewBottomSheet(
 fun ButtonWithIcon(
     onClick: () -> Unit = {},
     title: String,
-    icon: ImageVector,
-    color: Color
+    color: Color,
+    icon: ImageVector? = null,
+    style: TextStyle = MaterialTheme.typography.bodySmall
 ) {
     Row(
         modifier = Modifier
@@ -114,16 +116,18 @@ fun ButtonWithIcon(
             .padding(horizontal = 16.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = title,
-            modifier = Modifier.size(24.dp),
-            tint = color
-        )
-        Spacer(modifier = Modifier.width(12.dp))
+        icon?.let {
+            Icon(
+                imageVector = icon,
+                contentDescription = title,
+                modifier = Modifier.size(24.dp),
+                tint = color
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+        }
         Text(
             text = title,
-            style = MaterialTheme.typography.bodySmall,
+            style = style,
             color = color,
             fontWeight = FontWeight.Bold
         )

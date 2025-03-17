@@ -1,6 +1,8 @@
 package com.skytoph.taski.presentation.settings.menu.component
 
 import android.content.Intent
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -49,6 +51,11 @@ fun SettingsMenuScreen(
     backupClick: () -> Unit,
     creditsClick: () -> Unit
 ) {
+    val feedbackEmail = stringResource(R.string.feedback_email)
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult(), onResult = {}
+    )
+
     LaunchedEffect(Unit) {
         viewModel.initAppBar(title = R.string.settings_title)
     }
@@ -59,7 +66,15 @@ fun SettingsMenuScreen(
         archiveClick = archiveClick,
         themeClick = themeClick,
         backupClick = backupClick,
-        creditsClick = creditsClick
+        creditsClick = creditsClick,
+        feedbackClick = {
+            val intent = Intent(Intent.ACTION_MAIN).apply {
+                addCategory(Intent.CATEGORY_APP_EMAIL)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                putExtra(Intent.EXTRA_EMAIL, feedbackEmail)
+            }
+            launcher.launch(intent)
+        }
     )
 }
 
@@ -71,6 +86,7 @@ private fun SettingsMenu(
     themeClick: () -> Unit = {},
     backupClick: () -> Unit = {},
     creditsClick: () -> Unit = {},
+    feedbackClick: () -> Unit = {},
 ) {
     Box(
         modifier = Modifier
@@ -148,11 +164,11 @@ private fun SettingsMenu(
             Spacer(modifier = Modifier.height(8.dp))
             MenuTitleText(text = stringResource(R.string.settings_feedback), modifier = Modifier.padding(start = 16.dp))
             Column(modifier = Modifier.clip(MaterialTheme.shapes.small)) {
-                SettingsLinkMenuItem(
-                    title = stringResource(R.string.settings_rate_the_app),
-                    icon = ImageVector.vectorResource(id = R.drawable.star),
-                    color = Peach,
-                    url = stringResource(R.string.app_page_url)
+                SettingsMenuItem(
+                    title = "Share your feedback",
+                    icon = ImageVector.vectorResource(id = R.drawable.message_circle),
+                    color = Gray,
+                    onClick = feedbackClick
                 )
                 HorizontalDivider()
                 SettingsShareMenuItem(
@@ -161,6 +177,13 @@ private fun SettingsMenu(
                     color = BlueLight,
                     message = stringResource(R.string.app_page_url),
                     messageTitle = stringResource(R.string.share_app_title)
+                )
+                HorizontalDivider()
+                SettingsLinkMenuItem(
+                    title = stringResource(R.string.settings_rate_the_app),
+                    icon = ImageVector.vectorResource(id = R.drawable.star),
+                    color = Peach,
+                    url = stringResource(R.string.app_page_url)
                 )
             }
             Spacer(modifier = Modifier.height(4.dp))
