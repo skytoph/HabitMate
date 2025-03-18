@@ -165,7 +165,7 @@ private fun SettingsMenu(
             MenuTitleText(text = stringResource(R.string.settings_feedback), modifier = Modifier.padding(start = 16.dp))
             Column(modifier = Modifier.clip(MaterialTheme.shapes.small)) {
                 SettingsMenuItem(
-                    title = "Share your feedback",
+                    title = stringResource(R.string.settings_feedback),
                     icon = ImageVector.vectorResource(id = R.drawable.message_circle),
                     color = Gray,
                     onClick = feedbackClick

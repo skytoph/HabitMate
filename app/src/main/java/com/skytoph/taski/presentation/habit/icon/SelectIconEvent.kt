@@ -25,11 +25,22 @@ interface SelectIconEvent {
         }
     }
 
-    class UpdateDialog(private val icon: IconResource? = null, private val isLoading: Boolean = false) :
-        SelectIconEvent {
+    class UpdateDialog(
+        private val icon: IconResource? = null,
+        private val isLoading: Boolean = false,
+        private val isVisible: Boolean = false
+    ) : SelectIconEvent {
         override fun handle(iconState: MutableState<IconState>, state: MutableState<SelectIconState>?) {
             if (isLoading) state?.let { state.value = state.value.copy(isDialogLoading = true) }
-            else state?.let { state.value = state.value.copy(dialogIcon = icon, isDialogLoading = false) }
+            else state?.let {
+                state.value = state.value.copy(dialogIcon = icon, isDialogLoading = false, isDialogShown = isVisible)
+            }
+        }
+    }
+
+    class UpdateDialogVisibility(private val isVisible: Boolean = false) : SelectIconEvent {
+        override fun handle(iconState: MutableState<IconState>, state: MutableState<SelectIconState>?) {
+            state?.let { state.value = state.value.copy(isDialogShown = isVisible, isDialogLoading = false) }
         }
     }
 
@@ -48,6 +59,12 @@ interface SelectIconEvent {
     class IsWarningDialogShown(private val isShown: Boolean) : SelectIconEvent {
         override fun handle(iconState: MutableState<IconState>, state: MutableState<SelectIconState>?) {
             state?.let { state.value = state.value.copy(isWarningDialogShown = isShown) }
+        }
+    }
+
+    class IsRewardPreferencesDialogShown(private val isShown: Boolean) : SelectIconEvent {
+        override fun handle(iconState: MutableState<IconState>, state: MutableState<SelectIconState>?) {
+            state?.let { state.value = state.value.copy(isRewardErrorDialogShown = isShown) }
         }
     }
 

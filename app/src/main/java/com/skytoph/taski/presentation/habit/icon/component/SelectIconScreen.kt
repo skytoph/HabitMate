@@ -38,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -69,7 +70,9 @@ fun SelectIconScreen(viewModel: SelectIconViewModel = hiltViewModel()) {
     val iconState = viewModel.iconState()
     val settings = viewModel.settings().collectAsState()
     val actionColor = MaterialTheme.colorScheme.onBackground
+    val errorColor = MaterialTheme.colorScheme.error
     val sortIcons = settings.value.sortIcons
+    val getErrorColor = { errorColor.toArgb() }
 
     val actionSortIcons = AppBarAction(
         title = StringResource.ResId(R.string.icons_menu_item_unlocked_first),
@@ -97,7 +100,7 @@ fun SelectIconScreen(viewModel: SelectIconViewModel = hiltViewModel()) {
         isWarningShown = state.value.isWarningShown,
         onSelectColor = { viewModel.onEvent(SelectIconEvent.Update(color = it)) },
         onSelectIcon = { viewModel.onEvent(SelectIconEvent.Update(icon = it)) },
-        onUnlockIcon = { viewModel.onEvent(SelectIconEvent.UpdateDialog(it)) },
+        onUnlockIcon = { viewModel.onEvent(SelectIconEvent.UpdateDialog(icon = it, isVisible = true)) },
         logIn = {
             if (viewModel.connected(context)) {
                 viewModel.onEvent(SelectIconEvent.IsSigningIn(true))
@@ -107,10 +110,16 @@ fun SelectIconScreen(viewModel: SelectIconViewModel = hiltViewModel()) {
         dismiss = { viewModel.onEvent(SelectIconEvent.IsWarningDialogShown(true)) },
     )
 
-    state.value.dialogIcon?.let { icon ->
+    if (state.value.isDialogShown) state.value.dialogIcon?.let { icon ->
         UnlockIconDialog(
             icon = icon.vector(context),
-            onConfirm = { viewModel.unlockIcon(icon, context.getActivity() ?: return@UnlockIconDialog) },
+            onConfirm = {
+                viewModel.unlockIcon(
+                    icon = icon,
+                    activity = context.getActivity() ?: return@UnlockIconDialog,
+                    getErrorColor = getErrorColor
+                )
+            },
             onDismissRequest = { viewModel.cancelAd() },
             isLoading = state.value.isDialogLoading,
             color = iconState.value.color
@@ -121,6 +130,12 @@ fun SelectIconScreen(viewModel: SelectIconViewModel = hiltViewModel()) {
         IconWarningDialog(
             onDismissRequest = { viewModel.onEvent(SelectIconEvent.IsWarningDialogShown(false)) },
             onConfirm = { viewModel.hideWarning(it) },
+        )
+
+    if (state.value.isRewardErrorDialogShown)
+        AdPreferencesDialog(
+            onDismissRequest = { viewModel.onEvent(SelectIconEvent.IsRewardPreferencesDialogShown(false)) },
+            onConfirm = { context.getActivity()?.let { viewModel.manageAdPreferences(it, getErrorColor) } },
         )
 }
 

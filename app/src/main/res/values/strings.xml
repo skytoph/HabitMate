@@ -218,7 +218,6 @@
     <string name="fail_title">Fail</string>
     <string name="error_sync">Failed to create backup.</string>
     <string name="error_no_connection">No Internet connection.</string>
-    <string name="error_no_ads">No ads to show right now.</string>
     <string name="error_failed_to_load_reward">Something went wrong, failed to load the ad.</string>
     <string name="reward_unlocked">The icon successfully unlocked.</string>
     <string name="sync_title">Something went wrong, can\'t create backup.</string>
@@ -288,6 +287,11 @@
     <string name="hide_reminder_confirmation_description_permanently">you can always turn it back on in settings</string>
     <string name="new_line" translatable="false">\n</string>
     <string name="unlocked_first">Unlocked first</string>
+    <string name="error_no_ads">No ads available right now.</string>
+    <string name="error_failed_to_get_ad_permission">Failed to update ad preferences.</string>
+    <string name="manage_ad_options_title">No ads available right now</string>
+    <string name="manage_ad_options_description">You can try managing your ad preferences to improve ad availability.</string>
+    <string name="action_manage_ad_options">Manage options</string>
 
     <!--    Credits-->
     <string name="credit_author" translatable="false">by %1$s</string>
@@ -317,7 +321,7 @@
     <string name="settings_privacy_policy">Privacy policy</string>
     <string name="settings_terms_of_use">Terms of use</string>
     <string name="settings_credits">Credits</string>
-    <string name="settings_feedback">Feedback</string>
+    <string name="settings_feedback">Share your feedback</string>
     <string name="settings_rate_the_app">Rate the app</string>
     <string name="settings_share_the_app">Share the app</string>
     <string name="settings_app_version" translatable="false">HabitMate 1.0.0</string>

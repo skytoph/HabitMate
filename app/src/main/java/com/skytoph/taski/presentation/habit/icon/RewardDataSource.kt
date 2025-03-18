@@ -17,27 +17,26 @@ import com.google.android.ump.ConsentInformation
 import com.google.android.ump.ConsentRequestParameters
 import com.google.android.ump.UserMessagingPlatform
 import com.skytoph.taski.BuildConfig
-import com.skytoph.taski.R
 import com.skytoph.taski.presentation.core.Logger
-import com.skytoph.taski.presentation.core.state.StringResource
 import com.skytoph.taski.presentation.habit.icon.RewardDataSource.Fail
+import com.skytoph.taski.presentation.habit.icon.RewardDataSource.Success
 import java.util.concurrent.atomic.AtomicBoolean
 
 interface RewardDataSource {
     suspend fun initialize(activity: Activity)
     fun isPrivacyOptionsRequired(activity: Activity): Boolean
-    fun requestPermissionAndShow(activity: Activity, reward: Reward, fail: Fail)
-    fun showPrivacyOptions(activity: Activity, fail: Fail = Fail {})
+    fun requestPermissionAndShow(activity: Activity, success: Success, fail: Fail)
+    fun showPrivacyOptions(activity: Activity, fail: Fail = Fail {}, success: Success = Success{})
     fun load(activity: Activity, fail: Fail = Fail {})
-    fun show(activity: Activity, reward: Reward, fail: Fail)
+    fun show(activity: Activity, success: Success, fail: Fail)
     fun cancel()
 
-    fun interface Reward {
-        fun rewarded()
+    fun interface Success {
+        fun handle()
     }
 
     fun interface Fail {
-        fun failed(message: StringResource?)
+        fun handle(result: RewardFailResult)
     }
 
     class Base(
@@ -57,51 +56,53 @@ interface RewardDataSource {
             consentInfo(activity).privacyOptionsRequirementStatus == ConsentInformation.PrivacyOptionsRequirementStatus.REQUIRED
 
         override suspend fun initialize(activity: Activity) {
-            if (consentInfo(activity).canRequestAds())
+            if (consentInfo(activity).canRequestAds()) {
                 initializeMobileAdsSdk(activity)
+                if (rewardedAd == null) load(activity)
+            }
         }
 
         private fun initializeMobileAdsSdk(activity: Activity) {
             if (isMobileAdsInitializeCalled.getAndSet(true)) return
             MobileAds.initialize(activity)
-            load(activity)
         }
 
-        override fun showPrivacyOptions(activity: Activity, fail: Fail) {
+        override fun showPrivacyOptions(activity: Activity, fail: Fail, success: Success) {
             consentInfo(activity).requestConsentInfoUpdate(
                 activity,
                 params(activity),
                 /* information is successfully updated */ {
                     UserMessagingPlatform.showPrivacyOptionsForm(activity) { formError ->
-                        if (formError != null) fail.failed(null)
+                        if (formError != null) fail.handle(RewardFailResult.ConsentError)
+                        else success.handle()
                     }
                 },
                 /* there's an error updating consent information */ { requestConsentError ->
-                    fail.failed(null)
+                    fail.handle(RewardFailResult.ConsentError)
                     log.log(String.format("%s: %s", requestConsentError.errorCode, requestConsentError.message))
                 })
         }
 
-        override fun requestPermissionAndShow(activity: Activity, reward: Reward, fail: Fail) {
+        override fun requestPermissionAndShow(activity: Activity, success: Success, fail: Fail) {
             val consentInfo = consentInfo(activity)
-            consentInfo.requestConsentInfoUpdate(
+            if (consentInfo.canRequestAds())
+                show(activity, success, fail)
+            else consentInfo.requestConsentInfoUpdate(
                 activity,
                 params(activity),
                 /* information is successfully updated */ {
                     UserMessagingPlatform.loadAndShowConsentFormIfRequired(activity) { formError ->
-                        if (formError != null) fail.failed(null)
+                        if (formError != null) fail.handle(RewardFailResult.ConsentError)
                         if (consentInfo.canRequestAds()) {
                             initializeMobileAdsSdk(activity)
-                            show(activity, reward, fail)
+                            show(activity, success, fail)
                         }
                     }
                 },
                 /* there's an error updating consent information */ { requestConsentError ->
-                    fail.failed(null)
+                    fail.handle(RewardFailResult.ConsentError)
                     log.log(String.format("%s: %s", requestConsentError.errorCode, requestConsentError.message))
                 })
-
-            if (consentInfo.canRequestAds()) show(activity, reward, fail)
         }
 
         private fun params(context: Context): ConsentRequestParameters {
@@ -110,7 +111,7 @@ interface RewardDataSource {
                 .build()
             val params = ConsentRequestParameters.Builder()
                 .setAdMobAppId(BuildConfig.ADMOB_APP_ID)
-                .apply { if (BuildConfig.DEBUG) setConsentDebugSettings(debugSettings) }
+                .setConsentDebugSettings(debugSettings)
                 .build()
             return params
         }
@@ -123,8 +124,8 @@ interface RewardDataSource {
                 override fun onAdFailedToLoad(error: LoadAdError) {
                     isLoading = false
                     rewardedAd = null
-                    fail.failed(if (error.code == 3) StringResource.ResId(R.string.error_no_ads) else null)
-                    Log.e(TAG, "Ad failed to load.")
+                    fail.handle(mapErrorCode(error.code, activity))
+                    Log.e(TAG, "Ad failed to load. Error code: " + error.code + "\n" + error.message)
                 }
 
                 override fun onAdLoaded(ad: RewardedAd) {
@@ -139,13 +140,19 @@ interface RewardDataSource {
             })
         }
 
-        override fun show(activity: Activity, reward: Reward, fail: Fail) {
+        private fun mapErrorCode(code: Int, activity: Activity): RewardFailResult = when (code) {
+            3 -> RewardFailResult.NoAdsAvailable(isPrivacyOptionsRequired(activity))
+            2 -> RewardFailResult.NoConnection
+            else -> RewardFailResult.General
+        }
+
+        override fun show(activity: Activity, success: Success, fail: Fail) {
             Log.e(TAG, "Preparing to show the ad")
             showIfIntended = { activity: Activity ->
                 rewardedAd?.let { ad ->
                     ad.fullScreenContentCallback = fullscreenCallback
                     ad.show(activity) {
-                        reward.rewarded()
+                        success.handle()
                         showIfIntended = null
                         rewardedAd = null
                         load(activity)
@@ -159,7 +166,7 @@ interface RewardDataSource {
                             Log.e(TAG, "Reloading!")
                             load(activity, fail)
                         }
-                    }, 3000)
+                    }, AD_LOADING_TIMEOUT)
                 }
             }
             showIfIntended?.invoke(activity)
@@ -171,7 +178,8 @@ interface RewardDataSource {
         }
 
         private companion object {
-            const val ADMOB_UNIT_ID = BuildConfig.ADMOB_UNIT_ID
+            const val ADMOB_UNIT_ID = BuildConfig.TEST_ADMOB_UNIT_ID
+            const val AD_LOADING_TIMEOUT = 6000L
             val TAG: String = RewardDataSource::class.simpleName.toString()
         }
     }

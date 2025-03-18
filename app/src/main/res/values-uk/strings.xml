@@ -145,6 +145,11 @@
     <string name="hide_reminder_confirmation_description">Сховати це нагадування?</string>
     <string name="hide_reminder_confirmation_description_permanently">Ви завжди можете ввімкнути його знову в налаштуваннях.</string>
     <string name="unlocked_first">Спочатку розблоковані</string>
+    <string name="error_failed_to_get_ad_permission">Не вдалося оновити налаштування реклами.</string>
+    <string name="manage_ad_options_title">Наразі реклама недоступна</string>
+    <string name="manage_ad_options_description">Ви можете спробувати змінити налаштування приватності, щоб покращити доступність реклами.</string>
+    <string name="action_manage_ad_options">Налаштувати</string>
+
 
     <!--    Settings-->
     <string name="settings_app">Додаток</string>

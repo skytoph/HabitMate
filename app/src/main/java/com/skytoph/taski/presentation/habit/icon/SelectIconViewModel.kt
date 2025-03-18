@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.lifecycle.viewModelScope
+import com.skytoph.taski.R
 import com.skytoph.taski.core.NetworkManager
 import com.skytoph.taski.core.datastore.SettingsCache
 import com.skytoph.taski.presentation.appbar.InitAppBar
@@ -12,6 +13,8 @@ import com.skytoph.taski.presentation.appbar.PopupMessage
 import com.skytoph.taski.presentation.appbar.SnackbarMessage
 import com.skytoph.taski.presentation.core.state.IconResource
 import com.skytoph.taski.presentation.core.state.StringResource
+import com.skytoph.taski.presentation.habit.icon.IconMessages.failedToUpdateAdPreferences
+import com.skytoph.taski.presentation.habit.icon.IconMessages.noConnectionMessage
 import com.skytoph.taski.presentation.settings.SettingsViewModel
 import com.skytoph.taski.presentation.settings.backup.BackupMessages
 import com.skytoph.taski.presentation.settings.backup.BackupMessages.iconsSynchronizeSuccessMessage
@@ -84,16 +87,16 @@ class SelectIconViewModel @Inject constructor(
 
     fun connected(context: Context): Boolean = interactor.checkConnection(context)
 
-    fun unlockIcon(icon: IconResource, activity: Activity) {
+    fun unlockIcon(icon: IconResource, activity: Activity, getErrorColor: () -> Int) {
         if (networkManager.isNetworkAvailable()) {
             onEvent(SelectIconEvent.UpdateDialog(isLoading = true))
             rewards.requestPermissionAndShow(
                 activity = activity,
-                reward = { reward(icon, activity) },
-                fail = { rewardFailed() })
+                success = { reward(icon, activity) },
+                fail = { rewardFailed(getErrorColor, it) })
         } else {
             onEvent(SelectIconEvent.UpdateDialog())
-            showMessage(IconMessages.noConnectionMessage)
+            showMessage(noConnectionMessage)
         }
     }
 
@@ -112,10 +115,25 @@ class SelectIconViewModel @Inject constructor(
             }
         }
 
-    private fun rewardFailed(message: StringResource? = null) {
-        onEvent(SelectIconEvent.UpdateDialog())
-        val error = if (message == null) IconMessages.failedToLoadRewardMessage
-        else IconMessages.failedToLoadRewardMessage.copy(messageResource = message)
-        showMessage(error)
+    private fun rewardFailed(getErrorColor: () -> Int, result: RewardFailResult) {
+        onEvent(SelectIconEvent.UpdateDialogVisibility(isVisible = false))//and stop loading
+        when (result) {
+            RewardFailResult.General -> showMessage(IconMessages.failedToLoadRewardMessage.copy(color = getErrorColor()))
+            is RewardFailResult.NoConnection -> showMessage(noConnectionMessage)
+            is RewardFailResult.ConsentError -> showMessage(failedToUpdateAdPreferences)
+            is RewardFailResult.NoAdsAvailable ->
+                if (result.isOptionsRequired)
+                    onEvent(SelectIconEvent.IsRewardPreferencesDialogShown(true))
+                else
+                    showMessage(IconMessages.failedToLoadRewardMessage.copy(messageResource = StringResource.ResId(R.string.error_no_ads)))
+        }
+    }
+
+    fun manageAdPreferences(activity: Activity, getErrorColor: () -> Int) {
+        onEvent(SelectIconEvent.IsRewardPreferencesDialogShown(false))
+        rewards.showPrivacyOptions(
+            activity = activity,
+            fail = { rewardFailed(getErrorColor, it) },
+            success = { onEvent(SelectIconEvent.UpdateDialogVisibility(isVisible = true))})
     }
 }
