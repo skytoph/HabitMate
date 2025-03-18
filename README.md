@@ -7,13 +7,13 @@ Whether you want to form new habits or maintain existing ones, HabitMate helps y
 
 <img src="https://github.com/skytoph/HabitMate/assets/44202107/219289e8-ea4f-411e-b1c8-7a8202fcaa8a" width="250"> <img src="https://github.com/skytoph/HabitMate/assets/44202107/d3d763e5-61f1-41a7-b3c7-883b86aa4c01" width="250"> <img src="https://github.com/skytoph/HabitMate/assets/44202107/72d2dd4b-1bc6-40ee-93a7-731485d21ef0" width="250">
 
-## FeaturesCustomizable 
-- Habit Schedules: Supports daily, weekly, and specific-day repetition.
-- Reminder System: Configurable notifications for each habit.
-- Streak Tracking: Tracks consecutive completions to monitor consistency.
-- Progress Tracking: Visualize habit data through a calendar and heatmap.
-- Habit Customization: Allows color and icon selection for visual distinction.
-- Google Drive Backup: Utilizes Google Drive API for backup and restore functionality.
+## Features
+- Customizable habit schedules: Supports daily, weekly, and specific-day repetition.
+- Reminder system: Configurable notifications for each habit.
+- Streak tracking: Tracks consecutive completions to monitor consistency.
+- Progress tracking: Visualize habit data through a calendar and heatmap.
+- Habit customization: Allows color and icon selection for visual distinction.
+- Google Drive backup: Utilizes Google Drive API for backup and restore functionality.
 
 ## Technologies
 - [Jetpack Compose](https://developer.android.com/jetpack/compose): Modern UI toolkit for building native Android UIs.
