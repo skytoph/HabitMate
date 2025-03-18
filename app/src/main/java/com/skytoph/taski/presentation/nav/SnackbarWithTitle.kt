@@ -1,6 +1,7 @@
 package com.skytoph.taski.presentation.nav
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,6 +40,7 @@ fun SnackbarWithTitle(message: SnackbarMessage, modifier: Modifier = Modifier) {
         containerColor = MaterialTheme.colorScheme.primaryContainer,
         contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
         modifier = modifier.padding(16.dp)
+            .border(width = 1.dp, color = color, shape = MaterialTheme.shapes.medium)
     ) {
         Row(
             modifier = Modifier
