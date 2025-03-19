@@ -1,8 +1,6 @@
 package com.skytoph.taski.presentation.settings.menu.component
 
 import android.content.Intent
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -35,6 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.skytoph.taski.BuildConfig
 import com.skytoph.taski.R
 import com.skytoph.taski.presentation.core.component.MenuTitleText
 import com.skytoph.taski.presentation.core.component.TitleWithIconMenuItem
@@ -51,10 +50,7 @@ fun SettingsMenuScreen(
     backupClick: () -> Unit,
     creditsClick: () -> Unit
 ) {
-    val feedbackEmail = stringResource(R.string.feedback_email)
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult(), onResult = {}
-    )
+    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         viewModel.initAppBar(title = R.string.settings_title)
@@ -67,14 +63,7 @@ fun SettingsMenuScreen(
         themeClick = themeClick,
         backupClick = backupClick,
         creditsClick = creditsClick,
-        feedbackClick = {
-            val intent = Intent(Intent.ACTION_MAIN).apply {
-                addCategory(Intent.CATEGORY_APP_EMAIL)
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                putExtra(Intent.EXTRA_EMAIL, feedbackEmail)
-            }
-            launcher.launch(intent)
-        }
+        feedbackClick = { viewModel.sendFeedback(context) }
     )
 }
 
@@ -193,7 +182,11 @@ private fun SettingsMenu(
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 Text(
-                    text = stringResource(R.string.settings_app_version),
+                    text = stringResource(
+                        R.string.settings_app_version,
+                        stringResource(R.string.app_name),
+                        BuildConfig.VERSION_NAME
+                    ),
                     style = MaterialTheme.typography.bodySmall,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth(),

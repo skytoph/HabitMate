@@ -1,5 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name">Habit Mate</string>
+    <string name="app_name" translatable="false">Habit Mate</string>
 
     <!--    Auth-->
     <string name="error_auth_general" translatable="false">Something went wrong, please try again later</string>
@@ -305,6 +305,11 @@
     <!--    Share-->
     <string name="share_app_title">Share the app</string>
 
+    <!--    Feedback-->
+    <string name="feedback_subject" translatable="false">Habit Mate Feedback</string>
+    <string name="feedback_text" translatable="false">\n\n\n%1$s %2$s (%3$d)\nSupport ID: %4$s\n\n</string>
+    <string name="error_failed_to_find_email_app">Unable to open an email app</string>
+
     <!--    Crashlytics-->
     <string name="allow_crashlytics">allow crash report collection</string>
     <string name="allow_crashlytics_title">Crashlytics</string>
@@ -324,7 +329,7 @@
     <string name="settings_feedback">Share your feedback</string>
     <string name="settings_rate_the_app">Rate the app</string>
     <string name="settings_share_the_app">Share the app</string>
-    <string name="settings_app_version" translatable="false">HabitMate 1.0.0</string>
+    <string name="settings_app_version" translatable="false">%1$s %2$s</string>
 
     <!--    Quantity-->
     <string name="day_label_one">day</string>
