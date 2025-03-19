@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.paging.compose.LazyPagingItems
 import com.skytoph.taski.R
+import com.skytoph.taski.core.datastore.settings.HabitHistoryView
 import com.skytoph.taski.presentation.habit.edit.EditableHistoryUi
 
 @Composable
@@ -40,10 +41,10 @@ fun EditHistoryDialog(
     goal: Int,
     page: Int,
     isFirstDaySunday: Boolean = false,
-    isCalendarView: Boolean = false,
+    habitHistoryView: HabitHistoryView = HabitHistoryView.Calendar,
 ) {
     Dialog(onDismissRequest = onEdit) {
-        HabitHistoryEditable(items, habitColor, goal, page, onDayClick, isFirstDaySunday, isCalendarView)
+        HabitHistoryEditable(items, habitColor, goal, page, onDayClick, isFirstDaySunday, habitHistoryView)
     }
 }
 
@@ -55,7 +56,7 @@ fun HabitHistoryEditable(
     page: Int,
     onDayClick: (Int) -> Unit,
     isFirstDaySunday: Boolean = false,
-    isCalendarView: Boolean = false,
+    habitHistoryView: HabitHistoryView = HabitHistoryView.Calendar,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -69,7 +70,7 @@ fun HabitHistoryEditable(
             .padding(bottom = 8.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        if (isCalendarView) {
+        if (habitHistoryView == HabitHistoryView.Calendar) {
             MonthlyPager(
                 goal = goal,
                 habitColor = habitColor,

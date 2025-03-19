@@ -33,7 +33,7 @@ interface HabitDetailsInteractor : HabitDoneInteractor {
 
         override fun entries(id: Long): Flow<PagingData<EditableHistoryUi>> =
             settings.state().flatMapLatest { s ->
-                pagerProvider.getEntries(id, s.streaksHighlighted, s.weekStartsOnSunday.value, s.isHabitHistoryCalendar)
+                pagerProvider.getEntries(id, s.streaksHighlighted, s.weekStartsOnSunday.value, s.habitHistoryView)
             }
 
         override suspend fun habitDoneAndReturn(habit: HabitUi, daysAgo: Int): EntryEditableUi {

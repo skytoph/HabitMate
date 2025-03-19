@@ -16,7 +16,7 @@ data class Settings(
     val sortIcons: Boolean = false,
     val theme: AppTheme? = null,
     val view: HabitsView = HabitsView(),
-    val isHabitHistoryCalendar: Boolean = false,
+    val habitHistoryView: HabitHistoryView = HabitHistoryView.Calendar,
     val lastBackupSaved: Long? = null
 ) {
     companion object {

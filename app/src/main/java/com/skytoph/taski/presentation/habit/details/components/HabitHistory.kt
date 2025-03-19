@@ -58,6 +58,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.skytoph.taski.R
+import com.skytoph.taski.core.datastore.settings.HabitHistoryView
 import com.skytoph.taski.presentation.core.color.contrastColor
 import com.skytoph.taski.presentation.core.component.ButtonWithBackground
 import com.skytoph.taski.presentation.core.component.LoadingItems
@@ -81,7 +82,7 @@ fun HabitHistory(
     isFirstDaySunday: Boolean = false,
     onEdit: () -> Unit = {},
     onChangeView: () -> Unit = {},
-    isCalendarView: Boolean = true,
+    habitHistoryView: HabitHistoryView = HabitHistoryView.Calendar,
     pagerState: PagerState
 ) {
     Column(
@@ -95,7 +96,10 @@ fun HabitHistory(
             .animateContentSize()
     ) {
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopCenter) {
-            Crossfade(targetState = isCalendarView, label = "habit_history_crossfade") { isCalendar ->
+            Crossfade(
+                targetState = habitHistoryView is HabitHistoryView.Calendar,
+                label = "habit_history_crossfade"
+            ) { isCalendar ->
                 if (isCalendar) {
                     MonthlyPager(
                         goal = goal,
@@ -130,7 +134,10 @@ fun HabitHistory(
                     .size(32.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Crossfade(targetState = isCalendarView, label = "calendar_view_crossfade") { calendarView ->
+                Crossfade(
+                    targetState = habitHistoryView is HabitHistoryView.Calendar,
+                    label = "calendar_view_crossfade"
+                ) { calendarView ->
                     Icon(
                         imageVector = ImageVector.vectorResource(if (calendarView) R.drawable.table else R.drawable.calendar_days),
                         contentDescription = "calendar view",

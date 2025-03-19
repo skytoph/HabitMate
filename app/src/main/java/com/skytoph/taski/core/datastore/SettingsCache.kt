@@ -3,6 +3,7 @@ package com.skytoph.taski.core.datastore
 import androidx.datastore.core.DataStore
 import com.skytoph.taski.core.datastore.settings.AppTheme
 import com.skytoph.taski.core.datastore.settings.FilterHabits
+import com.skytoph.taski.core.datastore.settings.HabitHistoryView
 import com.skytoph.taski.core.datastore.settings.Settings
 import com.skytoph.taski.core.datastore.settings.SortHabits
 import com.skytoph.taski.core.datastore.settings.ViewType
@@ -63,7 +64,11 @@ interface SettingsCache {
         }
 
         override suspend fun updateHabitHistoryView() {
-            dataStore.updateData { it.copy(isHabitHistoryCalendar = !it.isHabitHistoryCalendar) }
+            dataStore.updateData {
+                val value =
+                    if (it.habitHistoryView == HabitHistoryView.Calendar) HabitHistoryView.Heatmap else HabitHistoryView.Calendar
+                it.copy(habitHistoryView = value)
+            }
         }
 
         override suspend fun updateIconsSort() {

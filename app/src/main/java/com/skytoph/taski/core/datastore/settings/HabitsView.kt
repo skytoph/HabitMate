@@ -6,8 +6,8 @@ import com.skytoph.taski.presentation.habit.list.HistoryUi
 import com.skytoph.taski.presentation.habit.list.mapper.HabitsViewMapper
 
 data class HabitsView(
-    val viewType: ViewType = ViewType.Calendar(),
-    val sortBy: SortHabits = SortHabits.ByTitle,
+    val viewType: ViewType = ViewType.Daily(),
+    val sortBy: SortHabits = SortHabits.Manually,
     val filterBy: FilterHabits = FilterHabits.None,
     val showTodayHabitsOnly: Boolean = false,
     val initialized: Boolean = false
@@ -16,4 +16,9 @@ data class HabitsView(
             : List<HabitWithHistoryUi<HistoryUi>>? =
         if (!initialized) null
         else mapper.map(habits, this, settings.currentDayHighlighted, settings.weekStartsOnSunday.value)
+}
+
+sealed class HabitHistoryView {
+    data object Heatmap : HabitHistoryView()
+    data object Calendar : HabitHistoryView()
 }

@@ -5,6 +5,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.skytoph.taski.core.datastore.settings.HabitHistoryView
 import com.skytoph.taski.core.datastore.settings.ViewType
 import com.skytoph.taski.domain.habit.HabitRepository
 import com.skytoph.taski.domain.habit.HabitWithEntries
@@ -64,7 +65,7 @@ class EntityPagerProvider(
     private val statsMapper: StatisticsUiMapper,
 ) {
 
-    fun getEntries(id: Long, isBorderOn: Boolean, isFirstDaySunday: Boolean, isCalendarView: Boolean)
+    fun getEntries(id: Long, isBorderOn: Boolean, isFirstDaySunday: Boolean, historyView: HabitHistoryView)
             : Flow<PagingData<EditableHistoryUi>> =
         Pager(
             config = PagingConfig(
@@ -74,7 +75,8 @@ class EntityPagerProvider(
                 enablePlaceholders = false
             ),
             pagingSourceFactory = {
-                val mapper = if (isCalendarView) calendarUiMapper else gridUiMapper.also { it.clear() }
+                val mapper =
+                    if (historyView is HabitHistoryView.Calendar) calendarUiMapper else gridUiMapper.also { it.clear() }
                 EntryPagingSource(repository, mapper, statsMapper, id, isBorderOn, isFirstDaySunday)
             }
         ).flow

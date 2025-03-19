@@ -46,6 +46,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.skytoph.taski.R
+import com.skytoph.taski.core.datastore.settings.HabitHistoryView
 import com.skytoph.taski.presentation.core.component.AppBarAction
 import com.skytoph.taski.presentation.core.component.DeleteDialog
 import com.skytoph.taski.presentation.core.component.getLocale
@@ -85,7 +86,7 @@ fun HabitDetailsScreen(
         entries = viewModel.entries,
         isFirstDaySunday = settings.value.weekStartsOnSunday.value,
         is24HourFormat = settings.value.time24hoursFormat.value,
-        isHistoryCalendarView = settings.value.isHabitHistoryCalendar,
+        habitHistoryView = settings.value.habitHistoryView,
         onHideDialog = onHideDialog,
         onDeleteHabit = { onHideDialog(); onDeleteHabit() },
         onDayClick = { viewModel.habitDone(it) },
@@ -105,7 +106,7 @@ fun HabitDetails(
     onDayClick: (Int) -> Unit = {},
     onEditHistory: () -> Unit = {},
     isFirstDaySunday: Boolean = false,
-    isHistoryCalendarView: Boolean = false,
+    habitHistoryView: HabitHistoryView = HabitHistoryView.Calendar,
     expandSummary: () -> Unit = {},
     expandDescription: () -> Unit = {},
     updateView: () -> Unit = {},
@@ -272,7 +273,7 @@ fun HabitDetails(
                 habitColor = habit.color,
                 onEdit = onEditHistory,
                 isFirstDaySunday = isFirstDaySunday,
-                isCalendarView = isHistoryCalendarView,
+                habitHistoryView = habitHistoryView,
                 onChangeView = updateView,
                 pagerState = pagerState
             )
@@ -296,7 +297,7 @@ fun HabitDetails(
                 goal = habit.goal,
                 page = pagerState.currentPage,
                 isFirstDaySunday = isFirstDaySunday,
-                isCalendarView = isHistoryCalendarView
+                habitHistoryView = habitHistoryView
             )
     }
 }
