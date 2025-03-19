@@ -1,5 +1,6 @@
 package com.skytoph.taski.di.core
 
+import com.skytoph.taski.BuildConfig
 import com.skytoph.taski.presentation.core.Logger
 import dagger.Module
 import dagger.Provides
@@ -11,5 +12,5 @@ import dagger.hilt.components.SingletonComponent
 object LogModule {
 
     @Provides
-    fun log(): Logger = Logger.Crashlytics()
+    fun log(): Logger = if (BuildConfig.DEBUG) Logger.Debug else Logger.Crashlytics()
 }

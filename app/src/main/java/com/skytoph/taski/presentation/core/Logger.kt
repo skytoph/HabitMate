@@ -6,17 +6,33 @@ import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
 
 interface Logger {
-    fun log(string: String)
-    fun log(exception: Exception)
+    fun log(string: String, tag: String = "")
+    fun log(exception: Exception, tag: String = "")
+    fun logDebug(string: String, tag: String = "")
 
     class Crashlytics(private val crashlytics: FirebaseCrashlytics = Firebase.crashlytics) : Logger {
-        override fun log(string: String) {
-            log(Exception(string))
+        override fun log(string: String, tag: String) {
+            log(Exception(string), tag)
         }
 
-        override fun log(exception: Exception) {
-            Log.e("TAG", exception.stackTraceToString())
+        override fun log(exception: Exception, tag: String) {
             crashlytics.recordException(exception)
+        }
+
+        override fun logDebug(string: String, tag: String) = Unit
+    }
+
+    object Debug : Logger {
+        override fun log(string: String, tag: String) {
+            log(Exception(string), tag)
+        }
+
+        override fun log(exception: Exception, tag: String) {
+            Log.e(tag, exception.stackTraceToString())
+        }
+
+        override fun logDebug(string: String, tag: String) {
+            log(string, tag)
         }
     }
 }

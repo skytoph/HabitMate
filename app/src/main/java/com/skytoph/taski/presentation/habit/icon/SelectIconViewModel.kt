@@ -13,6 +13,7 @@ import com.skytoph.taski.presentation.appbar.PopupMessage
 import com.skytoph.taski.presentation.appbar.SnackbarMessage
 import com.skytoph.taski.presentation.core.state.IconResource
 import com.skytoph.taski.presentation.core.state.StringResource
+import com.skytoph.taski.presentation.habit.icon.IconMessages.failedToLoadRewardMessage
 import com.skytoph.taski.presentation.habit.icon.IconMessages.failedToUpdateAdPreferences
 import com.skytoph.taski.presentation.habit.icon.IconMessages.noConnectionMessage
 import com.skytoph.taski.presentation.settings.SettingsViewModel
@@ -118,14 +119,14 @@ class SelectIconViewModel @Inject constructor(
     private fun rewardFailed(getErrorColor: () -> Int, result: RewardFailResult) {
         onEvent(SelectIconEvent.UpdateDialogVisibility(isVisible = false))//and stop loading
         when (result) {
-            RewardFailResult.General -> showMessage(IconMessages.failedToLoadRewardMessage.copy(color = getErrorColor()))
+            RewardFailResult.General -> showMessage(failedToLoadRewardMessage.copy(color = getErrorColor()))
             is RewardFailResult.NoConnection -> showMessage(noConnectionMessage)
             is RewardFailResult.ConsentError -> showMessage(failedToUpdateAdPreferences)
             is RewardFailResult.NoAdsAvailable ->
                 if (result.isOptionsRequired)
                     onEvent(SelectIconEvent.IsRewardPreferencesDialogShown(true))
                 else
-                    showMessage(IconMessages.failedToLoadRewardMessage.copy(messageResource = StringResource.ResId(R.string.error_no_ads)))
+                    showMessage(failedToLoadRewardMessage.copy(messageResource = StringResource.ResId(R.string.error_no_ads)))
         }
     }
 
@@ -134,6 +135,6 @@ class SelectIconViewModel @Inject constructor(
         rewards.showPrivacyOptions(
             activity = activity,
             fail = { rewardFailed(getErrorColor, it) },
-            success = { onEvent(SelectIconEvent.UpdateDialogVisibility(isVisible = true))})
+            success = { onEvent(SelectIconEvent.UpdateDialogVisibility(isVisible = true)) })
     }
 }

@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback
@@ -26,7 +25,7 @@ interface RewardDataSource {
     suspend fun initialize(activity: Activity)
     fun isPrivacyOptionsRequired(activity: Activity): Boolean
     fun requestPermissionAndShow(activity: Activity, success: Success, fail: Fail)
-    fun showPrivacyOptions(activity: Activity, fail: Fail = Fail {}, success: Success = Success{})
+    fun showPrivacyOptions(activity: Activity, fail: Fail = Fail {}, success: Success = Success {})
     fun load(activity: Activity, fail: Fail = Fail {})
     fun show(activity: Activity, success: Success, fail: Fail)
     fun cancel()
@@ -73,13 +72,15 @@ interface RewardDataSource {
                 params(activity),
                 /* information is successfully updated */ {
                     UserMessagingPlatform.showPrivacyOptionsForm(activity) { formError ->
-                        if (formError != null) fail.handle(RewardFailResult.ConsentError)
-                        else success.handle()
+                        if (formError != null) {
+                            fail.handle(RewardFailResult.ConsentError)
+                            log.log(String.format("%s: %s", formError.errorCode, formError.message), TAG)
+                        } else success.handle()
                     }
                 },
                 /* there's an error updating consent information */ { requestConsentError ->
                     fail.handle(RewardFailResult.ConsentError)
-                    log.log(String.format("%s: %s", requestConsentError.errorCode, requestConsentError.message))
+                    log.log(String.format("%s: %s", requestConsentError.errorCode, requestConsentError.message), TAG)
                 })
         }
 
@@ -92,8 +93,10 @@ interface RewardDataSource {
                 params(activity),
                 /* information is successfully updated */ {
                     UserMessagingPlatform.loadAndShowConsentFormIfRequired(activity) { formError ->
-                        if (formError != null) fail.handle(RewardFailResult.ConsentError)
-                        if (consentInfo.canRequestAds()) {
+                        if (formError != null) {
+                            fail.handle(RewardFailResult.ConsentError)
+                            log.log(String.format("%s: %s", formError.errorCode, formError.message), TAG)
+                        } else if (consentInfo.canRequestAds()) {
                             initializeMobileAdsSdk(activity)
                             show(activity, success, fail)
                         }
@@ -101,7 +104,7 @@ interface RewardDataSource {
                 },
                 /* there's an error updating consent information */ { requestConsentError ->
                     fail.handle(RewardFailResult.ConsentError)
-                    log.log(String.format("%s: %s", requestConsentError.errorCode, requestConsentError.message))
+                    log.log(String.format("%s: %s", requestConsentError.errorCode, requestConsentError.message), TAG)
                 })
         }
 
@@ -117,7 +120,7 @@ interface RewardDataSource {
         }
 
         override fun load(activity: Activity, fail: Fail) {
-            Log.e(TAG, "Preparing to load the ad...")
+            log.logDebug("Preparing to load the ad...", TAG)
             isLoading = true
             val request = AdRequest.Builder().build()
             RewardedAd.load(activity, ADMOB_UNIT_ID, request, object : RewardedAdLoadCallback() {
@@ -125,16 +128,16 @@ interface RewardDataSource {
                     isLoading = false
                     rewardedAd = null
                     fail.handle(mapErrorCode(error.code, activity))
-                    Log.e(TAG, "Ad failed to load. Error code: " + error.code + "\n" + error.message)
+//                    fail.handle(RewardFailResult.Message("error " + error.code + ": " + error.message))
+                    log.logDebug("Ad failed to load. Error code: " + error.code + "\n" + error.message, TAG)
                 }
 
                 override fun onAdLoaded(ad: RewardedAd) {
                     isLoading = false
                     rewardedAd = ad
                     showIfIntended?.invoke(activity)
-                    Log.e(
-                        TAG,
-                        "Ad loaded. " + if (showIfIntended == null) "No intention to show" else "Starting to show"
+                    log.logDebug(
+                        "Ad loaded. " + if (showIfIntended == null) "No intention to show" else "Starting to show", TAG
                     )
                 }
             })
@@ -147,7 +150,7 @@ interface RewardDataSource {
         }
 
         override fun show(activity: Activity, success: Success, fail: Fail) {
-            Log.e(TAG, "Preparing to show the ad")
+            log.logDebug("Preparing to show the ad", TAG)
             showIfIntended = { activity: Activity ->
                 rewardedAd?.let { ad ->
                     ad.fullScreenContentCallback = fullscreenCallback
@@ -156,14 +159,14 @@ interface RewardDataSource {
                         showIfIntended = null
                         rewardedAd = null
                         load(activity)
-                        Log.e(TAG, "User earned the reward.")
+                        log.logDebug("User earned the reward.", TAG)
                     }
                 } ?: run {
                     if (!isLoading) load(activity, fail)
-                    Log.e(TAG, "The rewarded ad wasn't ready yet. is loading: $isLoading")
+                    log.logDebug("The rewarded ad wasn't ready yet. is loading: $isLoading", TAG)
                     Handler(Looper.getMainLooper()).postDelayed({
                         if (isLoading) {
-                            Log.e(TAG, "Reloading!")
+                            log.logDebug("Reloading the ad", TAG)
                             load(activity, fail)
                         }
                     }, AD_LOADING_TIMEOUT)
