@@ -105,7 +105,9 @@ fun FrequencyCustom(
                     .padding(8.dp)
             ) {
                 Text(
-                    text = stringResource(id = frequency.frequencyType.title),
+                    text = pluralStringResource(
+                        id = frequency.frequencyType.titlePlural, count = frequency.typeCount.value
+                    ),
                     color = MaterialTheme.colorScheme.onBackground,
                     style = MaterialTheme.typography.bodySmall
                 )

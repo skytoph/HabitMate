@@ -28,6 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -103,6 +104,7 @@ fun ReminderItem(
                 enabledColor = MaterialTheme.colorScheme.primary,
                 disabledColor = MaterialTheme.colorScheme.secondaryContainer,
                 enabled = !isLoading,
+                style = MaterialTheme.typography.bodySmall
             )
         }
     }
@@ -117,6 +119,7 @@ fun ButtonWithLoading(
     isLoading: Boolean = false,
     enabledColor: Color = MaterialTheme.colorScheme.primary,
     disabledColor: Color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.5f),
+    style: TextStyle = MaterialTheme.typography.titleSmall
 ) {
     val color = remember { Animatable(if (isLoading) disabledColor else enabledColor) }
     LaunchedEffect(isLoading) {
@@ -142,7 +145,7 @@ fun ButtonWithLoading(
                 text = title,
                 color = Color.White,
                 textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.titleSmall
+                style = style
             )
         }
     }
