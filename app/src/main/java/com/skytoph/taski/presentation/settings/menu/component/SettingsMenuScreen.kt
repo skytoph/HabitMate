@@ -185,7 +185,8 @@ private fun SettingsMenu(
                     text = stringResource(
                         R.string.settings_app_version,
                         stringResource(R.string.app_name),
-                        BuildConfig.VERSION_NAME
+                        BuildConfig.VERSION_NAME,
+                        BuildConfig.VERSION_CODE
                     ),
                     style = MaterialTheme.typography.bodySmall,
                     textAlign = TextAlign.Center,

@@ -13,9 +13,10 @@ fun feedbackIntent(
     subject: String = context.getString(R.string.feedback_subject),
     feedbackEmail: String = context.getString(R.string.feedback_email)
 ): Intent = Intent(Intent.ACTION_SENDTO).apply {
-    val uri = "mailto:$feedbackEmail?subject=$subject&body=$text"
+    val encodedSubject = Uri.encode(subject)
+    val encodedBody = Uri.encode(text)
+    val uri = context.getString(R.string.feedback_uri, feedbackEmail, encodedSubject, encodedBody)
     data = Uri.parse(uri)
-    putExtra(Intent.EXTRA_EMAIL, feedbackEmail)
     putExtra(Intent.EXTRA_EMAIL, arrayOf(feedbackEmail))
 }
 

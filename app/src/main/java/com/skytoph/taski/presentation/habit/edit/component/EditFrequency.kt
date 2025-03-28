@@ -1,6 +1,5 @@
 package com.skytoph.taski.presentation.habit.edit.component
 
-import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -71,13 +70,12 @@ fun EditFrequency(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Crossfade(targetState = frequency, label = "frequency_summary_crossfade", modifier = Modifier.weight(1f)) {
-                Text(
-                    text = it.selected.summarize(LocalContext.current.resources, isFirstDaySunday, getLocale()),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onBackground,
-                )
-            }
+            Text(
+                text = frequency.selected.summarize(LocalContext.current.resources, isFirstDaySunday, getLocale()),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.weight(1f)
+            )
             Icon(
                 imageVector = if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                 contentDescription = "select reminder",

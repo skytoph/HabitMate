@@ -63,7 +63,7 @@
 
     <!--    Habit list Labels-->
     <string name="action_view">Вигляд</string>
-    <string name="reorder_habits">змінити порядок звичок</string>
+    <string name="reorder_habits">Змінити порядок звичок</string>
     <string name="filter_archived">Архівовані</string>
 
     <!--    Habit list view settings-->
@@ -213,7 +213,7 @@
     <string name="export_description_icons_warning">Розблоковані іконки не включені у файл експорту.</string>
     <string name="export_description_icons_warning_details">Щоб зберегти розблоковані іконки, будь ласка, увійдіть через обліковий запис Google.</string>
     <string name="backup_with_google_description">Увійдіть через Google, щоб зберегти резервну копію у Google Drive.\nЗверніть увагу, якщо ви не увійшли, ви не зможете використовувати розблоковані іконки.</string>
-    <string name="last_time_backup_saved">резервне копіювання %1$s</string>
+    <string name="last_time_backup_saved">резервне копіювання\n%1$s</string>
     <string name="icons_are_synchronized">іконки синхронізовано</string>
     <string name="no_backup_data">немає збережених резервних даних</string>
     <string name="restore_dialog_description_confirmation">Ви хочете відновити цю резервну копію?</string>
@@ -238,7 +238,7 @@
     <string name="clear_data_description_warning">Дію неможливо скасувати.</string>
     <string name="clear_data_description_details">Це видалить усі дані звичок, збережені на цьому пристрої. Резервні копії у Google Drive не постраждають.</string>
     <string name="clear_data_title">Очистити локальні дані</string>
-    <string name="failed_to_sign_in_message">Не вдалося увійти. Спробуйте ще раз пізніше.</string>
+    <string name="failed_to_sign_in_message">Не вдалося увійти.</string>
     <string name="failed_to_sign_out">Не вдалося вийти. Спробуйте ще раз пізніше.</string>
     <string name="fail_title">Помилка</string>
     <string name="error_sync">Не вдалося створити резервну копію.</string>

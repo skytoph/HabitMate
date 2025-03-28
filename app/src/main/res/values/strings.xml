@@ -105,7 +105,7 @@
 
     <!--    Habit list Labels-->
     <string name="action_view">View</string>
-    <string name="reorder_habits">reorder habits</string>
+    <string name="reorder_habits">Reorder habits</string>
     <string name="filter_archived">Archived</string>
 
     <!--    Habit list view settings-->
@@ -188,7 +188,7 @@
     <string name="export_description_icons_warning">Unlocked icons are not included in the exported file.</string>
     <string name="export_description_icons_warning_details">To save your unlocked icons, please sign in with your Google account.</string>
     <string name="backup_with_google_description">Sign in with Google to save your backup to your Google Drive.\nNote that if you’re not signed in, you won’t be able to use your unlocked icons.</string>
-    <string name="last_time_backup_saved">last sync %1$s</string>
+    <string name="last_time_backup_saved">last backup\n%1$s</string>
     <string name="icons_are_synchronized">icons are synchronized</string>
     <string name="no_backup_data">There is no saved backup data</string>
     <string name="restore_dialog_description_confirmation">Do you want to restore this backup?</string>
@@ -213,7 +213,7 @@
     <string name="clear_data_description_warning">This cannot be undone.</string>
     <string name="clear_data_description_details">This will delete all habit data stored on this device. Google Drive backups won’t be affected.</string>
     <string name="clear_data_title">Clear local data</string>
-    <string name="failed_to_sign_in_message">Failed to sign in. Please try again later.</string>
+    <string name="failed_to_sign_in_message">Failed to sign in.</string>
     <string name="failed_to_sign_out">Failed to sign out. Please try again later.</string>
     <string name="fail_title">Fail</string>
     <string name="error_sync">Failed to create backup.</string>
@@ -309,6 +309,7 @@
     <string name="feedback_subject" translatable="false">Habit Mate Feedback</string>
     <string name="feedback_text" translatable="false">\n\n\n%1$s %2$s (%3$d)\nSupport ID: %4$s\n\n</string>
     <string name="error_failed_to_find_email_app">Unable to open an email app</string>
+    <string name="feedback_uri" translatable="false"><![CDATA[mailto:%1$s?subject=%2$s&body=%3$s]]></string>
 
     <!--    Crashlytics-->
     <string name="allow_crashlytics">allow crash report collection</string>
@@ -329,7 +330,7 @@
     <string name="settings_feedback">Share your feedback</string>
     <string name="settings_rate_the_app">Rate the app</string>
     <string name="settings_share_the_app">Share the app</string>
-    <string name="settings_app_version" translatable="false">%1$s %2$s</string>
+    <string name="settings_app_version" translatable="false">%1$s %2$s (%3$d)</string>
 
     <!--    Quantity-->
     <string name="day_label_one">day</string>
