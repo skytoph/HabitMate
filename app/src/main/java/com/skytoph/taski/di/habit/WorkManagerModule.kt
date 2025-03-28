@@ -9,6 +9,7 @@ import com.skytoph.taski.core.reminder.HabitUriConverter
 import com.skytoph.taski.core.reminder.ReminderScheduler
 import com.skytoph.taski.core.reminder.alarm.AlarmProvider
 import com.skytoph.taski.core.reminder.alarm.AlarmScheduler
+import com.skytoph.taski.presentation.core.Logger
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,8 +24,12 @@ object WorkManagerModule {
     @Provides
     @Singleton
     fun scheduler(
-        alarmProvider: AlarmProvider, uriConverter: HabitUriConverter, gson: Gson, @ApplicationContext context: Context
-    ): ReminderScheduler = AlarmScheduler(alarmProvider, uriConverter, gson, context)
+        alarmProvider: AlarmProvider,
+        uriConverter: HabitUriConverter,
+        gson: Gson,
+        @ApplicationContext context: Context,
+        log: Logger
+    ): ReminderScheduler = AlarmScheduler(alarmProvider, uriConverter, gson, context, log)
 
 //    @Provides
 //    @Singleton
