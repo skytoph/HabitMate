@@ -82,7 +82,7 @@ fun HabitDetailsScreen(
 
     val onHideDialog = { viewModel.onEvent(HabitDetailsEvent.ShowDialog(false)) }
     HabitDetails(
-        state = viewModel.state(),
+        state = viewModel.state().collectAsState(),
         entries = viewModel.entries,
         isFirstDaySunday = settings.value.weekStartsOnSunday.value,
         is24HourFormat = settings.value.time24hoursFormat.value,

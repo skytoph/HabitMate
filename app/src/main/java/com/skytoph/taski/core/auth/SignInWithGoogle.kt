@@ -22,6 +22,7 @@ import com.google.firebase.appcheck.ktx.appCheck
 import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
@@ -157,7 +158,14 @@ interface SignInWithGoogle {
         }
 
         override suspend fun deleteAccount(context: Context) {
-            Firebase.auth.currentUser?.delete()?.await()
+            try {
+                Firebase.auth.currentUser?.delete()?.await()
+            } catch (exception: FirebaseAuthRecentLoginRequiredException) {
+                val account = GoogleSignIn.getLastSignedInAccount(context)
+                val credential = GoogleAuthProvider.getCredential(account?.idToken, null)
+                Firebase.auth.currentUser?.reauthenticate(credential)?.await()
+                Firebase.auth.currentUser?.delete()?.await()
+            }
             GoogleSignIn.getClient(context, GoogleSignInOptions.DEFAULT_SIGN_IN).revokeAccess().await()
         }
 

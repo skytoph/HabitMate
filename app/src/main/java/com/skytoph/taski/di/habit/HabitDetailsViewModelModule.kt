@@ -1,7 +1,5 @@
 package com.skytoph.taski.di.habit
 
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import com.skytoph.taski.core.Now
 import com.skytoph.taski.core.datastore.SettingsCache
 import com.skytoph.taski.domain.habit.HabitRepository
@@ -14,13 +12,14 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
+import kotlinx.coroutines.flow.MutableStateFlow
 
 @Module
 @InstallIn(ViewModelComponent::class)
 object HabitDetailsViewModelModule {
 
     @Provides
-    fun state(): MutableState<HabitDetailsState> = mutableStateOf(HabitDetailsState())
+    fun state(): MutableStateFlow<HabitDetailsState> = MutableStateFlow(HabitDetailsState())
 
     @Provides
     fun interactor(

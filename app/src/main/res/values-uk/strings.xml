@@ -301,9 +301,9 @@
     <string name="error_failed_to_find_email_app">Не вдалося відкрити додаток електронної пошти</string>
 
     <!--    Crashlytics-->
-    <string name="allow_crashlytics">дозволити збір звітів про збої</string>
-    <string name="allow_crashlytics_title">Звіти про збої</string>
-    <string name="allow_crashlytics_description">Увімкнути збір звітів про збої? Це допоможе нам покращувати додаток.</string>
+    <string name="allow_crashlytics">дозволити збір звітів про збої та аналітику</string>
+    <string name="allow_crashlytics_title">Звіти про збої та аналітика</string>
+    <string name="allow_crashlytics_description">Увімкнути збір звітів про збої та аналітику? Це допоможе нам покращувати додаток.</string>
 
     <string name="day_label_one">день</string>
     <string name="week_label_one">неділя</string>

@@ -1,8 +1,5 @@
 package com.skytoph.taski.presentation.habit.details
 
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -19,6 +16,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
@@ -30,7 +29,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HabitDetailsViewModel @Inject constructor(
-    private val state: MutableState<HabitDetailsState> = mutableStateOf(HabitDetailsState()),
+    private val state: MutableStateFlow<HabitDetailsState> = MutableStateFlow(HabitDetailsState()),
     private val interactor: HabitDetailsInteractor,
     private val habitMapper: HabitUiMapper,
     private val statsMapper: StatisticsUiMapper,
@@ -78,7 +77,7 @@ class HabitDetailsViewModel @Inject constructor(
 
     fun onEvent(event: HabitDetailsEvent) = event.handle(state)
 
-    fun state(): State<HabitDetailsState> = state
+    fun state(): StateFlow<HabitDetailsState> = state.asStateFlow()
 
     fun SavedStateHandle.id(): Long = this[HabitScreens.EditHabit.habitIdArg]
         ?: throw IllegalStateException("Edit Habit screen must contain habit id")

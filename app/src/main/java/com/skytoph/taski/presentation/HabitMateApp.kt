@@ -15,7 +15,7 @@ object Graph {
 
 @Composable
 fun HabitMateApp(
-    navController: NavHostController = rememberNavController(),
+    navController: NavHostController = rememberNavController()
 ) {
     NavHost(
         navController = navController,

@@ -312,9 +312,9 @@
     <string name="feedback_uri" translatable="false"><![CDATA[mailto:%1$s?subject=%2$s&body=%3$s]]></string>
 
     <!--    Crashlytics-->
-    <string name="allow_crashlytics">allow crash report collection</string>
-    <string name="allow_crashlytics_title">Crashlytics</string>
-    <string name="allow_crashlytics_description">Would you like to enable crash reporting? We use crash reports to improve the app.</string>
+    <string name="allow_crashlytics">allow analytics and crash report collection</string>
+    <string name="allow_crashlytics_title">Analytics</string>
+    <string name="allow_crashlytics_description">Would you like to enable crash reporting and analytics? We use it to improve the app.</string>
 
     <!--    Settings-->
     <string name="settings_app">App</string>

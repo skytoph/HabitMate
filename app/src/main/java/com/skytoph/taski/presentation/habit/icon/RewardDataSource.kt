@@ -109,13 +109,16 @@ interface RewardDataSource {
         }
 
         private fun params(context: Context): ConsentRequestParameters {
-            val debugSettings = ConsentDebugSettings.Builder(context)
-                .setDebugGeography(ConsentDebugSettings.DebugGeography.DEBUG_GEOGRAPHY_EEA)
-                .build()
             val params = ConsentRequestParameters.Builder()
                 .setAdMobAppId(BuildConfig.ADMOB_APP_ID)
-                .setConsentDebugSettings(debugSettings)
-                .build()
+                .apply {
+                    if (BuildConfig.DEBUG) {
+                        val debugSettings = ConsentDebugSettings.Builder(context)
+                            .setDebugGeography(ConsentDebugSettings.DebugGeography.DEBUG_GEOGRAPHY_EEA)
+                            .build()
+                        setConsentDebugSettings(debugSettings)
+                    }
+                }.build()
             return params
         }
 
@@ -128,7 +131,6 @@ interface RewardDataSource {
                     isLoading = false
                     rewardedAd = null
                     fail.handle(mapErrorCode(error.code, activity))
-//                    fail.handle(RewardFailResult.Message("error " + error.code + ": " + error.message))
                     log.logDebug("Ad failed to load. Error code: " + error.code + "\n" + error.message, TAG)
                 }
 
@@ -181,7 +183,7 @@ interface RewardDataSource {
         }
 
         private companion object {
-            const val ADMOB_UNIT_ID = BuildConfig.TEST_ADMOB_UNIT_ID
+            const val ADMOB_UNIT_ID = BuildConfig.ADMOB_UNIT_ID
             const val AD_LOADING_TIMEOUT = 6000L
             val TAG: String = RewardDataSource::class.simpleName.toString()
         }
