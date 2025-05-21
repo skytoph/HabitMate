@@ -9,7 +9,6 @@ import com.skytoph.taski.core.NetworkManager
 import com.skytoph.taski.core.auth.SignInWithGoogle
 import com.skytoph.taski.core.backup.BackupDatastore
 import com.skytoph.taski.core.backup.BackupManager
-import com.skytoph.taski.core.backup.BackupResult
 import com.skytoph.taski.domain.habit.HabitRepository
 import com.skytoph.taski.domain.habit.Reminder
 import com.skytoph.taski.presentation.core.Logger
@@ -111,10 +110,10 @@ interface BackupInteractor : SignInInteractor<BackupResultUi> {
         }
 
         override suspend fun deleteAccount(context: Context): BackupResultUi = try {
-            val result = drive.deleteAllFiles()
-            iconsDatastore.delete(auth.profile())
-            auth.deleteAccount(context)
-            BackupResultUi.DeletingAccount(deleted = result is BackupResult.Success)
+            auth.deleteAccount(context = context, clearData = {
+                iconsDatastore.delete(auth.profile())
+                drive.deleteAllFiles()
+            })
             BackupResultUi.DeletingAccount(deleted = true)
         } catch (exception: Exception) {
             log.log(exception)
