@@ -5,11 +5,11 @@ import com.skytoph.taski.domain.habit.HabitWithEntries
 import com.skytoph.taski.presentation.habit.details.HabitStatisticsResult
 import com.skytoph.taski.presentation.habit.details.streak.CalculateStreak
 
-interface HabitStatisticsResultMapper<T : HabitStatisticsResult> {
+interface HabitStreaksResultMapper<T : HabitStatisticsResult> {
     fun map(data: HabitWithEntries, isFirstDaySunday: Boolean): T
 
     abstract class Abstract<T : HabitStatisticsResult>(private val provider: CalculatorProvider) :
-        HabitStatisticsResultMapper<T> {
+        HabitStreaksResultMapper<T> {
 
         override fun map(data: HabitWithEntries, isFirstDaySunday: Boolean): T =
             data.habit.frequency.map(object : FrequencyMapper<T> {

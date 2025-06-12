@@ -2,7 +2,9 @@ package com.skytoph.taski.core.datastore
 
 import androidx.datastore.core.DataStore
 import com.skytoph.taski.core.datastore.settings.AppTheme
+import com.skytoph.taski.core.datastore.settings.ChartFrequency
 import com.skytoph.taski.core.datastore.settings.FilterHabits
+import com.skytoph.taski.core.datastore.settings.HabitDetailsView
 import com.skytoph.taski.core.datastore.settings.HabitHistoryView
 import com.skytoph.taski.core.datastore.settings.Settings
 import com.skytoph.taski.core.datastore.settings.SortHabits
@@ -27,6 +29,7 @@ interface SettingsCache {
     suspend fun updateViewNumberOfEntries(number: Int)
     suspend fun updateBackupTime(time: Long?)
     suspend fun updateIconWarning(show: Boolean? = null)
+    suspend fun updateHabitDetailsView(chartFrequency: ChartFrequency)
     suspend fun updateView(
         viewType: ViewType? = null, sortBy: SortHabits? = null, filterBy: FilterHabits? = null,
         showTodayHabitsOnly: Boolean? = null
@@ -71,12 +74,21 @@ interface SettingsCache {
             }
         }
 
+        override suspend fun updateHabitDetailsView(chartFrequency: ChartFrequency) {
+            dataStore.updateData {
+                it.copy(
+                    habitDetailsView = it.habitDetailsView?.copy(barChartFrequency = chartFrequency)
+                        ?: HabitDetailsView(barChartFrequency = chartFrequency)
+                )
+            }
+        }
+
         override suspend fun updateIconsSort() {
             dataStore.updateData { it.copy(sortIcons = !it.sortIcons) }
         }
 
         override suspend fun updateCrashlytics(allow: Boolean?) {
-            dataStore.updateData { it.copy(allowCrashlytics = allow ?: it.allowCrashlytics?.not() ?: true) }
+            dataStore.updateData { it.copy(allowCrashlytics = allow ?: it.allowCrashlytics?.not() != false) }
         }
 
         override suspend fun updateTheme(theme: AppTheme) {

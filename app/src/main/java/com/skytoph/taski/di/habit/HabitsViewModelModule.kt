@@ -4,7 +4,6 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import com.skytoph.taski.core.Now
 import com.skytoph.taski.core.datastore.settings.ViewType
-import com.skytoph.taski.presentation.habit.details.mapper.HabitStatisticsMapper
 import com.skytoph.taski.presentation.habit.details.mapper.StatisticsUiMapper
 import com.skytoph.taski.presentation.habit.list.HabitListState
 import com.skytoph.taski.presentation.habit.list.HistoryUi
@@ -31,17 +30,15 @@ object HabitsViewModelModule {
     fun habitWithEntriesDailyMapper(
         habitMapper: HabitUiMapper,
         mapper: HabitHistoryUiMapper<HistoryUi, ViewType.Daily>,
-        statsMapper: HabitStatisticsMapper,
     ): HabitWithHistoryUiMapper<HistoryUi, ViewType.Daily> =
-        HabitWithEntriesDailyUiMapper(habitMapper, mapper, statsMapper)
+        HabitWithEntriesDailyUiMapper(habitMapper, mapper)
 
     @Provides
     fun habitWithEntriesCalendarMapper(
         habitMapper: HabitUiMapper,
         mapper: HabitHistoryUiMapper<HistoryUi, ViewType.Calendar>,
-        statsMapper: HabitStatisticsMapper,
     ): HabitWithHistoryUiMapper<HistoryUi, ViewType.Calendar> =
-        HabitWithEntriesCalendarUiMapper(habitMapper, mapper, statsMapper)
+        HabitWithEntriesCalendarUiMapper(habitMapper, mapper)
 
     @Provides
     fun entryMapper(): EntryUiMapper = EntryUiMapper.Base()

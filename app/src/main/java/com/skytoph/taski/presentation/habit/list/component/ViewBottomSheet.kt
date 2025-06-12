@@ -63,6 +63,7 @@ fun ViewBottomSheet(
             modifier = Modifier.fillMaxWidth()
         ) {
             OptionsDropdown(
+                modifier = Modifier.fillMaxWidth(),
                 title = stringResource(R.string.view_layout),
                 options = ViewType.options,
                 selected = view.viewType,
@@ -70,6 +71,7 @@ fun ViewBottomSheet(
             )
             HorizontalDivider()
             OptionsDropdown(
+                modifier = Modifier.fillMaxWidth(),
                 title = stringResource(R.string.view_sort),
                 options = SortHabits.options,
                 selected = view.sortBy,
@@ -77,6 +79,7 @@ fun ViewBottomSheet(
             )
             HorizontalDivider()
             OptionsDropdown(
+                modifier = Modifier.fillMaxWidth(),
                 title = stringResource(R.string.view_filter),
                 options = FilterHabits.options,
                 selected = view.filterBy,

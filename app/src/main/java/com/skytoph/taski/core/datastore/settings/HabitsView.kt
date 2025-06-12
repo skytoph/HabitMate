@@ -22,3 +22,18 @@ sealed class HabitHistoryView {
     data object Heatmap : HabitHistoryView()
     data object Calendar : HabitHistoryView()
 }
+
+data class HabitDetailsView(
+    val barChartFrequency: ChartFrequency = ChartFrequency.Default
+)
+
+sealed interface ChartFrequency {
+    data object Year : ChartFrequency
+    data object Month : ChartFrequency
+    data object Week : ChartFrequency
+    data object Day : ChartFrequency
+
+    companion object {
+        val Default: ChartFrequency = Week
+    }
+}

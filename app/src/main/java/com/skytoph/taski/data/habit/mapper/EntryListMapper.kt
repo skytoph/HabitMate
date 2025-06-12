@@ -10,6 +10,6 @@ interface EntryListMapper {
     class Base(private val now: Now) : EntryListMapper {
 
         override fun map(entries: List<EntryEntity>): EntryList =
-            EntryList(entries.associateBy({ now.daysAgo(it.timestamp) }, { it.toEntry() }))
+            EntryList(entries.associateBy({ now.daysAgo(it.timestamp) }, { it.toEntry() }).toSortedMap())
     }
 }

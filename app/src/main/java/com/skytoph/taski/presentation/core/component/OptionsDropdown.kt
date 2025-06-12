@@ -2,20 +2,21 @@
 
 package com.skytoph.taski.presentation.core.component
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.material3.DropdownMenu
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -37,52 +38,70 @@ import com.skytoph.taski.ui.theme.HabitMateTheme
 @Composable
 fun <T : ProvideOptionUi<T>> OptionsDropdown(
     modifier: Modifier = Modifier,
-    title: String = "title",
+    title: String? = null,
     options: List<T> = emptyList(),
     selected: T = options.first(),
     selectOption: (T) -> Unit = {},
+    isExpanded: Boolean? = null,
+    expand: (() -> Unit)? = null,
+    isExpandIconShown: Boolean = false
 ) {
     var expanded by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
-    Column(
-        modifier = modifier.fillMaxWidth()
-    ) {
-        Text(
-            text = title,
-            modifier = Modifier.padding(start = 16.dp, top = 12.dp),
-            style = MaterialTheme.typography.titleMedium
-        )
-        Box(modifier = modifier.fillMaxWidth()) {
+    Column {
+        title?.let {
+            Text(
+                text = it,
+                modifier = Modifier.padding(start = 16.dp, top = 12.dp),
+                style = MaterialTheme.typography.titleMedium
+            )
+        }
+        ExposedDropdownMenuBox(
+            expanded = isExpanded ?: expanded,
+            onExpandedChange = { if (expand != null) expand() else expanded = !expanded }
+        ) {
             Row(
-                modifier = Modifier
-                    .clickable { expanded = !expanded }
-                    .fillMaxWidth()
+                modifier = modifier
+                    .menuAnchor()
                     .padding(horizontal = 16.dp, vertical = 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 val option = selected.optionUi()
-                Icon(
-                    imageVector = option.icon.vector(context),
-                    contentDescription = option.icon.name(context.resources),
-                    modifier = Modifier.size(24.dp),
-                    tint = MaterialTheme.colorScheme.onBackground
-                )
-                Spacer(modifier = Modifier.width(12.dp))
+                option.icon?.let {
+                    Icon(
+                        imageVector = it.vector(context),
+                        contentDescription = option.icon.name(context.resources),
+                        modifier = Modifier.size(24.dp),
+                        tint = MaterialTheme.colorScheme.onBackground
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                }
                 Text(
                     text = option.title.getString(context),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onBackground
                 )
+                if (isExpandIconShown) {
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Crossfade(targetState = isExpanded ?: expanded) {
+                        Icon(
+                            imageVector = if (it) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onBackground,
+                            modifier = Modifier.size(16.dp)
+                        )
+                    }
+                }
             }
 
-            DropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false },
+            ExposedDropdownMenu(
+                expanded = isExpanded ?: expanded,
+                onDismissRequest = expand ?: { expanded = false },
                 modifier = Modifier
                     .widthIn(max = 640.dp)
-                    .fillMaxWidth()
-                    .background(color = MaterialTheme.colorScheme.primaryContainer),
+                    .background(color = MaterialTheme.colorScheme.primaryContainer)
+                    .exposedDropdownSize(),
             ) {
                 options.forEach { option ->
                     if (!selected.matches(option)) {
@@ -95,18 +114,21 @@ fun <T : ProvideOptionUi<T>> OptionsDropdown(
                                     color = MaterialTheme.colorScheme.onBackground
                                 )
                             },
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = optionUi.icon.vector(context),
-                                    contentDescription = null,
-                                    modifier = Modifier
-                                        .padding(start = 4.dp)
-                                        .size(24.dp),
-                                    tint = MaterialTheme.colorScheme.onBackground
-                                )
+                            leadingIcon = optionUi.icon?.let {
+                                {
+                                    Icon(
+                                        imageVector = it.vector(context),
+                                        contentDescription = null,
+                                        modifier = Modifier
+                                            .padding(start = 4.dp)
+                                            .size(24.dp),
+                                        tint = MaterialTheme.colorScheme.onBackground
+                                    )
+                                }
                             },
                             onClick = {
-                                expanded = false
+                                if (expand != null) expand()
+                                else expanded = false
                                 selectOption(option)
                             })
                     }

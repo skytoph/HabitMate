@@ -1,8 +1,11 @@
 package com.skytoph.taski.presentation.core.preview
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import com.skytoph.taski.R
+import com.skytoph.taski.presentation.core.state.StringResource
 import com.skytoph.taski.presentation.habit.HabitUi
 import com.skytoph.taski.presentation.habit.HabitWithHistoryUi
+import com.skytoph.taski.presentation.habit.details.BarItemUi
 import com.skytoph.taski.presentation.habit.edit.EditableHistoryUi
 import com.skytoph.taski.presentation.habit.edit.EntryEditableUi
 import com.skytoph.taski.presentation.habit.edit.MonthUi
@@ -50,6 +53,18 @@ class HabitsEditableProvider : PreviewParameterProvider<List<EditableHistoryUi>>
     }
 
     override val values: Sequence<List<EditableHistoryUi>> = sequenceOf(history)
+}
+
+class BarChartEntryProvider : PreviewParameterProvider<List<BarItemUi>> {
+    private val history = (1..12).map { index ->
+        BarItemUi(
+            timestamp = index.toLong(),
+            timesDone = index % 6,
+            dateLabel = StringResource.ResId(R.string.pattern_month)
+        )
+    }
+
+    override val values: Sequence<List<BarItemUi>> = sequenceOf(history)
 }
 
 class IconProvider : PreviewParameterProvider<IconsGroup<Int>> {

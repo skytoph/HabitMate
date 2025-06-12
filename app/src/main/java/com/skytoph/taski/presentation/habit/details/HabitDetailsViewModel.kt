@@ -6,6 +6,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
 import com.skytoph.taski.core.datastore.SettingsCache
+import com.skytoph.taski.domain.habit.HabitWithEntries
 import com.skytoph.taski.presentation.appbar.InitAppBar
 import com.skytoph.taski.presentation.habit.HabitScreens
 import com.skytoph.taski.presentation.habit.details.mapper.StatisticsUiMapper
@@ -16,15 +17,19 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -41,11 +46,23 @@ class HabitDetailsViewModel @Inject constructor(
     private val actions = MutableStateFlow<List<HabitEntriesAction>>(emptyList())
 
     val entries: Flow<PagingData<EditableHistoryUi>> =
-        interactor.entries(savedStateHandle.id())
+        interactor.entriesEditable(savedStateHandle.id())
             .cachedIn(viewModelScope)
             .combine(actions) { pagingData, actions ->
-                actions.fold(pagingData) { paging, event -> applyAction(paging, event) }
+                actions.fold(pagingData) { paging, event -> paging.map { data -> event.apply(data) } }
             }
+
+    val entriesBarChart: Flow<PagingData<BarItemUi>> =
+        interactor.entriesBarChart(savedStateHandle.id())
+            .cachedIn(viewModelScope)
+            .combine(actions) { pagingData, actions ->
+                actions.fold(pagingData) { paging, event -> paging.map { data -> event.apply(data) } }
+            }
+
+    private val history: SharedFlow<HabitWithEntries> =
+        interactor.entries(savedStateHandle.id())
+            .filterNotNull()
+            .shareIn(viewModelScope, SharingStarted.WhileSubscribed())
 
     init {
         interactor.habit(savedStateHandle.id())
@@ -54,24 +71,27 @@ class HabitDetailsViewModel @Inject constructor(
             .onEach { it?.let { habit -> onEvent(HabitDetailsEvent.Init(habit)) } }
             .launchIn(viewModelScope)
 
-        interactor.statistics(savedStateHandle.id())
-            .map { history -> history?.let { statsMapper.map(it, settings().value.weekStartsOnSunday.value) } }
-            .flowOn(Dispatchers.IO)
+        history
+            .map { history ->
+                statsMapper.statistics(history, settings().value.weekStartsOnSunday.value)
+            }.flowOn(Dispatchers.IO)
             .onEach { stats ->
-                stats?.let {
-                    onEvent(HabitDetailsEvent.UpdateStats(it))
-                    HabitEntriesAction.ApplyStatistics(stats, settings().value.streaksHighlighted).handle(actions)
-                }
+                onEvent(HabitDetailsEvent.UpdateStats(stats))
+                HabitEntriesAction.ApplyStatistics(stats, settings().value.streaksHighlighted).handle(actions)
             }.launchIn(viewModelScope)
-    }
 
-    private fun applyAction(pagingData: PagingData<EditableHistoryUi>, action: HabitEntriesAction) =
-        pagingData.map { data -> action.apply(data) }
+        settings.state()
+            .distinctUntilChangedBy { it.habitDetailsView?.barChartFrequency }
+            .combine(history) { _, history ->
+                onEvent(HabitDetailsEvent.UpdateBarChart(maxValue = interactor.findMaxBarChartEntry(history.entries)))
+            }.flowOn(Dispatchers.IO)
+            .launchIn(viewModelScope)
+    }
 
     fun habitDone(daysAgo: Int) = state.value.habit?.let { habit ->
         viewModelScope.launch(Dispatchers.IO) {
-            val entry = interactor.habitDoneAndReturn(habit, daysAgo)
-            withContext(Dispatchers.Main) { HabitEntriesAction.UpdateEntry(entry).handle(actions) }
+            val updated = interactor.habitDoneAndReturn(habit, daysAgo)
+            HabitEntriesAction.UpdateEntry(updated).handle(actions)
         }
     }
 
@@ -80,5 +100,5 @@ class HabitDetailsViewModel @Inject constructor(
     fun state(): StateFlow<HabitDetailsState> = state.asStateFlow()
 
     fun SavedStateHandle.id(): Long = this[HabitScreens.EditHabit.habitIdArg]
-        ?: throw IllegalStateException("Edit Habit screen must contain habit id")
+        ?: throw IllegalStateException("Habit screen must contain habit id")
 }

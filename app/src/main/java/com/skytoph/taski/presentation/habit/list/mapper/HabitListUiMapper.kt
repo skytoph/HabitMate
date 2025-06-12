@@ -26,7 +26,7 @@ interface HabitListUiMapper {
         override fun mapDaily(
             habits: List<HabitWithEntries>, entriesNumber: Int, isBorderOn: Boolean
         ) = habits.map { habit ->
-            val entries = habit.entries.entries.filter { it.key < entriesNumber }
+            val entries = habit.entries.entries.subMap(0, entriesNumber)
             habit.copy(entries = EntryList(entries)).map(mapperDaily, entriesNumber, isBorderOn, false)
         }
     }

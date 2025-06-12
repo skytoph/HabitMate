@@ -8,5 +8,12 @@ data class HabitDetailsState(
     val isDeleteDialogShown: Boolean = false,
     val isSummaryExpanded: Boolean = false,
     val isDescriptionExpanded: Boolean = false,
+    val barChartView: BarChartView = BarChartView(),
     val statistics: HabitStatisticsUi = HabitStatisticsUi()
+)
+
+data class BarChartView(
+    val isChartBarTypeExpanded: Boolean = false,
+    val maxValue: Int = 0,
+    val lines: Int = 0,
 )

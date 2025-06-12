@@ -6,8 +6,10 @@ import com.skytoph.taski.domain.habit.HabitRepository
 import com.skytoph.taski.presentation.core.interactor.HabitDoneInteractor
 import com.skytoph.taski.presentation.habit.details.HabitDetailsInteractor
 import com.skytoph.taski.presentation.habit.details.HabitDetailsState
+import com.skytoph.taski.presentation.habit.details.mapper.BarChartEntriesUiMapper
 import com.skytoph.taski.presentation.habit.details.mapper.EditableEntryDomainToUiMapper
-import com.skytoph.taski.presentation.habit.list.EntityPagerProvider
+import com.skytoph.taski.presentation.habit.details.paging_source.BarChartEntriesPagerProvider
+import com.skytoph.taski.presentation.habit.details.paging_source.EntityPagerProvider
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,12 +25,23 @@ object HabitDetailsViewModelModule {
 
     @Provides
     fun interactor(
-        now: Now,
         repository: HabitRepository,
         entryMapper: EditableEntryDomainToUiMapper,
-        pagerProvider: EntityPagerProvider,
+        entriesPagerProvider: EntityPagerProvider,
+        barChartPagerProvider: BarChartEntriesPagerProvider,
+        barChartMapper: BarChartEntriesUiMapper,
         settings: SettingsCache,
-        interactor: HabitDoneInteractor
+        interactor: HabitDoneInteractor,
+        now: Now
     ): HabitDetailsInteractor =
-        HabitDetailsInteractor.Base(pagerProvider, entryMapper, repository, settings, interactor)
+        HabitDetailsInteractor.Base(
+            entriesPagerProvider,
+            barChartPagerProvider,
+            entryMapper,
+            barChartMapper,
+            repository,
+            settings,
+            now,
+            interactor
+        )
 }

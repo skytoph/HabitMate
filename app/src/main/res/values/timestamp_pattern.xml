@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pattern_day" translatable="false">d</string>
+    <string name="pattern_week" translatable="false">w</string>
+    <string name="pattern_month" translatable="false">LLL</string>
+    <string name="pattern_year_full" translatable="false">yyyy</string>
+    <string name="pattern_week_and_month" translatable="false">w\nLLL</string>
+    <string name="pattern_day_and_month" translatable="false">d\nLLL</string>
+    <string name="pattern_month_and_year" translatable="false">LLL\nyyyy</string>
+</resources>

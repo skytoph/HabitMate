@@ -20,4 +20,11 @@ interface StartAndEnd {
 
         override fun end(monthsAgo: Int): Int = now.lastDayOfMonthDaysAgo(monthsAgo)
     }
+
+    class Year(private val now: Now) : StartAndEnd {
+
+        override fun start(yearsAgo: Int): Int = now.firstDayOfYearDaysAgo(yearsAgo)
+
+        override fun end(yearsAgo: Int): Int = now.lastDayOfYearDaysAgo(yearsAgo)
+    }
 }

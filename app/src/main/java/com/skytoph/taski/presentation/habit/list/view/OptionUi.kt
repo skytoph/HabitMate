@@ -6,6 +6,6 @@ import com.skytoph.taski.presentation.core.state.StringResource
 
 @Stable
 data class OptionUi(
-    val icon: IconResource,
     val title: StringResource,
+    val icon: IconResource? = null,
 )

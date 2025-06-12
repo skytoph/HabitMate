@@ -10,6 +10,7 @@ interface Now {
     fun lastDayOfWeekMillis(isFirstDaySunday: Boolean, weeksAgo: Int = 0): Long
     fun lastDayOfWeekDaysAgo(isFirstDaySunday: Boolean, weeksAgo: Int): Int
     fun firstDayOfWeekDaysAgo(isFirstDaySunday: Boolean, weeksAgo: Int): Int
+    fun weekOfMonth(daysAgo: Int, isFirstDaySunday: Boolean): Int
     fun dayOfMonths(daysAgo: Int): Int
     fun milliseconds(): Long
     fun daysAgo(milliseconds: Long): Int
@@ -18,8 +19,12 @@ interface Now {
     fun monthMillis(monthsAgo: Int = 0): Long
     fun daysInMonth(daysAgo: Int): Int
     fun monthsAgo(daysAgo: Int): Int
+    fun yearsAgo(daysAgo: Int): Int
+    fun weeksAgo(daysAgo: Int, isFirstDaySunday: Boolean): Int
     fun lastDayOfMonthDaysAgo(monthsAgo: Int): Int
     fun firstDayOfMonthDaysAgo(monthsAgo: Int): Int
+    fun lastDayOfYearDaysAgo(yearsAgo: Int): Int
+    fun firstDayOfYearDaysAgo(yearsAgo: Int): Int
     fun numberOfMonth(monthsAgo: Int): Int
 
     val default: Boolean
@@ -80,6 +85,25 @@ interface Now {
                 calendar.add(Calendar.DATE, -weeksAgo * 7)
             }
 
+        private fun endOfTheYear(yearsAgo: Int = 0): Calendar =
+            startOfTheDay(calendar = calendar()).also { calendar ->
+                calendar.set(Calendar.DAY_OF_YEAR, 1)
+                calendar.add(Calendar.YEAR, -yearsAgo)
+                calendar.set(Calendar.DAY_OF_YEAR, calendar.getActualMaximum(Calendar.DAY_OF_YEAR))
+            }
+
+        private fun startOfTheYear(yearsAgo: Int = 0): Calendar =
+            startOfTheDay(calendar = calendar()).also { calendar ->
+                calendar.set(Calendar.DAY_OF_YEAR, 1)
+                calendar.add(Calendar.YEAR, -yearsAgo)
+            }
+
+        override fun lastDayOfYearDaysAgo(yearsAgo: Int): Int =
+            TimeUnit.MILLISECONDS.toDays(dayInMillis() - endOfTheYear(yearsAgo).timeInMillis).toInt()
+
+        override fun firstDayOfYearDaysAgo(yearsAgo: Int): Int =
+            TimeUnit.MILLISECONDS.toDays(dayInMillis() - startOfTheYear(yearsAgo).timeInMillis).toInt()
+
         override fun lastDayOfMonthDaysAgo(monthsAgo: Int): Int =
             TimeUnit.MILLISECONDS.toDays(dayInMillis() - endOfTheMonth(monthsAgo).timeInMillis).toInt()
 
@@ -89,6 +113,18 @@ interface Now {
         override fun monthMillis(monthsAgo: Int): Long = month(monthsAgo).timeInMillis
 
         override fun numberOfMonth(monthsAgo: Int): Int = month(monthsAgo).get(Calendar.MONTH)
+
+        override fun weekOfMonth(daysAgo: Int, isFirstDaySunday: Boolean): Int =
+            startOfTheDay(calendar = calendar(isFirstDaySunday), daysAgo = daysAgo).get(Calendar.WEEK_OF_MONTH)
+
+        override fun weeksAgo(daysAgo: Int, isFirstDaySunday: Boolean): Int =
+            (daysAgo + dayOfWeek(isFirstDaySunday, daysAgo) - 1) / 7
+
+        override fun yearsAgo(daysAgo: Int): Int {
+            val compareWith = calendar().apply { add(Calendar.DAY_OF_YEAR, -daysAgo) }
+            val today = calendar()
+            return today.get(Calendar.YEAR) - compareWith.get(Calendar.YEAR)
+        }
 
         private fun startOfTheDay(daysAgo: Int = 0, calendar: Calendar = calendar()): Calendar = calendar.also {
             it.set(Calendar.HOUR_OF_DAY, 0)

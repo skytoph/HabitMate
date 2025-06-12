@@ -52,9 +52,12 @@ import com.skytoph.taski.presentation.core.component.DeleteDialog
 import com.skytoph.taski.presentation.core.component.getLocale
 import com.skytoph.taski.presentation.core.preview.HabitsEditableProvider
 import com.skytoph.taski.presentation.habit.HabitUi
+import com.skytoph.taski.presentation.habit.details.BarItemUi
+import com.skytoph.taski.presentation.habit.details.ChartFrequencyUi
 import com.skytoph.taski.presentation.habit.details.HabitDetailsEvent
 import com.skytoph.taski.presentation.habit.details.HabitDetailsState
 import com.skytoph.taski.presentation.habit.details.HabitDetailsViewModel
+import com.skytoph.taski.presentation.habit.details.mapper.map
 import com.skytoph.taski.presentation.habit.edit.EditableHistoryUi
 import com.skytoph.taski.ui.theme.HabitMateTheme
 import kotlinx.coroutines.flow.Flow
@@ -84,16 +87,20 @@ fun HabitDetailsScreen(
     HabitDetails(
         state = viewModel.state().collectAsState(),
         entries = viewModel.entries,
+        barChartItems = viewModel.entriesBarChart,
         isFirstDaySunday = settings.value.weekStartsOnSunday.value,
         is24HourFormat = settings.value.time24hoursFormat.value,
         habitHistoryView = settings.value.habitHistoryView,
+        barChartFrequency = settings.value.habitDetailsView?.barChartFrequency.map(),
         onHideDialog = onHideDialog,
         onDeleteHabit = { onHideDialog(); onDeleteHabit() },
         onDayClick = { viewModel.habitDone(it) },
         onEditHistory = { viewModel.onEvent(HabitDetailsEvent.EditHistory) },
         expandSummary = { viewModel.onEvent(HabitDetailsEvent.ExpandSummary) },
         expandDescription = { viewModel.onEvent(HabitDetailsEvent.ExpandDescription) },
-        updateView = { viewModel.onEvent(HabitDetailsEvent.UpdateHistoryView) }
+        updateView = { viewModel.onEvent(HabitDetailsEvent.UpdateHistoryView) },
+        expandBarChartType = { viewModel.onEvent(HabitDetailsEvent.UpdateBarChart(expand = true)) },
+        selectFrequency = { viewModel.onEvent(HabitDetailsEvent.UpdateBarChartFrequency(it)) }
     )
 }
 
@@ -101,21 +108,25 @@ fun HabitDetailsScreen(
 fun HabitDetails(
     state: State<HabitDetailsState>,
     entries: Flow<PagingData<EditableHistoryUi>>,
+    barChartItems: Flow<PagingData<BarItemUi>>,
+    barChartFrequency: ChartFrequencyUi = ChartFrequencyUi.Day,
     onHideDialog: () -> Unit = {},
     onDeleteHabit: () -> Unit = {},
     onDayClick: (Int) -> Unit = {},
     onEditHistory: () -> Unit = {},
-    isFirstDaySunday: Boolean = false,
     habitHistoryView: HabitHistoryView = HabitHistoryView.Calendar,
     expandSummary: () -> Unit = {},
     expandDescription: () -> Unit = {},
     updateView: () -> Unit = {},
+    expandBarChartType: () -> Unit = {},
+    selectFrequency: (ChartFrequencyUi) -> Unit = {},
+    isFirstDaySunday: Boolean = false,
     is24HourFormat: Boolean = false,
 ) {
     val context = LocalContext.current
     val habit = state.value.habit ?: return
-    val items = entries.collectAsLazyPagingItems()
-    val pagerState = rememberPagerState(pageCount = { items.itemCount })
+    val historyItems = entries.collectAsLazyPagingItems()
+    val pagerState = rememberPagerState(pageCount = { historyItems.itemCount })
 
     Box(
         modifier = Modifier
@@ -268,7 +279,7 @@ fun HabitDetails(
             )
             Spacer(modifier = Modifier.height(4.dp))
             HabitHistory(
-                items = items,
+                items = historyItems,
                 goal = habit.goal,
                 habitColor = habit.color,
                 onEdit = onEditHistory,
@@ -278,6 +289,15 @@ fun HabitDetails(
                 pagerState = pagerState
             )
             Spacer(modifier = Modifier.height(16.dp))
+            HabitHistoryBarChart(
+                items = barChartItems,
+                color = habit.color,
+                frequency = barChartFrequency,
+                isTypeExpanded = state.value.barChartView.isChartBarTypeExpanded,
+                maxValue = state.value.barChartView.maxValue,
+                expandType = expandBarChartType,
+                selectFrequency = selectFrequency
+            )
         }
 
         if (state.value.isDeleteDialogShown)
@@ -290,7 +310,7 @@ fun HabitDetails(
 
         if (state.value.isHistoryEditable)
             EditHistoryDialog(
-                items = items,
+                items = historyItems,
                 onDayClick = onDayClick,
                 onEdit = onEditHistory,
                 habitColor = habit.color,
@@ -405,6 +425,7 @@ fun DarkHabitDetailsScreenPreview(
             HabitDetails(
                 state = remember { mutableStateOf(HabitDetailsState(habit)) },
                 entries = flowOf(PagingData.from(entries)),
+                barChartItems = flowOf()
             )
         }
     }
@@ -421,6 +442,7 @@ fun HabitDetailsScreenPreview(
             HabitDetails(
                 state = remember { mutableStateOf(HabitDetailsState(habit)) },
                 entries = flowOf(PagingData.from(entries)),
+                barChartItems = flowOf()
             )
         }
     }

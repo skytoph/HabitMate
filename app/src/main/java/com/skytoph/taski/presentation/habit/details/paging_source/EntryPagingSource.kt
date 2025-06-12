@@ -1,22 +1,20 @@
-package com.skytoph.taski.presentation.habit.list
+package com.skytoph.taski.presentation.habit.details.paging_source
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.skytoph.taski.core.datastore.settings.HabitHistoryView
 import com.skytoph.taski.core.datastore.settings.ViewType
 import com.skytoph.taski.domain.habit.HabitRepository
 import com.skytoph.taski.domain.habit.HabitWithEntries
+import com.skytoph.taski.presentation.core.AbstractPagingSource
 import com.skytoph.taski.presentation.habit.details.mapper.EditableEntryCalendarUiMapper
 import com.skytoph.taski.presentation.habit.details.mapper.EditableEntryGridUiMapper
 import com.skytoph.taski.presentation.habit.details.mapper.StatisticsUiMapper
 import com.skytoph.taski.presentation.habit.edit.EditableHistoryUi
 import com.skytoph.taski.presentation.habit.list.mapper.HabitHistoryUiMapper
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.withContext
 
 class EntryPagingSource(
     private val repository: HabitRepository,
@@ -25,31 +23,19 @@ class EntryPagingSource(
     private val id: Long,
     private val isBorderOn: Boolean,
     private val isFirstDaySunday: Boolean,
-) : PagingSource<Int, EditableHistoryUi>() {
+) : AbstractPagingSource<EditableHistoryUi>() {
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, EditableHistoryUi> {
-        val page = params.key ?: 0
-
-        return try {
-            withContext(Dispatchers.IO) {
-                val entries = repository.entries(id)
-                val habit = repository.habit(id)
-                val stats = statsMapper.map(HabitWithEntries(habit, entries), isFirstDaySunday)
-                val history = uiMapper.map(
-                    page = page, goal = habit.goal, history = entries, stats = stats,
-                    isBorderOn = isBorderOn, isFirstDaySunday = isFirstDaySunday
-                )
-
-                LoadResult.Page(
-                    data = listOf(history),
-                    prevKey = if (page == 0) null else page - 1,
-                    nextKey = if (history.entries.isEmpty()) null else page + 1
-                )
-            }
-        } catch (e: Exception) {
-            LoadResult.Error(e)
-        }
+    override suspend fun getData(page: Int): EditableHistoryUi {
+        val entries = repository.entries(id)
+        val habit = repository.habit(id)
+        val stats = statsMapper.statistics(HabitWithEntries(habit, entries), isFirstDaySunday)
+        return uiMapper.map(
+            page = page, goal = habit.goal, history = entries, stats = stats,
+            isBorderOn = isBorderOn, isFirstDaySunday = isFirstDaySunday
+        )
     }
+
+    override fun EditableHistoryUi.isEmpty(): Boolean = entries.isEmpty()
 
     override fun getRefreshKey(state: PagingState<Int, EditableHistoryUi>): Int? =
         state.anchorPosition?.let { anchorPosition ->

@@ -2,6 +2,7 @@ package com.skytoph.taski.presentation.habit.details
 
 import com.skytoph.taski.core.datastore.SettingsCache
 import com.skytoph.taski.presentation.habit.HabitUi
+import com.skytoph.taski.presentation.habit.details.mapper.map
 import com.skytoph.taski.presentation.settings.SettingsViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -47,6 +48,26 @@ interface HabitDetailsEvent {
     object UpdateHistoryView : SettingsViewModel.Event {
         override suspend fun handle(settings: SettingsCache) {
             settings.updateHabitHistoryView()
+        }
+    }
+
+    class UpdateBarChartFrequency(private val frequency: ChartFrequencyUi) : SettingsViewModel.Event {
+        override suspend fun handle(settings: SettingsCache) {
+            settings.updateHabitDetailsView(frequency.map())
+        }
+    }
+
+    class UpdateBarChart(
+        private val expand: Boolean = false,
+        private val maxValue: Int? = null
+    ) : HabitDetailsEvent {
+        override fun handle(state: MutableStateFlow<HabitDetailsState>) {
+            val view = when {
+                expand -> state.value.barChartView.copy(isChartBarTypeExpanded = !state.value.barChartView.isChartBarTypeExpanded)
+                maxValue != null -> state.value.barChartView.copy(maxValue = maxValue)
+                else -> state.value.barChartView
+            }
+            state.value = state.value.copy(barChartView = view)
         }
     }
 }

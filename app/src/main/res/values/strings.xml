@@ -103,6 +103,12 @@
     <string name="monthly">monthly</string>
     <string name="custom">custom</string>
 
+    <!--    Habit charts Labels-->
+    <string name="frequency_daily">Daily</string>
+    <string name="frequency_weekly">Weekly</string>
+    <string name="frequency_monthly">Monthly</string>
+    <string name="frequency_yearly">Yearly</string>
+
     <!--    Habit list Labels-->
     <string name="action_view">View</string>
     <string name="reorder_habits">Reorder habits</string>

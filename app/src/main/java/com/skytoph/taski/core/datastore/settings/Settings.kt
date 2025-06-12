@@ -17,6 +17,7 @@ data class Settings(
     val theme: AppTheme? = null,
     val view: HabitsView = HabitsView(),
     val habitHistoryView: HabitHistoryView = HabitHistoryView.Calendar,
+    val habitDetailsView: HabitDetailsView? = HabitDetailsView(),
     val lastBackupSaved: Long? = null
 ) {
     companion object {
@@ -43,7 +44,8 @@ class InitializeEmptyValues(private val context: Context? = null) {
             weekStartsOnSunday = value.weekStartsOnSunday.initializeIfEmpty(weekStartDefault),
             time24hoursFormat = value.time24hoursFormat.initializeIfEmpty(time24hoursDefault),
             theme = value.theme ?: AppTheme.System,
-            view = HabitsView(initialized = true)
+            view = HabitsView(initialized = true),
+            habitDetailsView = value.habitDetailsView ?: HabitDetailsView()
         )
     }
 }

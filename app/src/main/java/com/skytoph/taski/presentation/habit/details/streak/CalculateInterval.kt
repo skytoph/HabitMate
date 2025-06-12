@@ -12,7 +12,7 @@ interface CalculateInterval : StartAndEnd {
 
         override fun start(daysAgo: Int): Int = calculatePosition.start(weeksAgo(daysAgo))
         override fun end(daysAgo: Int): Int = calculatePosition.end(weeksAgo(daysAgo) - offset)
-        private fun weeksAgo(daysAgo: Int): Int = (daysAgo + now.dayOfWeek(now.default, daysAgo) - 1) / 7
+        private fun weeksAgo(daysAgo: Int): Int = now.weeksAgo(daysAgo, now.default)
     }
 
     class Month(

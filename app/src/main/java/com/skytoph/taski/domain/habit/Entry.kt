@@ -1,5 +1,7 @@
 package com.skytoph.taski.domain.habit
 
+import java.util.SortedMap
+
 data class Entry(
     val timestamp: Long,
     val timesDone: Int
@@ -8,5 +10,5 @@ data class Entry(
 }
 
 data class EntryList(
-    val entries: Map<Int, Entry>
+    val entries: SortedMap<Int, Entry>
 )

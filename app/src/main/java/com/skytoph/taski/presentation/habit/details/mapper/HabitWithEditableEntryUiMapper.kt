@@ -9,7 +9,6 @@ import com.skytoph.taski.presentation.habit.list.mapper.HabitWithHistoryUiMapper
 class HabitWithEditableEntryUiMapper(
     habitMapper: HabitUiMapper,
     historyMapper: HabitHistoryUiMapper<EditableHistoryUi, ViewType>,
-    statsMapper: HabitStatisticsMapper
 ) : HabitWithHistoryUiMapper.Abstract<EditableHistoryUi, ViewType>(
-    habitMapper, historyMapper, statsMapper
+    habitMapper, historyMapper
 )
