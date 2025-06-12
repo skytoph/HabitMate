@@ -2,18 +2,19 @@
 
 package com.skytoph.taski.presentation.nav
 
-import androidx.compose.material3.DismissState
-import androidx.compose.material3.DismissValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.rememberDismissState
+import androidx.compose.material3.SwipeToDismissBoxState
+import androidx.compose.material3.SwipeToDismissBoxValue
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 
 @Composable
-fun rememberDismissState(state: SnackbarHostState): DismissState =
-    rememberDismissState(confirmValueChange = { value: DismissValue ->
-        if (value != DismissValue.Default) {
-            state.currentSnackbarData?.dismiss()
-            true
-        } else false
-    })
+fun rememberDismissState(state: SnackbarHostState): SwipeToDismissBoxState =
+    rememberSwipeToDismissBoxState(
+        confirmValueChange = { value ->
+            if (value != SwipeToDismissBoxValue.Settled) {
+                state.currentSnackbarData?.dismiss()
+                true
+            } else false
+        })

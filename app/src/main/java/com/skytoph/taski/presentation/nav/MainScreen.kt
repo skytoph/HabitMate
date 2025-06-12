@@ -11,7 +11,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SwipeToDismiss
+import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -45,17 +45,19 @@ fun MainScreen(
     Scaffold(
         topBar = {
             HabitAppBar(
-                modifier = Modifier.statusBarsPadding().padding(horizontal = 8.dp),
+                modifier = Modifier
+                    .statusBarsPadding()
+                    .padding(horizontal = 8.dp),
                 state = viewModel.state(),
                 navigateUp = navController::navigateUp,
                 expandList = viewModel::expandList
             )
         },
         snackbarHost = {
-            SwipeToDismiss(
+            SwipeToDismissBox(
                 state = dismissSnackbarState,
-                background = {},
-                dismissContent = {
+                backgroundContent = {},
+                content = {
                     SnackbarHost(hostState = snackbarHostState) { snackbarData ->
                         val visuals = snackbarData.visuals
                         if (visuals is SnackbarMessage) SnackbarWithTitle(visuals)

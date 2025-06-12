@@ -563,7 +563,7 @@ fun RequestNotificationPermission(
         }
     }
 
-    content(requestPermission = {
+    content({
         checkPermission(
             context = context,
             requestAlarmPermission = { requestPermissionDialog(alarmDialog) },
