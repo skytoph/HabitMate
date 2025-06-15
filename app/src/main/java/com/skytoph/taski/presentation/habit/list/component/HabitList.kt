@@ -1,5 +1,8 @@
+@file:OptIn(ExperimentalFoundationApi::class)
+
 package com.skytoph.taski.presentation.habit.list.component
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -12,11 +15,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -30,9 +28,7 @@ import com.skytoph.taski.presentation.habit.HabitUi
 import com.skytoph.taski.presentation.habit.HabitWithHistoryUi
 import com.skytoph.taski.presentation.habit.list.HistoryUi
 import com.skytoph.taski.ui.theme.HabitMateTheme
-import kotlinx.coroutines.delay
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HabitList(
     modifier: Modifier = Modifier,
@@ -43,13 +39,57 @@ fun HabitList(
     onLongClick: (HabitUi) -> Unit = {},
     updateView: (Int) -> Unit = {},
 ) {
-    var crashlyticsVisible by remember { mutableStateOf(false) }
+    ListOfHabits(
+        habits = habits,
+        view = view,
+        updateView = updateView,
+        onClick = onClick,
+        onLongClick = onLongClick,
+        onDone = onDone
+    )
+}
 
-    LaunchedEffect(Unit) {
-        delay(1000)
-        crashlyticsVisible = true
+@Composable
+fun ListOfHabits(
+    habits: List<HabitWithHistoryUi<HistoryUi>>,
+    view: ViewType,
+    updateView: (Int) -> Unit,
+    onClick: (HabitUi) -> Unit,
+    onLongClick: (HabitUi) -> Unit,
+    onDone: (HabitUi, Int) -> Unit,
+) {
+    Crossfade(targetState = view) { view ->
+        when (view) {
+            is ViewType.Calendar -> ListOfHabitsCalendar(
+                habits = habits,
+                columns = view.entries.div(7),
+                onClick = onClick,
+                onLongClick = onLongClick,
+                onDone = onDone
+            )
+
+            is ViewType.Daily -> ListOfHabitsDaily(
+                habits = habits,
+                view = view,
+                updateView = updateView,
+                onClick = onClick,
+                onLongClick = onLongClick,
+                onDone = onDone
+            )
+        }
     }
+}
 
+@Composable
+fun ListOfHabitsDaily(
+    habits: List<HabitWithHistoryUi<HistoryUi>>,
+    view: ViewType.Daily,
+    updateView: (Int) -> Unit,
+    onClick: (HabitUi) -> Unit,
+    onLongClick: (HabitUi) -> Unit,
+    onDone: (HabitUi, Int) -> Unit,
+    modifier: Modifier = Modifier,
+) {
     LazyColumn(
         modifier = modifier
             .fillMaxWidth()
@@ -57,45 +97,50 @@ fun HabitList(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        if (view.matches(ViewType.Daily())) stickyHeader {
+        stickyHeader {
             WeekDayLabelsCard(modifier = Modifier.animateItem(), entries = view.entries)
         }
-        items(items = habits, key = { it.habit.id }) { habitWithHistory ->
-            HabitCard(view, habitWithHistory, updateView, onClick, onLongClick, onDone, Modifier.animateItem())
+        items(items = habits, key = { it.habit.id }) { habit ->
+            HabitDaily(
+                modifier = modifier.widthIn(max = 520.dp),
+                onDone = onDone,
+                habit = habit.habit,
+                history = habit.history,
+                updateEntries = updateView,
+                onClick = { onClick(habit.habit) },
+                onLongClick = { onLongClick(habit.habit) }
+            )
         }
     }
 }
 
 @Composable
-private fun HabitCard(
-    view: ViewType,
-    habitWithHistory: HabitWithHistoryUi<HistoryUi>,
-    updateViewState: (Int) -> Unit,
-    onHabitClick: (HabitUi) -> Unit,
-    onHabitLongClick: (HabitUi) -> Unit = {},
-    onDoneHabit: (HabitUi, Int) -> Unit,
-    modifier: Modifier = Modifier
+fun ListOfHabitsCalendar(
+    habits: List<HabitWithHistoryUi<HistoryUi>>,
+    columns: Int = 50,
+    onClick: (HabitUi) -> Unit,
+    onLongClick: (HabitUi) -> Unit,
+    onDone: (HabitUi, Int) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    if (view is ViewType.Daily)
-        HabitDaily(
-            modifier = modifier.widthIn(max = 520.dp),
-            onDone = onDoneHabit,
-            habit = habitWithHistory.habit,
-            history = habitWithHistory.history,
-            updateEntries = updateViewState,
-            onClick = { onHabitClick(habitWithHistory.habit) },
-            onLongClick = { onHabitLongClick(habitWithHistory.habit) }
-        )
-    else
-        HabitCalendar(
-            modifier = modifier.widthIn(max = 520.dp),
-            onDone = { onDoneHabit(habitWithHistory.habit, 0) },
-            habit = habitWithHistory.habit,
-            history = habitWithHistory.history,
-            updateEntries = updateViewState,
-            onClick = { onHabitClick(habitWithHistory.habit) },
-            onLongClick = { onHabitLongClick(habitWithHistory.habit) }
-        )
+    LazyColumn(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = dimensionResource(id = R.dimen.main_padding)),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        items(items = habits, key = { it.habit.id }) { habit ->
+            HabitCalendar(
+                modifier = modifier.widthIn(max = 520.dp),
+                onDone = { onDone(habit.habit, 0) },
+                habit = habit.habit,
+                history = habit.history,
+                onClick = { onClick(habit.habit) },
+                onLongClick = { onLongClick(habit.habit) }
+            )
+        }
+    }
 }
 
 @Composable

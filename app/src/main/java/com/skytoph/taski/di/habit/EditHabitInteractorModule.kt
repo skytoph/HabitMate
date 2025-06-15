@@ -1,5 +1,6 @@
 package com.skytoph.taski.di.habit
 
+import com.skytoph.taski.core.Now
 import com.skytoph.taski.core.reminder.ReminderScheduler
 import com.skytoph.taski.domain.habit.HabitRepository
 import com.skytoph.taski.presentation.core.interactor.HabitDoneInteractor
@@ -38,19 +39,23 @@ object EditHabitInteractorModule {
         statsMapper: StatisticsUiMapper,
         gridMapper: EditableEntryGridUiMapper,
         calendarMapper: EditableEntryCalendarUiMapper,
+        now: Now,
     ): EntityPagerProvider = EntityPagerProvider(
         repository = repository,
         gridUiMapper = gridMapper,
         calendarUiMapper = calendarMapper,
-        statsMapper = statsMapper
+        statsMapper = statsMapper,
+        now = now
     )
 
     @Provides
     fun barChartPagerProvider(
         repository: HabitRepository,
         mapper: BarChartEntriesUiMapper,
+        now: Now,
     ): BarChartEntriesPagerProvider = BarChartEntriesPagerProvider(
         repository = repository,
         mapper = mapper,
+        now = now
     )
 }

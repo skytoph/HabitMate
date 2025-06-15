@@ -15,8 +15,10 @@ import com.skytoph.taski.presentation.settings.SettingsViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -34,8 +36,9 @@ class HabitsViewModel @Inject constructor(
 
     init {
         onEvent(HabitListEvent.Progress)
-        interactor.habits()
-            .combine(view) { habits, viewState -> applyViewState(habits, viewState.view) }
+        view.distinctUntilChangedBy { it.view }
+            .map { it.view }
+            .combine(interactor.habits()) { viewState, habits -> applyViewState(habits, viewState) }
             .flowOn(Dispatchers.IO)
             .onEach { habits ->
                 habits?.let {

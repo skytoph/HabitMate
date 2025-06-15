@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import com.skytoph.taski.R
@@ -33,32 +34,27 @@ import com.skytoph.taski.presentation.core.preview.HabitProvider
 import com.skytoph.taski.presentation.core.rightFadingEdge
 import com.skytoph.taski.presentation.habit.HabitWithHistoryUi
 import com.skytoph.taski.presentation.habit.applyColor
-import com.skytoph.taski.presentation.habit.list.EntryUi
 import com.skytoph.taski.presentation.habit.list.HistoryUi
 import com.skytoph.taski.ui.theme.HabitMateTheme
-import kotlin.math.ceil
 
 @Composable
 fun HabitHistoryTable(
     modifier: Modifier = Modifier,
     habitColor: Color,
-    history: List<EntryUi>,
+    history: HistoryUi,
+    columns: Int,
+    rows: Int = 7,
+    squareDp: Dp = dimensionResource(R.dimen.entry_calendar_size),
+    squareOffsetDp: Dp = dimensionResource(R.dimen.entries_calendar_spaced_by),
+    initialOffsetDp: Dp = dimensionResource(R.dimen.entry_calendar_padding),
+    height: Dp = rows * squareDp + 6 * squareOffsetDp,
+    width: Dp = columns * squareDp + (columns - 1) * squareOffsetDp + 1.dp,
+    defaultColor: Color = MaterialTheme.colorScheme.onSecondaryContainer
 ) {
-    val squareDp = dimensionResource(R.dimen.entry_calendar_size)
-    val squareOffsetDp = dimensionResource(R.dimen.entries_calendar_spaced_by)
-    val initialOffsetDp = dimensionResource(R.dimen.entry_calendar_padding)
-
     val state = rememberScrollState()
-    LaunchedEffect(history.size) {
+    LaunchedEffect(columns) {
         state.scrollTo(state.maxValue)
     }
-
-    val rows = 7
-    val columns = ceil(history.size / 7.0)
-    val height = rows * squareDp + 6 * squareOffsetDp
-    val width = columns * squareDp + (columns - 1) * squareOffsetDp + 1.dp
-
-    val defaultColor = MaterialTheme.colorScheme.onSecondaryContainer
 
     Box(
         modifier = modifier
@@ -92,20 +88,22 @@ fun HabitHistoryTable(
                 val squareOffset = squareOffsetDp.toPx()
                 val rectSize = Size(squareSize, squareSize)
 
-                history.forEachIndexed { index, entry ->
+                (history.toDaysAgo downTo history.fromDaysAgo).forEach { daysAgo ->
+                    val entry = history.entries[daysAgo]
+                    val index = history.toDaysAgo - daysAgo
                     val stepX: Int = index / rows
                     val offsetX = stepX * squareSize + squareOffset * stepX
                     val stepY = index.mod(rows)
                     val offsetY = squareSize * stepY + squareOffset * stepY
 
                     drawRoundRect(
-                        color = habitColor.applyColor(defaultColor, entry.percentDone),
+                        color = habitColor.applyColor(defaultColor, entry?.percentDone ?: 0f),
                         cornerRadius = CornerRadius(5f, 5f),
                         style = Fill,
                         topLeft = Offset(offsetX, offsetY),
                         size = rectSize
                     )
-                    if (entry.hasBorder) drawRoundRect(
+                    if (entry?.hasBorder == true) drawRoundRect(
                         color = borderColor(habitColor),
                         cornerRadius = CornerRadius(5f, 5f),
                         style = Stroke(1.dp.toPx()),
@@ -119,7 +117,7 @@ fun HabitHistoryTable(
 }
 
 @Composable
-@Preview(showSystemUi = true, showBackground = true)
+@Preview
 fun HabitCalendarPreview(
     @PreviewParameter(
         HabitProvider::class,

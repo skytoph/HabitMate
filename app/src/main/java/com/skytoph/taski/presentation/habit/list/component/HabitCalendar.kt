@@ -10,7 +10,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,7 +26,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,20 +50,16 @@ import com.skytoph.taski.ui.theme.HabitMateTheme
 
 @Composable
 fun HabitCalendar(
+    modifier: Modifier = Modifier,
     onDone: () -> Unit = {},
     habit: HabitUi,
     history: HistoryUi,
-    updateEntries: (Int) -> Unit = {},
     onClick: () -> Unit = {},
     onLongClick: () -> Unit = {},
-    modifier: Modifier = Modifier
+    columns: Int = 50
 ) {
     val defaultColor = MaterialTheme.colorScheme.secondaryContainer
     val color = remember { Animatable(if (history.todayDonePercent >= 1f) habit.color else defaultColor) }
-    val entriesNumber = remember { mutableIntStateOf(0) }
-    LaunchedEffect(entriesNumber.value) {
-        if (entriesNumber.value != 0) updateEntries(entriesNumber.value)
-    }
     LaunchedEffect(history.todayDonePercent) {
         color.animateTo(
             targetValue = if (history.todayDonePercent >= 1f) habit.color else defaultColor,
@@ -75,61 +69,58 @@ fun HabitCalendar(
             )
         )
     }
-    BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
-        entriesNumber.value = calculateNumberOfCalendarEntries(maxWidth = maxWidth)
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .clip(CardDefaults.shape)
-                .combinedClickable(onClick = onClick, onLongClick = onLongClick)
-                .semantics { contentDescription = "habit" },
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
-        ) {
-            Column {
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .clip(CardDefaults.shape)
+            .combinedClickable(onClick = onClick, onLongClick = onLongClick)
+            .semantics { contentDescription = "habit" },
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+    ) {
+        Column {
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 8.dp, end = 8.dp, top = 8.dp, bottom = 4.dp)
+            ) {
+                HabitTitleWithIcon(
+                    modifier = Modifier.weight(1f),
+                    icon = habit.icon.vector(LocalContext.current),
+                    color = habit.color,
+                    title = habit.title
+                )
+                Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 8.dp, end = 8.dp, top = 8.dp, bottom = 4.dp)
-                ) {
-                    HabitTitleWithIcon(
-                        modifier = Modifier.weight(1f),
-                        icon = habit.icon.vector(LocalContext.current),
-                        color = habit.color,
-                        title = habit.title
+                        .clip(MaterialTheme.shapes.small)
+                        .clickable { onDone() }
+                        .background(color = color.value)) {
+                    if (habit.goal > 1) ProgressCircle(
+                        goal = habit.goal,
+                        done = history.todayDone,
+                        size = 32.dp,
+                        padding = 2.dp,
+                        color = habit.color
                     )
-                    Box(
+                    Icon(
+                        imageVector = Icons.Outlined.Check,
+                        contentDescription = null,
                         modifier = Modifier
-                            .clip(MaterialTheme.shapes.small)
-                            .clickable { onDone() }
-                            .background(color = color.value)) {
-                        if (habit.goal > 1) ProgressCircle(
-                            goal = habit.goal,
-                            done = history.todayDone,
-                            size = 32.dp,
-                            padding = 2.dp,
-                            color = habit.color
-                        )
-                        Icon(
-                            imageVector = Icons.Outlined.Check,
-                            contentDescription = null,
-                            modifier = Modifier
-                                .size(32.dp)
-                                .padding(6.dp),
-                            tint = Color.White
-                        )
-                    }
-                }
-                val padding = dimensionResource(R.dimen.entry_calendar_content_padding)
-                if (history.entries.size >= entriesNumber.value.times(7))
-                    HabitHistoryTable(
-                        Modifier.padding(start = padding, end = padding, bottom = padding),
-                        habit.color,
-                        history.entries
+                            .size(32.dp)
+                            .padding(6.dp),
+                        tint = Color.White
                     )
+                }
             }
+            val padding = dimensionResource(R.dimen.entry_calendar_content_padding)
+            HabitHistoryTable(
+                modifier = Modifier.padding(start = padding, end = padding, bottom = padding),
+                habitColor = habit.color,
+                history = history,
+                columns = columns
+            )
         }
     }
 }

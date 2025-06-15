@@ -68,11 +68,11 @@ fun HabitDaily(
     modifier: Modifier = Modifier
 ) {
     val entriesNumber = remember { mutableIntStateOf(0) }
-    LaunchedEffect(entriesNumber.value) {
-        if (entriesNumber.value != 0) updateEntries(entriesNumber.value)
+    LaunchedEffect(entriesNumber.intValue) {
+        if (entriesNumber.intValue != 0) updateEntries(entriesNumber.intValue)
     }
     BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
-        entriesNumber.value = calculateNumberOfDailyEntries(maxWidth = maxWidth)
+        entriesNumber.intValue = calculateNumberOfDailyEntries(maxWidth = this.maxWidth)
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -98,12 +98,12 @@ fun HabitDaily(
                     title = habit.title
                 )
                 AnimatedVisibility(
-                    visible = entriesNumber.value == history.entries.size,
+                    visible = entriesNumber.intValue == history.entries.size,
                     enter = fadeIn(),
                     exit = fadeOut()
                 ) {
                     LazyRow(horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.entries_daily_spaced_by))) {
-                        items(items = history.entries, key = { it.daysAgo }) { entry ->
+                        items(items = history.entries.values.toList(), key = { it.daysAgo }) { entry ->
                             CheckIcon(
                                 onDone = onDone,
                                 habit = habit,
@@ -166,7 +166,7 @@ fun DarkHabitDailyPreview(
     @PreviewParameter(HabitProvider::class, limit = 1) habit: HabitWithHistoryUi<HistoryUi>
 ) {
     HabitMateTheme(darkTheme = true) {
-        HabitDaily(habit = habit.habit, history = HistoryUi(entries = MutableList(5) { EntryUi(daysAgo = it) }))
+        HabitDaily(habit = habit.habit, history = HistoryUi(entries = (0..5).associateWith { EntryUi(daysAgo = it) }))
     }
 }
 
@@ -176,6 +176,6 @@ fun HabitDailyPreview(
     @PreviewParameter(HabitProvider::class, limit = 1) habit: HabitWithHistoryUi<HistoryUi>
 ) {
     HabitMateTheme(darkTheme = false) {
-        HabitDaily(habit = habit.habit, history = HistoryUi(entries = MutableList(5) { EntryUi(daysAgo = it) }))
+        HabitDaily(habit = habit.habit, history = HistoryUi(entries = (0..5).associateWith { EntryUi(daysAgo = it) }))
     }
 }

@@ -289,6 +289,12 @@ fun HabitDetails(
                 pagerState = pagerState
             )
             Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = stringResource(R.string.bar_chart_history_label),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            Spacer(modifier = Modifier.height(4.dp))
             HabitHistoryBarChart(
                 items = barChartItems,
                 color = habit.color,

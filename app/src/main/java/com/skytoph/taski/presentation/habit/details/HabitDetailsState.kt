@@ -15,5 +15,4 @@ data class HabitDetailsState(
 data class BarChartView(
     val isChartBarTypeExpanded: Boolean = false,
     val maxValue: Int = 0,
-    val lines: Int = 0,
 )

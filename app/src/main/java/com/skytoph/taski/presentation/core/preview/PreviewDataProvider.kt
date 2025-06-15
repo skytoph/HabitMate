@@ -19,7 +19,7 @@ import com.skytoph.taski.presentation.settings.restore.BackupItemUi
 class HabitsProvider : PreviewParameterProvider<List<HabitWithHistoryUi<HistoryUi>>> {
 
     private val history =
-        HistoryUi((0..363).map { EntryUi(percentDone = 1F / (it % 20), daysAgo = it) }.toList())
+        HistoryUi((0..363).associateWith { EntryUi(percentDone = 1F / (it % 20), daysAgo = it) })
 
     private val habits = IconsColors.allColors.mapIndexed { i, color ->
         HabitWithHistoryUi(HabitUi(i.toLong(), "habit", "", 1, color), history)
@@ -30,7 +30,7 @@ class HabitsProvider : PreviewParameterProvider<List<HabitWithHistoryUi<HistoryU
 
 class HabitProvider : PreviewParameterProvider<HabitWithHistoryUi<HistoryUi>> {
     private val history =
-        HistoryUi((1..364).map { EntryUi(percentDone = it % 4 * 0.3f, daysAgo = it) }.toList())
+        HistoryUi((1..364).associateWith { EntryUi(percentDone = it % 4 * 0.3f, daysAgo = it) })
 
     private val habits = IconsColors.allColors.mapIndexed { i, color ->
         HabitWithHistoryUi(HabitUi(i.toLong(), "habit", "", 1, color), history)

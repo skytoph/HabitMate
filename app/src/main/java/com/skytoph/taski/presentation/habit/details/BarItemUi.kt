@@ -14,8 +14,7 @@ data class BarItemUi(
     val isEmpty: Boolean = false
 ) {
     fun getDisplayDate(locale: Locale, context: Context): String =
-        if (isEmpty) ""
-        else SimpleDateFormat(dateLabel.getString(context), locale).format(Date(timestamp))
+        SimpleDateFormat(dateLabel.getString(context), locale).format(Date(timestamp))
 
-    fun percentDone(maxValue: Int) = min(timesDone.toFloat().div(maxValue), 1f)
+    fun percentDone(maxValue: Int) = if (maxValue == 0) 0f else min(timesDone.toFloat().div(maxValue), 1f)
 }

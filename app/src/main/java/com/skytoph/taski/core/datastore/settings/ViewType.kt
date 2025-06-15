@@ -17,7 +17,7 @@ sealed class ViewType : ProvideOptionUi<ViewType> {
 
     abstract val entries: Int
 
-    data class Calendar(override val entries: Int = 0) : ViewType() {
+    data class Calendar(override val entries: Int = ENTRIES_CALENDAR) : ViewType() {
         override fun map(
             mapper: HabitListUiMapper, habits: List<HabitWithEntries>, isBorderOn: Boolean, isFirstDaySunday: Boolean
         ) = mapper.mapCalendar(habits, entries, isBorderOn, isFirstDaySunday)
@@ -42,6 +42,7 @@ sealed class ViewType : ProvideOptionUi<ViewType> {
     }
 
     companion object {
-        val options = listOf(Calendar(), Daily())
+        private const val ENTRIES_CALENDAR = 50
+        val options = listOf(Calendar(entries = ENTRIES_CALENDAR), Daily())
     }
 }

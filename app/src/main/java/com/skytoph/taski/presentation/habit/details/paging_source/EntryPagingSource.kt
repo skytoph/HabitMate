@@ -4,8 +4,10 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.PagingState
+import com.skytoph.taski.core.Now
 import com.skytoph.taski.core.datastore.settings.HabitHistoryView
 import com.skytoph.taski.core.datastore.settings.ViewType
+import com.skytoph.taski.domain.habit.Frequency
 import com.skytoph.taski.domain.habit.HabitRepository
 import com.skytoph.taski.domain.habit.HabitWithEntries
 import com.skytoph.taski.presentation.core.AbstractPagingSource
@@ -23,11 +25,18 @@ class EntryPagingSource(
     private val id: Long,
     private val isBorderOn: Boolean,
     private val isFirstDaySunday: Boolean,
+    private val now: Now,
 ) : AbstractPagingSource<EditableHistoryUi>() {
 
     override suspend fun getData(page: Int): EditableHistoryUi {
-        val entries = repository.entries(id)
         val habit = repository.habit(id)
+        val entries = if (habit.frequency is Frequency.Custom)
+            repository.entries(id)
+        else {
+            val fromTimestamp = now.daysAgoInMillis(now.firstDayOfMonthDaysAgo(page) + 7)
+            val toTimestamp = now.daysAgoInMillis(now.lastDayOfMonthDaysAgo(page) - 7)
+            repository.entries(id, fromTimestamp, toTimestamp)
+        }
         val stats = statsMapper.statistics(HabitWithEntries(habit, entries), isFirstDaySunday)
         return uiMapper.map(
             page = page, goal = habit.goal, history = entries, stats = stats,
@@ -35,7 +44,7 @@ class EntryPagingSource(
         )
     }
 
-    override fun EditableHistoryUi.isEmpty(): Boolean = entries.isEmpty()
+    override fun EditableHistoryUi.isEmpty(): Boolean = entries.isEmpty() || month.timestamp <= 0L
 
     override fun getRefreshKey(state: PagingState<Int, EditableHistoryUi>): Int? =
         state.anchorPosition?.let { anchorPosition ->
@@ -49,6 +58,7 @@ class EntityPagerProvider(
     private val gridUiMapper: EditableEntryGridUiMapper,
     private val calendarUiMapper: EditableEntryCalendarUiMapper,
     private val statsMapper: StatisticsUiMapper,
+    private val now: Now
 ) {
 
     fun getEntries(id: Long, isBorderOn: Boolean, isFirstDaySunday: Boolean, historyView: HabitHistoryView)
@@ -63,7 +73,7 @@ class EntityPagerProvider(
             pagingSourceFactory = {
                 val mapper =
                     if (historyView is HabitHistoryView.Calendar) calendarUiMapper else gridUiMapper.also { it.clear() }
-                EntryPagingSource(repository, mapper, statsMapper, id, isBorderOn, isFirstDaySunday)
+                EntryPagingSource(repository, mapper, statsMapper, id, isBorderOn, isFirstDaySunday, now)
             }
         ).flow
 }

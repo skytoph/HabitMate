@@ -11,7 +11,7 @@ interface HabitDetailsEvent {
 
     class Init(private val habit: HabitUi) : HabitDetailsEvent {
         override fun handle(state: MutableStateFlow<HabitDetailsState>) {
-            state.value = HabitDetailsState(habit = habit)
+            state.value = state.value.copy(habit = habit)
         }
     }
 

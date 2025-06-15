@@ -25,7 +25,8 @@
 
     <!--    Habit-related Labels-->
     <string name="create_new_habit">Нова звичка</string>
-    <string name="history_label">історія</string>
+    <string name="history_label">календар</string>
+    <string name="bar_chart_history_label">історія</string>
     <string name="icon_label">іконка</string>
     <string name="goal_label">ціль</string>
     <string name="goal_value">%1$d / день</string>
@@ -60,6 +61,12 @@
     <string name="weekly">щотижня</string>
     <string name="monthly">щомісяця</string>
     <string name="custom">налаштувати</string>
+
+    <!--    Habit charts Labels-->
+    <string name="frequency_daily">День</string>
+    <string name="frequency_weekly">Неділя</string>
+    <string name="frequency_monthly">Місяць</string>
+    <string name="frequency_yearly">Рік</string>
 
     <!--    Habit list Labels-->
     <string name="action_view">Вигляд</string>

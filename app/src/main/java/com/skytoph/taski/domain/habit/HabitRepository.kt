@@ -2,7 +2,7 @@ package com.skytoph.taski.domain.habit
 
 import kotlinx.coroutines.flow.Flow
 
-interface HabitRepository: CheckHabitState {
+interface HabitRepository : CheckHabitState {
     fun habitsWithEntries(): Flow<List<HabitWithEntries>>
     fun habitWithEntriesFlow(id: Long): Flow<HabitWithEntries?>
     fun entriesFlow(id: Long): Flow<EntryList>
@@ -10,7 +10,9 @@ interface HabitRepository: CheckHabitState {
     fun habitsFlow(): Flow<List<Habit>>
     suspend fun habits(): List<Habit>
     suspend fun habitWithEntries(id: Long): HabitWithEntries
+    suspend fun firstEntry(id: Long): Entry
     suspend fun entries(id: Long): EntryList
+    suspend fun entries(id: Long, fromTimestamp: Long, toTimestamp: Long): EntryList
     suspend fun entry(id: Long, timestamp: Long): Entry?
     suspend fun insert(habit: Habit): Long
     suspend fun update(habit: Habit)

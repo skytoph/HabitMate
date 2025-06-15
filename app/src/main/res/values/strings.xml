@@ -67,7 +67,8 @@
     <string name="habit_label">habit</string>
 
     <!--    Habit details Labels-->
-    <string name="history_label">history</string>
+    <string name="history_label">calendar</string>
+    <string name="bar_chart_history_label">history</string>
     <string name="icon_label">icon</string>
     <string name="goal_label">goal</string>
     <string name="goal_in_day">/ day</string>
@@ -113,6 +114,7 @@
     <string name="action_view">View</string>
     <string name="reorder_habits">Reorder habits</string>
     <string name="filter_archived">Archived</string>
+    <string name="string_empty" translatable="false" />
 
     <!--    Habit list view settings-->
     <string name="view_label">view</string>

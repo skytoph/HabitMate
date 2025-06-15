@@ -4,9 +4,11 @@ import com.skytoph.taski.presentation.habit.HabitEntryUi
 import com.skytoph.taski.presentation.habit.HabitHistoryUi
 
 data class HistoryUi(
-    val entries: List<EntryUi> = emptyList(),
+    val entries: Map<Int, EntryUi> = emptyMap(),
     val todayDonePercent: Float = 0F,
     val todayDone: Int = 0,
+    val fromDaysAgo: Int = 0,
+    val toDaysAgo: Int = entries.size
 ) : HabitHistoryUi
 
 data class EntryUi(

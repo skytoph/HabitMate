@@ -1,5 +1,6 @@
 package com.skytoph.taski.presentation.habit.details.components
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -26,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -37,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.skytoph.taski.R
 import com.skytoph.taski.presentation.core.component.OptionsDropdown
 import com.skytoph.taski.presentation.core.component.getLocale
 import com.skytoph.taski.presentation.core.preview.BarChartEntryProvider
@@ -189,15 +192,17 @@ private fun BarItem(
                 .heightIn(max = maxHeight)
                 .background(color = color, shape = MaterialTheme.shapes.extraSmall)
         )
-        Text(
-            text = item.getDisplayDate(getLocale(), context),
-            color = MaterialTheme.colorScheme.onBackground,
-            style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
-            maxLines = 2,
-            minLines = 2,
-            textAlign = TextAlign.Center,
-            overflow = TextOverflow.Visible
-        )
+        Crossfade(targetState = !item.isEmpty) { isVisible ->
+            Text(
+                text = if (isVisible) item.getDisplayDate(getLocale(), context) else stringResource(R.string.string_empty),
+                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+                maxLines = 2,
+                minLines = 2,
+                textAlign = TextAlign.Center,
+                overflow = TextOverflow.Visible
+            )
+        }
     }
 }
 
