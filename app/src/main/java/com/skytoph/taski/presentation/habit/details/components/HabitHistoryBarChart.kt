@@ -1,6 +1,6 @@
 package com.skytoph.taski.presentation.habit.details.components
 
-import androidx.compose.animation.Crossfade
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -27,7 +28,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -39,7 +39,6 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.skytoph.taski.R
 import com.skytoph.taski.presentation.core.component.OptionsDropdown
 import com.skytoph.taski.presentation.core.component.getLocale
 import com.skytoph.taski.presentation.core.preview.BarChartEntryProvider
@@ -55,7 +54,7 @@ fun HabitHistoryBarChart(
     items: Flow<PagingData<BarItemUi>>,
     maxValue: Int = 0,
     color: Color = Color.Blue,
-    frequency: ChartFrequencyUi = ChartFrequencyUi.Day,
+    frequency: ChartFrequencyUi = ChartFrequencyUi.Year,
     isTypeExpanded: Boolean = false,
     expandType: () -> Unit = {},
     selectFrequency: (ChartFrequencyUi) -> Unit = {},
@@ -96,16 +95,17 @@ fun BarChart(
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.End,
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier = Modifier.fillMaxWidth()
         ) {
             OptionsDropdown(
+                modifier = Modifier.widthIn(min = 88.dp),
                 options = ChartFrequencyUi.options,
                 selected = frequency,
                 selectOption = selectFrequency,
                 isExpanded = isTypeExpanded,
                 expand = expandType,
-                isExpandIconShown = true
+                isExpandIconShown = true,
+                itemsArrangement = Arrangement.SpaceBetween
             )
         }
         Box(
@@ -192,9 +192,9 @@ private fun BarItem(
                 .heightIn(max = maxHeight)
                 .background(color = color, shape = MaterialTheme.shapes.extraSmall)
         )
-        Crossfade(targetState = !item.isEmpty) { isVisible ->
+        AnimatedVisibility(visible = !item.isEmpty) {
             Text(
-                text = if (isVisible) item.getDisplayDate(getLocale(), context) else stringResource(R.string.string_empty),
+                text = item.getDisplayDate(getLocale(), context),
                 color = MaterialTheme.colorScheme.onBackground,
                 style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
                 maxLines = 2,
@@ -207,7 +207,7 @@ private fun BarItem(
 }
 
 @Composable
-@Preview
+@Preview(locale = "uk")
 private fun HabitHistoryBarChartPreview(
     @PreviewParameter(BarChartEntryProvider::class) entries: List<BarItemUi>,
 ) {
@@ -217,7 +217,7 @@ private fun HabitHistoryBarChartPreview(
                 .padding(16.dp)
                 .background(color = MaterialTheme.colorScheme.background)
         ) {
-            HabitHistoryBarChart(items = flowOf(PagingData.from(entries)), maxValue = 5)
+            HabitHistoryBarChart(items = flowOf(PagingData.from(entries)), maxValue = 5, isTypeExpanded = true)
         }
     }
 }

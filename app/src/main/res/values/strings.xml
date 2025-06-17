@@ -112,7 +112,7 @@
 
     <!--    Habit list Labels-->
     <string name="action_view">View</string>
-    <string name="reorder_habits">Reorder habits</string>
+    <string name="reorder_habits">reorder habits</string>
     <string name="filter_archived">Archived</string>
     <string name="string_empty" translatable="false" />
 

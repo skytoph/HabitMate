@@ -20,7 +20,7 @@ data class ReminderUi(
                 else hour
             val format = "%02d:%02d" +
                     if (is24HourFormat) ""
-                    else " " + if (is24HourFormat) null else if (hour >= 12) "PM" else "AM"
+                    else " " + if (hour >= 12) "PM" else "AM"
             String.format(locale, format, hourFormated, minute)
         } else turnedOff
 

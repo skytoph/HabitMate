@@ -144,10 +144,10 @@ private fun HabitsReorder(
             }
         }
         item {
-            ReorderableItem(state = state, key = 0, enabled = false) {}
+            ReorderableItem(state = state, key = 0, enabled = false, animateItemModifier = Modifier.animateItem()) {}
         }
         items(habits, key = { it.id }) { habit ->
-            ReorderableItem(state = state, key = habit.id) { isDragging ->
+            ReorderableItem(state = state, key = habit.id, animateItemModifier = Modifier.animateItem()) { isDragging ->
                 HabitReorderingItem(
                     modifier = Modifier
                         .longPressDraggableHandle()
@@ -277,9 +277,10 @@ fun HabitReorderingItem(
 private fun DarkHabitReorderingPreview(@PreviewParameter(HabitsProvider::class) habits: List<HabitWithHistoryUi<HistoryUi>>) {
     HabitMateTheme(darkTheme = true) {
         val state = remember { mutableStateOf(false) }
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .clickable { state.value = !state.value }) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .clickable { state.value = !state.value }) {
             HabitsReorder(habits = habits.map { it.habit })
         }
     }

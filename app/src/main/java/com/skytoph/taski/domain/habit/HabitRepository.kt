@@ -10,7 +10,7 @@ interface HabitRepository : CheckHabitState {
     fun habitsFlow(): Flow<List<Habit>>
     suspend fun habits(): List<Habit>
     suspend fun habitWithEntries(id: Long): HabitWithEntries
-    suspend fun firstEntry(id: Long): Entry
+    suspend fun firstEntry(id: Long): Entry?
     suspend fun entries(id: Long): EntryList
     suspend fun entries(id: Long, fromTimestamp: Long, toTimestamp: Long): EntryList
     suspend fun entry(id: Long, timestamp: Long): Entry?

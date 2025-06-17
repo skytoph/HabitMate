@@ -15,7 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.LocalMinimumInteractiveComponentEnforcement
+import androidx.compose.material3.LocalMinimumInteractiveComponentSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,6 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.skytoph.taski.R
 import com.skytoph.taski.ui.theme.HabitMateTheme
@@ -62,7 +63,7 @@ fun AdPreferencesDialog(
         onDismissRequest = onDismissRequest,
         confirmButton = {
             CompositionLocalProvider(
-                LocalMinimumInteractiveComponentEnforcement provides false,
+                LocalMinimumInteractiveComponentSize provides Dp.Unspecified,
             ) {
                 Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth()) {
                     Row(
@@ -92,7 +93,7 @@ fun AdPreferencesDialog(
         },
         dismissButton = {
             CompositionLocalProvider(
-                LocalMinimumInteractiveComponentEnforcement provides false,
+                LocalMinimumInteractiveComponentSize provides Dp.Unspecified,
             ) {
                 Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth()) {
                     Row(

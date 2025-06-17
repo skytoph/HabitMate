@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LocalMinimumInteractiveComponentEnforcement
+import androidx.compose.material3.LocalMinimumInteractiveComponentSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.skytoph.taski.presentation.core.component.ExportDialog
 import com.skytoph.taski.ui.theme.HabitMateTheme
@@ -89,7 +90,7 @@ fun BaseAlertDialog(
         },
         confirmButton = {
             CompositionLocalProvider(
-                LocalMinimumInteractiveComponentEnforcement provides false,
+                LocalMinimumInteractiveComponentSize provides Dp.Unspecified,
             ) {
                 TextButton(
                     onClick = onConfirm,
@@ -107,7 +108,7 @@ fun BaseAlertDialog(
         },
         dismissButton = {
             CompositionLocalProvider(
-                LocalMinimumInteractiveComponentEnforcement provides false,
+                LocalMinimumInteractiveComponentSize provides Dp.Unspecified,
             ) {
                 TextButton(onClick = onDismissRequest) {
                     Text(

@@ -64,28 +64,28 @@
 
     <!--    Habit charts Labels-->
     <string name="frequency_daily">День</string>
-    <string name="frequency_weekly">Неділя</string>
+    <string name="frequency_weekly">Тиждень</string>
     <string name="frequency_monthly">Місяць</string>
     <string name="frequency_yearly">Рік</string>
 
     <!--    Habit list Labels-->
     <string name="action_view">Вигляд</string>
-    <string name="reorder_habits">Змінити порядок звичок</string>
+    <string name="reorder_habits">змінити порядок звичок</string>
     <string name="filter_archived">Архівовані</string>
 
     <!--    Habit list view settings-->
     <string name="view_label">вигляд</string>
-    <string name="view_layout">розташування</string>
+    <string name="view_layout">вигляд</string>
     <string name="option_calendar">таблиця</string>
     <string name="option_daily">список</string>
-    <string name="view_sort">сортувати за</string>
-    <string name="view_filter">фільтрувати за</string>
-    <string name="sort_by_color">кольором</string>
-    <string name="sort_by_title">назвою</string>
+    <string name="view_sort">сортувати</string>
+    <string name="view_filter">фільтрувати</string>
+    <string name="sort_by_color">за кольором</string>
+    <string name="sort_by_title">за назвою</string>
     <string name="sort_manually">вручну</string>
-    <string name="filter_by_state">станом</string>
-    <string name="sort_by_state">станом</string>
-    <string name="filter_none">відсутній</string>
+    <string name="filter_by_state">за станом</string>
+    <string name="sort_by_state">за станом</string>
+    <string name="filter_none">-</string>
     <string name="show_only_todays_habits">показувати лише звички на сьогодні</string>
 
     <!--    Habit context menu-->

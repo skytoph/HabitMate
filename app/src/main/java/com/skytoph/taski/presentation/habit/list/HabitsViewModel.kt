@@ -36,7 +36,7 @@ class HabitsViewModel @Inject constructor(
 
     init {
         onEvent(HabitListEvent.Progress)
-        view.distinctUntilChangedBy { it.view }
+        view.distinctUntilChangedBy { listOf(it.view, it.currentDayHighlighted, it.weekStartsOnSunday, it.allowCrashlytics) }
             .map { it.view }
             .combine(interactor.habits()) { viewState, habits -> applyViewState(habits, viewState) }
             .flowOn(Dispatchers.IO)

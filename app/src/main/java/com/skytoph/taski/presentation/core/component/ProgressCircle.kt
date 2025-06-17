@@ -56,7 +56,7 @@ fun ProgressCircle(
         initialized.value = true
         alphaAnimatable.snapTo(0f)
         angleAnimatable.animateTo(
-            targetValue = angleValue.value,
+            targetValue = angleValue.floatValue,
             animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
         )
         if (done >= goal)
@@ -74,7 +74,7 @@ fun ProgressCircle(
                 val gap: Float = if (goal == 1) 0f else strokeWidth.times(3).toPx()
                 val startAngle: Float = 180f + gap.div(2)
                 val sweepAngle: Float = angle - gap
-                angleValue.value = sweepAngle
+                angleValue.floatValue = sweepAngle
 
                 if (isHintShown || done > 0)
                     repeat(goal) { index ->
@@ -164,9 +164,9 @@ private fun ProgressClickablePreview() {
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
             ) {
-                state.value = if (state.value < goal) state.value + 1 else 0
+                state.intValue = if (state.intValue < goal) state.intValue + 1 else 0
             }) {
-                ProgressCircle(goal = goal, done = state.value, color = Color.Red)
+                ProgressCircle(goal = goal, done = state.intValue, color = Color.Red)
             }
         }
     }

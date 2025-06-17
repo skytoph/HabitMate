@@ -17,8 +17,6 @@ import com.google.android.ump.ConsentRequestParameters
 import com.google.android.ump.UserMessagingPlatform
 import com.skytoph.taski.BuildConfig
 import com.skytoph.taski.presentation.core.Logger
-import com.skytoph.taski.presentation.habit.icon.RewardDataSource.Fail
-import com.skytoph.taski.presentation.habit.icon.RewardDataSource.Success
 import java.util.concurrent.atomic.AtomicBoolean
 
 interface RewardDataSource {

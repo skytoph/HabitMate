@@ -70,13 +70,13 @@ interface HabitDetailsInteractor : HabitDoneInteractor {
             val fromTimestamp = now.daysAgoInMillis(frequency.start(index, isFirstDaySunday))
             val toTimestamp = now.daysAgoInMillis(frequency.end(index, isFirstDaySunday))
             val history = repository.entries(habit.id, fromTimestamp, toTimestamp)
-            val lastEntryTimestamp = repository.firstEntry(habit.id).timestamp
+            val lastEntryTimestamp = repository.firstEntry(habit.id)?.timestamp
             val barChartEntry = barChartMapper.map(
                 entries = history,
                 index = frequency.index(daysAgo, now, isFirstDaySunday),
                 frequency = frequency,
                 isFirstDaySunday = isFirstDaySunday,
-                lastEntryDaysAgo = now.daysAgo(lastEntryTimestamp)
+                lastEntryDaysAgo = lastEntryTimestamp?.let { now.daysAgo(it) }
             )
             return EntryUpdated(
                 entry = entryMapper.map(daysAgo, entry.timesDone, habit.goal, null),

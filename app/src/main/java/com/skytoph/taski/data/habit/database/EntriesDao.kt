@@ -29,7 +29,7 @@ interface EntriesDao {
     suspend fun entriesList(id: Long): List<EntryEntity>
 
     @Query("SELECT * FROM entry WHERE habit_id = :id ORDER BY timestamp ASC LIMIT 1")
-    suspend fun firstEntry(id: Long): EntryEntity
+    suspend fun firstEntry(id: Long): EntryEntity?
 
     @Query("SELECT * FROM entry WHERE habit_id = :id AND timestamp BETWEEN :fromTimestamp AND :toTimestamp")
     suspend fun entriesList(id: Long, fromTimestamp: Long, toTimestamp: Long): List<EntryEntity>

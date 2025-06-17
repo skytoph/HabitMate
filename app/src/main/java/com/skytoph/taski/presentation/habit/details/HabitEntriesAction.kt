@@ -20,8 +20,12 @@ abstract class HabitEntriesAction {
         override fun apply(data: BarItemUi): BarItemUi =
             when {
                 data.timestamp == entry.barChartEntry.timestamp -> entry.barChartEntry
+
+                entry.barChartLastItemTimestamp == null
+                        || data.timestamp < entry.barChartLastItemTimestamp -> data.copy(isEmpty = true)
+
                 data.timestamp > entry.barChartLastItemTimestamp -> data.copy(isEmpty = false)
-                data.timestamp < entry.barChartLastItemTimestamp -> data.copy(isEmpty = true)
+
                 else -> data
             }
     }

@@ -4,6 +4,7 @@ package com.skytoph.taski.presentation.core.component
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,6 +20,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
@@ -44,7 +46,8 @@ fun <T : ProvideOptionUi<T>> OptionsDropdown(
     selectOption: (T) -> Unit = {},
     isExpanded: Boolean? = null,
     expand: (() -> Unit)? = null,
-    isExpandIconShown: Boolean = false
+    isExpandIconShown: Boolean = false,
+    itemsArrangement: Arrangement.Horizontal = Arrangement.Start
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -63,9 +66,10 @@ fun <T : ProvideOptionUi<T>> OptionsDropdown(
         ) {
             Row(
                 modifier = modifier
-                    .menuAnchor()
+                    .menuAnchor(type = MenuAnchorType.PrimaryNotEditable)
                     .padding(horizontal = 16.dp, vertical = 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = itemsArrangement
             ) {
                 val option = selected.optionUi()
                 option.icon?.let {
@@ -80,10 +84,11 @@ fun <T : ProvideOptionUi<T>> OptionsDropdown(
                 Text(
                     text = option.title.getString(context),
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onBackground
+                    color = MaterialTheme.colorScheme.onBackground,
+                    maxLines = 1
                 )
                 if (isExpandIconShown) {
-                    Spacer(modifier = Modifier.width(12.dp))
+                    Spacer(modifier = Modifier.width(16.dp))
                     Crossfade(targetState = isExpanded ?: expanded) {
                         Icon(
                             imageVector = if (it) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,

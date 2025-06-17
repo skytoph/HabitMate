@@ -148,7 +148,7 @@ private fun GeneralContent(
             SwitchSetting(
                 onChange = allowCrashlytics,
                 title = stringResource(R.string.allow_crashlytics),
-                isChecked = settingsState.value.allowCrashlytics ?: false
+                isChecked = settingsState.value.allowCrashlytics == true
             )
             HorizontalDivider()
             ButtonWithIcon(
@@ -219,12 +219,14 @@ fun ButtonWithIcon(
             fontWeight = fontWeight
         )
         icon?.let {
-            Icon(
-                imageVector = icon,
-                contentDescription = title,
-                modifier = Modifier.size(24.dp),
-                tint = color
-            )
+            Box(modifier = Modifier.width(52.dp), contentAlignment = Alignment.Center) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = title,
+                    modifier = Modifier.size(24.dp),
+                    tint = color
+                )
+            }
         }
     }
 }

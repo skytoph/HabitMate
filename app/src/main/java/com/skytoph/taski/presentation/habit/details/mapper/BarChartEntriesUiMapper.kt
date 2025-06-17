@@ -9,7 +9,7 @@ import com.skytoph.taski.presentation.habit.details.ChartFrequencyUi
 
 interface BarChartEntriesUiMapper {
     fun map(
-        entries: EntryList, index: Int, frequency: ChartFrequencyUi, isFirstDaySunday: Boolean, lastEntryDaysAgo: Int
+        entries: EntryList, index: Int, frequency: ChartFrequencyUi, isFirstDaySunday: Boolean, lastEntryDaysAgo: Int?
     ): BarItemUi
 
     fun findMaxTimesDone(entries: EntryList, frequency: ChartFrequencyUi, isFirstDaySunday: Boolean): Int
@@ -17,7 +17,7 @@ interface BarChartEntriesUiMapper {
     class Base(private val now: Now) : BarChartEntriesUiMapper {
         override fun map(
             entries: EntryList, index: Int, frequency: ChartFrequencyUi,
-            isFirstDaySunday: Boolean, lastEntryDaysAgo: Int
+            isFirstDaySunday: Boolean, lastEntryDaysAgo: Int?
         ): BarItemUi {
             val startDaysAgo = frequency.end(index, isFirstDaySunday)
             val endDaysAgo = frequency.start(index, isFirstDaySunday)
@@ -31,7 +31,7 @@ interface BarChartEntriesUiMapper {
                 timestamp = now.daysAgoInMillis(startDaysAgo),
                 timesDone = timesDone,
                 dateLabel = dateLabel,
-                isEmpty = startDaysAgo > lastEntryDaysAgo
+                isEmpty = lastEntryDaysAgo == null || startDaysAgo > lastEntryDaysAgo
             )
         }
 

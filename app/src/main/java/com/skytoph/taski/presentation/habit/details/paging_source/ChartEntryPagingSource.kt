@@ -26,7 +26,7 @@ class BarChartEntriesSource(
         val fromTimestamp = now.daysAgoInMillis(frequencyUi.start(page, isFirstDaySunday))
         val toTimestamp = now.daysAgoInMillis(frequencyUi.end(page, isFirstDaySunday))
         val entries = repository.entries(id, fromTimestamp, toTimestamp)
-        val lastEntryDaysAgo = now.daysAgo(repository.firstEntry(id).timestamp)
+        val lastEntryDaysAgo = repository.firstEntry(id)?.timestamp?.let { now.daysAgo(it) }
         val history = mapper.map(
             entries = entries,
             index = page,

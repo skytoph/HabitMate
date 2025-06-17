@@ -304,6 +304,7 @@ fun HabitDetails(
                 expandType = expandBarChartType,
                 selectFrequency = selectFrequency
             )
+            Spacer(modifier = Modifier.height(16.dp))
         }
 
         if (state.value.isDeleteDialogShown)
