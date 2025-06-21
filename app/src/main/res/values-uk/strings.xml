@@ -315,6 +315,19 @@
     <string name="day_label_one">день</string>
     <string name="week_label_one">неділя</string>
     <string name="month_label_one">місяць</string>
+
+    <!--    Content descriptions    -->
+    <string name="content_description_loading">завантаження</string>
+    <string name="content_description_enter_habit_title">введіть назву звички</string>
+    <string name="content_description_enter_habit_description">введіть опис звички</string>
+    <string name="content_description_decrease_habit_goal">збільшити ціль звички</string>
+    <string name="content_description_increase_habit_goal">зменшити ціль звички</string>
+    <string name="content_description_select_habit_icon_and_color">обрати колір та іконку для звички</string>
+    <string name="content_description_list_of_habits">список звичок</string>
+    <string name="content_description_habit_calendar_check_icon">позначити "%1$s" звичку як завершену сьогодні</string>
+    <string name="content_description_habit_daily_check_icon">позначити "%1$s" звичку як завершену %2$d днів тому</string>
+
+
     <plurals name="times_label">
         <item quantity="one" tools:ignore="ImpliedQuantity">раз</item>
         <item quantity="few">рази</item>

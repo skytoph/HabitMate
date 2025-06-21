@@ -60,6 +60,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
@@ -76,6 +78,7 @@ import com.skytoph.taski.presentation.core.component.SquareButton
 import com.skytoph.taski.presentation.core.component.TextFieldWithError
 import com.skytoph.taski.presentation.core.component.TimePickerDialog
 import com.skytoph.taski.presentation.core.component.getLocale
+import com.skytoph.taski.presentation.core.semantics.backgroundColor
 import com.skytoph.taski.presentation.core.state.FieldState
 import com.skytoph.taski.presentation.core.state.IconResource
 import com.skytoph.taski.presentation.habit.ReminderUi
@@ -285,6 +288,7 @@ fun EditBaseHabit(
                     clearFocus = { focusManager.clearFocus() },
                     title = "",
                     singleLine = true,
+                    description = context.getString(R.string.content_description_enter_habit_title),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
                 )
@@ -307,6 +311,7 @@ fun EditBaseHabit(
                 title = stringResource(R.string.description_label),
                 singleLine = false,
                 maxLines = 5,
+                description = context.getString(R.string.content_description_enter_habit_description),
                 keyboardOptions = KeyboardOptions.Default,
                 keyboardActions = KeyboardActions.Default
             )
@@ -357,13 +362,15 @@ fun EditBaseHabit(
                     onClick = { focusManager.clearFocus(); onDecreaseGoal() },
                     icon = Icons.Default.Remove,
                     size = minHeight,
-                    isEnabled = goal.canBeDecreased
+                    isEnabled = goal.canBeDecreased,
+                    contentDescription = stringResource(R.string.content_description_decrease_habit_goal)
                 )
                 SquareButton(
                     onClick = { focusManager.clearFocus(); onIncreaseGoal() },
                     icon = Icons.Default.Add,
                     size = minHeight,
-                    isEnabled = goal.canBeIncreased
+                    isEnabled = goal.canBeIncreased,
+                    contentDescription = stringResource(R.string.content_description_increase_habit_goal)
                 )
             }
             Spacer(modifier = Modifier.height(18.dp))
@@ -589,6 +596,11 @@ fun IconSelector(
             modifier = Modifier
                 .background(color = color, shape = MaterialTheme.shapes.extraSmall)
                 .size(size)
+                .semantics {
+                    contentDescription =
+                        context.getString(R.string.content_description_select_habit_icon_and_color)
+                    backgroundColor = color
+                }
         ) {
             Icon(
                 imageVector = icon.vector(context),

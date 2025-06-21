@@ -26,6 +26,7 @@ fun SquareButton(
     isEnabled: Boolean = true,
     containerColor: Color = MaterialTheme.colorScheme.surfaceVariant,
     disabledContainerColor: Color = containerColor,
+    contentDescription: String = "",
 ) {
     TextButton(
         onClick = onClick,
@@ -39,7 +40,7 @@ fun SquareButton(
         ),
         enabled = isEnabled
     ) {
-        Icon(imageVector = icon, contentDescription = icon.name, modifier = Modifier.size(16.dp))
+        Icon(imageVector = icon, contentDescription = contentDescription, modifier = Modifier.size(16.dp))
     }
 }
 

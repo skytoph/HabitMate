@@ -1,7 +1,5 @@
 package com.skytoph.taski.di.habit
 
-import android.content.Context
-import androidx.room.Room
 import com.skytoph.taski.core.Now
 import com.skytoph.taski.data.habit.database.EntriesDao
 import com.skytoph.taski.data.habit.database.HabitDao
@@ -16,7 +14,6 @@ import com.skytoph.taski.presentation.habit.details.mapper.StatisticsUiMapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -64,9 +61,4 @@ object HabitRepositoryModule {
     @Provides
     @Singleton
     fun provider(): CalculatorProvider = CalculatorProvider.Base()
-
-    @Provides
-    @Singleton
-    fun database(@ApplicationContext context: Context): HabitDatabase =
-        Room.databaseBuilder(context, HabitDatabase::class.java, "habits_db").build()
 }

@@ -11,7 +11,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,14 +44,14 @@ import com.skytoph.taski.ui.theme.HabitMateTheme
 @Composable
 fun HabitsScreen(
     viewModel: HabitsViewModel = hiltViewModel(),
-    onCreateHabit: () -> Unit,
-    onSettingsClick: () -> Unit,
-    onReorderHabits: () -> Unit,
-    onEditHabit: (Long) -> Unit,
-    onHabitClick: (Long) -> Unit,
-    removeHabitFromState: (String) -> Unit,
-    deleteState: State<Long?>,
-    archiveState: State<Long?>,
+    onCreateHabit: () -> Unit = {},
+    onSettingsClick: () -> Unit = {},
+    onReorderHabits: () -> Unit = {},
+    onEditHabit: (Long) -> Unit = {},
+    onHabitClick: (Long) -> Unit = {},
+    removeHabitFromState: (String) -> Unit = {},
+    deleteState: Long? = null,
+    archiveState: Long? = null,
 ) {
     val state = viewModel.habitsState()
     val onBackground = MaterialTheme.colorScheme.onBackground
@@ -64,7 +63,8 @@ fun HabitsScreen(
             title = R.string.habit_list_title,
             menuItems = if (state.value.habits.isEmpty()) emptyList() else listOf(actionAdd),
             dropDownItems = listOf(
-                AppBarAction.view.copy(color = onBackground,
+                AppBarAction.view.copy(
+                    color = onBackground,
                     onClick = { viewModel.onEvent(HabitListEvent.ShowViewType(true)) }),
                 AppBarAction.settings.copy(color = onBackground, onClick = onSettingsClick)
             )
@@ -73,12 +73,12 @@ fun HabitsScreen(
     val messageDelete = stringResource(R.string.message_habit_deleted)
     val messageArchive = stringResource(R.string.message_habit_archived)
 
-    LaunchedEffect(deleteState.value, archiveState.value) {
-        deleteState.value?.let { id ->
+    LaunchedEffect(deleteState, archiveState) {
+        deleteState?.let { id ->
             removeHabitFromState(HabitScreens.HabitList.keyDelete)
             viewModel.deleteHabit(id, messageDelete, context)
         }
-        archiveState.value?.let { id ->
+        archiveState?.let { id ->
             removeHabitFromState(HabitScreens.HabitList.keyArchive)
             viewModel.archiveHabit(id, messageArchive)
         }
@@ -86,32 +86,15 @@ fun HabitsScreen(
 
     val settings = viewModel.view.collectAsState()
 
-    if (state.value.isLoading)
-        LoadingFullscreen()
-    else if (state.value.habits.isEmpty())
-        EmptyScreen(
-            title = stringResource(R.string.list_of_habits_is_empty_create_label),
-            icon = ImageVector.vectorResource(R.drawable.sparkles_large),
-            button = {
-                ButtonWithIconOnBackground(
-                    modifier = Modifier.padding(top = 4.dp),
-                    onClick = onCreateHabit,
-                    backgroundColor = MaterialTheme.colorScheme.primary,
-                    title = stringResource(R.string.action_create),
-                    icon = Icons.Default.Add,
-                    color = Color.White
-                )
-            }
-        )
-    else
-        Habits(
-            state = state,
-            view = settings.value.view.viewType,
-            updateState = { entries -> viewModel.onEvent(HabitListEvent.UpdateEntries(entries)) },
-            onHabitClick = { onHabitClick(it.id) },
-            onHabitLongClick = { habit -> viewModel.onEvent(HabitListEvent.UpdateContextMenu(habit.id)) },
-            onHabitDone = { habit, daysAgo -> viewModel.habitDone(habit, daysAgo) },
-        )
+    Habits(
+        state = state.value,
+        view = settings.value.view.viewType,
+        onCreateHabit = onCreateHabit,
+        updateState = { entries -> viewModel.onEvent(HabitListEvent.UpdateEntries(entries)) },
+        onHabitClick = { onHabitClick(it.id) },
+        onHabitLongClick = { habit -> viewModel.onEvent(HabitListEvent.UpdateContextMenu(habit.id)) },
+        onHabitDone = { habit, daysAgo -> viewModel.habitDone(habit, daysAgo) },
+    )
 
     if (state.value.isCrashlyticsItemShown)
         AllowCrashlyticsDialog(
@@ -167,22 +150,41 @@ fun HabitsScreen(
 }
 
 @Composable
-private fun Habits(
-    state: State<HabitListState>,
+fun Habits(
+    state: HabitListState,
     view: ViewType,
-    updateState: (Int) -> Unit,
+    onCreateHabit: () -> Unit = {},
+    updateState: (Int) -> Unit = {},
     onHabitClick: (HabitUi) -> Unit = {},
     onHabitLongClick: (HabitUi) -> Unit = {},
     onHabitDone: (HabitUi, Int) -> Unit = { _, _ -> },
 ) {
-    HabitList(
-        view = view,
-        habits = state.value.habits,
-        onDone = onHabitDone,
-        onClick = onHabitClick,
-        onLongClick = onHabitLongClick,
-        updateView = updateState,
-    )
+    if (state.isLoading)
+        LoadingFullscreen()
+    else if (state.habits.isEmpty())
+        EmptyScreen(
+            title = stringResource(R.string.list_of_habits_is_empty_create_label),
+            icon = ImageVector.vectorResource(R.drawable.sparkles_large),
+            button = {
+                ButtonWithIconOnBackground(
+                    modifier = Modifier.padding(top = 4.dp),
+                    onClick = onCreateHabit,
+                    backgroundColor = MaterialTheme.colorScheme.primary,
+                    title = stringResource(R.string.action_create),
+                    icon = Icons.Default.Add,
+                    color = Color.White
+                )
+            }
+        )
+    else
+        HabitList(
+            view = view,
+            habits = state.habits,
+            onDone = onHabitDone,
+            onClick = onHabitClick,
+            onLongClick = onHabitLongClick,
+            updateView = updateState,
+        )
 }
 
 @Composable

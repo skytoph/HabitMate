@@ -17,7 +17,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
@@ -90,9 +93,11 @@ fun ListOfHabitsDaily(
     onDone: (HabitUi, Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val context = LocalContext.current
     LazyColumn(
         modifier = modifier
             .fillMaxWidth()
+            .semantics { contentDescription = context.getString(R.string.content_description_list_of_habits) }
             .padding(horizontal = dimensionResource(id = R.dimen.main_padding)),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -123,9 +128,11 @@ fun ListOfHabitsCalendar(
     onDone: (HabitUi, Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val context = LocalContext.current
     LazyColumn(
         modifier = modifier
             .fillMaxWidth()
+            .semantics { contentDescription = context.getString(R.string.content_description_list_of_habits) }
             .padding(horizontal = dimensionResource(id = R.dimen.main_padding)),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally

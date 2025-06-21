@@ -19,11 +19,9 @@ object SettingsSerializer : Serializer<Settings> {
     override val defaultValue: Settings = Settings.default(InitializeEmptyValues())
 
     override suspend fun readFrom(input: InputStream): Settings =
-        gson.fromJson(input.readBytes().decodeToString(), Settings::class.java)
+        gson.fromJson(input.readBytes().decodeToString(), Settings::class.java) ?: defaultValue
 
     override suspend fun writeTo(value: Settings, output: OutputStream) = withContext(Dispatchers.IO) {
         output.write(gson.toJson(value).toByteArray())
     }
-
-    const val FILENAME: String = "settings.json"
 }

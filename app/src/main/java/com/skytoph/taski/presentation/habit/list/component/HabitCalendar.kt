@@ -32,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -58,6 +59,7 @@ fun HabitCalendar(
     onLongClick: () -> Unit = {},
     columns: Int = 50
 ) {
+    val context = LocalContext.current
     val defaultColor = MaterialTheme.colorScheme.secondaryContainer
     val color = remember { Animatable(if (history.todayDonePercent >= 1f) habit.color else defaultColor) }
     LaunchedEffect(history.todayDonePercent) {
@@ -87,16 +89,22 @@ fun HabitCalendar(
                     .padding(start = 8.dp, end = 8.dp, top = 8.dp, bottom = 4.dp)
             ) {
                 HabitTitleWithIcon(
-                    modifier = Modifier.weight(1f),
-                    icon = habit.icon.vector(LocalContext.current),
+                    modifier = Modifier
+                        .weight(1f)
+                        .testTag(habit.icon.name(context.resources)),
+                    icon = habit.icon.vector(context),
                     color = habit.color,
-                    title = habit.title
+                    title = habit.title,
                 )
                 Box(
                     modifier = Modifier
                         .clip(MaterialTheme.shapes.small)
                         .clickable { onDone() }
-                        .background(color = color.value)) {
+                        .background(color = color.value)
+                        .semantics {
+                            contentDescription =
+                                context.getString(R.string.content_description_habit_calendar_check_icon, habit.title)
+                        }) {
                     if (habit.goal > 1) ProgressCircle(
                         goal = habit.goal,
                         done = history.todayDone,

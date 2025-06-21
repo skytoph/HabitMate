@@ -41,8 +41,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
@@ -53,6 +55,7 @@ import com.skytoph.taski.presentation.core.color.borderColor
 import com.skytoph.taski.presentation.core.component.AppBarAction
 import com.skytoph.taski.presentation.core.component.LoadingFullscreen
 import com.skytoph.taski.presentation.core.preview.IconLockedProvider
+import com.skytoph.taski.presentation.core.semantics.backgroundColor
 import com.skytoph.taski.presentation.core.state.IconResource
 import com.skytoph.taski.presentation.core.state.StringResource
 import com.skytoph.taski.presentation.habit.icon.IconMessages
@@ -253,13 +256,14 @@ fun IconItem(
         ) {
             Icon(
                 imageVector = icon.vector(context),
-                contentDescription = icon.name(context.resources),
+                contentDescription = null,
                 modifier = Modifier
                     .clip(MaterialTheme.shapes.small)
                     .clickable { if (isUnlocked) onSelectIcon(icon) else onUnlockIcon(icon) }
                     .size(iconSize)
                     .background(background)
-                    .padding(6.dp),
+                    .padding(6.dp)
+                    .testTag(icon.name(context.resources)),
                 tint = Color.White
             )
             if (!isUnlocked) Icon(
@@ -297,6 +301,8 @@ fun ColorItem(
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Box(
             modifier = Modifier
+                .testTag(color.toString())
+                .semantics { backgroundColor = color }
                 .clip(CircleShape)
                 .clickable { onSelectColor(color) }
                 .size(iconSize)

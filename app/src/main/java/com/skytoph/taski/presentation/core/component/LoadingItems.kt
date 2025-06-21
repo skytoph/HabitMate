@@ -20,7 +20,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -63,6 +66,7 @@ fun LoadingItems(
     initialAlpha: Float = 0.3f,
     item: ImageVector = ImageVector.vectorResource(id = R.drawable.sparkle_filled)
 ) {
+    val context = LocalContext.current
     val animatableList = listOf(
         remember {
             Animatable(initialValue = initialAlpha)
@@ -88,7 +92,9 @@ fun LoadingItems(
         }
     }
 
-    Row {
+    Row(modifier = Modifier.semantics{
+        contentDescription = context.getString(R.string.content_description_loading)
+    }) {
         animatableList.forEachIndexed { index, animatable ->
             if (index != 0)
                 Spacer(modifier = Modifier.width(width = spaceSize))

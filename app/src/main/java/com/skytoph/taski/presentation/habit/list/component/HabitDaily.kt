@@ -38,6 +38,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.contentDescription
@@ -67,6 +68,7 @@ fun HabitDaily(
     onLongClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
     val entriesNumber = remember { mutableIntStateOf(0) }
     LaunchedEffect(entriesNumber.intValue) {
         if (entriesNumber.intValue != 0) updateEntries(entriesNumber.intValue)
@@ -92,10 +94,11 @@ fun HabitDaily(
                 HabitTitleWithIcon(
                     modifier = Modifier
                         .weight(1f)
-                        .padding(horizontal = 8.dp),
-                    icon = habit.icon.vector(LocalContext.current),
+                        .padding(horizontal = 8.dp)
+                        .testTag(habit.icon.name(context.resources)),
+                    icon = habit.icon.vector(context),
                     color = habit.color,
-                    title = habit.title
+                    title = habit.title,
                 )
                 AnimatedVisibility(
                     visible = entriesNumber.intValue == history.entries.size,
@@ -127,6 +130,7 @@ private fun CheckIcon(
     daysAgo: Int,
     timesDone: Int
 ) {
+    val context = LocalContext.current
     val defaultColor = MaterialTheme.colorScheme.tertiary
     val color =
         remember { Animatable(if (percentDone >= 1f) habit.color else defaultColor) }
@@ -139,7 +143,12 @@ private fun CheckIcon(
             )
         )
     }
-    IconButton(onClick = { onDone(habit, daysAgo) }) {
+    IconButton(
+        onClick = { onDone(habit, daysAgo) },
+        modifier = Modifier.semantics {
+            contentDescription =
+                context.getString(R.string.content_description_habit_daily_check_icon, habit.title, daysAgo)
+        }) {
         Box {
             Icon(
                 imageVector = ImageVector.vectorResource(R.drawable.check),

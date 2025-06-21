@@ -43,7 +43,8 @@ fun TextFieldWithError(
     singleLine: Boolean = true,
     maxLines: Int = 1,
     keyboardOptions: KeyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-    keyboardActions: KeyboardActions = KeyboardActions(onDone = { clearFocus() })
+    keyboardActions: KeyboardActions = KeyboardActions(onDone = { clearFocus() }),
+    description: String = ""
 ) {
     Column(modifier = modifier) {
         if (title.isNotBlank()) {
@@ -57,7 +58,7 @@ fun TextFieldWithError(
         BasicTextField(
             modifier = Modifier
                 .fillMaxWidth()
-                .semantics { contentDescription = title }
+                .semantics { contentDescription = description }
                 .animateContentSize(),
             value = value,
             onValueChange = onValueChange,

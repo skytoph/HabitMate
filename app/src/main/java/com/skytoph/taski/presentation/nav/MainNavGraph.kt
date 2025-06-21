@@ -42,8 +42,8 @@ fun MainNavGraph(controller: NavHostController) {
             val stateArchive = backStackEntry.collectByKey<Long>(HabitScreens.HabitList.keyArchive)
 
             HabitsScreen(
-                deleteState = stateDelete,
-                archiveState = stateArchive,
+                deleteState = stateDelete.value,
+                archiveState = stateArchive.value,
                 removeHabitFromState = { backStackEntry.savedStateHandle.remove<Long>(it) },
                 onCreateHabit = { controller.navigate(HabitScreens.CreateHabit.route) },
                 onHabitClick = { habitId -> controller.navigate(HabitScreens.HabitDetails(habitId.toString()).route) },

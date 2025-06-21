@@ -345,6 +345,17 @@
     <string name="week_label_one">week</string>
     <string name="month_label_one">month</string>
 
+    <!--    Content descriptions    -->
+    <string name="content_description_loading">loading</string>
+    <string name="content_description_enter_habit_title">enter habit title</string>
+    <string name="content_description_enter_habit_description">enter habit description</string>
+    <string name="content_description_decrease_habit_goal">decrease habit goal</string>
+    <string name="content_description_increase_habit_goal">increase habit goal</string>
+    <string name="content_description_select_habit_icon_and_color">select habit icon and color</string>
+    <string name="content_description_list_of_habits">list of habits</string>
+    <string name="content_description_habit_calendar_check_icon">mark "%1$s" habit as completed today</string>
+    <string name="content_description_habit_daily_check_icon">mark "%1$s" habit as completed %2$d days ago</string>
+
     <plurals name="times_label">
         <item quantity="one">time</item>
         <item quantity="other">times</item>
