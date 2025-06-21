@@ -56,6 +56,9 @@ android {
     androidResources {
         generateLocaleConfig = true
     }
+    defaultConfig {
+        testInstrumentationRunner = "com.skytoph.taski.test_runner.HiltTestRunner"
+    }
     buildToolsVersion = "35.0.0"
 }
 
@@ -72,13 +75,19 @@ dependencies {
     implementation("com.google.firebase:firebase-auth:22.2.0")
     implementation("com.google.android.gms:play-services-auth:20.7.0")
     implementation("androidx.paging:paging-common-android:3.3.6")
+
+    // Tests
     testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
     androidTestImplementation(platform("androidx.compose:compose-bom:2025.06.00"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+    // Tests: Hilt
+    androidTestImplementation("com.google.dagger:hilt-android-testing:2.56.2")
+    kspAndroidTest("com.google.dagger:hilt-android-compiler:2.56.2")
 
     // Compose lifecycle
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.1")
