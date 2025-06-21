@@ -14,6 +14,7 @@ import com.skytoph.taski.presentation.core.interactor.HabitDoneInteractor
 import com.skytoph.taski.presentation.habit.HabitUi
 import com.skytoph.taski.presentation.habit.details.mapper.BarChartEntriesUiMapper
 import com.skytoph.taski.presentation.habit.details.mapper.EditableEntryDomainToUiMapper
+import com.skytoph.taski.presentation.habit.details.mapper.StatisticsUiMapper
 import com.skytoph.taski.presentation.habit.details.mapper.map
 import com.skytoph.taski.presentation.habit.details.paging_source.BarChartEntriesPagerProvider
 import com.skytoph.taski.presentation.habit.details.paging_source.EntityPagerProvider
@@ -36,6 +37,7 @@ interface HabitDetailsInteractor : HabitDoneInteractor {
         private val entriesPagerProvider: EntityPagerProvider,
         private val barChartPagerProvider: BarChartEntriesPagerProvider,
         private val entryMapper: EditableEntryDomainToUiMapper,
+        private val statsMapper: StatisticsUiMapper,
         private val barChartMapper: BarChartEntriesUiMapper,
         private val repository: HabitRepository,
         private val settings: SettingsCache,
@@ -78,8 +80,12 @@ interface HabitDetailsInteractor : HabitDoneInteractor {
                 isFirstDaySunday = isFirstDaySunday,
                 lastEntryDaysAgo = lastEntryTimestamp?.let { now.daysAgo(it) }
             )
+            val streakType = statsMapper.statistics(
+                HabitWithEntries(repository.habit(habit.id), history),
+                settings.weekStartsOnSunday.value
+            ).type(daysAgo)
             return EntryUpdated(
-                entry = entryMapper.map(daysAgo, entry.timesDone, habit.goal, null),
+                entry = entryMapper.map(daysAgo, entry.timesDone, habit.goal, streakType),
                 barChartEntry = barChartEntry,
                 barChartLastItemTimestamp = lastEntryTimestamp
             )

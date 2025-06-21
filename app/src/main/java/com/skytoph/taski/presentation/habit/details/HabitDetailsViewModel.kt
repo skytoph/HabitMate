@@ -77,7 +77,8 @@ class HabitDetailsViewModel @Inject constructor(
             }.flowOn(Dispatchers.IO)
             .onEach { stats ->
                 onEvent(HabitDetailsEvent.UpdateStats(stats))
-                HabitEntriesAction.ApplyStatistics(stats, settings().value.streaksHighlighted).handle(actions)
+                if (settings().value.streaksHighlighted)
+                    HabitEntriesAction.ApplyStatistics(stats).handle(actions)
             }.launchIn(viewModelScope)
 
         settings.state()

@@ -30,11 +30,11 @@ abstract class HabitEntriesAction {
             }
     }
 
-    class ApplyStatistics(private val statistics: HabitStatisticsUi, private val isBorderOn: Boolean) :
+    class ApplyStatistics(private val statistics: HabitStatisticsUi) :
         HabitEntriesAction() {
         override fun apply(data: EditableHistoryUi): EditableHistoryUi =
-            data.copy(entries = data.entries.entries.associate { entry ->
-                entry.key to entry.value.copy(streakType = if (isBorderOn) statistics.type(entry.key) else null)
+            data.copy(entries = data.entries.mapValues { (daysAgo, entry) ->
+                entry.copy(streakType = statistics.type(daysAgo))
             })
     }
 }

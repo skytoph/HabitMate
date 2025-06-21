@@ -8,6 +8,7 @@ import com.skytoph.taski.presentation.habit.details.HabitDetailsInteractor
 import com.skytoph.taski.presentation.habit.details.HabitDetailsState
 import com.skytoph.taski.presentation.habit.details.mapper.BarChartEntriesUiMapper
 import com.skytoph.taski.presentation.habit.details.mapper.EditableEntryDomainToUiMapper
+import com.skytoph.taski.presentation.habit.details.mapper.StatisticsUiMapper
 import com.skytoph.taski.presentation.habit.details.paging_source.BarChartEntriesPagerProvider
 import com.skytoph.taski.presentation.habit.details.paging_source.EntityPagerProvider
 import dagger.Module
@@ -32,12 +33,14 @@ object HabitDetailsViewModelModule {
         barChartMapper: BarChartEntriesUiMapper,
         settings: SettingsCache,
         interactor: HabitDoneInteractor,
-        now: Now
+        now: Now,
+        statsMapper: StatisticsUiMapper
     ): HabitDetailsInteractor =
         HabitDetailsInteractor.Base(
             entriesPagerProvider,
             barChartPagerProvider,
             entryMapper,
+            statsMapper,
             barChartMapper,
             repository,
             settings,
