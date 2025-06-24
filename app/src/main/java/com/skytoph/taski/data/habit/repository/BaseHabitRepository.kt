@@ -39,10 +39,12 @@ class BaseHabitRepository(
 
     override suspend fun firstEntry(id: Long): Entry? = entryDao.firstEntry(id)?.toEntry()
 
-    override suspend fun entries(id: Long): EntryList = entryMapper.map(entryDao.entriesList(id))
-
-    override suspend fun entries(id: Long, fromTimestamp: Long, toTimestamp: Long): EntryList =
-        entryMapper.map(entryDao.entriesList(id, fromTimestamp, toTimestamp))
+    override suspend fun entries(id: Long, fromTimestamp: Long?, toTimestamp: Long?): EntryList =
+        entryMapper.map(
+            entries = if (fromTimestamp != null && toTimestamp != null)
+                entryDao.entriesList(id, fromTimestamp, toTimestamp)
+            else entryDao.entriesList(id)
+        )
 
     override suspend fun habit(id: Long): Habit = habitDao.habit(id).toHabit()
 
