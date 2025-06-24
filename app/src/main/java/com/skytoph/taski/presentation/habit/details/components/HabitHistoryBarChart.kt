@@ -28,6 +28,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -39,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.skytoph.taski.R
 import com.skytoph.taski.presentation.core.component.OptionsDropdown
 import com.skytoph.taski.presentation.core.component.getLocale
 import com.skytoph.taski.presentation.core.preview.BarChartEntryProvider
@@ -83,13 +88,17 @@ fun BarChart(
     barWidth: Dp = 40.dp,
     labelTextStyle: TextStyle = MaterialTheme.typography.labelSmall
 ) {
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .background(
                 color = MaterialTheme.colorScheme.tertiaryContainer,
                 shape = MaterialTheme.shapes.extraSmall
             )
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .semantics {
+                contentDescription = context.getString(R.string.content_description_history_bar_chart)
+            },
         horizontalAlignment = Alignment.End
     ) {
         Row(
@@ -98,7 +107,12 @@ fun BarChart(
             modifier = Modifier.fillMaxWidth()
         ) {
             OptionsDropdown(
-                modifier = Modifier.widthIn(min = 88.dp),
+                modifier = Modifier
+                    .widthIn(min = 88.dp)
+                    .semantics {
+                        contentDescription =
+                            context.getString(R.string.content_description_chart_frequency_dropdown)
+                    },
                 options = ChartFrequencyUi.options,
                 selected = frequency,
                 selectOption = selectFrequency,
@@ -171,10 +185,12 @@ private fun BarItem(
             animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
         )
     }
+    val displayDate = item.getDisplayDate(getLocale(), context)
     Column(
         modifier = Modifier
             .width(barWidth)
-            .padding(horizontal = 4.dp),
+            .padding(horizontal = 4.dp)
+            .testTag(stringResource(R.string.test_tag_bar_chart_item, displayDate, item.timesDone)),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Bottom
     ) {
@@ -194,7 +210,7 @@ private fun BarItem(
         )
         AnimatedVisibility(visible = !item.isEmpty) {
             Text(
-                text = item.getDisplayDate(getLocale(), context),
+                text = displayDate,
                 color = MaterialTheme.colorScheme.onBackground,
                 style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
                 maxLines = 2,

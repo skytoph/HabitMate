@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="test_tag_bar_chart_item" translatable="false">bar chart item with displayDate: "%1$s", timesDone: %2$d</string>
+    <string name="test_tag_entry" translatable="false">entry item daysAgo: %1$d</string>
+    <string name="test_tag_habit_item" translatable="false">habit item with name: %1$s, icon: %2$s</string>
+    <string name="test_tag_habit_details_title" translatable="false">habit_details_name</string>
+    <string name="test_tag_habit_details_description" translatable="false">habit_details_description</string>
+    <string name="test_tag_habit_details_goal" translatable="false">habit_details_goal</string>
+    <string name="test_tag_habit_details_frequency" translatable="false">habit_details_frequency</string>
+    <string name="test_tag_habit_details_reminder" translatable="false">habit_details_reminder</string>
+    <string name="test_tag_habit_details_total" translatable="false">habit_details_total_days_completed</string>
+    <string name="test_tag_habit_details_best_streak" translatable="false">habit_details_best_streak</string>
+    <string name="test_tag_habit_details_current_streak" translatable="false">habit_details_current_streak</string>
+    <string name="test_tag_habit_details_icon" translatable="false">habit_details_icon</string>
+</resources>

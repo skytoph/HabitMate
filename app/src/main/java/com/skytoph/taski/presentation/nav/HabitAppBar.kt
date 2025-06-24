@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -92,7 +93,10 @@ fun HabitAppBar(
             if (state.dropdownItems.isNotEmpty())
                 Box {
                     IconButton(onClick = { expandList(true) }) {
-                        Icon(ImageVector.vectorResource(R.drawable.ellipsis_vertical), "menu")
+                        Icon(
+                            imageVector = ImageVector.vectorResource(R.drawable.ellipsis_vertical),
+                            contentDescription = stringResource(R.string.content_description_expand_dropdown_menu)
+                        )
                     }
 
                     DropdownMenu(

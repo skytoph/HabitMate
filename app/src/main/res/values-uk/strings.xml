@@ -326,6 +326,23 @@
     <string name="content_description_list_of_habits">список звичок</string>
     <string name="content_description_habit_calendar_check_icon">позначити "%1$s" звичку як завершену сьогодні</string>
     <string name="content_description_habit_daily_check_icon">позначити "%1$s" звичку як завершену %2$d днів тому</string>
+    <string name="content_description_history_bar_chart">стовпчаста діаграма історії звичок</string>
+    <string name="content_description_chart_frequency_dropdown">розгорнути меню частоти стовпчастої діаграми</string>
+    <string name="content_description_habit_frequency">частота звички: %1$s</string>
+    <string name="content_description_habit_goal">ціль звички: %1$d</string>
+    <string name="content_description_total_completed_days">загальна кількість завершених днів: %1$s</string>
+    <string name="content_description_best_streak">найкраща серія: %1$s</string>
+    <string name="content_description_current_streak">поточна серія: %1$s</string>
+    <string name="content_description_habit_history_switch_to_heatmap_view">переключити історію на heatmap вигляд</string>
+    <string name="content_description_habit_history_switch_to_calendar_view">переключити історію на календарний вигляд</string>
+    <string name="content_description_edit_history_dialog">редагувати історію звичок</string>
+    <string name="content_description_entry_item">%1$d днів тому ця звичка була виконана %2$d разів</string>
+    <string name="content_description_previous_month">попередній місяць</string>
+    <string name="content_description_next_month">наступний місяць</string>
+    <string name="content_description_habit_history_calendar_view">історія звички у календарному вигляді</string>
+    <string name="content_description_habit_history_heatmap_view">історія звички у вигляді heatmap</string>
+    <string name="content_description_habit_icon">іконка звички</string>
+    <string name="content_description_expand_dropdown_menu">розгорнути меню</string>
 
 
     <plurals name="times_label">

@@ -34,8 +34,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -51,6 +55,7 @@ import com.skytoph.taski.presentation.core.component.AppBarAction
 import com.skytoph.taski.presentation.core.component.DeleteDialog
 import com.skytoph.taski.presentation.core.component.getLocale
 import com.skytoph.taski.presentation.core.preview.HabitsEditableProvider
+import com.skytoph.taski.presentation.core.semantics.backgroundColor
 import com.skytoph.taski.presentation.habit.HabitUi
 import com.skytoph.taski.presentation.habit.details.BarItemUi
 import com.skytoph.taski.presentation.habit.details.ChartFrequencyUi
@@ -110,11 +115,11 @@ fun HabitDetails(
     entries: Flow<PagingData<EditableHistoryUi>>,
     barChartItems: Flow<PagingData<BarItemUi>>,
     barChartFrequency: ChartFrequencyUi = ChartFrequencyUi.Day,
+    habitHistoryView: HabitHistoryView = HabitHistoryView.Calendar,
     onHideDialog: () -> Unit = {},
     onDeleteHabit: () -> Unit = {},
     onDayClick: (Int) -> Unit = {},
     onEditHistory: () -> Unit = {},
-    habitHistoryView: HabitHistoryView = HabitHistoryView.Calendar,
     expandSummary: () -> Unit = {},
     expandDescription: () -> Unit = {},
     updateView: () -> Unit = {},
@@ -147,22 +152,28 @@ fun HabitDetails(
                 Box(
                     modifier = Modifier
                         .size(size = 44.dp)
-                        .background(color = habit.color, shape = RoundedCornerShape(10)),
+                        .background(color = habit.color, shape = RoundedCornerShape(10))
+                        .semantics {
+                            backgroundColor = habit.color
+                        }
+                        .testTag(stringResource(R.string.test_tag_habit_details_icon)),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         imageVector = habit.icon.vector(context),
-                        contentDescription = habit.icon.name(context.resources),
+                        contentDescription = stringResource(R.string.content_description_habit_icon),
                         modifier = Modifier
                             .size(32.dp)
-                            .padding(2.dp),
+                            .padding(2.dp)
+                            .testTag(habit.icon.name(context.resources)),
                         tint = Color.White
                     )
                 }
                 Text(
                     text = habit.title,
                     style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.onBackground
+                    color = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier.testTag(stringResource(R.string.test_tag_habit_details_title))
                 )
             }
             if (state.value.habit?.description?.isNotEmpty() == true) {
@@ -177,7 +188,8 @@ fun HabitDetails(
                             shape = MaterialTheme.shapes.extraSmall
                         )
                         .padding(8.dp)
-                        .animateContentSize(),
+                        .animateContentSize()
+                        .testTag(stringResource(R.string.test_tag_habit_details_description)),
                 ) {
                     Text(
                         text = habit.description,
@@ -208,24 +220,37 @@ fun HabitDetails(
                     .animateContentSize(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
+                val frequency = habit.frequency.summarize(context.resources, isFirstDaySunday, getLocale())
                 LabelWithIcon(
                     modifier = Modifier
                         .weight(1f)
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = null
-                        ) { expandSummary() },
-                    annotatedText = habit.frequency.summarize(context.resources, isFirstDaySunday, getLocale()),
+                        ) { expandSummary() }
+                        .semantics {
+                            contentDescription =
+                                context.getString(R.string.content_description_habit_frequency, frequency)
+                            testTag = context.getString(R.string.test_tag_habit_details_frequency)
+                        },
+                    annotatedText = frequency,
                     icon = ImageVector.vectorResource(R.drawable.calendar),
                     maxLines = if (state.value.isSummaryExpanded) Int.MAX_VALUE else 2
                 )
                 LabelWithIcon(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f)
+                        .semantics {
+                            contentDescription = context.getString(R.string.content_description_habit_goal, habit.goal)
+                            testTag = context.getString(R.string.test_tag_habit_details_goal)
+                        },
                     text = stringResource(R.string.goal_value, habit.goal),
                     icon = ImageVector.vectorResource(R.drawable.flame),
                 )
                 LabelWithIcon(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f)
+                        .testTag(context.getString(R.string.test_tag_habit_details_reminder)),
                     text = habit.reminder.formatted(
                         getLocale(),
                         stringResource(R.string.reminder_turned_off),
@@ -253,19 +278,43 @@ fun HabitDetails(
                     .padding(8.dp)
             ) {
                 LabelWithValue(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f)
+                        .semantics {
+                            contentDescription = context.getString(
+                                R.string.content_description_total_completed_days,
+                                state.value.statistics.total.toString()
+                            )
+                            testTag = context.getString(R.string.test_tag_habit_details_total)
+                        },
                     label = stringResource(R.string.total),
                     value = state.value.statistics.total.toString(),
                     color = state.value.habit?.color
                 )
                 LabelWithValue(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f)
+                        .semantics {
+                            contentDescription = context.getString(
+                                R.string.content_description_best_streak,
+                                state.value.statistics.bestStreak.toString()
+                            )
+                            testTag = context.getString(R.string.test_tag_habit_details_best_streak)
+                        },
                     label = stringResource(R.string.best_streak),
                     value = state.value.statistics.bestStreak.toString(),
                     color = state.value.habit?.color
                 )
                 LabelWithValue(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f)
+                        .semantics {
+                            contentDescription = context.getString(
+                                R.string.content_description_current_streak,
+                                state.value.statistics.currentStreak.toString()
+                            )
+                            testTag = context.getString(R.string.test_tag_habit_details_current_streak)
+                        },
                     label = stringResource(R.string.current_streak),
                     value = state.value.statistics.currentStreak.toString(),
                     color = state.value.habit?.color

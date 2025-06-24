@@ -80,8 +80,7 @@ fun HabitDaily(
                 .fillMaxWidth()
                 .wrapContentHeight()
                 .clip(CardDefaults.shape)
-                .combinedClickable(onClick = onClick, onLongClick = onLongClick)
-                .semantics { contentDescription = "habit" },
+                .combinedClickable(onClick = onClick, onLongClick = onLongClick),
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
         ) {
             Row(
@@ -95,7 +94,13 @@ fun HabitDaily(
                     modifier = Modifier
                         .weight(1f)
                         .padding(horizontal = 8.dp)
-                        .testTag(habit.icon.name(context.resources)),
+                        .testTag(
+                            context.getString(
+                                R.string.test_tag_habit_item,
+                                habit.title,
+                                habit.icon.name(context.resources)
+                            )
+                        ),
                     icon = habit.icon.vector(context),
                     color = habit.color,
                     title = habit.title,

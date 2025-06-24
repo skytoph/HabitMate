@@ -47,8 +47,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -85,6 +88,7 @@ fun HabitHistory(
     habitHistoryView: HabitHistoryView = HabitHistoryView.Calendar,
     pagerState: PagerState
 ) {
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .background(
@@ -131,7 +135,14 @@ fun HabitHistory(
                     )
                     .clip(MaterialTheme.shapes.small)
                     .clickable(onClick = onChangeView)
-                    .size(32.dp),
+                    .size(32.dp)
+                    .semantics {
+                        contentDescription =
+                            if (habitHistoryView is HabitHistoryView.Calendar)
+                                context.getString(R.string.content_description_habit_history_switch_to_heatmap_view)
+                            else
+                                context.getString(R.string.content_description_habit_history_switch_to_calendar_view)
+                    },
                 contentAlignment = Alignment.Center
             ) {
                 Crossfade(
@@ -140,7 +151,7 @@ fun HabitHistory(
                 ) { calendarView ->
                     Icon(
                         imageVector = ImageVector.vectorResource(if (calendarView) R.drawable.table else R.drawable.calendar_days),
-                        contentDescription = "calendar view",
+                        contentDescription = null,
                         tint = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 }
@@ -168,6 +179,7 @@ fun HabitHistoryGrid(
     initialOffsetDp: Dp = 4.dp,
     isFirstDaySunday: Boolean,
 ) {
+    val context = LocalContext.current
     if (items.loadState.refresh == LoadState.Loading || items.itemCount == 0) Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -189,7 +201,10 @@ fun HabitHistoryGrid(
                 .leftFadingEdge(
                     color = MaterialTheme.colorScheme.tertiaryContainer,
                     width = 2.dp
-                ),
+                )
+                .semantics {
+                    contentDescription = context.getString(R.string.content_description_habit_history_heatmap_view)
+                },
             contentPadding = PaddingValues(2.dp),
             reverseLayout = true,
         ) {

@@ -40,7 +40,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -77,6 +82,7 @@ fun MonthlyPager(
     onEdit: (Int) -> Unit = {},
     squareDp: Dp = 40.dp,
 ) {
+    val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
     if (items.loadState.refresh == LoadState.Loading || items.itemCount == 0) Box(
@@ -115,7 +121,7 @@ fun MonthlyPager(
             ) {
                 Icon(
                     imageVector = ImageVector.vectorResource(R.drawable.chevron_left),
-                    contentDescription = "previous month",
+                    contentDescription = stringResource(R.string.content_description_previous_month),
                     tint = if (pagerState.canScrollForward) MaterialTheme.colorScheme.onBackground
                     else MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f)
                 )
@@ -146,7 +152,7 @@ fun MonthlyPager(
             ) {
                 Icon(
                     imageVector = ImageVector.vectorResource(R.drawable.chevron_right),
-                    contentDescription = "next month",
+                    contentDescription = stringResource(R.string.content_description_next_month),
                     tint = if (pagerState.canScrollBackward) MaterialTheme.colorScheme.onBackground
                     else MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f)
                 )
@@ -158,6 +164,9 @@ fun MonthlyPager(
             beyondViewportPageCount = 1,
             key = { it },
             verticalAlignment = Alignment.Top,
+            modifier = Modifier.semantics {
+                contentDescription = context.getString(R.string.content_description_habit_history_calendar_view)
+            }
         ) { page ->
             items[page]?.let { item ->
                 MonthlyView(
@@ -233,6 +242,7 @@ private fun EntryItem(
     squareDp: Dp = 50.dp,
     streakColor: Color = habitColor.applyColor(MaterialTheme.colorScheme.tertiaryContainer, 0.2f)
 ) {
+    val context = LocalContext.current
     val defaultColor = MaterialTheme.colorScheme.tertiaryContainer
     val color = remember { Animatable(if (percentDone >= 1f) habitColor else defaultColor) }
     val disabledColor = habitColor.applyColor(MaterialTheme.colorScheme.tertiaryContainer, 0.5f)
@@ -247,7 +257,12 @@ private fun EntryItem(
     }
     Box(
         contentAlignment = Alignment.Center,
-        modifier = Modifier.aspectRatio(1f)
+        modifier = Modifier
+            .aspectRatio(1f)
+            .testTag(stringResource(R.string.test_tag_entry, daysAgo))
+            .semantics {
+                contentDescription = context.getString(R.string.content_description_entry_item, daysAgo, timesDone)
+            }
     ) {
         Box(
             modifier = Modifier

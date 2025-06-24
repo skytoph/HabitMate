@@ -355,6 +355,23 @@
     <string name="content_description_list_of_habits">list of habits</string>
     <string name="content_description_habit_calendar_check_icon">mark "%1$s" habit as completed today</string>
     <string name="content_description_habit_daily_check_icon">mark "%1$s" habit as completed %2$d days ago</string>
+    <string name="content_description_history_bar_chart">habit history bar chart</string>
+    <string name="content_description_chart_frequency_dropdown">expand bar chart frequency menu</string>
+    <string name="content_description_habit_frequency">habit frequency: %1$s</string>
+    <string name="content_description_habit_goal">habit goal: %1$d</string>
+    <string name="content_description_total_completed_days">total number of completed days: %1$s</string>
+    <string name="content_description_best_streak">best streak: %1$s</string>
+    <string name="content_description_current_streak">current streak: %1$s</string>
+    <string name="content_description_habit_history_switch_to_heatmap_view">switch habit history to heatmap view</string>
+    <string name="content_description_habit_history_switch_to_calendar_view">switch habit history to calendar view</string>
+    <string name="content_description_edit_history_dialog">edit habit history</string>
+    <string name="content_description_entry_item">%1$d days ago this habit was done %2$d times</string>
+    <string name="content_description_previous_month">previous month</string>
+    <string name="content_description_next_month">next month</string>
+    <string name="content_description_habit_history_calendar_view">habit history calendar view</string>
+    <string name="content_description_habit_history_heatmap_view">habit history heatmap view</string>
+    <string name="content_description_habit_icon">habit icon</string>
+    <string name="content_description_expand_dropdown_menu">expand dropdown menu</string>
 
     <plurals name="times_label">
         <item quantity="one">time</item>

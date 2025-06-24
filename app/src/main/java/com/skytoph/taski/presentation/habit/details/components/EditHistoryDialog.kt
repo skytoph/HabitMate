@@ -22,8 +22,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -43,8 +46,20 @@ fun EditHistoryDialog(
     isFirstDaySunday: Boolean = false,
     habitHistoryView: HabitHistoryView = HabitHistoryView.Calendar,
 ) {
+    val context = LocalContext.current
     Dialog(onDismissRequest = onEdit) {
-        HabitHistoryEditable(items, habitColor, goal, page, onDayClick, isFirstDaySunday, habitHistoryView)
+        HabitHistoryEditable(
+            items = items,
+            habitColor = habitColor,
+            goal = goal,
+            page = page,
+            onDayClick = onDayClick,
+            isFirstDaySunday = isFirstDaySunday,
+            habitHistoryView = habitHistoryView,
+            modifier = Modifier.semantics {
+                contentDescription = context.getString(R.string.content_description_edit_history_dialog)
+            }
+        )
     }
 }
 
@@ -57,10 +72,11 @@ fun HabitHistoryEditable(
     onDayClick: (Int) -> Unit,
     isFirstDaySunday: Boolean = false,
     habitHistoryView: HabitHistoryView = HabitHistoryView.Calendar,
+    modifier: Modifier = Modifier,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
+        modifier = modifier
             .background(
                 color = MaterialTheme.colorScheme.tertiaryContainer,
                 shape = MaterialTheme.shapes.extraSmall
@@ -89,7 +105,7 @@ fun HabitHistoryEditable(
             isFirstDaySunday = isFirstDaySunday
         )
         Row(
-            modifier = Modifier
+            modifier = modifier
                 .padding(8.dp)
                 .background(
                     color = MaterialTheme.colorScheme.secondaryContainer,
@@ -103,15 +119,15 @@ fun HabitHistoryEditable(
                 imageVector = ImageVector.vectorResource(R.drawable.sparkles),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.size(24.dp)
+                modifier = modifier.size(24.dp)
             )
-            Spacer(modifier = Modifier.width(4.dp))
+            Spacer(modifier = modifier.width(4.dp))
             Text(
                 text = stringResource(R.string.edit_history_hint),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.wrapContentWidth()
+                modifier = modifier.wrapContentWidth()
             )
         }
     }
