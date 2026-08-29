@@ -16,9 +16,9 @@ android {
     defaultConfig {
         applicationId = "com.skytoph.taski"
         minSdk = 26
-        targetSdk = 35
-        versionCode = 11
-        versionName = "1.2"
+        targetSdk = 37
+        versionCode = 16
+        versionName = "1.2.5"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -59,7 +59,7 @@ android {
     defaultConfig {
         testInstrumentationRunner = "com.skytoph.taski.test_runner.HiltTestRunner"
     }
-    buildToolsVersion = "35.0.0"
+    buildToolsVersion = "37.0.0"
 }
 
 dependencies {
